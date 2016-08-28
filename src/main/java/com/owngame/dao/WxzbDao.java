@@ -19,4 +19,5 @@ public interface WxzbDao {
      * @return
      */
     List<Wxzb> queryToday();
+
 }

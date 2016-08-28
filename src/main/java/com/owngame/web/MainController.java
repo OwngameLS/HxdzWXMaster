@@ -1,17 +1,20 @@
 package com.owngame.web;
 
 import com.alibaba.fastjson.util.IOUtils;
+import com.owngame.service.AnswerService;
 import com.owngame.service.CoreService;
 import com.owngame.utils.CheckUtil;
 import com.owngame.utils.InfoFormatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,9 +28,11 @@ import java.io.Writer;
  */
 
 @Controller
-@RequestMapping("weichat")
+@RequestMapping("Smserver")
 public class MainController {
 
+    @Autowired
+    AnswerService answerService;
 
     static ExecutorService pool;// 待处理的线程池
     // 线程池
@@ -80,6 +85,33 @@ public class MainController {
         CoreService coreService = new CoreService(s);
         pool.execute(coreService);
     }
+
+    /**
+     * 返回json数据格式的方法
+     * 因为开启了相应的配置，所以只要用上特定的@ResponseBody，它就能把返回的对象做成Json对象返回了。
+     * @return
+     */
+    @RequestMapping(value = "/askServer/{actionName}", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> handleAsk(@PathVariable("actionName") String actionName) {
+        // TODO 根据actionName来决定查询什么
+        return answerService.handleAsk(actionName);
+    }
+    //
+    /**
+     * 返回json数据格式的方法
+     * 因为开启了相应的配置，所以只要用上特定的@ResponseBody，它就能把返回的对象做成Json对象返回了。
+     * @return
+     */
+    @RequestMapping(value = "commitTask/{id}/{state}", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> handleCommit(@PathVariable("id") String id,@PathVariable("state") String state) {
+        // TODO
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        return map;
+    }
+
 
 
 }
