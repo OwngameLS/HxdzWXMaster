@@ -12,5 +12,11 @@
     查询：根据不同的关键字查询不同的信息
     插入：按照特定格式插入消息
 
+    教程：quartz http://blog.csdn.net/sup_heaven/article/details/37738283
+    其中也有介绍操作excel的链接
+    http://sundoctor.iteye.com/blog/399980
+
+    看这个吧http://www.dexcoder.com/selfly/article/308
+
 已经完成了公众号查询功能的框架，现在需要了解其数据库结构才能进一步处理。
 正在构建响应局域网内部请求的业务逻辑。涉及到的诸多细节还是很累的。160828
