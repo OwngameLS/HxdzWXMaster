@@ -24,7 +24,6 @@ public class SchedulerServiceImpl implements SchedulerService {
     private JobDetail jobDetail;
 
     public void schedule(String cronExpression) {
-// System.out.print("222222222");
         schedule(NULLSTRING, cronExpression);
     }
 
@@ -51,22 +50,16 @@ public class SchedulerServiceImpl implements SchedulerService {
     public void schedule(String name, String group, CronExpression cronExpression) {
 
         if (isValidExpression(cronExpression)) {
-
             if (name == null || name.trim().equals("")) {
                 name = UUID.randomUUID().toString();
             }
-
             CronTriggerImpl trigger = new CronTriggerImpl();
             trigger.setCronExpression(cronExpression);
-
             TriggerKey triggerKey = new TriggerKey(name, group);
-
             trigger.setJobName(jobDetail.getKey().getName());
             trigger.setKey(triggerKey);
-
-            try {
+            try{
                 scheduler.addJob(jobDetail, true);
-
                 if (scheduler.checkExists(triggerKey)) {
                     scheduler.rescheduleJob(triggerKey, trigger);
                 } else {

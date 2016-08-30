@@ -35,26 +35,28 @@ public class MainController {
     AnswerService answerService;
 
     static ExecutorService pool;// 待处理的线程池
+
     // 线程池
-    static{
+    static {
         //创建一个可重用固定线程数的线程池
         pool = Executors.newFixedThreadPool(3);
     }
 
     /**
      * 处理来自微信服务器的验证
+     *
      * @param signature
      * @param timestamp
      * @param nonce
      * @param echostr
      * @param writer
      */
-    @RequestMapping(method = { RequestMethod.GET }, produces = "application/json;charset=UTF-8")
+    @RequestMapping(method = {RequestMethod.GET}, produces = "application/json;charset=UTF-8")
     public void validate(@RequestParam("signature") String signature,
-                   @RequestParam("timestamp") String timestamp,
-                   @RequestParam("nonce") String nonce,
-                   @RequestParam("echostr") String echostr,
-                   Writer writer){
+                         @RequestParam("timestamp") String timestamp,
+                         @RequestParam("nonce") String nonce,
+                         @RequestParam("echostr") String echostr,
+                         Writer writer) {
         System.out.println("fuck you !" + signature + ";" + timestamp + ";" + nonce + ";" + echostr);
         if (CheckUtil.checkSignature(signature, timestamp, nonce)) {
             // 验证成功，原样返回
@@ -67,7 +69,7 @@ public class MainController {
     }
 
 
-    @RequestMapping(method = { RequestMethod.POST }, produces = "application/xml;charset=UTF-8")
+    @RequestMapping(method = {RequestMethod.POST}, produces = "application/xml;charset=UTF-8")
     public void post(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         System.out.println("handle post...");
@@ -89,6 +91,7 @@ public class MainController {
     /**
      * 返回json数据格式的方法
      * 因为开启了相应的配置，所以只要用上特定的@ResponseBody，它就能把返回的对象做成Json对象返回了。
+     *
      * @return
      */
     @RequestMapping(value = "/askServer/{actionName}", method = RequestMethod.GET)
@@ -98,20 +101,21 @@ public class MainController {
         return answerService.handleAsk(actionName);
     }
     //
+
     /**
      * 返回json数据格式的方法
      * 因为开启了相应的配置，所以只要用上特定的@ResponseBody，它就能把返回的对象做成Json对象返回了。
+     *
      * @return
      */
     @RequestMapping(value = "commitTask/{id}/{state}", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> handleCommit(@PathVariable("id") String id,@PathVariable("state") String state) {
+    public Map<String, Object> handleCommit(@PathVariable("id") String id, @PathVariable("state") String state) {
         // TODO
         Map<String, Object> map = new HashMap<String, Object>();
 
         return map;
     }
-
 
 
 }

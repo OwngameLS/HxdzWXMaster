@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public interface TaskDao {
     /**
      * 查询所有待处理的任务
+     *
      * @return
      */
     ArrayList<Task> queryTasksNew();
@@ -17,12 +18,14 @@ public interface TaskDao {
     /**
      * 查询所有任务
      * TODO 需要分页
+     *
      * @return
      */
     ArrayList<Task> queryTasks();
 
     /**
      * 插入新任务
+     *
      * @param task
      * @return
      */

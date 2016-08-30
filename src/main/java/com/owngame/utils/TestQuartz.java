@@ -35,20 +35,20 @@ public class TestQuartz {
     @Test
     public void test() throws SchedulerException {//,Exception,ParseException
 //schedule ("", Date startTime, Date endTime,int repeatCount, long repeatInterval, String group)
-        Date startTime = parse("2015-08-05 13:55:00");
-        Date endTime = parse("2015-08-05 15:15:00");
+        Date startTime = parse("2016-08-30 20:55:00");
+        Date endTime = parse("2016-08-30 20:40:00");
 // schedulerService.resumeTrigger("f64eee37-62f4-473f-b5b9-d7a76d86c443");
 
-        schedulerService.schedule("0 28 17 * * ? *");
- schedulerService.schedule("f64eee37-62f4-473f-b5b9-d7a76d86c443", "0 45 09 * * ? *");
-schedulerService.pauseTrigger("f64eee37-62f4-473f-b5b9-d7a76d86c443");
-schedulerService.resumeTrigger("0fdb7134-9701-494c-9879-bbf2e30120b8");
- schedulerService.schedule("0 17 16 * * ? *");
-schedulerService.schedule(startTime);
+//        schedulerService.schedule("0 28 17 * * ? *");
+//        schedulerService.schedule("f64eee37-62f4-473f-b5b9-d7a76d86c443", "0 45 09 * * ? *");
+//        schedulerService.pauseTrigger("f64eee37-62f4-473f-b5b9-d7a76d86c443");
+//        schedulerService.resumeTrigger("0fdb7134-9701-494c-9879-bbf2e30120b8");
+//        schedulerService.schedule("0 17 16 * * ? *");
+//        schedulerService.schedule(startTime);
 // schedulerService.pauseTrigger("f4a610a7-5b43-4738-949c-150eec96fb62");
 // schedulerService.schedule(startTime, endTime,5,5);
 // schedulerService.schedule("ZYD", startTime, endTime, 1, 10);
-// schedulerService.schedule(startTime);
+ schedulerService.schedule(startTime);
 // schedulerService.removeTrigdger("f4a610a7-5b43-4738-949c-150eec96fb62");
         int repeatCount = 10;
         long repeatInterval = 2;

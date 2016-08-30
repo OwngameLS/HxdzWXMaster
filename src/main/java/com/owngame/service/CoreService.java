@@ -5,10 +5,9 @@ import com.owngame.utils.InfoFormatUtil;
 import org.dom4j.DocumentException;
 import weixin.popular.api.MessageAPI;
 import weixin.popular.bean.BaseResult;
+
 import java.io.IOException;
 import java.util.Map;
-
-
 
 
 /**
@@ -18,7 +17,8 @@ public class CoreService extends Thread {
 
     private Map<String, String> map = null;
     String s;
-    public CoreService(String message){
+
+    public CoreService(String message) {
         this.s = message;
     }
 

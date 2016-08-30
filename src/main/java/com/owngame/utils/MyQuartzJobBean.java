@@ -1,17 +1,18 @@
 package com.owngame.utils;
 
 import com.owngame.service.SimpleService;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
+import org.quartz.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
  * 实现自己的JobDetail
+ * 它是自己任务的执行入口 应该会有更上级的东西调用它
+ * 通过验证 确实如此
  * Created by Administrator on 2016-8-30.
  */
+@PersistJobDataAfterExecution
+@DisallowConcurrentExecution// 不允许并发执行
 public class MyQuartzJobBean extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext jobexecutioncontext) throws JobExecutionException {

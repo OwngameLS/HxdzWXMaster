@@ -41,7 +41,6 @@ public class MessageHandler {
     static final String SEND_PACKAGE_URL = "sendPackage.jsp?openid=OPENID";
 
 
-
     // static final String EVENTKEY
     // 全局返回值
     public static final int RETURN_CODE_UNKNOWN = -1;// 未知结果
@@ -64,7 +63,6 @@ public class MessageHandler {
 
     /**
      * 处理文本信息，分析文本内容，给出合理应答
-     *
      */
     private static String handleTextMessage(Map<String, String> map) {
         System.out.println("handleTextMessage is called.");
@@ -158,10 +156,10 @@ public class MessageHandler {
         String eventKey = map.get("EventKey");
         System.out.println("eventKey:" + eventKey);
         String result = null;
-        if(eventKey.startsWith(ManageMenu.EVENTKEY_QUERY_PREFIX)){
+        if (eventKey.startsWith(ManageMenu.EVENTKEY_QUERY_PREFIX)) {
             result = QueryService.handleQuery(eventKey);
         }
-        return initTextOfJsonString(fromUserName,result);
+        return initTextOfJsonString(fromUserName, result);
 
 
 //

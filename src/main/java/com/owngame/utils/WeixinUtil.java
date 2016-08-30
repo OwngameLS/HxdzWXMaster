@@ -51,7 +51,7 @@ public class WeixinUtil {
             if (jsonObject != null) {
                 result = jsonObject.getIntValue("errcode");
             }
-        }  catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -77,9 +77,9 @@ public class WeixinUtil {
     public static void main(String agrs[]) {
         String token = AccessTokenUtil.getSavedToken();
 
-		String jStr = JSONObject.toJSONString(ManageMenu.createMenu());
+        String jStr = JSONObject.toJSONString(ManageMenu.createMenu());
 
-		int r = WeixinUtil.createMenu(token, jStr);
+        int r = WeixinUtil.createMenu(token, jStr);
         System.out.println("jStr:" + jStr + ": r:" + r);
 
 

@@ -10,12 +10,14 @@ import java.util.List;
 public interface WxzbDao {
     /**
      * 查询最新的记录
+     *
      * @return
      */
     Wxzb querylatest();
 
     /**
      * 查询今天的所有的记录
+     *
      * @return
      */
     List<Wxzb> queryToday();

@@ -18,7 +18,7 @@ public class MYUser {
     private String phonenumber = null;// 手机号码
     private String realname = null;// 真实姓名
 
-    public MYUser(User u){
+    public MYUser(User u) {
         this.unionid = u.getUnionid();
         this.openid = u.getOpenid();
         this.nickname = u.getNickname();

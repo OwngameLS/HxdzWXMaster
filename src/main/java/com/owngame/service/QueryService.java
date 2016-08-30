@@ -8,13 +8,13 @@ import com.owngame.menu.ManageMenu;
  */
 public class QueryService {
 
-    public static String handleQuery(String eventKey){
+    public static String handleQuery(String eventKey) {
         String queryResult = "等待完善中，不要急！";
-        if(ManageMenu.EVENTKEY_FDJZ.equals(eventKey)){
+        if (ManageMenu.EVENTKEY_FDJZ.equals(eventKey)) {
             queryResult += "发电机组情况如下：";
-        }else if(ManageMenu.EVENTKEY_WXZB.equals(eventKey)){
+        } else if (ManageMenu.EVENTKEY_WXZB.equals(eventKey)) {
             queryResult += "五项指标情况如下：";
-        }else if(ManageMenu.EVENTKEY_JRGK.equals(eventKey)){
+        } else if (ManageMenu.EVENTKEY_JRGK.equals(eventKey)) {
             queryResult += "今日概况如下：";
         }
         return queryResult;
