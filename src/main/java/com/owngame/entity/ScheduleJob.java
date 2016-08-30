@@ -1,6 +1,8 @@
-package com.owngame.utils;
+package com.owngame.entity;
 
 /**
+ * 定时任务的类
+ * 它描述了任务的相关属性
  * Created by Administrator on 2016/8/29.
  */
 public class ScheduleJob {

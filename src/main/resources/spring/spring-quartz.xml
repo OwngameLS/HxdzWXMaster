@@ -2,5 +2,29 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"/>
+    <bean name="quartzScheduler"
+          class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+          autowire="no"><!-- 容器启动随机启动lazy-init="false" autowire="no"-->
+        <property name="autoStartup" value="true"/>
+        <property name="dataSource">
+            <ref bean="dataSource"/>
+        </property>
+        <property name="applicationContextSchedulerContextKey" value="applicationContextKey"/>
+        <property name="waitForJobsToCompleteOnShutdown" value="true"/>
+        <property name="configLocation" value="classpath:quartz.properties"/>
+    </bean>
+    <bean id="jobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass">
+            <value>com.owngame.utils.MyQuartzJobBean</value>
+        </property>
+        <property name="durability" value="true"/>
+    </bean>
+
+    <bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="jobDetail" ref="jobDetail" />
+        <property name="startDelay" value="0" /><!-- 调度工厂实例化后，经过0秒开始执行调度 -->
+        <property name="repeatInterval" value="0" /><!-- 每2秒调度一次 -->
+        <property name="repeatCount" value="0"/>
+    </bean>
+
 </beans>

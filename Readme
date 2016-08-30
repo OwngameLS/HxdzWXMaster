@@ -17,6 +17,7 @@
     http://sundoctor.iteye.com/blog/399980
 
     看这个吧http://www.dexcoder.com/selfly/article/308
+    http://blog.csdn.net/fish_di/article/details/47356655
 
 已经完成了公众号查询功能的框架，现在需要了解其数据库结构才能进一步处理。
 正在构建响应局域网内部请求的业务逻辑。涉及到的诸多细节还是很累的。160828
