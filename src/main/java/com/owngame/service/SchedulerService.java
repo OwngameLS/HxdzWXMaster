@@ -3,6 +3,7 @@ package com.owngame.service;
 import org.quartz.CronExpression;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * 动态调度服务接口
@@ -13,6 +14,14 @@ import java.util.Date;
  * Created by Administrator on 2016-8-30.
  */
 public interface SchedulerService {
+
+    /**
+     * 真正调用的创建定时任务的入口方法
+     * @param strCronExpression
+     * @param map
+     */
+    void schedule(String strCronExpression, Map<String, String> map);
+
     /**
      * 根据 Quartz Cron Expression 调试任务
      *

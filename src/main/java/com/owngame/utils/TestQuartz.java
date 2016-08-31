@@ -15,6 +15,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016-8-30.
@@ -40,16 +42,19 @@ public class TestQuartz {
 // schedulerService.resumeTrigger("f64eee37-62f4-473f-b5b9-d7a76d86c443");
 
 //        schedulerService.schedule("0 28 17 * * ? *");
-//        schedulerService.schedule("f64eee37-62f4-473f-b5b9-d7a76d86c443", "0 45 09 * * ? *");
+//        schedulerService.schedule("f64eee37-62f4-473f-b5b9-d7a76d86c443", "0 0/1 * * * ? *");
 //        schedulerService.pauseTrigger("f64eee37-62f4-473f-b5b9-d7a76d86c443");
 //        schedulerService.resumeTrigger("0fdb7134-9701-494c-9879-bbf2e30120b8");
-//        schedulerService.schedule("0 17 16 * * ? *");
+//        Map<String, String> map = new LinkedHashMap<String, String>();
+//        map.put("function","gogogogo");
+//        map.put("data","swqwnsn");
+//        schedulerService.schedule("0 0/1 * * * ? *", map);
 //        schedulerService.schedule(startTime);
 // schedulerService.pauseTrigger("f4a610a7-5b43-4738-949c-150eec96fb62");
 // schedulerService.schedule(startTime, endTime,5,5);
 // schedulerService.schedule("ZYD", startTime, endTime, 1, 10);
- schedulerService.schedule(startTime);
-// schedulerService.removeTrigdger("f4a610a7-5b43-4738-949c-150eec96fb62");
+// schedulerService.schedule(startTime);
+ schedulerService.removeTrigdger("253ea207-5593-4d5b-98a8-df0cf103140e");
         int repeatCount = 10;
         long repeatInterval = 2;
 // String name="b870cf9b-c313-4fd6-87ad-e99de7580290";

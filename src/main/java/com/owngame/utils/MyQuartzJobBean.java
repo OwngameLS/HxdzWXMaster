@@ -16,12 +16,11 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 public class MyQuartzJobBean extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext jobexecutioncontext) throws JobExecutionException {
-        System.out.println("wori nige nidaodi gaobugao !!!");
         Trigger trigger = jobexecutioncontext.getTrigger();
         String triggerName = trigger.getKey().getName();
         SimpleService simpleService = getApplicationContext(jobexecutioncontext).getBean("simpleService",
                 SimpleService.class);
-        simpleService.testMethod(triggerName);
+        simpleService.testMethod(triggerName, trigger.getJobDataMap());// 因为我设计的就是一个任务一个trigger，所以相应的数据也放在trigger中
     }
 
     private ApplicationContext getApplicationContext(final JobExecutionContext jobexecutioncontext) {

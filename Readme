@@ -19,5 +19,12 @@
     看这个吧http://www.dexcoder.com/selfly/article/308
     http://blog.csdn.net/fish_di/article/details/47356655
 
+    通过上述资料的查找，终于实现了quartz的功能
+        总结：
+        1) 在配置文件中进行配置，参见项目文件 resources/spring/spring-quartz.xml
+            其中设置还依赖于spring框架的其他配置文件，比如数据库数据源的引用，quartz自己的properties文件也定义了一些具体内容。
+        2）quartz简介（以便自己以后回忆）：http://blog.csdn.net/sup_heaven/article/details/37738283这个链接中有比较详细的描述。
+
+
 已经完成了公众号查询功能的框架，现在需要了解其数据库结构才能进一步处理。
 正在构建响应局域网内部请求的业务逻辑。涉及到的诸多细节还是很累的。160828

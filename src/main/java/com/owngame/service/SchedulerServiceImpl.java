@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -22,6 +23,48 @@ public class SchedulerServiceImpl implements SchedulerService {
     private Scheduler scheduler;
     @Autowired
     private JobDetail jobDetail;
+
+
+    /**
+     * 真正在自己添加定时任务时候调用的方法
+     * @param strCronExpression
+     * @param map
+     */
+    public void schedule(String strCronExpression, Map<String, String> map){
+
+        String name = NULLSTRING;
+        String group = NULLSTRING;
+        CronExpression cronExpression = null;
+        try {
+            cronExpression = new CronExpression(strCronExpression);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+//        jobDetail.getJobDataMap().putAll(map);
+
+        if (isValidExpression(cronExpression)) {
+            if (name == null || name.trim().equals("")) {
+                name = UUID.randomUUID().toString();
+            }
+            CronTriggerImpl trigger = new CronTriggerImpl();
+            trigger.setCronExpression(cronExpression);
+            TriggerKey triggerKey = new TriggerKey(name, group);
+            trigger.setJobName(jobDetail.getKey().getName());
+            trigger.setKey(triggerKey);
+            trigger.getJobDataMap().putAll(map);// 数据放进trigger中
+            try{
+                scheduler.addJob(jobDetail, true);
+                if (scheduler.checkExists(triggerKey)) {
+                    scheduler.rescheduleJob(triggerKey, trigger);
+                } else {
+                    scheduler.scheduleJob(trigger);
+                }
+            } catch (SchedulerException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+
+    }
 
     public void schedule(String cronExpression) {
         schedule(NULLSTRING, cronExpression);
