@@ -7,6 +7,10 @@ import java.sql.Date;
  * Created by Administrator on 2016/8/28.
  */
 public class Task {
+    public static final int STATE_WAITING = 0;//刚创建
+    public static final int STATE_HANDLING = 1;//正在处理
+    public static final int STATE_DONE = 2;//处理完成
+
     String id;
     int state;
     String receivers;

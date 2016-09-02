@@ -3,8 +3,8 @@ package com.owngame.service;
 import com.owngame.dao.MYUser;
 import com.owngame.menu.ManageMenu;
 import weixin.popular.bean.message.message.NewsMessage;
-import weixin.popular.bean.message.message.TextMessage;
 import weixin.popular.bean.message.message.NewsMessage.Article;
+import weixin.popular.bean.message.message.TextMessage;
 import weixin.popular.util.JsonUtil;
 
 import java.util.ArrayList;
@@ -32,21 +32,17 @@ public class MessageHandler {
     public static final String MESSAGE_EVENT_CLICK = "CLICK";
     public static final String MESSAGE_EVENT_VIEW = "VIEW";
     public static final String MESSAGE_EVENT_SCANCODE = "scancode_push";
-
-    static final String TEXTMSG_PREFIX_PHONENUMBER = "10";// 文本消息，手机号逻辑
-    static final String TEXTMSG_PREFIX_ADD_PHONENUMBER = "101=";// 文本消息，添加手机号
-    static final String TEXTMSG_PREFIX_CHANGE_PHONENUMBER = "102=";// 文本消息，更新手机号
-
-    static final String BATHURL = "http://owngame.ngrok.cc/WeiMaster/";
-    static final String SEND_PACKAGE_URL = "sendPackage.jsp?openid=OPENID";
-
-
     // static final String EVENTKEY
     // 全局返回值
     public static final int RETURN_CODE_UNKNOWN = -1;// 未知结果
     public static final int RETURN_CODE_DATABASE_FAILED = -2;// 数据库操作错误
     public static final int RETURN_CODE_SUCCESS = 0;// OK
     public static final int RETURN_CODE_INVALID_PHONENUMBER = 1;// 手机号码不合法
+    static final String TEXTMSG_PREFIX_PHONENUMBER = "10";// 文本消息，手机号逻辑
+    static final String TEXTMSG_PREFIX_ADD_PHONENUMBER = "101=";// 文本消息，添加手机号
+    static final String TEXTMSG_PREFIX_CHANGE_PHONENUMBER = "102=";// 文本消息，更新手机号
+    static final String BATHURL = "http://owngame.ngrok.cc/WeiMaster/";
+    static final String SEND_PACKAGE_URL = "sendPackage.jsp?openid=OPENID";
 
     public static String handleMessage(Map<String, String> map) {
         String message = null;

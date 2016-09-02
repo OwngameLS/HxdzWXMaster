@@ -15,8 +15,8 @@ import java.util.Map;
  */
 public class CoreService extends Thread {
 
-    private Map<String, String> map = null;
     String s;
+    private Map<String, String> map = null;
 
     public CoreService(String message) {
         this.s = message;

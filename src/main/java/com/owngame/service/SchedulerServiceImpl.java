@@ -27,10 +27,11 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     /**
      * 真正在自己添加定时任务时候调用的方法
+     *
      * @param strCronExpression
      * @param map
      */
-    public void schedule(String strCronExpression, Map<String, String> map){
+    public void schedule(String strCronExpression, Map<String, String> map) {
 
         String name = NULLSTRING;
         String group = NULLSTRING;
@@ -52,7 +53,7 @@ public class SchedulerServiceImpl implements SchedulerService {
             trigger.setJobName(jobDetail.getKey().getName());
             trigger.setKey(triggerKey);
             trigger.getJobDataMap().putAll(map);// 数据放进trigger中
-            try{
+            try {
                 scheduler.addJob(jobDetail, true);
                 if (scheduler.checkExists(triggerKey)) {
                     scheduler.rescheduleJob(triggerKey, trigger);
@@ -101,7 +102,7 @@ public class SchedulerServiceImpl implements SchedulerService {
             TriggerKey triggerKey = new TriggerKey(name, group);
             trigger.setJobName(jobDetail.getKey().getName());
             trigger.setKey(triggerKey);
-            try{
+            try {
                 scheduler.addJob(jobDetail, true);
                 if (scheduler.checkExists(triggerKey)) {
                     scheduler.rescheduleJob(triggerKey, trigger);

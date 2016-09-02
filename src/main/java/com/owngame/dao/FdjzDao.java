@@ -1,6 +1,7 @@
 package com.owngame.dao;
 
 import com.owngame.entity.Wxzb;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 

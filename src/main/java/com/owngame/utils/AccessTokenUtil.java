@@ -1,10 +1,10 @@
 package com.owngame.utils;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.apache.commons.io.FileUtils;
 import weixin.popular.bean.token.Token;
+
+import java.io.File;
+import java.io.IOException;
 
 // 用来读取和保存AccessToken的工具类
 public class AccessTokenUtil {

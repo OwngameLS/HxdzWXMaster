@@ -1,12 +1,11 @@
 package com.owngame.utils;
 
-import java.io.ByteArrayOutputStream;
+import org.apache.commons.io.IOUtils;
+import org.dom4j.DocumentException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
-
-import org.apache.commons.io.IOUtils;
-import org.dom4j.DocumentException;
 
 /**
  * 信息转换格式、解析的工具类

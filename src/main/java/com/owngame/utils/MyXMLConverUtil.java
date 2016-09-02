@@ -1,23 +1,17 @@
 package com.owngame.utils;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import org.w3c.dom.*;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import weixin.popular.util.XMLConverUtil;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import weixin.popular.util.XMLConverUtil;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 继承自Weixin popular 主要是增加了其对有嵌套XML的消息解析

@@ -1,4 +1,4 @@
-微信公众号项目 160828
+微信公众号项目 160902
 1.使用ngrok笔记
     由于ngrok被墙，采用国内代理实现。
     去http://www.ngrok.cc/login  登录 10039**@qq.com 851**74
@@ -24,7 +24,19 @@
         1) 在配置文件中进行配置，参见项目文件 resources/spring/spring-quartz.xml
             其中设置还依赖于spring框架的其他配置文件，比如数据库数据源的引用，quartz自己的properties文件也定义了一些具体内容。
         2）quartz简介（以便自己以后回忆）：http://blog.csdn.net/sup_heaven/article/details/37738283这个链接中有比较详细的描述。
-
+            scheduler：代表一个Quartz的独立运行容器，Trigger和JobDetail可以注册到Scheduler中，
+                两者在Scheduler中拥有各自的组及名称，组及名称是Scheduler查找定位容器中某一对象的依据，
+                Trigger的组及名称必须唯一，JobDetail的组和名称也必须唯一（但可以和Trigger的组和名称相同，因为它们是不同类型的）。
+                Scheduler定义了多个接口方法，允许外部通过组及名称访问和控制容器中Trigger和JobDetail。
+            JobDetail：它需要实现executeInternal方法，是实际工作的入口。
+            Trigger：是一个类，描述触发Job执行的时间触发规则。主要有SimpleTrigger和CronTrigger这两个子类。
+                当仅需触发一次或者以固定时间间隔周期执行，SimpleTrigger是最适合的选择；
+                而CronTrigger则可以通过Cron表达式定义出各种复杂时间规则的调度方案：如每早晨9:00执行，周一、周三、周五下午5:00执行等；
+        3）项目使用简述：SchedulerServiceImpl类完成了对一个Trigger的创建和管理，其中Trigger包含了实际业务的主要信息，保存在其JobDataMap中。
+            在实际运行过程中，trigger由配置完成后的“系统”按照定时规则触发调用，调用后交由自己的MyQuartzJobBean来实现逻辑（它有调用了SimpleService来执行具体逻辑）。
+            即
+                a. 向SchedulerServiceImpl提交Trigger的操作（创建、暂停、删除、启用等）
+                b. “系统”(JobExecutionContext)--达到触发规则条件-->MyQuartzJobBean（Trigger它保存着处理逻辑所需的意义）--> SimpleService具体处理
 
 已经完成了公众号查询功能的框架，现在需要了解其数据库结构才能进一步处理。
 正在构建响应局域网内部请求的业务逻辑。涉及到的诸多细节还是很累的。160828

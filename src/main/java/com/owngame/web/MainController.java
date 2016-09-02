@@ -1,26 +1,22 @@
 package com.owngame.web;
 
-import com.alibaba.fastjson.util.IOUtils;
 import com.owngame.service.AnswerService;
 import com.owngame.service.CoreService;
 import com.owngame.utils.CheckUtil;
 import com.owngame.utils.InfoFormatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import java.io.IOException;
-import java.io.Writer;
 
 /**
  * 从微信服务器转发过来的请求消息都从这里归总处理
@@ -31,9 +27,6 @@ import java.io.Writer;
 @RequestMapping("Smserver")
 public class MainController {
 
-    @Autowired
-    AnswerService answerService;
-
     static ExecutorService pool;// 待处理的线程池
 
     // 线程池
@@ -41,6 +34,9 @@ public class MainController {
         //创建一个可重用固定线程数的线程池
         pool = Executors.newFixedThreadPool(3);
     }
+
+    @Autowired
+    AnswerService answerService;
 
     /**
      * 处理来自微信服务器的验证

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 为Dao接口方法提供SQL语句配置 -->
+<mapper namespace="com.owngame.dao.TaskDao">
+    <select id="queryById" resultType="Task" parameterType="long">
+        select * from task where id=#{id}
+    </select>
+    <insert id="insert" parameterType="Task">
+        insert ignore into task
+        (id, state,content,receivers,createTime)
+        values
+        (#{id}, #{state},#{content},#{receivers},#{createTime})
+    </insert>
+    <update id="update" parameterType="Task">
+        update task set
+        state=#{state},
+        content=#{content},
+        receivers=#{receivers},
+        createTime=#{createTime},
+        where id=#{id}
+    </update>
+    <delete id="delete" parameterType="int">
+        delete from task where id=#{id}
+    </delete>
+</mapper>
