@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * SimpleService主要执行定时调度业务
@@ -37,13 +37,13 @@ public class SimpleService implements Serializable {
         */
         String func = (String) jobDataMap.get("function");
         String data = (String) jobDataMap.get("data");
-        String infomation = "";
+        String infomation = "abcdefghijk";
         // 查询所要结果
-        if (func.equals(func_fdjz)) {
-            infomation = fdjzDao.querylatest().toString();
-        } else if (func.equals(func_wxzb)) {
-            infomation = wxzbDao.querylatest().toString();
-        }
+//        if (func.equals(func_fdjz)) {
+//            infomation = fdjzDao.querylatest().toString();
+//        } else if (func.equals(func_wxzb)) {
+//            infomation = wxzbDao.querylatest().toString();
+//        }
         // 将结果组织成Task
         Task task = new Task();
         task.setContent(infomation);

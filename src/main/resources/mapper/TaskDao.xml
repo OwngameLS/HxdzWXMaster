@@ -6,6 +6,15 @@
     <select id="queryById" resultType="Task" parameterType="long">
         select * from task where id=#{id}
     </select>
+
+    <select id="queryByState" resultType="Task" parameterType="int">
+        select * from task where state=#{state} order by createTime desc
+    </select>
+
+    <select id="queryAll" resultType="Task">
+        select * from task where state=#{state} order by createTime desc limit #{offset},#{limit}
+    </select>
+
     <insert id="insert" parameterType="Task">
         insert ignore into task
         (id, state,content,receivers,createTime)

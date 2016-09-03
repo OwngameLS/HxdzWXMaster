@@ -1,6 +1,6 @@
 package com.owngame.entity;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * 当服务器生成一个需要使用短信发送的任务，就称之为一个Task

@@ -1,5 +1,7 @@
 package com.owngame.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.owngame.dao.TaskDao;
 import com.owngame.entity.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +35,25 @@ public class AnswerService {
         if (strings[0].equals("netState")) {
             System.out.println("return StateOK");
             // 虽然是询问网络，但是也要去检查下后台有没有任务要返回给手机
-            // 检查是否已经有等待的任务了
-            ArrayList<Task> tasks = queryTask();
-            // 检查是否有定时任务到时间了
-
-            map.put("Type", "StateOK");
+            // 检查是否已经有等待处理的任务了
+            ArrayList<Task> tasks = queryUnhandleTask();
+            if (tasks.size() == 0) {
+                map.put("type", "StateOK");
+            } else {
+                map.put("type", "tasks");
+                ObjectMapper mapper = new ObjectMapper();
+                // Convert object to JSON string
+                String json = "";
+                try {
+                    json = mapper.writeValueAsString(tasks);
+                    System.out.println("json:" + json);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+                map.put("tasks",json);
+            }
         } else {
             System.out.println("return AskResult");
-
         }
         return map;
     }
@@ -49,15 +62,29 @@ public class AnswerService {
      * 查询需要执行的任务
      * 即网页端确立了某个任务，等待手机端将其读取走
      */
-    private ArrayList<Task> queryTask() {
+    private ArrayList<Task> queryUnhandleTask() {
         // 读取数据库 查询是否有新任务
-        ArrayList<Task> tasks = taskDao.queryTasksNew();
-        return tasks;
+        return taskDao.queryByState(0);
+
+//            ResultTypeTask resultTypeTask = new ResultTypeTask();
+//            resultTypeTask.setType("task");
+//            resultTypeTask.setTasks(tasks);
+//            // 整理成Task返回类型的json字符串
+//            ObjectMapper mapper = new ObjectMapper();
+//            // Convert object to JSON string
+//            try {
+//                String json = mapper.writeValueAsString(resultTypeTask);
+//                return json;
+//            } catch (JsonProcessingException e) {
+//                e.printStackTrace();
+//            }
+
     }
 
     /**
      * 查询定时任务
      */
+
     private void queryTimeTask() {
         //1. 先检查定时规则
         //2. 根据定时规则生成新任务 TODO 生成新任务的逻辑待编写（通用）
