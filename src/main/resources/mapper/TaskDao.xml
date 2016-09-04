@@ -26,7 +26,13 @@
         state=#{state},
         content=#{content},
         receivers=#{receivers},
-        createTime=#{createTime},
+        createTime=#{createTime}
+        where id=#{id}
+    </update>
+
+    <update id="updateState">
+        update task set
+        state=#{state}
         where id=#{id}
     </update>
     <delete id="delete" parameterType="int">

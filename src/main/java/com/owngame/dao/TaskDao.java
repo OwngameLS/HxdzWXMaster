@@ -9,6 +9,9 @@ import java.util.ArrayList;
  * Created by Administrator on 2016/8/28.
  */
 public interface TaskDao {
+    Task queryById(long id);
+
+
     /**
      * 查询所有待处理的任务
      * TODO 需要分页
@@ -34,8 +37,10 @@ public interface TaskDao {
      */
     int insert(Task task);
 
-    int delete(int id);
+    int delete(long id);
 
     int update(Task task);
 
+    // TODO 没有实现
+    void updateState(long id, int state);
 }

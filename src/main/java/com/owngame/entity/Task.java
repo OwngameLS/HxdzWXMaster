@@ -11,17 +11,17 @@ public class Task {
     public static final int STATE_HANDLING = 1;//正在处理
     public static final int STATE_DONE = 2;//处理完成
 
-    String id;
+    long id;
     int state;
     String receivers;
     String content;
     Date createTime;
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 

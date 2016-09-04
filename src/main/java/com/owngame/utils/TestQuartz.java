@@ -110,7 +110,7 @@ schedulerService.schedule(startTime, 5, 20);
 // schedulerService.schedule(startTime, endTime,5,5);
 // schedulerService.schedule("ZYD", startTime, endTime, 1, 10);
 // schedulerService.schedule(startTime);
-        schedulerService.removeTrigdger("8e9b981a-e2be-430b-945e-c86005118b4e");
+        schedulerService.removeTrigdger("8b037a34-2c8f-40a9-a3cb-fb34b1dda222");
         int repeatCount = 10;
         long repeatInterval = 2;
 // String name="b870cf9b-c313-4fd6-87ad-e99de7580290";

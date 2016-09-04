@@ -85,9 +85,10 @@ public class MainController {
     }
 
     /**
+     * 从手机端发送来询问服务器状态、是否有待处理任务，已经客户端发来的询问信息（想要获取某种信息）
+     *
      * 返回json数据格式的方法
      * 因为开启了相应的配置，所以只要用上特定的@ResponseBody，它就能把返回的对象做成Json对象返回了。
-     *
      * @return
      */
     @RequestMapping(value = "/askServer/{actionName}", method = RequestMethod.GET)
@@ -99,18 +100,16 @@ public class MainController {
     //
 
     /**
+     * 处理客户端提交任务处理信息，更新服务器端的数据
+     *
      * 返回json数据格式的方法
      * 因为开启了相应的配置，所以只要用上特定的@ResponseBody，它就能把返回的对象做成Json对象返回了。
-     *
      * @return
      */
-    @RequestMapping(value = "commitTask/{id}/{state}", method = RequestMethod.GET)
+    @RequestMapping(value = "/commitTask/{id}/{state}", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> handleCommit(@PathVariable("id") String id, @PathVariable("state") String state) {
-        // TODO
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        return map;
+    public Map<String, Object> handleCommit(@PathVariable("id") long id, @PathVariable("state") int state) {
+        return answerService.handleCommit(id, state);
     }
 
 
