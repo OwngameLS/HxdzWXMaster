@@ -214,7 +214,7 @@ public class MessageHandler {
      * @param str
      * @return
      */
-    private static boolean isMobile(String str) {
+    public static boolean isMobile(String str) {
         Pattern p = null;
         Matcher m = null;
         boolean b = false;

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 为Dao接口方法提供SQL语句配置 -->
+<mapper namespace="com.owngame.dao.ContactDao">
+    <select id="queryByName" resultType="Contact" parameterType="String">
+        select * from contact where name=#{name}
+    </select>
+
+    <select id="queryByGroup" resultType="Contact" parameterType="String">
+        select * from contact where groupname=#{groupname}
+    </select>
+
+    <select id="getGroups" resultType="String">
+        select groupname from contact group by groupname
+    </select>
+
+    <insert id="insert" parameterType="Contact">
+        insert ignore into contact
+        (id, groupname,name, title,phone,description)
+        values
+        (#{id}, #{groupname},#{name},#{title},#{phone},#{description})
+    </insert>
+
+    <update id="update" parameterType="Contact">
+        update contact set
+        groupname=#{groupname},
+        name=#{name},
+        title=#{title},
+        phone=#{phone},
+        description=#{description}
+        where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        delete from contact where id=#{id}
+    </delete>
+</mapper>
