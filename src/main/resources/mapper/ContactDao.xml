@@ -16,7 +16,7 @@
     </select>
 
     <insert id="insert" parameterType="Contact">
-        insert ignore into contact
+        insert into contact
         (id, groupname,name, title,phone,description)
         values
         (#{id}, #{groupname},#{name},#{title},#{phone},#{description})
