@@ -23,6 +23,7 @@ public class AnswerService {
 
     /**
      * 处理主动询问
+     *
      * @param actionName
      * @return
      */
@@ -48,7 +49,7 @@ public class AnswerService {
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
-                map.put("tasks",json);
+                map.put("tasks", json);
             }
         } else {
             // 有可能是主动查询的 比如 keyword1##13581695827##mobile
@@ -62,6 +63,7 @@ public class AnswerService {
 
     /**
      * 处理提交信息
+     *
      * @param id
      * @param state
      * @return
@@ -75,7 +77,7 @@ public class AnswerService {
         taskDao.update(task);
 //        taskDao.updateState(id, state);
 
-        map.put("type","GOON");
+        map.put("type", "GOON");
         return map;
 
     }

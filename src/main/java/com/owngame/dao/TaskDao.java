@@ -15,6 +15,7 @@ public interface TaskDao {
     /**
      * 查询所有待处理的任务
      * TODO 需要分页
+     *
      * @return
      */
     ArrayList<Task> queryByState(int state);
@@ -23,6 +24,7 @@ public interface TaskDao {
      * 查询所有任务
      * TODO 需要分页
      * 根据偏移量查询秒杀商品列表
+     *
      * @param offet
      * @param limit
      * @return

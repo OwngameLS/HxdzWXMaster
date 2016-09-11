@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -134,8 +136,8 @@ public class MainController {
     @ResponseBody
     public Object doUpload(@RequestParam("file") MultipartFile file) {
         System.out.println("file:" + file.getSize());
-        if(file.getSize() <= 20 ){
-            return "<script>window.parent.uploadFailed('"+ExcelUtil.myEncode("请确认你是否上传了正确的文件。^_^")+"');</script>";
+        if (file.getSize() <= 20) {
+            return "<script>window.parent.uploadFailed('" + ExcelUtil.myEncode("请确认你是否上传了正确的文件。^_^") + "');</script>";
         }
 
         Object o = null;
@@ -152,9 +154,9 @@ public class MainController {
         } else {
             // 去存储Contacts
             String result = pcontactService.doPContacts(o);
-            if(result.equals("OK")) {
+            if (result.equals("OK")) {
                 return "<script>window.parent.uploadSuccess();</script>";
-            }else{
+            } else {
                 return "<script>window.parent.uploadFailed('" + "再插入数据时出错。" + "');</script>";
             }
         }
@@ -173,8 +175,24 @@ public class MainController {
     }
 
     @RequestMapping(value = "/view/{view}", method = RequestMethod.GET)
-    public String views(@PathVariable("view") String view){
+    public String views(@PathVariable("view") String view, Model model) {
+        if (view.equals("contact")) {
+            // 获取Contact信息
+            // 获取分组信息
+            ArrayList<String> groups = pcontactService.getGroups();
+            model.addAttribute("groups", groups);
+            model.addAttribute("contacts", pcontactService.getContactByGroup(groups.get(0)));
+        }
         return view;
+    }
+
+    @RequestMapping(value = "/contacts/{groupname}",method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> getContactByGroup(@PathVariable("groupname") String groupname) {
+        System.out.println("getContactByGroup.......");
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("contacts",pcontactService.getContactByGroup(groupname));
+        return map;
     }
 
 }

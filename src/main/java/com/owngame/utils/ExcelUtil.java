@@ -111,7 +111,7 @@ public class ExcelUtil {
     }
 
 
-    public static String myEncode(String ss){
+    public static String myEncode(String ss) {
         String a = "";
         try {
             a = URLEncoder.encode(ss, "utf-8");

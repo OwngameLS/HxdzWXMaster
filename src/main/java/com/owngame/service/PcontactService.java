@@ -16,16 +16,52 @@ public class PcontactService {
     @Autowired
     ContactDao contactDao;
 
-    public String doPContacts(Object o){
+    /**
+     * 处理批量导入联系人
+     *
+     * @param o
+     * @return
+     */
+    public String doPContacts(Object o) {
         // 从上传文件导入得到的通讯录信息
         ArrayList<Contact> contactsNew = (ArrayList<Contact>) o;
         // 将原数据库中的通讯录信息删除
         contactDao.deleteAll();
         // 插入新数据
-        for(Contact contact:contactsNew){
+        for (Contact contact : contactsNew) {
             contactDao.insert(contact);
         }
         return "OK";
     }
 
+    /**
+     * 查询得到所有联系人信息
+     *
+     * @return
+     */
+    public ArrayList<Contact> getContacts() {
+        ArrayList<Contact> contacts = contactDao.queryAll();
+        return contacts;
+    }
+
+    /**
+     * 获得分组信息
+     *
+     * @return
+     */
+    public ArrayList<String> getGroups() {
+        ArrayList<String> groups = contactDao.getGroups();
+        return groups;
+    }
+
+    /**
+     * 通过分组名获得改组人员信息
+     *
+     * @param groupnames
+     * @return
+     */
+    public ArrayList<Contact> getContactByGroup(String groupnames) {
+        ArrayList<Contact> contacts = contactDao.queryByGroup(groupnames);
+        return contacts;
+    }
 }
