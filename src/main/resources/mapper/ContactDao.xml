@@ -15,6 +15,10 @@
         select groupname from contact group by groupname
     </select>
 
+    <select id="queryAll" resultType="Contact">
+        select * from contact
+    </select>
+
     <insert id="insert" parameterType="Contact">
         insert into contact
         (id, groupname,name, title,phone,description)
@@ -34,5 +38,8 @@
 
     <delete id="delete" parameterType="int">
         delete from contact where id=#{id}
+    </delete>
+    <delete id="deleteAll">
+        delete from contact
     </delete>
 </mapper>

@@ -1,123 +1,86 @@
 <%@page language="java" contentType="text/html; charset=utf-8"
         pageEncoding="utf-8" %>
+<%
+    String path = request.getContextPath();
+    String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bootstrap 模板</title>
+    <title>Smserver</title>
     <!-- 引入 Bootstrap -->
     <link href="resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body style="padding-left: 20px">
-<div class="page-header">
-    <h1>Smserver
-        <small>如此简单</small>
-    </h1>
-    <ul class="nav nav-pills">
-        <li class="active"><a href="#">首 页</a></li>
-        <li><a href="#">定时任务</a></li>
-        <li><a href="#">通讯录</a></li>
-        <li><a href="#">关 于</a></li>
-    </ul>
-</div>
+<body>
+<div class="container">
 
-<div class="jumbotron">
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Student-ID</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Grade</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>001</td>
-            <td>Rammohan</td>
-            <td>Reddy</td>
-            <td>A+</td>
-        </tr>
-        <tr>
-            <td>002</td>
-            <td>Smita</td>
-            <td>Pallod</td>
-            <td>A</td>
-        </tr>
-        <tr>
-            <td>003</td>
-            <td>Rabindranath</td>
-            <td>Sen</td>
-            <td>A+</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
 
-<div>
-    文件上传
-    <form role="form" action="Smserver/doUpload" method="post" enctype="multipart/form-data" target="hidden_frame">
-        <div class="form-group">
-            <label for="inputfile">选择文件</label>
-            <input type="file" id="inputfile" name="file" accept=".xls">
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand">Smserver</a>
         </div>
-        <button id="submit" type="submit" class="btn btn-default">提交</button>
-    </form>
 
-    <p style="color: #c9302c">
-        如果你不知道上传什么文件，请下载模板文件进行修改后再上传。
-        <a href="Smserver/download">点击下载《通讯录模板文件》</a>
-    </p>
-    <br>
-    <div id="uploadResult"></div>
-    <iframe name='hidden_frame' id="hidden_frame" style='display:none'></iframe>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav nav-pills">
+                <li><a href="#">首 页</a></li>
+                <li><a href="#">定时任务</a></li>
+                <li><a href="<%=basePath%>Smserver/view/contact" target="display">通讯录</a></li><%--target指的是name--%>
+                <li><a href="#">关 于</a></li>
+            </ul>
+            <form class="navbar-form navbar-left" role="search">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Link</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+
+<!-- 16:9 aspect ratio -->
+<div class="embed-responsive embed-responsive-16by9">
+    <iframe class="embed-responsive-item" name="display"></iframe>
 </div>
-<%--参考：http://www.codingyun.com/article/50.html--%>
+    <footer class="bs-docs-footer center-block" role="contentinfo">
+        <div class="text-center">
+            <p>------技术支持------</p>
+            <p>手 机：18107436127 QQ：1003919353</p>
+            <p>Copyright © All Rights Reserved By 龙生(Owngame).</p>
+            <p>(为了获得更好的浏览效果，建议您使用Chrome浏览器登录本系统)</p>
+        </div>
+    </footer>
+</div>
+
+
+
 <!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
 <script src="resources/bootstrap-3.3.7-dist/js/jquery-3.1.0.min.js"></script>
 <!-- 包括所有已编译的插件 -->
 <script src="resources/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
-<script type="application/javascript">
-    function uploadSuccess() {
-        $("#uploadResult").attr("style", "");
-        $("#uploadResult").text("上传的通讯录已经处理完成。");
-    }
-    function uploadFailed(msg) {
-        var a = UrlDecode(msg);
-        $("#uploadResult").attr("style", "background:#F55");
-        $("#uploadResult").html(a);
-    }
 
-    function UrlDecode(zipStr) {
-        var uzipStr = "";
-        for (var i = 0; i < zipStr.length; i++) {
-            var chr = zipStr.charAt(i);
-            if (chr == "+") {
-                uzipStr += " ";
-            } else if (chr == "%") {
-                var asc = zipStr.substring(i + 1, i + 3);
-                if (parseInt("0x" + asc) > 0x7f) {
-                    uzipStr += decodeURI("%" + asc.toString() + zipStr.substring(i + 3, i + 9).toString());
-                    i += 8;
-                } else {
-                    uzipStr += AsciiToString(parseInt("0x" + asc));
-                    i += 2;
-                }
-            } else {
-                uzipStr += chr;
-            }
-        }
-        return uzipStr;
-    }
-
-    function StringToAscii(str) {
-        return str.charCodeAt(0).toString(16);
-    }
-    function AsciiToString(asccode) {
-        return String.fromCharCode(asccode);
-    }
-
-
-</script>
 </body>
 </html>

@@ -71,12 +71,12 @@ public class ExcelUtil {
                 if (row.getCell(2) == null) {
                     contact.setTitle("");
                 } else {
-                    contact.setTitle(row.getCell(2).toString());
+                    contact.setTitle(row.getCell(2).toString().trim());
                 }
 
                 // 判断手机号码的正确性
                 if (row.getCell(3) != null) {
-                    tempS = df.format(row.getCell(3).getNumericCellValue());
+                    tempS = df.format(row.getCell(3).getNumericCellValue()).trim();
                     if (MessageHandler.isMobile(tempS)) {
                         contact.setPhone(tempS);
                     } else {
@@ -91,7 +91,7 @@ public class ExcelUtil {
                 if (row.getCell(4) == null) {
                     contact.setDescription("");
                 } else {
-                    contact.setDescription(row.getCell(4).toString());
+                    contact.setDescription(row.getCell(4).toString().trim());
                 }
                 if (isSomethingWrong) {// 上面的检查发现了问题，返回给前台
                     somethingWrong = true;

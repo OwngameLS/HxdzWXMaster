@@ -13,6 +13,8 @@ public interface ContactDao {
 
     ArrayList<Contact> queryByGroup(String groupname);
 
+    ArrayList<Contact> queryAll();
+
     ArrayList<String> getGroups();
 
     int insert(Contact contact);
@@ -20,4 +22,6 @@ public interface ContactDao {
     int update(Contact contact);
 
     int delete(long id);
+
+    int deleteAll();
 }

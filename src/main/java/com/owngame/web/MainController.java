@@ -4,6 +4,7 @@ import com.owngame.dao.ContactDao;
 import com.owngame.entity.Contact;
 import com.owngame.service.AnswerService;
 import com.owngame.service.CoreService;
+import com.owngame.service.PcontactService;
 import com.owngame.utils.CheckUtil;
 import com.owngame.utils.ExcelUtil;
 import com.owngame.utils.InfoFormatUtil;
@@ -36,6 +37,9 @@ import java.util.concurrent.Executors;
 @Controller
 @RequestMapping("Smserver")
 public class MainController {
+
+    @Autowired
+    PcontactService pcontactService;
 
     static ExecutorService pool;// 待处理的线程池
 
@@ -147,14 +151,13 @@ public class MainController {
             return "<script>window.parent.uploadFailed('" + ss + "');</script>";
         } else {
             // 去存储Contacts
-            contacts = (ArrayList<Contact>) o;
-            for (Contact contact : contacts) {
-                contactDao.insert(contact);
-                System.out.println(contact.toString());
+            String result = pcontactService.doPContacts(o);
+            if(result.equals("OK")) {
+                return "<script>window.parent.uploadSuccess();</script>";
+            }else{
+                return "<script>window.parent.uploadFailed('" + "再插入数据时出错。" + "');</script>";
             }
-            return "<script>window.parent.uploadSuccess();</script>";
         }
-
     }
 
 
@@ -169,5 +172,9 @@ public class MainController {
         return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
     }
 
+    @RequestMapping(value = "/view/{view}", method = RequestMethod.GET)
+    public String views(@PathVariable("view") String view){
+        return view;
+    }
 
 }
