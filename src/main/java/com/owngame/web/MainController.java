@@ -175,16 +175,21 @@ public class MainController {
     }
 
     @RequestMapping(value = "/view/{view}", method = RequestMethod.GET)
-    public String views(@PathVariable("view") String view, Model model) {
-        if (view.equals("contact")) {
-            // 获取Contact信息
-            // 获取分组信息
-            ArrayList<String> groups = pcontactService.getGroups();
-            model.addAttribute("groups", groups);
-            model.addAttribute("contacts", pcontactService.getContactByGroup(groups.get(0)));
-        }
-        return view;
+    public String views(@PathVariable("view") String view) {
+       return view;
     }
+
+//    @RequestMapping(value = "/view/{view}", method = RequestMethod.GET)
+//    public String views(@PathVariable("view") String view, Model model) {
+//        if (view.equals("contact")) {
+//            // 获取Contact信息
+//            // 获取分组信息
+//            ArrayList<String> groups = pcontactService.getGroups();
+//            model.addAttribute("groups", groups);
+//            model.addAttribute("contacts", pcontactService.getContactByGroup(groups.get(0)));
+//        }
+//        return view;
+//    }
 
     @RequestMapping(value = "/contacts/{groupname}",method = RequestMethod.GET)
     @ResponseBody
@@ -194,5 +199,18 @@ public class MainController {
         map.put("contacts",pcontactService.getContactByGroup(groupname));
         return map;
     }
+
+    @RequestMapping(value = "/contacts/groups",method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> getGroups(){
+        System.out.println("getGroups.......");
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("groups",pcontactService.getGroups());
+        return map;
+    }
+
+//    public Object updateContacts(){
+//
+//    }
 
 }
