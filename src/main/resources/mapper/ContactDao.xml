@@ -3,6 +3,10 @@
 
 <!-- 为Dao接口方法提供SQL语句配置 -->
 <mapper namespace="com.owngame.dao.ContactDao">
+    <select id="queryById" resultType="Contact" parameterType="long">
+        select * from contact where id=#{id}
+    </select>
+
     <select id="queryByName" resultType="Contact" parameterType="String">
         select * from contact where name=#{name}
     </select>
@@ -36,9 +40,20 @@
         where id=#{id}
     </update>
 
-    <delete id="delete" parameterType="int">
+    <update id="updateGroup" parameterType="com.owngame.entity.GroupName">
+        update contact set
+        groupname=#{newName}
+        where groupname=#{originalName}
+    </update>
+
+    <delete id="delete" parameterType="long">
         delete from contact where id=#{id}
     </delete>
+
+    <delete id="deleteGroup" parameterType="String">
+        delete from contact where groupname=#{groupname}
+    </delete>
+
     <delete id="deleteAll">
         delete from contact
     </delete>

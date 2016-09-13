@@ -39,6 +39,12 @@
     <div id="uploadResult"></div>
     <iframe name='hidden_frame' id="hidden_frame" style='display:none'></iframe>
 </div>
+
+<div id="editDoneDiv" class="bg-success" style="padding: 20px;display: none;width: 30%;margin:0 auto;"><%--文件上传部分--%>
+    操作完成！
+</div>
+
+
 <div id="editContactDiv" class="bg-warning" style="padding: 20px;display: none"><%--单个联系人信息修改部分--%>
     <table class="text-center">
         <thead>
@@ -71,6 +77,30 @@
         </tbody>
     </table>
 </div>
+<div id="editGroupDiv" class="bg-warning" style="padding: 20px;display: none"><%--单个组信息修改部分--%>
+    <table class="text-center">
+        <thead>
+        <tr class="warning">
+            <th class="text-center">原名称</th>
+            <th class="text-center">新名称</th>
+            <th class="text-center">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td id="editGroupOriginalName"></td>
+            <td><input class="form-control" id="editGroupName" placeholder="新组的名称"></td>
+            <td>
+                <button type="button" class="btn btn-primary btn-sm" onclick="doEditGroup()">修改</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="deleteGroup()">删除</button>
+                <button type="button" class="btn btn-warning btn-sm" onclick="cancleEditGroup()">取消</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
 <div class="danger" style="padding: 20px;"><%--通讯录操作部分--%>
     <dl>
         <dt>编辑通讯录信息</dt>
@@ -123,9 +153,14 @@
 <script type="application/javascript">
     var bp = '<%=basePath%>';
     var updateContactId;
+    var originalGroupName;//被编辑的原来的组名
 
     // 文档被加载完成时
     $(document).ready(function () {
+        initContactsUIs(null);
+    });
+    // 初始化联系人控件
+    function initContactsUIs(displayGroup) {
         $.ajax({
             url: bp + 'Smserver/contacts/groups',
             type: 'GET',
@@ -134,10 +169,15 @@
                 // 初始化groups相关的控件
                 initSelect(groups);// 选择控件
                 initGroupsBody(groups);// 分组链接
-                getContactsByGroups(groups[0]);
+                if (displayGroup == null) {
+                    getContactsByGroups(groups[0]);
+                } else {
+                    getContactsByGroups(displayGroup);
+                }
             }
         });
-    });
+    }
+
 
     // 向服务器请求联系人信息 通过分组名称
     function getContactsByGroups(groupname) {
@@ -165,7 +205,8 @@
     function initGroupsBody(groups) {
         var html = '';
         for (var i = 0; i < groups.length; i++) {
-            html = html + '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="getContactsByGroups(\'' + groups[i] + '\')">' + groups[i] + '</button></td></tr>';
+            html = html + '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="getContactsByGroups(\'' + groups[i] + '\')">' + groups[i] + '</button>' +
+                    '<button type="button" class="btn btn-primary btn-sm" onclick="initEditGroup(\'' + groups[i] + '\')">编辑</button></td></tr>';
         }
         $("#groupsBody").html(html);
     }
@@ -245,13 +286,66 @@
         }
     }
 
+    // 准备好编辑分组信息的控件
+    function initEditGroup(groupname) {
+        // 标记编辑的组名
+        originalGroupName = groupname;
+        // 显示编辑部分
+        $("#editGroupDiv").show(1000);
+        // 初始化数据
+        $("#editGroupOriginalName").text(groupname);
+        $("#editGroupName").val(groupname);
+    }
+
+    // 确认编辑组名
+    function doEditGroup() {
+        var groupname = $("#editGroupName").val();
+        // 判断新名称不为空
+        // 将上述数据整理成json对象
+        var jsonStr = "{\"originalGroupName\":\"" + originalGroupName
+                + "\",\"groupname\":\"" + groupname + "\"}";
+        commitEditGroup('update', jsonStr, groupname);
+    }
+
+    // 确认删除该组
+    function deleteGroup() {
+        if (confirm("确认删除？该组下的所有信息将会被删除！")) {
+            var jsonStr = "{\"originalGroupName\":\"" + originalGroupName + "\"}";
+            commitEditGroup('delete', jsonStr, null);
+        } else {
+            return;
+        }
+    }
+
+    // 提交操作，然后更新页面组组件
+    function commitEditGroup(action, jsonStr, groupname) {
+        $.ajax({
+            type: 'POST',
+            url: bp + 'Smserver/group/' + action,
+            data: jsonStr,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                showEditDone();
+                $("#editGroupDiv").hide(1000);
+                initContactsUIs(groupname);
+            }
+        });
+    }
+
+    // 取消编辑组
+    function cancleEditGroup() {
+        $("#editGroupDiv").hide(1000);
+    }
+
+    // 准备好编辑联系人的控件
     function initEditContact(id, groupname, name, title, phone, description) {
+        // 标记编辑的id
         updateContactId = id;
         // 显示编辑部分
         $("#editContactDiv").show(1000);
         // 初始化数据
         // 分组是select editContactGroup
-//        $("#editContactGroup option[value='" + groupname + "']").attr("selected", true);
         $("#editContactGroup").val(groupname);
         $("#editContactName").val(name);
         $("#editContactTitle").val(title);
@@ -259,12 +353,13 @@
         $("#editContactDescription").val(description);
     }
 
+    // 取消编辑联系人
     function cancleEditContact() {
         $("#editContactDiv").hide(1000);
     }
 
     // 确实需要更新编辑联系人信息
-    function doEditContact(){
+    function doEditContact() {
         var id = updateContactId;
         var groupname = $("#editContactGroup").val();
         var name = $("#editContactName").val();
@@ -273,25 +368,50 @@
         var description = $("#editContactDescription").val();
         // 判断不为空
         // 判断手机号格式
-        $.ajax({
-            type: 'POST',
-            url: bp + 'Smserver/contacts/update',
-            data : {id:id,groupname:groupname,name:name,title:title,phone:phone,description:description},
-            dataType : "json",
-            success: function (data) {
-                var contacts = data['contacts'];
-                initTbodyOfContacts(contacts);
 
-            }
-        });
-
+        // 将上述数据整理成json对象
+        var jsonStr = "{\"id\":" + id
+                + ",\"groupname\":\"" + groupname
+                + "\",\"name\":\"" + name
+                + "\",\"title\":\"" + title
+                + "\",\"phone\":\"" + phone
+                + "\",\"description\":\"" + description + "\"}";
+        commitEditContact('update', jsonStr);
     }
 
     // 删除联系人
     function deleteContact() {
         var id = updateContactId;
+        // 弹出确认对话框
+        if (confirm("确认删除？")) {
+            var jsonStr = "{\"id\":" + id + "}";
+            commitEditContact('delete', jsonStr);
+        } else {
+            return;
+        }
     }
 
+    // 提交操作，然后更新页面联系人组件
+    function commitEditContact(action, jsonStr) {
+        $.ajax({
+            type: 'POST',
+            url: bp + 'Smserver/contacts/' + action,
+            data: jsonStr,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                showEditDone();
+                $("#editContactDiv").hide(1000);
+                var contacts = data['contacts'];
+                initTbodyOfContacts(contacts);
+            }
+        });
+    }
+
+    function showEditDone() {
+        $("#editDoneDiv").show(2200);
+        $("#editDoneDiv").hide(1000);
+    }
 
 </script>
 </body>

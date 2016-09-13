@@ -1,9 +1,13 @@
 package com.owngame.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.web.bind.annotation.RequestBody;
+
 /**
  * 联系人实体
  * Created by Administrator on 2016-9-7.
  */
+
 public class Contact {
     long id;
     String groupname;
@@ -11,6 +15,8 @@ public class Contact {
     String title;
     String phone;
     String description;
+
+    public Contact(){}
 
     public long getId() {
         return id;

@@ -2,6 +2,7 @@ package com.owngame.web;
 
 import com.owngame.dao.ContactDao;
 import com.owngame.entity.Contact;
+import com.owngame.entity.GroupName;
 import com.owngame.service.AnswerService;
 import com.owngame.service.CoreService;
 import com.owngame.service.PcontactService;
@@ -9,6 +10,7 @@ import com.owngame.utils.CheckUtil;
 import com.owngame.utils.ExcelUtil;
 import com.owngame.utils.InfoFormatUtil;
 import org.apache.commons.io.FileUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -209,8 +211,50 @@ public class MainController {
         return map;
     }
 
-//    public Object updateContacts(){
-//
-//    }
+    @RequestMapping(value = "/contacts/update", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> updateContact(@RequestBody Contact contact){
+        if(contact.getId()>0){//是更新
+            contactDao.update(contact);
+        }else{
+            contactDao.insert(contact);
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 返回更新后的该组信息
+        map.put("contacts",pcontactService.getContactByGroup(contact.getGroupname()));
+        return map;
+    }
+
+    @RequestMapping(value = "/contacts/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> deleteContact(@RequestBody Map<String, Long> p){
+        // 先查询这个id属于那个组
+        String groupname = contactDao.queryById(p.get("id")).getGroupname();
+        // 删除操作
+        contactDao.delete(p.get("id"));
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 返回更新后的该组信息
+        map.put("contacts",pcontactService.getContactByGroup(groupname));
+        return map;
+    }
+
+    @RequestMapping(value = "/group/{action}", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> handleGroup(@RequestBody Map<String, String> p, @PathVariable("action") String action){
+        // 先判断操作
+        if(action.equals("update")){
+            String ori = p.get("originalGroupName");
+            String newName = p.get("groupname");
+            contactDao.updateGroup(new GroupName(ori, newName));
+        }else if(action.equals("delete")){
+            System.out.println("deleting...." + p.get("originalGroupName"));
+            contactDao.deleteGroup(p.get("originalGroupName"));
+        }else if(action.equals("insert")){
+
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("success", "success");
+        return map;
+    }
 
 }
