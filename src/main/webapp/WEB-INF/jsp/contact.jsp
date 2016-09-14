@@ -16,7 +16,7 @@
 <body>
 <h3>通讯录操作</h3>
 <button type="button" class="btn btn-primary btn-sm" onclick="showOrHideUpload()">上传通讯录</button>
-<div id="uploadDiv" class="bg-success" style="padding: 20px;display: none"><%--文件上传部分--%>
+<div id="uploadDiv" class="bg-success" style="padding: 5px;display: none"><%--文件上传部分--%>
     <dl>
         <dd>
             <p class="text-warning">
@@ -40,68 +40,7 @@
     <iframe name='hidden_frame' id="hidden_frame" style='display:none'></iframe>
 </div>
 
-<div id="editDoneDiv" class="bg-success" style="padding: 20px;display: none;width: 30%;margin:0 auto;"><%--文件上传部分--%>
-    操作完成！
-</div>
-
-
-<div id="editContactDiv" class="bg-warning" style="padding: 20px;display: none"><%--单个联系人信息修改部分--%>
-    <table class="text-center">
-        <thead>
-        <tr class="warning">
-            <th class="text-center">所在分组</th>
-            <th class="text-center">姓名</th>
-            <th class="text-center">职务</th>
-            <th class="text-center">手机号</th>
-            <th class="text-center">备注</th>
-            <th class="text-center">操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>
-                <select id="editContactGroup">
-
-                </select>
-            </td>
-            <td><input class="form-control" id="editContactName" placeholder="姓名"></td>
-            <td><input class="form-control" id="editContactTitle" placeholder="职务"></td>
-            <td><input class="form-control" id="editContactPhone" placeholder="手机号"></td>
-            <td><input class="form-control" id="editContactDescription" placeholder="备注"></td>
-            <td>
-                <button type="button" class="btn btn-primary btn-sm" onclick="doEditContact()">修改</button>
-                <button type="button" class="btn btn-danger btn-sm" onclick="deleteContact()">删除</button>
-                <button type="button" class="btn btn-warning btn-sm" onclick="cancleEditContact()">取消</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<div id="editGroupDiv" class="bg-warning" style="padding: 20px;display: none"><%--单个组信息修改部分--%>
-    <table class="text-center">
-        <thead>
-        <tr class="warning">
-            <th class="text-center">原名称</th>
-            <th class="text-center">新名称</th>
-            <th class="text-center">操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td id="editGroupOriginalName"></td>
-            <td><input class="form-control" id="editGroupName" placeholder="新组的名称"></td>
-            <td>
-                <button type="button" class="btn btn-primary btn-sm" onclick="doEditGroup()">修改</button>
-                <button type="button" class="btn btn-danger btn-sm" onclick="deleteGroup()">删除</button>
-                <button type="button" class="btn btn-warning btn-sm" onclick="cancleEditGroup()">取消</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-
-<div class="danger" style="padding: 20px;"><%--通讯录操作部分--%>
+<div class="danger" style="padding: 5px;"><%--通讯录操作部分--%>
     <dl>
         <dt>编辑通讯录信息</dt>
         <dd>
@@ -110,6 +49,110 @@
             </p>
         </dd>
     </dl>
+    <div id="editDoneDiv" class="bg-success"
+         style="display: none;width: 30%;margin:0 auto;text-align:center"><%--操作完成--%>
+        操作完成！
+    </div>
+
+    <div id="editFailDiv" class="bg-danger"
+         style="padding:5px;display: none;width: 30%;margin:0 auto;text-align:center"><%--操作失败--%>
+        <h5>操作失败！</h5>
+        <p class="text-danger" id="failCause"></p>
+    </div>
+
+
+    <div id="editContactDiv" class="bg-warning" style="padding: 5px;display: none;text-align:center"><%--单个联系人信息修改部分--%>
+        <table class="text-center">
+            <thead>
+            <tr class="warning">
+                <th class="text-center">所在分组</th>
+                <th class="text-center">姓名</th>
+                <th class="text-center">职务</th>
+                <th class="text-center">手机号</th>
+                <th class="text-center">备注</th>
+                <th class="text-center">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <select id="editContactGroup"></select>
+                </td>
+                <td><input class="form-control" id="editContactName" placeholder="姓名"></td>
+                <td><input class="form-control" id="editContactTitle" placeholder="职务"></td>
+                <td><input class="form-control" id="editContactPhone" placeholder="手机号"></td>
+                <td><input class="form-control" id="editContactDescription" placeholder="备注"></td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="doEditContact()">修改</button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteContact()">删除</button>
+                    <button type="button" class="btn btn-warning btn-sm" onclick="cancleEditContact()">取消</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="editGroupDiv" class="bg-warning" style="padding: 5px;display: none;text-align:center"><%--单个组信息修改部分--%>
+        <table class="text-center">
+            <thead>
+            <tr class="warning">
+                <th class="text-center">原名称</th>
+                <th class="text-center">新名称</th>
+                <th class="text-center">操作</th>
+                <th class="text-center">说明</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td id="editGroupOriginalName"></td>
+                <td><input class="form-control" id="editGroupName" placeholder="新组的名称"></td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="doEditGroup()">修改</button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteGroup()">删除</button>
+                    <button type="button" class="btn btn-warning btn-sm" onclick="cancleEditGroup()">取消</button>
+                </td>
+                <td><h6>操作后该组的所有数据都会被更新</h6></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="createGroupDiv" class="bg-warning" style="padding: 5px;display: none;text-align:center"><%--创建新分组部分--%>
+        <table class="text-center table-condensed">
+            <thead>
+            <tr class="warning">
+                <th class="text-center">分组名称</th>
+                <th class="text-center">分组人员</th>
+                <th class="text-center">选项</th>
+                <th class="text-center">操作</th>
+                <th class="text-center">说明</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td width="10%"><input class="form-control" id="newGroupName" placeholder="新组的名称"></td>
+                <td width="30%">
+                    <textarea class="form-control" id="GroupContactsIds" placeholder="这里将展示出添加至该组的人员名单"></textarea>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="emptyContactIds()">清空</button>
+                </td>
+                <td width="10%">
+                    <input type="radio" name="addContactsType" id="addContactsType1" value="copy" checked>复制<br>
+                    <input type="radio" name="addContactsType" id="addContactsType2" value="move">迁移
+                </td>
+                <td width="10%">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="createGroup()">确定</button>
+                    <button type="button" class="btn btn-warning btn-sm" onclick="cancleCreateGroup()">取消</button>
+                </td>
+                <td width="30%">分组名如果为已有分组名，则会将选中的联系人分组进行操作；如果为新分组，则根据“选项”来确定如何操作联系人</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="groups" style="width: 20%;float:left;">
+        <button type="button" class="btn btn-warning btn-sm" onclick="initCreateGroup(null)">新建分组</button>
+    </div>
+    <div id="persons" style="width:80%;float:left;">
+        <button type="button" class="btn btn-warning btn-sm" onclick="initCreateGroup('abc')">集体编辑</button>
+    </div>
     <div id="groups" style="width: 20%;float:left;">
         <table class="table table-striped text-center table-bordered">
             <thead>
@@ -120,7 +163,6 @@
             </tr>
             </thead>
             <tbody id="groupsBody">
-
             </tbody>
         </table>
     </div>
@@ -205,7 +247,7 @@
     function initGroupsBody(groups) {
         var html = '';
         for (var i = 0; i < groups.length; i++) {
-            html = html + '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="getContactsByGroups(\'' + groups[i] + '\')">' + groups[i] + '</button>' +
+            html = html + '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="getContactsByGroups(\'' + groups[i] + '\')">' + groups[i] + '</button>  ' +
                     '<button type="button" class="btn btn-primary btn-sm" onclick="initEditGroup(\'' + groups[i] + '\')">编辑</button></td></tr>';
         }
         $("#groupsBody").html(html);
@@ -263,7 +305,7 @@
     function initTbodyOfContacts(contacts) {
         var htmlStr = '';
         for (var i = 0; i < contacts.length; i++) {
-            htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" value="' + contacts[i].id + '"> ' + contacts[i].id
+            htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" value="' + contacts[i].id + '"> ' + contacts[i].id
                     + '</td><td>' + contacts[i].groupname
                     + '</td><td>' + contacts[i].name
                     + '</td><td>' + contacts[i].title
@@ -278,13 +320,97 @@
 
     //全选或者反选
     function changeSelectAll() {
-        console.log("changeSelectAll....." + $("#selectAll").is(':checked'));
+//        console.log("changeSelectAll....." + $("#selectAll").is(':checked'));
         if ($("#selectAll").is(':checked')) {
-            $("table input[type=checkbox]").attr("checked", true);
+            $("input[name='contactsCheckbox']").prop("checked", true);// 放弃了attr
         } else {
-            $("table input[type=checkbox]").attr("checked", false);
+            $("input[name='contactsCheckbox']").prop("checked", false);
         }
     }
+
+    // 将选中的联系人Id添加到TextArea中
+    function addContactIdsToArea() {
+        // 原有的ids
+        var formerIds = null;
+        var a = '' + $("#GroupContacts").val().trim();
+        if(a != ''){
+            formerIds = a.split(",");
+        }else{
+            formerIds = new Array();
+        }
+        // 当前选中的ids
+        var currentSelectIds = new Array();
+        var aaa = $("input[name='contactsCheckbox']");
+        aaa.each(function () {
+            if ($(this).prop("checked")) {
+                currentSelectIds.push($(this).val());
+            }
+        });
+        // 合并
+        for (var i = 0; i < currentSelectIds.length; i++) {
+            var isFound = false;
+            for (var j = 0; j < formerIds.length; j++) {
+                if (formerIds[j] == currentSelectIds[i]) {
+                    isFound = true;
+                    break;
+                }
+            }
+            if (isFound == false) {// 没找到
+                formerIds.push(currentSelectIds[i]);
+            }
+        }
+        // 返回字符串
+        var tempStr = '';
+        for (var j = 0; j < formerIds.length; j++) {
+            if (j == 0) {
+                tempStr = '' + formerIds[j];
+                console.log("youyisima :" + tempStr);
+            } else {
+                tempStr = tempStr + ',' + formerIds[j];
+            }
+        }
+        $("#GroupContacts").val(tempStr);
+    }
+    // 清空选择
+    function emptyContactIds() {
+        $("#GroupContacts").val("");
+    }
+
+    // 准备好创建新分组的控件
+    function initCreateGroup(type) {
+        $("#createGroupDiv").show(1000);
+        if (type == null) {//新建分组
+            // 将原有添加到联系人idtextarea的内容清空
+            $("#GroupContacts").val("");
+        } else {// 需要集体编辑联系人的分组
+            // 获得当前选择的联系人id，然后添加到textarea中
+            addContactIdsToArea();
+        }
+    }
+
+    // 创建group
+    function createGroup(){
+        // 检查分组名称是否填写
+        var groupname = $("#newGroupName").val().trim();
+        if(groupname == '' || groupname == null){
+            // 错误信息
+            showEditFail("必须输入组名！");
+            return;
+        }
+        // 获取分组人员ids
+        var pattern = new RegExp("[~'!@#$%^&*()-+_=:]");
+        var ids = $("#GroupContactsIds").val().trim();
+        if(ids != "" || ids != null){
+            if(pattern.test(ids)){
+                showEditFail("联系人中存在非法字符，两个id之间必须用英文逗号  ','  分隔！");
+                return;
+            }
+        }
+        // 获取联系人操作方式
+        var addContactsType = $('input[name="addContactsType"]:checked ').val();
+        // 调用ajax方法去更新
+    }
+
 
     // 准备好编辑分组信息的控件
     function initEditGroup(groupname) {
@@ -301,6 +427,10 @@
     function doEditGroup() {
         var groupname = $("#editGroupName").val();
         // 判断新名称不为空
+        if (groupname == "") {
+            showEditFail("必须输入组名！");
+            return;
+        }
         // 将上述数据整理成json对象
         var jsonStr = "{\"originalGroupName\":\"" + originalGroupName
                 + "\",\"groupname\":\"" + groupname + "\"}";
@@ -327,6 +457,7 @@
             contentType: "application/json",
             success: function (data) {
                 showEditDone();
+                hideEditFail();
                 $("#editGroupDiv").hide(1000);
                 initContactsUIs(groupname);
             }
@@ -336,6 +467,7 @@
     // 取消编辑组
     function cancleEditGroup() {
         $("#editGroupDiv").hide(1000);
+        hideEditFail();
     }
 
     // 准备好编辑联系人的控件
@@ -356,6 +488,7 @@
     // 取消编辑联系人
     function cancleEditContact() {
         $("#editContactDiv").hide(1000);
+        hideEditFail();
     }
 
     // 确实需要更新编辑联系人信息
@@ -401,17 +534,33 @@
             contentType: "application/json",
             success: function (data) {
                 showEditDone();
+                hideEditFail();
                 $("#editContactDiv").hide(1000);
                 var contacts = data['contacts'];
                 initTbodyOfContacts(contacts);
+            },
+            error: function (errdata) {
+                showEditFail("abc");
             }
         });
+    }
+
+    function cancleCreateGroup() {
+        $("#createGroupDiv").hide(1000);
     }
 
     function showEditDone() {
         $("#editDoneDiv").show(2200);
         $("#editDoneDiv").hide(1000);
     }
+    function showEditFail(msg) {
+        $("#failCause").text(msg);
+        $("#editFailDiv").show(2000);
+    }
+    function hideEditFail() {
+        $("#editFailDiv").hide(2000);
+    }
+
 
 </script>
 </body>
