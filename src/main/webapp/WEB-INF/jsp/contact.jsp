@@ -12,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
 </head>
 <body>
 <h3>通讯录操作</h3>
@@ -332,7 +333,7 @@
     function addContactIdsToArea() {
         // 原有的ids
         var formerIds = null;
-        var a = '' + $("#GroupContacts").val().trim();
+        var a = ('' + $("#GroupContactsIds").val()).trim();
         if(a != ''){
             formerIds = a.split(",");
         }else{
@@ -369,11 +370,11 @@
                 tempStr = tempStr + ',' + formerIds[j];
             }
         }
-        $("#GroupContacts").val(tempStr);
+        $("#GroupContactsIds").val(tempStr);
     }
     // 清空选择
     function emptyContactIds() {
-        $("#GroupContacts").val("");
+        $("#GroupContactsIds").val("");
     }
 
     // 准备好创建新分组的控件
@@ -381,7 +382,8 @@
         $("#createGroupDiv").show(1000);
         if (type == null) {//新建分组
             // 将原有添加到联系人idtextarea的内容清空
-            $("#GroupContacts").val("");
+            $("#newGroupName").val("");
+            $("#GroupContactsIds").val("");
         } else {// 需要集体编辑联系人的分组
             // 获得当前选择的联系人id，然后添加到textarea中
             addContactIdsToArea();
@@ -394,21 +396,30 @@
         var groupname = $("#newGroupName").val().trim();
         if(groupname == '' || groupname == null){
             // 错误信息
-            showEditFail("必须输入组名！");
+            showEditFail("必须输入组名！", $("#newGroupName"));
             return;
         }
         // 获取分组人员ids
-        var pattern = new RegExp("[~'!@#$%^&*()-+_=:]");
+        var pattern = /\d+(,\d+)*/;
         var ids = $("#GroupContactsIds").val().trim();
-        if(ids != "" || ids != null){
-            if(pattern.test(ids)){
-                showEditFail("联系人中存在非法字符，两个id之间必须用英文逗号  ','  分隔！");
+        if(ids != "" || ids != undefined){
+            if(pattern.test(ids) == false){
+                showEditFail("联系人中存在非法字符，两个id之间必须用英文逗号  ','  分隔！", $("#GroupContactsIds"));
                 return;
             }
         }
+        if(ids == undefined || ids == ""){
+            ids = "empty";
+        }
         // 获取联系人操作方式
         var addContactsType = $('input[name="addContactsType"]:checked ').val();
+        hideEditFail();
         // 调用ajax方法去更新
+        // 将上述数据整理成json对象
+        var jsonStr = "{\"groupname\":\"" + groupname
+                + "\",\"ids\":\"" + ids
+                + "\",\"addContactsType\":\"" + addContactsType + "\"}";
+        commitEditGroup('insert', jsonStr, groupname);
     }
 
 
@@ -428,7 +439,7 @@
         var groupname = $("#editGroupName").val();
         // 判断新名称不为空
         if (groupname == "") {
-            showEditFail("必须输入组名！");
+            showEditFail("必须输入组名！", $("#editGroupName"));
             return;
         }
         // 将上述数据整理成json对象
@@ -458,7 +469,11 @@
             success: function (data) {
                 showEditDone();
                 hideEditFail();
-                $("#editGroupDiv").hide(1000);
+                if(action=="insert"){
+                    $("#createGroupDiv").hide(1000);
+                }else{
+                    $("#editGroupDiv").hide(1000);
+                }
                 initContactsUIs(groupname);
             }
         });
@@ -540,27 +555,29 @@
                 initTbodyOfContacts(contacts);
             },
             error: function (errdata) {
-                showEditFail("abc");
+//                showEditFail("abc");
             }
         });
     }
 
     function cancleCreateGroup() {
         $("#createGroupDiv").hide(1000);
+        hideEditFail();
     }
 
     function showEditDone() {
         $("#editDoneDiv").show(2200);
         $("#editDoneDiv").hide(1000);
     }
-    function showEditFail(msg) {
+    function showEditFail(msg, el) {
+        myAnimate(el, 8, el.attr("style"));
         $("#failCause").text(msg);
         $("#editFailDiv").show(2000);
+
     }
     function hideEditFail() {
         $("#editFailDiv").hide(2000);
     }
-
 
 </script>
 </body>

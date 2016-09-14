@@ -245,12 +245,11 @@ public class MainController {
         if(action.equals("update")){
             String ori = p.get("originalGroupName");
             String newName = p.get("groupname");
-            contactDao.updateGroup(new GroupName(ori, newName));
+            contactDao.updateGroup(new GroupName(0, ori, newName));
         }else if(action.equals("delete")){
-            System.out.println("deleting...." + p.get("originalGroupName"));
             contactDao.deleteGroup(p.get("originalGroupName"));
         }else if(action.equals("insert")){
-
+            return pcontactService.insertGroup(p);
         }
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("success", "success");

@@ -26,6 +26,8 @@ public interface ContactDao {
 
     int updateGroup(GroupName groupName);
 
+    int updateGroupWithId(GroupName groupName);
+
     int delete(long id);
 
     int deleteGroup(String groupname);

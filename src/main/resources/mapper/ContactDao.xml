@@ -46,6 +46,14 @@
         where groupname=#{originalName}
     </update>
 
+    <update id="updateGroupWithId" parameterType="com.owngame.entity.GroupName">
+        update contact set
+        groupname=#{newName}
+        where id=#{id}
+    </update>
+
+
+
     <delete id="delete" parameterType="long">
         delete from contact where id=#{id}
     </delete>

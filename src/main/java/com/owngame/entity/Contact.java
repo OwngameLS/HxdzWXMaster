@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 public class Contact {
     long id;
-    String groupname;
-    String name;
-    String title;
-    String phone;
-    String description;
+    String groupname = "abc";
+    String name = "abc";
+    String title = "abc";
+    String phone = "13988888888";
+    String description = "无意义";
 
     public Contact(){}
 

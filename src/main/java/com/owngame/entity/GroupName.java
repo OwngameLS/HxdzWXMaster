@@ -5,15 +5,26 @@ package com.owngame.entity;
  * Created by Administrator on 2016-9-13.
  */
 public class GroupName {
+
+    long id;
     String originalName;
     String newName;
 
     public GroupName() {
     }
 
-    public GroupName(String originalName, String newName) {
+    public GroupName(long id, String originalName, String newName) {
+        this.id = id;
         this.originalName = originalName;
         this.newName = newName;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getOriginalName() {
