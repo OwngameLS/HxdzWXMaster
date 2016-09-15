@@ -84,7 +84,7 @@
                 <td><input class="form-control" id="editContactPhone" placeholder="手机号"></td>
                 <td><input class="form-control" id="editContactDescription" placeholder="备注"></td>
                 <td>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="doEditContact()">修改</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="doEditContact()">完成</button>
                     <button type="button" class="btn btn-danger btn-sm" onclick="deleteContact()">删除</button>
                     <button type="button" class="btn btn-warning btn-sm" onclick="cancleEditContact()">取消</button>
                 </td>
@@ -152,7 +152,10 @@
         <button type="button" class="btn btn-warning btn-sm" onclick="initCreateGroup(null)">新建分组</button>
     </div>
     <div id="persons" style="width:80%;float:left;">
-        <button type="button" class="btn btn-warning btn-sm" onclick="initCreateGroup('abc')">集体编辑</button>
+        <button type="button" class="btn btn-warning btn-sm" onclick="initEditContact(-1,'','','','','')">新建联系人</button>
+        <button type="button" class="btn btn-success btn-sm" onclick="initCreateGroup('abc')">集体编辑</button>
+        <input id="searchContact" placeholder="输入人员名字">
+        <button type="button" class="btn btn-primary btn-sm" onclick="searchContact()">搜索</button>
     </div>
     <div id="groups" style="width: 20%;float:left;">
         <table class="table table-striped text-center table-bordered">
@@ -317,6 +320,8 @@
                     + '</td></tr>';
         }
         $("#contactBody").html(htmlStr);
+        // 取消全选的勾选
+        $("#selectAll").prop("checked", false);
     }
 
     //全选或者反选
@@ -334,9 +339,9 @@
         // 原有的ids
         var formerIds = null;
         var a = ('' + $("#GroupContactsIds").val()).trim();
-        if(a != ''){
+        if (a != '') {
             formerIds = a.split(",");
-        }else{
+        } else {
             formerIds = new Array();
         }
         // 当前选中的ids
@@ -391,10 +396,10 @@
     }
 
     // 创建group
-    function createGroup(){
+    function createGroup() {
         // 检查分组名称是否填写
         var groupname = $("#newGroupName").val().trim();
-        if(groupname == '' || groupname == null){
+        if (groupname == '' || groupname == null) {
             // 错误信息
             showEditFail("必须输入组名！", $("#newGroupName"));
             return;
@@ -402,13 +407,13 @@
         // 获取分组人员ids
         var pattern = /\d+(,\d+)*/;
         var ids = $("#GroupContactsIds").val().trim();
-        if(ids != "" || ids != undefined){
-            if(pattern.test(ids) == false){
+        if (ids != "" || ids != undefined) {
+            if (pattern.test(ids) == false) {
                 showEditFail("联系人中存在非法字符，两个id之间必须用英文逗号  ','  分隔！", $("#GroupContactsIds"));
                 return;
             }
         }
-        if(ids == undefined || ids == ""){
+        if (ids == undefined || ids == "") {
             ids = "empty";
         }
         // 获取联系人操作方式
@@ -469,9 +474,9 @@
             success: function (data) {
                 showEditDone();
                 hideEditFail();
-                if(action=="insert"){
+                if (action == "insert") {
                     $("#createGroupDiv").hide(1000);
-                }else{
+                } else {
                     $("#editGroupDiv").hide(1000);
                 }
                 initContactsUIs(groupname);
@@ -493,12 +498,19 @@
         $("#editContactDiv").show(1000);
         // 初始化数据
         // 分组是select editContactGroup
-        $("#editContactGroup").val(groupname);
+        if (groupname == '') {
+            // 默认设置为第一个
+            var a = $("#editContactGroup option:first").val();
+            $("#editContactGroup").val(a);
+        } else {
+            $("#editContactGroup").val(groupname);
+        }
         $("#editContactName").val(name);
         $("#editContactTitle").val(title);
         $("#editContactPhone").val(phone);
         $("#editContactDescription").val(description);
     }
+
 
     // 取消编辑联系人
     function cancleEditContact() {
@@ -515,8 +527,20 @@
         var phone = $("#editContactPhone").val();
         var description = $("#editContactDescription").val();
         // 判断不为空
+        if (name == '' || name == undefined) {
+            showEditFail("必须输入姓名！", $("#editContactName"));
+            return;
+        }
+        if (phone == '' || phone == undefined) {
+            showEditFail("必须输入手机号！", $("#editContactPhone"));
+            return;
+        }
         // 判断手机号格式
-
+        if (false == (phone && /^1[3|4|5|8]\d{9}$/.test(phone))) {
+            //不对
+            showEditFail("手机号格式不对！", $("#editContactPhone"));
+            return;
+        }
         // 将上述数据整理成json对象
         var jsonStr = "{\"id\":" + id
                 + ",\"groupname\":\"" + groupname
@@ -524,7 +548,8 @@
                 + "\",\"title\":\"" + title
                 + "\",\"phone\":\"" + phone
                 + "\",\"description\":\"" + description + "\"}";
-        commitEditContact('update', jsonStr);
+        console.log("jsonStr:" + jsonStr);
+        commitEditContact('update', jsonStr, "POST");
     }
 
     // 删除联系人
@@ -533,16 +558,16 @@
         // 弹出确认对话框
         if (confirm("确认删除？")) {
             var jsonStr = "{\"id\":" + id + "}";
-            commitEditContact('delete', jsonStr);
+            commitEditContact('delete', jsonStr, "POST");
         } else {
             return;
         }
     }
 
     // 提交操作，然后更新页面联系人组件
-    function commitEditContact(action, jsonStr) {
+    function commitEditContact(action, jsonStr, type) {
         $.ajax({
-            type: 'POST',
+            type: type,
             url: bp + 'Smserver/contacts/' + action,
             data: jsonStr,
             dataType: "json",
@@ -558,6 +583,18 @@
 //                showEditFail("abc");
             }
         });
+    }
+
+    // 查询联系人
+    function searchContact() {
+        var name = $("#searchContact").val().trim();
+        if (name == "" || name == undefined) {
+            myAnimate($("#searchContact"), 8, $("#searchContact").attr("style"));
+            return;
+        } else {
+            var jsonStr = "{\"name\":\"" + name + "\"}";
+            commitEditContact('search', jsonStr, "POST");
+        }
     }
 
     function cancleCreateGroup() {

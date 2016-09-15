@@ -12,7 +12,8 @@ public interface ContactDao {
 
     Contact queryById(long id);
 
-    ArrayList<Contact> queryByName(String name);
+    // 通过姓名查询（模糊查询）
+    ArrayList<Contact> queryLikeName(String name);
 
     ArrayList<Contact> queryByGroup(String groupname);
 

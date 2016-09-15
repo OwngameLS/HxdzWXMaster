@@ -214,9 +214,12 @@ public class MainController {
     @RequestMapping(value = "/contacts/update", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> updateContact(@RequestBody Contact contact){
+        System.out.println("contact:  " + contact.toString());
         if(contact.getId()>0){//是更新
             contactDao.update(contact);
         }else{
+            System.out.println("insert contact!");
+            contact.setId(0);
             contactDao.insert(contact);
         }
         Map<String, Object> map = new HashMap<String, Object>();
@@ -237,6 +240,17 @@ public class MainController {
         map.put("contacts",pcontactService.getContactByGroup(groupname));
         return map;
     }
+
+
+    @RequestMapping(value = "/contacts/search", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> searchContactsByNameContact(@RequestBody Map<String, String> p){
+        String name = p.get("name");
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("contacts",contactDao.queryLikeName("%"+name+"%"));
+        return map;
+    }
+
 
     @RequestMapping(value = "/group/{action}", method = RequestMethod.POST)
     @ResponseBody
