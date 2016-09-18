@@ -104,7 +104,7 @@ schedulerService.schedule(startTime, 5, 20);
         Map<String, String> map = new LinkedHashMap<String, String>();
         map.put("function", "gogogogo");
         map.put("data", "13581695827;13974348591;15874358616");
-//        schedulerService.schedule("0 0/1 * * * ? *", map);
+        schedulerService.schedule("0 0/1 * * * ? *", map);
 //        schedulerService.schedule(startTime);
 // schedulerService.pauseTrigger("f4a610a7-5b43-4738-949c-150eec96fb62");
 // schedulerService.schedule(startTime, endTime,5,5);

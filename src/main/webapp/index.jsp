@@ -32,7 +32,7 @@
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav nav-pills">
                     <li><a href="#">首 页</a></li>
-                    <li><a href="#">定时任务</a></li>
+                    <li><a href="<%=basePath%>Smserver/view/task" target="display">定时任务</a></li>
                     <li><a href="<%=basePath%>Smserver/view/contact" target="display">通讯录</a></li>
                     <%--target指的是name--%>
                     <li><a href="#">关 于</a></li>
