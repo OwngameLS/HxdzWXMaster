@@ -35,5 +35,4 @@ public interface ContactDao {
 
     int deleteAll();
 
-
 }

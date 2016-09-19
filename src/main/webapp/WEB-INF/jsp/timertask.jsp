@@ -38,7 +38,7 @@
         <p class="text-danger" id="failCause"></p>
     </div>
 
-    <div id="tasks" style="float:left;overflow:scroll; height:400px;">
+    <div id="tasks" style="width:100%;float:left;overflow:scroll; height:400px;">
         <table class="table table-hover table-bordered text-center">
             <thead>
             <tr class="info">

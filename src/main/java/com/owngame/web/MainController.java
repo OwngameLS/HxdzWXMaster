@@ -10,14 +10,12 @@ import com.owngame.utils.CheckUtil;
 import com.owngame.utils.ExcelUtil;
 import com.owngame.utils.InfoFormatUtil;
 import org.apache.commons.io.FileUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,9 +40,6 @@ import java.util.concurrent.Executors;
 @RequestMapping("Smserver")
 public class MainController {
 
-    @Autowired
-    PcontactService pcontactService;
-
     static ExecutorService pool;// 待处理的线程池
 
     // 线程池
@@ -53,6 +48,8 @@ public class MainController {
         pool = Executors.newFixedThreadPool(3);
     }
 
+    @Autowired
+    PcontactService pcontactService;
     @Autowired
     AnswerService answerService;
     @Autowired
@@ -178,7 +175,7 @@ public class MainController {
 
     @RequestMapping(value = "/view/{view}", method = RequestMethod.GET)
     public String views(@PathVariable("view") String view) {
-       return view;
+        return view;
     }
 
 //    @RequestMapping(value = "/view/{view}", method = RequestMethod.GET)
@@ -193,76 +190,76 @@ public class MainController {
 //        return view;
 //    }
 
-    @RequestMapping(value = "/contacts/{groupname}",method = RequestMethod.GET)
+    @RequestMapping(value = "/contacts/{groupname}", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> getContactByGroup(@PathVariable("groupname") String groupname) {
         System.out.println("getContactByGroup.......");
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("contacts",pcontactService.getContactByGroup(groupname));
+        map.put("contacts", pcontactService.getContactByGroup(groupname));
         return map;
     }
 
-    @RequestMapping(value = "/contacts/groups",method = RequestMethod.GET)
+    @RequestMapping(value = "/contacts/groups", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> getGroups(){
+    public Map<String, Object> getGroups() {
         System.out.println("getGroups.......");
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("groups",pcontactService.getGroups());
+        map.put("groups", pcontactService.getGroups());
         return map;
     }
 
     @RequestMapping(value = "/contacts/update", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> updateContact(@RequestBody Contact contact){
+    public Map<String, Object> updateContact(@RequestBody Contact contact) {
         System.out.println("contact:  " + contact.toString());
-        if(contact.getId()>0){//是更新
+        if (contact.getId() > 0) {//是更新
             contactDao.update(contact);
-        }else{
+        } else {
             System.out.println("insert contact!");
             contact.setId(0);
             contactDao.insert(contact);
         }
         Map<String, Object> map = new HashMap<String, Object>();
         // 返回更新后的该组信息
-        map.put("contacts",pcontactService.getContactByGroup(contact.getGroupname()));
+        map.put("contacts", pcontactService.getContactByGroup(contact.getGroupname()));
         return map;
     }
 
     @RequestMapping(value = "/contacts/delete", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> deleteContact(@RequestBody Map<String, Long> p){
+    public Map<String, Object> deleteContact(@RequestBody Map<String, Long> p) {
         // 先查询这个id属于那个组
         String groupname = contactDao.queryById(p.get("id")).getGroupname();
         // 删除操作
         contactDao.delete(p.get("id"));
         Map<String, Object> map = new HashMap<String, Object>();
         // 返回更新后的该组信息
-        map.put("contacts",pcontactService.getContactByGroup(groupname));
+        map.put("contacts", pcontactService.getContactByGroup(groupname));
         return map;
     }
 
 
     @RequestMapping(value = "/contacts/search", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> searchContactsByNameContact(@RequestBody Map<String, String> p){
+    public Map<String, Object> searchContactsByNameContact(@RequestBody Map<String, String> p) {
         String name = p.get("name");
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("contacts",contactDao.queryLikeName("%"+name+"%"));
+        map.put("contacts", contactDao.queryLikeName("%" + name + "%"));
         return map;
     }
 
 
     @RequestMapping(value = "/group/{action}", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> handleGroup(@RequestBody Map<String, String> p, @PathVariable("action") String action){
+    public Map<String, Object> handleGroup(@RequestBody Map<String, String> p, @PathVariable("action") String action) {
         // 先判断操作
-        if(action.equals("update")){
+        if (action.equals("update")) {
             String ori = p.get("originalGroupName");
             String newName = p.get("groupname");
             contactDao.updateGroup(new GroupName(0, ori, newName));
-        }else if(action.equals("delete")){
+        } else if (action.equals("delete")) {
             contactDao.deleteGroup(p.get("originalGroupName"));
-        }else if(action.equals("insert")){
+        } else if (action.equals("insert")) {
             return pcontactService.insertGroup(p);
         }
         Map<String, Object> map = new HashMap<String, Object>();

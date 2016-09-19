@@ -1,8 +1,5 @@
 package com.owngame.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.springframework.web.bind.annotation.RequestBody;
-
 /**
  * 联系人实体
  * Created by Administrator on 2016-9-7.
@@ -16,7 +13,8 @@ public class Contact {
     String phone = "13988888888";
     String description = "无意义";
 
-    public Contact(){}
+    public Contact() {
+    }
 
     public long getId() {
         return id;

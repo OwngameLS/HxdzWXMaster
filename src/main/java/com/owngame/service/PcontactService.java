@@ -70,51 +70,52 @@ public class PcontactService {
 
     /**
      * 创建分组信息
+     *
      * @param p
      * @return
      */
-    public Map<String, Object> insertGroup(Map<String, String> p){
+    public Map<String, Object> insertGroup(Map<String, String> p) {
         Map<String, Object> map = new HashMap<String, Object>();
         String groupname = p.get("groupname");
         ArrayList<String> groups = contactDao.getGroups();
         boolean isFound = false;
-        for(String s : groups){
-            if(s.equals(groupname)){
+        for (String s : groups) {
+            if (s.equals(groupname)) {
                 isFound = true;
                 break;
             }
         }
-        if(isFound){// 该分组原来存在过
+        if (isFound) {// 该分组原来存在过
             // 检查是不是有ids对应的contacts需要修改分组
             String idsString = p.get("ids");
-            if(idsString.equals("empty")){
+            if (idsString.equals("empty")) {
                 // 旧分组 又没有ids 跟我闹啥呢！
                 map.put("success", "success");
                 return map;
-            }else{// 有ids，对应更新
+            } else {// 有ids，对应更新
                 String[] ids = idsString.split(",");
-                for (String id:ids){
+                for (String id : ids) {
                     contactDao.updateGroupWithId(new GroupName(Long.parseLong(id), null, groupname));
                 }
             }
-        }else{// 新的分组
+        } else {// 新的分组
             String idsString = p.get("ids");
-            if(idsString.equals("empty")){
+            if (idsString.equals("empty")) {
                 // 没有ids 创建一条空数据
                 Contact contact = new Contact();
                 contact.setGroupname(groupname);
                 contactDao.insert(contact);
-            }else{// 有ids，对应更新
+            } else {// 有ids，对应更新
                 String[] ids = idsString.split(",");
-                for (String id:ids){
+                for (String id : ids) {
                     Contact contact = contactDao.queryById(Long.parseLong(id));
                     contact.setGroupname(groupname);
                     // 拿到操作模式
                     String addContactsType = p.get("addContactsType");
-                    if(addContactsType.equals("copy")){
+                    if (addContactsType.equals("copy")) {
                         contact.setId(0);//改id为0，就是等着新增
                         contactDao.insert(contact);
-                    }else if(addContactsType.equals("move")){
+                    } else if (addContactsType.equals("move")) {
                         contactDao.update(contact);
                     }
                 }

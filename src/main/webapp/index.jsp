@@ -32,7 +32,7 @@
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav nav-pills">
                     <li><a href="#">首 页</a></li>
-                    <li><a href="<%=basePath%>Smserver/view/task" target="display">定时任务</a></li>
+                    <li><a href="<%=basePath%>Smserver/view/timertask" target="display">定时任务</a></li>
                     <li><a href="<%=basePath%>Smserver/view/contact" target="display">通讯录</a></li>
                     <%--target指的是name--%>
                     <li><a href="#">关 于</a></li>
@@ -66,9 +66,9 @@
         <iframe class="embed-responsive-item" name="display"></iframe>
     </div>
     <footer class="center-block container text-center">
-            <p>------技术支持------</p>
-            <p>手 机：18107436127 QQ：1003919353</p>
-            <p>Copyright © All Rights Reserved By 龙生(Owngame).</p>
+        <p>------技术支持------</p>
+        <p>手 机：18107436127 QQ：1003919353</p>
+        <p>Copyright © All Rights Reserved By 龙生(Owngame).</p>
     </footer>
 </div>
 

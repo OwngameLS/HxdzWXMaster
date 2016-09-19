@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 为Dao接口方法提供SQL语句配置 -->
+<mapper namespace="com.owngame.dao.TimerTaskDao">
+    <select id="queryById" resultType="TimerTask" parameterType="long">
+        select * from timertask where id=#{id}
+    </select>
+
+    <select id="queryAllNames" resultType="String">
+        select name from timertask
+    </select>
+
+    <select id="queryAll" resultType="TimerTask">
+        select * from timertask
+    </select>
+
+    <insert id="insert" parameterType="TimerTask">
+        insert into timertask
+        (id, name, functions, description, firerules, receivers, state)
+        values
+        (#{id}, #{name},#{functions},#{description},#{firerules},#{receivers}, #{state})
+    </insert>
+
+    <update id="update" parameterType="TimerTask">
+        update contact set
+        name=#{name},
+        functions=#{functions},
+        description=#{description},
+        firerules=#{firerules},
+        receivers=#{receivers},
+        state=#{state}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        delete from timertask where id=#{id}
+    </delete>
+
+    <delete id="deleteAll">
+        delete from contact
+    </delete>
+</mapper>
