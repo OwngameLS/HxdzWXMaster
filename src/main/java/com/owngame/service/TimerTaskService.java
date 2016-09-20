@@ -1,6 +1,7 @@
 package com.owngame.service;
 
 import com.owngame.entity.TimerTask;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 

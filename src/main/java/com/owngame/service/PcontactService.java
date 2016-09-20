@@ -124,4 +124,22 @@ public class PcontactService {
         map.put("success", "success");
         return map;
     }
+
+    /**
+     * 根据ids获取联系人信息
+     * @param ids
+     * @return
+     */
+    public ArrayList<Contact> getContactByIds(String ids) {
+        ArrayList<Contact> contacts = new ArrayList<Contact>();
+        String[] idArray = ids.split(",");
+        for(String s : idArray){
+            Contact contact = contactDao.queryById(Long.parseLong(s));
+            if(contact != null){
+                contacts.add(contact);
+            }
+        }
+        System.out.println("contacts.size:" + contacts.size());
+        return contacts;
+    }
 }

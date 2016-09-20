@@ -183,7 +183,7 @@
                 <th class="text-center">操作</th>
             </tr>
             </thead>
-            <tbody id="contactBody">
+            <tbody id="contactsBody">
             </tbody>
         </table>
     </div>
@@ -319,7 +319,7 @@
                     + '\',\'' + contacts[i].groupname + '\',\'' + contacts[i].name + '\',\'' + contacts[i].title + '\',\'' + contacts[i].phone + '\',\'' + contacts[i].description + '\')">编辑</button>'
                     + '</td></tr>';
         }
-        $("#contactBody").html(htmlStr);
+        $("#contactsBody").html(htmlStr);
         // 取消全选的勾选
         $("#selectAll").prop("checked", false);
     }
@@ -593,7 +593,7 @@
             return;
         } else {
             var jsonStr = "{\"name\":\"" + name + "\"}";
-            commitEditContact('search', jsonStr, "POST");
+            commitEditContact('searchbyname', jsonStr, "POST");
         }
     }
 

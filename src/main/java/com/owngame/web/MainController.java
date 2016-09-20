@@ -3,9 +3,8 @@ package com.owngame.web;
 import com.owngame.dao.ContactDao;
 import com.owngame.entity.Contact;
 import com.owngame.entity.GroupName;
-import com.owngame.service.AnswerService;
-import com.owngame.service.CoreService;
-import com.owngame.service.PcontactService;
+import com.owngame.entity.TimerTask;
+import com.owngame.service.*;
 import com.owngame.utils.CheckUtil;
 import com.owngame.utils.ExcelUtil;
 import com.owngame.utils.InfoFormatUtil;
@@ -53,6 +52,8 @@ public class MainController {
     @Autowired
     AnswerService answerService;
     @Autowired
+    TimerTaskService timerTaskService;
+    @Autowired
     ContactDao contactDao;
 
     /**
@@ -82,6 +83,12 @@ public class MainController {
     }
 
 
+    /**
+     * 处理来自微信服务器转发的微信消息事件
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @RequestMapping(method = {RequestMethod.POST}, produces = "application/xml;charset=UTF-8")
     public void post(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -131,6 +138,11 @@ public class MainController {
         return answerService.handleCommit(id, state);
     }
 
+    /**
+     * 处理上传通讯录文件
+     * @param file
+     * @return
+     */
     @RequestMapping(value = "/doUpload", method = RequestMethod.POST)
     @ResponseBody
     public Object doUpload(@RequestParam("file") MultipartFile file) {
@@ -162,6 +174,11 @@ public class MainController {
     }
 
 
+    /**
+     * 下载文件
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = "/download", method = RequestMethod.GET)
     public ResponseEntity<byte[]> download() throws IOException {
 //        String dfileName = new String(fileName.getBytes("gb2312"), "iso8859-1");
@@ -173,23 +190,22 @@ public class MainController {
         return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
     }
 
+    /**
+     * 返回试图（网页）
+     * @param view
+     * @return
+     */
     @RequestMapping(value = "/view/{view}", method = RequestMethod.GET)
     public String views(@PathVariable("view") String view) {
         return view;
     }
 
-//    @RequestMapping(value = "/view/{view}", method = RequestMethod.GET)
-//    public String views(@PathVariable("view") String view, Model model) {
-//        if (view.equals("contact")) {
-//            // 获取Contact信息
-//            // 获取分组信息
-//            ArrayList<String> groups = pcontactService.getGroups();
-//            model.addAttribute("groups", groups);
-//            model.addAttribute("contacts", pcontactService.getContactByGroup(groups.get(0)));
-//        }
-//        return view;
-//    }
 
+    /**
+     * 根据组名返回该组的联系人信息
+     * @param groupname
+     * @return
+     */
     @RequestMapping(value = "/contacts/{groupname}", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> getContactByGroup(@PathVariable("groupname") String groupname) {
@@ -199,6 +215,10 @@ public class MainController {
         return map;
     }
 
+    /**
+     * 返回所有的分组信息
+     * @return
+     */
     @RequestMapping(value = "/contacts/groups", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> getGroups() {
@@ -208,6 +228,11 @@ public class MainController {
         return map;
     }
 
+    /**
+     * 更新某个联系人的信息
+     * @param contact
+     * @return
+     */
     @RequestMapping(value = "/contacts/update", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> updateContact(@RequestBody Contact contact) {
@@ -225,6 +250,11 @@ public class MainController {
         return map;
     }
 
+    /**
+     * 删除联系人
+     * @param p
+     * @return
+     */
     @RequestMapping(value = "/contacts/delete", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> deleteContact(@RequestBody Map<String, Long> p) {
@@ -239,16 +269,41 @@ public class MainController {
     }
 
 
-    @RequestMapping(value = "/contacts/search", method = RequestMethod.POST)
+    /**
+     * 通过姓名查询联系人（模糊查询）
+     * @param p
+     * @return
+     */
+    @RequestMapping(value = "/contacts/searchbyname", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> searchContactsByNameContact(@RequestBody Map<String, String> p) {
+    public Map<String, Object> searchContactsByName(@RequestBody Map<String, String> p) {
         String name = p.get("name");
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("contacts", contactDao.queryLikeName("%" + name + "%"));
         return map;
     }
 
+    /**
+     * 通过ids查询联系人信息
+     * @param p
+     * @return
+     */
+    @RequestMapping(value = "/contacts/searchbyids", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> searchContactsByIds(@RequestBody Map<String, String> p) {
+        String ids = p.get("ids");
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("contacts", pcontactService.getContactByIds(ids));
+        return map;
+    }
 
+
+    /**
+     * 对分组信息的增删改查
+     * @param p
+     * @param action
+     * @return
+     */
     @RequestMapping(value = "/group/{action}", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> handleGroup(@RequestBody Map<String, String> p, @PathVariable("action") String action) {
@@ -261,6 +316,35 @@ public class MainController {
             contactDao.deleteGroup(p.get("originalGroupName"));
         } else if (action.equals("insert")) {
             return pcontactService.insertGroup(p);
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("success", "success");
+        return map;
+    }
+
+
+    /**
+     * 操作定时任务
+     * @param p
+     * @param action
+     * @return
+     */
+    @RequestMapping(value = "/timertask/{action}", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> handleTimerTask(@RequestBody Map<String, String> p, @PathVariable("action") String action) {
+        // 先判断操作
+        if (action.equals("update")) {
+
+        } else if (action.equals("delete")) {
+
+        } else if (action.equals("insert")) {
+            TimerTask timerTask = new TimerTask();
+            timerTask.setFunctions("abc");
+            timerTask.setReceivers("1;2;3");
+            timerTask.setFirerules("0 0/1 * * * ? *");
+            timerTask.setDescription("abcccdsadfdsafdsa");
+            timerTask.setState("WAITING");
+            timerTaskService.createTimerTask(timerTask);
         }
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("success", "success");
