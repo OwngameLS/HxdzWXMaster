@@ -10,6 +10,7 @@
 <html>
 <head>
     <title>定时任务</title>
+
     <style>
         /*#contacts{
             padding:10px;
@@ -81,7 +82,7 @@
                     <td width="35%">
                         <textarea id="ttcontactsEdit"></textarea><br>
                         <button type="button" class="btn btn-success btn-sm" onclick="queryContactsDetailsWithIds()">查看已选</button>
-                        <button type="button" class="btn btn-success btn-sm" onclick="">新增人员</button>
+                        <button type="button" class="btn btn-success btn-sm" onclick="showContactsUI()">新增人员</button>
                     </td>
                     <td width="7%">
                         <select id="ttstateEdit">
@@ -101,8 +102,18 @@
         </table>
     </div>
 
+    <div id="cronExpressionDiv" class="embed-responsive embed-responsive-16by9">
+        <iframe class="embed-responsive-item" src="../../resources/cronpage/cronpage.htm" ></iframe>
+    </div>
 
-    <div id="contactsDiv" class="bg-warning" style="padding: 5px;display: none;text-align:center">
+    <div id="contactsDiv" class="bg-success" style="display: none;text-align:center">
+        <div style="width: 20%;float:left;">
+            <button type="button" class="btn btn-warning btn-sm" onclick="hideContactsDiv()">取消编辑</button>
+        </div>
+        <div style="width:80%;float:left;">
+            <button type="button" class="btn btn-success btn-sm" onclick="editContacts('add')">添加选择的人员</button>
+            <button type="button" class="btn btn-warning btn-sm" onclick="editContacts('remove')">删除选择的人员</button>
+        </div>
         <div id="groups" style="width: 20%;float:left;">
             <table class="table table-striped text-center table-bordered">
                 <thead>
@@ -126,8 +137,8 @@
             <table class="table table-hover table-bordered text-center">
                 <thead>
                 <tr class="info">
-                    <th class="text-center">id(<input type="checkbox" id="selectAllContacts"
-                                                      onclick="changeSelectAllContacts()">全选)
+                    <th class="text-center">序号（<input type="checkbox" id="selectAllContacts"
+                                                      onclick="changeSelectAllContacts()">全选）
                     </th>
                     <th class="text-center">所在分组</th>
                     <th class="text-center">姓名</th>
@@ -146,7 +157,7 @@
         <table class="table table-hover table-bordered text-center">
             <thead>
             <tr class="info">
-                <th class="text-center">序号(<input type="checkbox" id="selectAll" onclick="changeSelectAll()">全选)</th>
+                <th class="text-center">序号(<input type="checkbox" id="selectAllTimerTasks" onclick="changeSelectAllTimerTasks()">全选)</th>
                 <th class="text-center">功能</th>
                 <th class="text-center">描述</th>
                 <th class="text-center">触发规则</th>
@@ -185,8 +196,6 @@
         $("#selectAll").prop("checked", false);
     }
 
-
-
     // 通过ids查询联系人详情
     function queryContactsDetailsWithIds() {
         var ids = $("#ttcontactsEdit").val();
@@ -210,9 +219,18 @@
                 showContactsDiv();
                 // 分组信息
                 initTbodyOfContacts(data['contacts']);
-
             }
         });
+    }
+
+    // 展示联系人选择
+    function showContactsUI() {
+        showEditDone();
+        hideEditFail();
+        // 显示联系人信息表格div
+        showContactsDiv();
+        // 初始化分组表格
+        initTbodyOfGroups();
     }
 
     // 初始化联系人详情UI控件
@@ -226,32 +244,149 @@
                     + '</td><td>' + contacts[i].phone
                     + '</td></tr>';
         }
-        console.log("htmlStr:" + htmlStr);
         $("#contactsBody").html(htmlStr);
         // 取消全选的勾选
         $("#selectAllContacts").prop("checked", false);
     }
 
-    // 初始化联系人控件
-    function initContactsUIs(displayGroup) {
+    // 初始化联系人组UI控件
+    function initTbodyOfGroups(){
+        var htmlStr = '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="queryContactsDetailsWithIds()">已选人员</button></td></tr>';
         $.ajax({
             url: bp + 'Smserver/contacts/groups',
             type: 'GET',
             success: function (data) {
                 var groups = data['groups'];
-                // 初始化groups相关的控件
-                initSelect(groups);// 选择控件
-                initGroupsBody(groups);// 分组链接
-                if (displayGroup == null) {
-                    getContactsByGroups(groups[0]);
-                } else {
-                    getContactsByGroups(displayGroup);
+                for (var i = 0; i < groups.length; i++) {
+                    htmlStr = htmlStr + '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="getContactsByGroups(\'' + groups[i] + '\')">' + groups[i] + '</button>';
                 }
+                $("#groupsBody").html(htmlStr);
+                // 展示第一组
+                getContactsByGroups(groups[0]);
+            }
+        });
+    }
+
+    // 向服务器请求联系人信息 通过分组名称
+    function getContactsByGroups(groupname) {
+        $.ajax({
+            type: 'GET',
+            url: bp + 'Smserver/contacts/' + groupname,
+            success: function (data) {
+                initTbodyOfContacts(data['contacts']);
             }
         });
     }
 
 
+    //全选或者反选 联系人
+    function changeSelectAllContacts() {
+        if ($("#selectAllContacts").is(':checked')) {
+            $("input[name='contactsCheckbox']").prop("checked", true);// 放弃了attr
+        } else {
+            $("input[name='contactsCheckbox']").prop("checked", false);
+        }
+    }
+
+    //全选或者反选 定时任务
+    function changeSelectAllTimerTasks() {
+        if ($("#selectAllTimerTasks").is(':checked')) {
+            $("input[name='timerTasksCheckbox']").prop("checked", true);// 放弃了attr
+        } else {
+            $("input[name='timerTasksCheckbox']").prop("checked", false);
+        }
+    }
+
+    // 添加联系人ids action : add ;remove
+    function editContacts(action) {
+        // 当前选中的ids
+        var currentSelectIds = new Array();
+        var aaa = $("input[name='contactsCheckbox']");
+        aaa.each(function () {
+            if ($(this).prop("checked")) {
+                currentSelectIds.push($(this).val());
+            }
+        });
+        if(currentSelectIds.length == 0){// 没有选择任何联系人
+            return;
+        }
+
+        // 原有的ids
+        var formerIds = null;
+        var a = ('' + $("#ttcontactsEdit").val()).trim();
+        if (a != '') {
+            formerIds = a.split(",");
+        } else {
+            formerIds = new Array();
+        }
+
+        for (var i = 0; i < currentSelectIds.length; i++) {
+            // 在原来的ids中查找
+            var index = formerIds.indexOf(currentSelectIds[i]);
+            if(index != -1){// 找到了
+                if(action == 'add'){
+                    // 不用处理
+                }else if(action == 'remove'){
+                    // 删除找到的元素
+                    formerIds.splice(index,1);
+                }
+            }else{// 没找到
+                if(action == 'add'){
+                    // 添加元素
+                    formerIds.push(currentSelectIds[i]);
+                }else if(action == 'remove'){
+                    // 不用处理
+                }
+            }
+        }
+
+
+//
+//        if(action == 'add'){// 添加
+//            // 合并
+//            for (var i = 0; i < currentSelectIds.length; i++) {
+//                var isFound = false;
+//                for (var j = 0; j < formerIds.length; j++) {
+//                    if (formerIds[j] == currentSelectIds[i]) {
+//                        isFound = true;
+//                        break;
+//                    }
+//                }
+//                if (isFound == false) {// 没找到
+//                    formerIds.push(currentSelectIds[i]);// 添加
+//                }
+//            }
+//        }else if(action == 'remove'){// 删除
+//            var newIds = new Array();
+//            for(var i=0;i<formerIds.length;i++){
+//                //遍历原来的ids，如果不在新选择的ids中，就加入newIds中
+//                var isFound = false;
+//                for(var j=0;j<currentSelectIds.length;j++){
+//                    if(currentSelectIds[j] == formerIds[i]){
+//                        // 找到了
+//                        isFound = true;
+//                        break;
+//                    }
+//                }
+//                if(isFound == false){// 原来的不在新选的中，说明不用去掉
+//                    newIds.push(formerIds[i]);
+//                }
+//            }
+//            formerIds = newIds;
+//        }
+
+        // 返回字符串
+        var tempStr = '';
+        for (var j = 0; j < formerIds.length; j++) {
+            if (j == 0) {
+                tempStr = '' + formerIds[j];
+            } else {
+                tempStr = tempStr + ',' + formerIds[j];
+            }
+        }
+
+        $("#ttcontactsEdit").val(tempStr);
+    }
 
     function createTimerTask() {
         $.ajax({
@@ -270,6 +405,10 @@
 
     function showContactsDiv() {
         $("#contactsDiv").show(2000);
+    }
+
+    function hideContactsDiv(){
+        $("#contactsDiv").hide(1500);
     }
 
     function showEditDone() {

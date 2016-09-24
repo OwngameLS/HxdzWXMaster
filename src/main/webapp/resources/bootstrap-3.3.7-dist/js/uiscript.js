@@ -34,3 +34,4 @@ function myInputWarning(el, warningInfos) {
 function cancleWarning(el) {
     el.attr("style", "background:#FFF");
 }
+

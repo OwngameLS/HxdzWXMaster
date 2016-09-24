@@ -174,7 +174,7 @@
         <table class="table table-hover table-bordered text-center">
             <thead>
             <tr class="info">
-                <th class="text-center">id(<input type="checkbox" id="selectAll" onclick="changeSelectAll()">全选)</th>
+                <th class="text-center">序号（<input type="checkbox" id="selectAll" onclick="changeSelectAll()">全选）</th>
                 <th class="text-center">所在分组</th>
                 <th class="text-center">姓名</th>
                 <th class="text-center">职务</th>
