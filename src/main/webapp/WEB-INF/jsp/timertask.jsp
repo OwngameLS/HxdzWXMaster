@@ -10,20 +10,6 @@
 <html>
 <head>
     <title>定时任务</title>
-
-    <style>
-        /*#contacts{
-            padding:10px;
-            background-color:#003300;
-            color:#FFFFFF;
-            width:600px;
-            height:400px;
-            display:block;
-            position: absolute;
-            margin-left:-300px;
-            margin-top:-200px;
-        }*/
-    </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
@@ -76,8 +62,11 @@
                         <textarea id="ttdescriptionEdit"></textarea>
                     </td>
                     <td width="15%">
-                        <label id="ttfirerulesEdit"></label><br>
-                        <button type="button" class="btn btn-success btn-sm" onclick="">编辑</button>
+                        <label id="ttcronEdit">* * 5 * * ?</label><br>
+                        <button type="button" class="btn btn-success btn-sm" onclick="editCron()">编辑</button>
+                        <div id="editCronDoneDiv" style="display: none">
+                            <button type="button" class="btn btn-warning btn-sm" onclick="doneCronEdit()">确定</button>
+                        </div>
                     </td>
                     <td width="35%">
                         <textarea id="ttcontactsEdit"></textarea><br>
@@ -102,7 +91,7 @@
         </table>
     </div>
 
-    <div id="cronExpressionDiv" class="embed-responsive embed-responsive-16by9">
+    <div id="cronExpressionDiv" class="embed-responsive embed-responsive-16by9" style="display:none">
         <iframe class="embed-responsive-item" src="../../resources/cronpage/cronpage.htm" ></iframe>
     </div>
 
@@ -339,42 +328,6 @@
                 }
             }
         }
-
-
-//
-//        if(action == 'add'){// 添加
-//            // 合并
-//            for (var i = 0; i < currentSelectIds.length; i++) {
-//                var isFound = false;
-//                for (var j = 0; j < formerIds.length; j++) {
-//                    if (formerIds[j] == currentSelectIds[i]) {
-//                        isFound = true;
-//                        break;
-//                    }
-//                }
-//                if (isFound == false) {// 没找到
-//                    formerIds.push(currentSelectIds[i]);// 添加
-//                }
-//            }
-//        }else if(action == 'remove'){// 删除
-//            var newIds = new Array();
-//            for(var i=0;i<formerIds.length;i++){
-//                //遍历原来的ids，如果不在新选择的ids中，就加入newIds中
-//                var isFound = false;
-//                for(var j=0;j<currentSelectIds.length;j++){
-//                    if(currentSelectIds[j] == formerIds[i]){
-//                        // 找到了
-//                        isFound = true;
-//                        break;
-//                    }
-//                }
-//                if(isFound == false){// 原来的不在新选的中，说明不用去掉
-//                    newIds.push(formerIds[i]);
-//                }
-//            }
-//            formerIds = newIds;
-//        }
-
         // 返回字符串
         var tempStr = '';
         for (var j = 0; j < formerIds.length; j++) {
@@ -384,9 +337,35 @@
                 tempStr = tempStr + ',' + formerIds[j];
             }
         }
-
         $("#ttcontactsEdit").val(tempStr);
     }
+
+    function editCron() {
+        // 显示按钮
+        $("#editCronDoneDiv").show(1000);
+        // 显示操作页面
+        $("#cronExpressionDiv").show(1000);
+        // 将原来的cron表达式在UI界面上显示出来
+        var formerCron = $("#ttcronEdit").html();
+        $("iframe").contents().find("#cron").val(formerCron);
+        $("iframe").contents().find("#btnFan").click();
+    }
+
+    function doneCronEdit(){
+        // 获得编辑好的表达式
+        var a = $("iframe").contents().find("#cron").val();
+        // 设置
+        $("#ttcronEdit").html(a);
+        // 提示操作完成并隐藏编辑UI
+        showEditDone();
+        // 显示按钮
+        $("#editCronDoneDiv").hide(1000);
+        // 显示操作页面
+        $("#cronExpressionDiv").hide(1000);
+
+
+    }
+
 
     function createTimerTask() {
         $.ajax({
