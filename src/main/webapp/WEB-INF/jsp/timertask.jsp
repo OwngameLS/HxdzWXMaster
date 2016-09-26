@@ -38,7 +38,7 @@
         <p class="text-danger" id="failCause"></p>
     </div>
 
-    <div id="timertaskEditDiv"><%--编辑定时任务的表格--%>
+    <div id="timertaskEditDiv" style="display: none"><%--编辑定时任务的表格--%>
         <table class="table table-hover table-bordered text-center">
             <thead>
             <tr class="info">
@@ -53,7 +53,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td width="5%" id="ttIdEdit"></td>
+                    <td width="5%" id="ttIdEdit">新建</td>
                     <td width="10%">
                         <label id="ttfunctionsEdit"></label><br>
                         <button type="button" class="btn btn-success btn-sm" onclick="">编辑</button>
@@ -62,10 +62,11 @@
                         <textarea id="ttdescriptionEdit"></textarea>
                     </td>
                     <td width="15%">
-                        <label id="ttcronEdit">* * 5 * * ?</label><br>
-                        <button type="button" class="btn btn-success btn-sm" onclick="editCron()">编辑</button>
+                        <label id="ttcronEdit">还没有指定</label><br>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="editCron()">编辑</button>
                         <div id="editCronDoneDiv" style="display: none">
-                            <button type="button" class="btn btn-warning btn-sm" onclick="doneCronEdit()">确定</button>
+                            <button type="button" class="btn btn-success btn-sm" onclick="doneCronEdit()">确定</button>
+                            <button type="button" class="btn btn-warning btn-sm" onclick="hideCronEdit()">取消</button>
                         </div>
                     </td>
                     <td width="35%">
@@ -75,16 +76,14 @@
                     </td>
                     <td width="7%">
                         <select id="ttstateEdit">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
+                            <option value="run">正常</option>
+                            <option value="pause">暂停</option>
                         </select>
                     </td>
                     <td width="8%">
                         <button type="button" class="btn btn-success btn-sm" onclick="">保存</button>
                         <button type="button" class="btn btn-warning btn-sm" onclick="">删除</button>
-                        <button type="button" class="btn btn-primary btn-sm" onclick="">取消</button>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="cancelEditTimerTask()">取消</button>
                     </td>
                 </tr>
             </tbody>
@@ -161,28 +160,48 @@
     </div>
 
 </div>
+<!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
+<script src="/resources/bootstrap-3.3.7-dist/js/jquery-3.1.0.min.js"></script>
+<!-- 包括所有已编译的插件 -->
+<script src="../../resources/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 
 <script type="application/javascript">
     var bp = '<%=basePath%>';
 
+    // 文档被加载完成时
+    $(document).ready(function () {
+        queryTimerTasks();
+    });
+
+    function queryTimerTasks() {
+        $.ajax({
+            url: bp + 'Smserver/timertask/getall',
+            type: 'GET',
+            success: function (data) {
+                // 初始化timertasks相关的控件
+                initTbodyOfTasks(data['timerTasks']);// 选择控件
+            }
+        });
+    }
 
     // 使用联系人json数据组合成联系人表格内容
-    function initTbodyOfTasks(timetasks) {
+    function initTbodyOfTasks(timertasks) {
         var htmlStr = '';
-        for (var i = 0; i < timetasks.length; i++) {
-            htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" value="' + timetasks[i].id + '"> ' + timetasks[i].id
-                    + '</td><td>' + timetasks[i].groupname
-                    + '</td><td>' + timetasks[i].name
-                    + '</td><td>' + timetasks[i].title
-                    + '</td><td>' + timetasks[i].phone
-                    + '</td><td>' + timetasks[i].description
-                    + '</td><td>' + '<button type="button" class="btn btn-primary btn-sm" onclick="initEditContact(\'' + timetasks[i].id
-                    + '\',\'' + timetasks[i].groupname + '\',\'' + timetasks[i].name + '\',\'' + timetasks[i].title + '\',\'' + timetasks[i].phone + '\',\'' + timetasks[i].description + '\')">编辑</button>'
+        for (var i = 0; i < timertasks.length; i++) {
+            htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" value="' + timertasks[i].id + '"> ' + timertasks[i].id
+                    + '</td><td>' + timertasks[i].functions
+                    + '</td><td>' + timertasks[i].description
+                    + '</td><td>' + timertasks[i].firerules
+                    + '</td><td>' + timertasks[i].receivers
+                    + '</td><td>' + timertasks[i].state
+                    + '</td><td>' + '<button type="button" class="btn btn-primary btn-sm" onclick="initEditTimerTask(\'' + timertasks[i].id
+                    + '\',\'' + timertasks[i].functions + '\',\'' + timertasks[i].description + '\',\'' + timertasks[i].firerules + '\',\'' + timertasks[i].receivers + '\',\'' + timertasks[i].state + '\')">编辑</button>'
                     + '</td></tr>';
         }
-        $("#contactBody").html(htmlStr);
+
+        $("#tasksBody").html(htmlStr);
         // 取消全选的勾选
-        $("#selectAll").prop("checked", false);
+        $("#selectAllTimerTasks").prop("checked", false);
     }
 
     // 通过ids查询联系人详情
@@ -340,9 +359,22 @@
         $("#ttcontactsEdit").val(tempStr);
     }
 
+    function initEditTimerTask(id, functions, description, firerules, receivers, state){
+        // 先将编辑框展示出来
+        $("#timertaskEditDiv").show(1500);
+        $("#ttIdEdit").html(id);
+        $("#ttfunctionsEdit").val(functions);
+        $("#ttdescriptionEdit").val(description);
+        $("#ttcronEdit").html(firerules);
+        $("#ttcontactsEdit").val(receivers);
+        $("#ttstateEdit").val(state);
+    }
+
+
     function editCron() {
         // 显示按钮
         $("#editCronDoneDiv").show(1000);
+
         // 显示操作页面
         $("#cronExpressionDiv").show(1000);
         // 将原来的cron表达式在UI界面上显示出来
@@ -358,12 +390,22 @@
         $("#ttcronEdit").html(a);
         // 提示操作完成并隐藏编辑UI
         showEditDone();
+        hideCronEdit();
+    }
+
+    function hideCronEdit() {
         // 显示按钮
         $("#editCronDoneDiv").hide(1000);
         // 显示操作页面
         $("#cronExpressionDiv").hide(1000);
+    }
 
-
+    // 取消编辑定时任务
+    function cancelEditTimerTask() {
+        // 编辑框
+        $("#timertaskEditDiv").hide(1500);
+        hideEditFail();
+        hideCronEdit();
     }
 
 
@@ -405,9 +447,6 @@
     }
 </script>
 
-<!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
-<script src="../../resources/bootstrap-3.3.7-dist/js/jquery-3.1.0.min.js"></script>
-<!-- 包括所有已编译的插件 -->
-<script src="../../resources/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
 </body>
 </html>

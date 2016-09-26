@@ -351,4 +351,17 @@ public class MainController {
         return map;
     }
 
+    /**
+     * 查询所有定时任务
+     * @return
+     */
+    @RequestMapping(value = "/timertask/getall", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> queryTimerTasks() {
+        ArrayList<TimerTask> timerTasks = timerTaskService.queryAll();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("timerTasks", timerTasks);
+        return map;
+    }
+
 }
