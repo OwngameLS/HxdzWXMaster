@@ -2,6 +2,7 @@ package com.owngame.web;
 
 import com.owngame.dao.ContactDao;
 import com.owngame.entity.Contact;
+import com.owngame.entity.Function;
 import com.owngame.entity.GroupName;
 import com.owngame.entity.TimerTask;
 import com.owngame.service.*;
@@ -54,7 +55,11 @@ public class MainController {
     @Autowired
     TimerTaskService timerTaskService;
     @Autowired
+    FunctionService functionService;
+    @Autowired
     ContactDao contactDao;
+
+
 
     /**
      * 处理来自微信服务器的验证
@@ -361,6 +366,19 @@ public class MainController {
         ArrayList<TimerTask> timerTasks = timerTaskService.queryAll();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("timerTasks", timerTasks);
+        return map;
+    }
+
+    /**
+     * 查询所有定时任务
+     * @return
+     */
+    @RequestMapping(value = "/functions", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> queryFunctions() {
+        ArrayList<Function> functions = functionService.queryAll();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("functions", functions);
         return map;
     }
 
