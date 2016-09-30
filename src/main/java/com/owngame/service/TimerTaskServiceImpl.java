@@ -23,6 +23,7 @@ public class TimerTaskServiceImpl implements TimerTaskService {
     @Autowired
     HandleQuartzService handleQuartzService;
 
+
     public int createTimerTask(TimerTask timerTask) {
         // 插入之前先获得原有的names
         ArrayList<String> bNames = qrtz_triggersDao.getNames();
@@ -52,6 +53,8 @@ public class TimerTaskServiceImpl implements TimerTaskService {
         }
         if(newName != null) {
             timerTask.setName(newName);
+            // 还要判断状态 因为可能插入的时候是一个暂停任务
+            updateState(newName, timerTask.getState());
             // 插入timertask表
             return timerTaskDao.insert(timerTask);
         }else {
@@ -64,11 +67,35 @@ public class TimerTaskServiceImpl implements TimerTaskService {
     }
 
     public int deleteById(long id) {
+        // 先根据id查询触发器 然后删除它
+        TimerTask timerTask = timerTaskDao.queryById(id);
+        handleQuartzService.deleteTrigger(timerTask.getName());
         return timerTaskDao.deleteById(id);
     }
 
     public int update(TimerTask timerTask) {
+        // 更新qrtz
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("functions", timerTask.getFunctions());
+        map.put("receivers", timerTask.getReceivers());
+        handleQuartzService.updateTrigger(timerTask.getName(),timerTask.getFirerules(), map);
+        String state = timerTask.getState();
+        // 更新状态
+        updateState(timerTask.getName(), timerTask.getState());
         return timerTaskDao.update(timerTask);
+    }
+
+    public TimerTask queryById(long id){
+        return timerTaskDao.queryById(id);
+    }
+
+    // 更新状态
+    private void updateState(String name, String state){
+        if(state.equals("run")){
+            handleQuartzService.resumeTrigger(name);
+        }else if(state.equals("pause")){
+            handleQuartzService.pauseTrigger(name);
+        }
     }
 
 }

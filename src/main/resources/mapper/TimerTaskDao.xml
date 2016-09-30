@@ -23,7 +23,7 @@
     </insert>
 
     <update id="update" parameterType="TimerTask">
-        update contact set
+        update timertask set
         name=#{name},
         functions=#{functions},
         description=#{description},

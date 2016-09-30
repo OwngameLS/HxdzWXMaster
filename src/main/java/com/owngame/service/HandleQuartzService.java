@@ -11,7 +11,6 @@ public interface HandleQuartzService {
 
     /**
      * 新增触发器
-     *
      * @param strCronExpression
      * @param map
      */
@@ -20,11 +19,11 @@ public interface HandleQuartzService {
     /**
      * 更新触发器
      *
-     * @param triggerKey
+     * @param triggerName
      * @param strCronExpression
      * @param map
      */
-    void updateTrigger(String triggerKey, String strCronExpression, Map<String, String> map);
+    void updateTrigger(String triggerName, String strCronExpression, Map<String, String> map);
 
     /**
      * 返回触发器的集合
@@ -34,16 +33,22 @@ public interface HandleQuartzService {
     /**
      * 暂停触发器
      *
-     * @param triggerKey
+     * @param triggerName
      */
-    void pauseTrigger(String triggerKey);
+    void pauseTrigger(String triggerName);
+
+    /**
+     * 恢复触发器
+     * @param triggerName
+     */
+    void resumeTrigger(String triggerName);
 
     /**
      * 删除触发器
      *
-     * @param triggerKey
+     * @param triggerName
      */
-    void deleteTrigger(String triggerKey);
+    void deleteTrigger(String triggerName);
 
 
 }

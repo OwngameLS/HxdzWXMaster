@@ -538,16 +538,31 @@
     function handleTimerTask(action) {
         var id = $("#ttIdEdit").html();
         if(action == 'delete'){
-            if(id == '未指定'){// 新建情况删除个屁啊
+            if(id == '新建'){// 新建情况删除个屁啊
                 showEditFail("这是新建呢，不能执行删除操作！", $("#ttIdEdit"));
             }else{
                 doAjaxHandleTimerTask('delete','{\"id\":\"'+id+'\"}');
             }
         }else if(action == 'save'){
-
+            // 获取其他的值
+            var functions = $("#ttfunctionsEdit").html();
+            var description = $("#ttdescriptionEdit").val();
+            var cron = $("#ttcronEdit").html();
+            var contacts = $("#ttcontactsEdit").val();
+            var state = $("#ttstateEdit  option:selected").val();
+            // 判断合理值
+            // 整理成JsonStr
+            if(id == '新建'){
+                id = 0;// 新建
+            }
+            var jsonStr = "{\"id\":\"" + id
+                    + "\",\"functions\":\"" + functions
+                    + "\",\"description\":\"" + description
+                    + "\",\"cron\":\"" + cron
+                    + "\",\"contacts\":\"" + contacts
+                    + "\",\"state\":\"" + state + "\"}";
+            doAjaxHandleTimerTask('update',jsonStr);
         }
-
-
     }
 
     // 处理TimerTask操作提交给服务器部分

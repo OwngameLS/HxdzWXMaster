@@ -33,7 +33,9 @@ public class HandleQuartzServiceImpl implements HandleQuartzService {
         schedulerService.schedule(strCronExpression, map);
     }
 
-    public void updateTrigger(String triggerKey, String strCronExpression, Map<String, String> map) {
+    public void updateTrigger(String triggerName, String strCronExpression, Map<String, String> map) {
+
+
 
     }
 
@@ -41,12 +43,16 @@ public class HandleQuartzServiceImpl implements HandleQuartzService {
 
     }
 
-    public void pauseTrigger(String triggerKey) {
-
+    public void pauseTrigger(String triggerName) {
+        schedulerService.pauseTrigger(triggerName);
     }
 
-    public void deleteTrigger(String triggerKey) {
+    public void resumeTrigger(String triggerName){
+        schedulerService.resumeTrigger(triggerName);
+    }
 
+    public void deleteTrigger(String triggerName) {
+        schedulerService.removeTrigdger(triggerName);
     }
 
 }

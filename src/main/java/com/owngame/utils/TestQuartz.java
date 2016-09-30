@@ -103,7 +103,7 @@ schedulerService.schedule(startTime, 5, 20);
 //        schedulerService.resumeTrigger("0fdb7134-9701-494c-9879-bbf2e30120b8");
         Map<String, String> map = new LinkedHashMap<String, String>();
         map.put("functions", "gogogogo");
-        map.put("data", "13581695827;13974348591;15874358616");
+        map.put("", "13581695827;13974348591;15874358616");
 //        schedulerService.schedule("0 0/1 * * * ? *", map);
 //        schedulerService.schedule(startTime);
         schedulerService.pauseTrigger("0c7b9fcc-3b3d-4a4d-b3ce-b4892035881b");

@@ -38,5 +38,12 @@ public interface TimerTaskService {
      */
     int update(TimerTask timerTask);
 
+    /**
+     * 通过id查询
+     * @param id
+     * @return
+     */
+    TimerTask queryById(long id);
+
 
 }

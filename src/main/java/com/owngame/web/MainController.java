@@ -337,23 +337,35 @@ public class MainController {
     @RequestMapping(value = "/timertask/{action}", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> handleTimerTask(@RequestBody Map<String, String> p, @PathVariable("action") String action) {
+
         // 先判断操作
         if (action.equals("update")) {
-
+            System.out.println("update");
+            long id = Long.parseLong(p.get("id"));
+            TimerTask timerTask;
+            if(id <= 0){// 插入
+                timerTask = new TimerTask();
+            }else{
+                timerTask = timerTaskService.queryById(id);
+            }
+            timerTask.setFunctions(p.get("functions"));
+            timerTask.setReceivers(p.get("contacts"));
+            timerTask.setFirerules(p.get("cron"));
+            timerTask.setDescription(p.get("description"));
+            timerTask.setState(p.get("state"));
+            System.out.println("timerTask:" + timerTask.toString());
+            if(id <= 0){// 插入
+                timerTaskService.createTimerTask(timerTask);
+            }else{
+                timerTaskService.update(timerTask);
+            }
         } else if (action.equals("delete")) {
-
-        } else if (action.equals("insert")) {
-            TimerTask timerTask = new TimerTask();
-            timerTask.setFunctions("abc");
-            timerTask.setReceivers("1;2;3");
-            timerTask.setFirerules("0 0/1 * * * ? *");
-            timerTask.setDescription("abcccdsadfdsafdsa");
-            timerTask.setState("WAITING");
-            timerTaskService.createTimerTask(timerTask);
+            System.out.println("delete");
+            long id = Long.parseLong(p.get("id"));
+            timerTaskService.deleteById(id);
         }
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("success", "success");
-        return map;
+        // 返回所有 用于刷新页面
+        return queryTimerTasks();
     }
 
     /**
@@ -370,7 +382,7 @@ public class MainController {
     }
 
     /**
-     * 查询所有定时任务
+     * 查询所有功能
      * @return
      */
     @RequestMapping(value = "/functions", method = RequestMethod.GET)

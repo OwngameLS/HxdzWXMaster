@@ -70,4 +70,16 @@ public class TimerTask {
         this.state = state;
     }
 
+    @Override
+    public String toString() {
+        return "TimerTask{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", functions='" + functions + '\'' +
+                ", description='" + description + '\'' +
+                ", firerules='" + firerules + '\'' +
+                ", receivers='" + receivers + '\'' +
+                ", state='" + state + '\'' +
+                '}';
+    }
 }
