@@ -537,13 +537,13 @@
     // 处理TimerTask操作UI逻辑部分
     function handleTimerTask(action) {
         var id = $("#ttIdEdit").html();
-        if(action == 'delete'){
-            if(id == '新建'){// 新建情况删除个屁啊
+        if (action == 'delete') {
+            if (id == '新建') {// 新建情况删除个屁啊
                 showEditFail("这是新建呢，不能执行删除操作！", $("#ttIdEdit"));
-            }else{
-                doAjaxHandleTimerTask('delete','{\"id\":\"'+id+'\"}');
+            } else {
+                doAjaxHandleTimerTask('delete', '{\"id\":\"' + id + '\"}');
             }
-        }else if(action == 'save'){
+        } else if (action == 'save') {
             // 获取其他的值
             var functions = $("#ttfunctionsEdit").html();
             var description = $("#ttdescriptionEdit").val();
@@ -552,7 +552,7 @@
             var state = $("#ttstateEdit  option:selected").val();
             // 判断合理值
             // 整理成JsonStr
-            if(id == '新建'){
+            if (id == '新建') {
                 id = 0;// 新建
             }
             var jsonStr = "{\"id\":\"" + id
@@ -561,19 +561,23 @@
                     + "\",\"cron\":\"" + cron
                     + "\",\"contacts\":\"" + contacts
                     + "\",\"state\":\"" + state + "\"}";
-            doAjaxHandleTimerTask('update',jsonStr);
+            doAjaxHandleTimerTask('update', jsonStr);
         }
     }
 
     // 处理TimerTask操作提交给服务器部分
-    function doAjaxHandleTimerTask(action, jsonData){
+    function doAjaxHandleTimerTask(action, jsonData) {
         $.ajax({
             type: 'POST',
-            url: bp + 'Smserver/timertask/'+ action,
+            url: bp + 'Smserver/timertask/' + action,
             data: jsonData,
             dataType: "json",
             contentType: "application/json",
             success: function (data) {
+                // 初始化timertasks相关的控件
+                initTbodyOfTasks(data['timerTasks']);// 选择控件
+                // 先将编辑框隐藏
+                $("#timertaskEditDiv").hide(1500);
                 showEditDone();
                 hideEditFail();
             }

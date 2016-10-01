@@ -353,7 +353,6 @@ public class MainController {
             timerTask.setFirerules(p.get("cron"));
             timerTask.setDescription(p.get("description"));
             timerTask.setState(p.get("state"));
-            System.out.println("timerTask:" + timerTask.toString());
             if(id <= 0){// 插入
                 timerTaskService.createTimerTask(timerTask);
             }else{
