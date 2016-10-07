@@ -10,6 +10,18 @@
 <head>
     <title>Bootstrap 模板</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style type="text/css">
+        /*设置单元格内容超长，用省略号代替的效果，前提是每一列的宽度都要指定*/
+        table {
+            table-layout: fixed;
+        }
+
+        td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
@@ -66,12 +78,12 @@
         <table class="text-center">
             <thead>
             <tr class="warning">
-                <th class="text-center">所在分组</th>
-                <th class="text-center">姓名</th>
-                <th class="text-center">职务</th>
-                <th class="text-center">手机号</th>
-                <th class="text-center">备注</th>
-                <th class="text-center">操作</th>
+                <th width="10%" class="text-center">所在分组</th>
+                <th width="10%" class="text-center">姓名</th>
+                <th width="15%" class="text-center">职务</th>
+                <th width="20%" class="text-center">手机号</th>
+                <th width="20%" class="text-center">备注</th>
+                <th width="15%" class="text-center">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -96,10 +108,10 @@
         <table class="text-center">
             <thead>
             <tr class="warning">
-                <th class="text-center">原名称</th>
-                <th class="text-center">新名称</th>
-                <th class="text-center">操作</th>
-                <th class="text-center">说明</th>
+                <th width="25%" class="text-center">原名称</th>
+                <th width="25%" class="text-center">新名称</th>
+                <th width="25%" class="text-center">操作</th>
+                <th width="25%" class="text-center">说明</th>
             </tr>
             </thead>
             <tbody>
@@ -121,29 +133,30 @@
         <table class="text-center table-condensed">
             <thead>
             <tr class="warning">
-                <th class="text-center">分组名称</th>
-                <th class="text-center">分组人员</th>
-                <th class="text-center">选项</th>
-                <th class="text-center">操作</th>
-                <th class="text-center">说明</th>
+                <th width="20%" class="text-center">分组名称</th>
+                <th width="40%" class="text-center">分组人员</th>
+                <th width="10%" class="text-center">选项</th>
+                <th width="10%" class="text-center">操作</th>
+                <th width="20%" class="text-center">说明</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td width="10%"><input class="form-control" id="newGroupName" placeholder="新组的名称"></td>
-                <td width="30%">
+                <td><input class="form-control" id="newGroupName" placeholder="新组的名称"></td>
+                <td>
                     <textarea class="form-control" id="GroupContactsIds" placeholder="这里将展示出添加至该组的人员名单"></textarea>
                     <button type="button" class="btn btn-primary btn-sm" onclick="emptyContactIds()">清空</button>
                 </td>
-                <td width="10%">
+                <td>
                     <input type="radio" name="addContactsType" id="addContactsType1" value="copy" checked>复制<br>
                     <input type="radio" name="addContactsType" id="addContactsType2" value="move">迁移
                 </td>
-                <td width="10%">
+                <td>
                     <button type="button" class="btn btn-primary btn-sm" onclick="createGroup()">确定</button>
                     <button type="button" class="btn btn-warning btn-sm" onclick="cancleCreateGroup()">取消</button>
                 </td>
-                <td width="30%">分组名如果为已有分组名，则会将选中的联系人分组进行操作；如果为新分组，则根据“选项”来确定如何操作联系人</td>
+                <td>分组名如果为已有分组名，则会将选中的联系人分组进行操作；<br>
+                    如果为新分组，则根据“选项”来确定如何操作联系人</td>
             </tr>
             </tbody>
         </table>
@@ -174,13 +187,15 @@
         <table class="table table-hover table-bordered text-center">
             <thead>
             <tr class="info">
-                <th class="text-center">序号（<input type="checkbox" id="selectAll" onclick="changeSelectAll()">全选）</th>
-                <th class="text-center">所在分组</th>
-                <th class="text-center">姓名</th>
-                <th class="text-center">职务</th>
-                <th class="text-center">手机号</th>
-                <th class="text-center">备注</th>
-                <th class="text-center">操作</th>
+                <th width="15%" class="text-center">序号（<input type="checkbox" id="selectAll"
+                                                              onclick="changeSelectAll()">全选）
+                </th>
+                <th width="15%" class="text-center">所在分组</th>
+                <th width="15%" class="text-center">姓名</th>
+                <th width="10%" class="text-center">职务</th>
+                <th width="15%" class="text-center">手机号</th>
+                <th width="15%" class="text-center">备注</th>
+                <th width="15%" class="text-center">操作</th>
             </tr>
             </thead>
             <tbody id="contactsBody">

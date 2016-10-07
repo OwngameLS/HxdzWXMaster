@@ -11,6 +11,17 @@
 <head>
     <title>定时任务</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style type="text/css">
+        /*设置单元格内容超长，用省略号代替的效果，前提是每一列的宽度都要指定*/
+        table{
+            table-layout: fixed;
+        }
+        td{
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
@@ -42,13 +53,13 @@
         <table class="table table-hover table-bordered text-center">
             <thead>
             <tr class="info">
-                <th class="text-center">序号</th>
-                <th class="text-center">功能</th>
-                <th class="text-center">描述</th>
-                <th class="text-center">触发规则</th>
-                <th class="text-center">接收者们</th>
-                <th class="text-center">状态</th>
-                <th class="text-center">操作</th>
+                <th width="5%" class="text-center">序号</th>
+                <th width="10%" class="text-center">功能</th>
+                <th width="20%" class="text-center">描述</th>
+                <th width="15%" class="text-center">触发规则</th>
+                <th width="23%" class="text-center">接收者们</th>
+                <th width="12%" class="text-center">状态</th>
+                <th width="15%" class="text-center">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -153,13 +164,13 @@
             <table class="table table-hover table-bordered text-center">
                 <thead>
                 <tr class="info">
-                    <th class="text-center">序号（<input type="checkbox" id="selectAllContacts"
+                    <th width="15%" class="text-center">序号（<input type="checkbox" id="selectAllContacts"
                                                       onclick="changeSelectAllContacts()">全选）
                     </th>
-                    <th class="text-center">所在分组</th>
-                    <th class="text-center">姓名</th>
-                    <th class="text-center">职务</th>
-                    <th class="text-center">手机号</th>
+                    <th width="15%" class="text-center">所在分组</th>
+                    <th width="15%" class="text-center">姓名</th>
+                    <th width="25%" class="text-center">职务</th>
+                    <th width="30%"class="text-center">手机号</th>
                 </tr>
                 </thead>
                 <tbody id="contactsBody">
@@ -173,15 +184,15 @@
         <table class="table table-hover table-bordered text-center">
             <thead>
             <tr class="info">
-                <th class="text-center">序号(<input type="checkbox" id="selectAllTimerTasks"
-                                                  onclick="changeSelectAllTimerTasks()">全选)
+                <th width="12%" class="text-center">序号(<input type="checkbox" id="selectAllTimerTasks"
+                                                             onclick="changeSelectAllTimerTasks()">全选)
                 </th>
-                <th class="text-center">功能</th>
-                <th class="text-center">描述</th>
-                <th class="text-center">触发规则</th>
-                <th class="text-center">接收者们</th>
-                <th class="text-center">状态</th>
-                <th class="text-center">操作</th>
+                <th width="12%" class="text-center">功能</th>
+                <th width="12%" class="text-center">描述</th>
+                <th width="14%" class="text-center">触发规则</th>
+                <th width="27%" class="text-center">接收者们</th>
+                <th width="15%" class="text-center">状态</th>
+                <th width="8%" class="text-center">操作</th>
             </tr>
             </thead>
             <tbody id="tasksBody">

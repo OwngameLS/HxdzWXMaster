@@ -1,10 +1,7 @@
 package com.owngame.web;
 
 import com.owngame.dao.ContactDao;
-import com.owngame.entity.Contact;
-import com.owngame.entity.Function;
-import com.owngame.entity.GroupName;
-import com.owngame.entity.TimerTask;
+import com.owngame.entity.*;
 import com.owngame.service.*;
 import com.owngame.utils.CheckUtil;
 import com.owngame.utils.ExcelUtil;
@@ -58,8 +55,8 @@ public class MainController {
     FunctionService functionService;
     @Autowired
     ContactDao contactDao;
-
-
+    @Autowired
+    TaskService taskService;
 
     /**
      * 处理来自微信服务器的验证
@@ -109,8 +106,8 @@ public class MainController {
         out.print("");// 先回应空消息 然后再用客服消息接口回复具体内容，避免等待
         out.close();
         // 交由线程池中的线程去处理具体逻辑
-        CoreService coreService = new CoreService(s);
-        pool.execute(coreService);
+        WeiXinCoreRoute weiXinCoreRoute = new WeiXinCoreRoute(s);
+        pool.execute(weiXinCoreRoute);
     }
 
     /**
@@ -390,6 +387,20 @@ public class MainController {
         ArrayList<Function> functions = functionService.queryAll();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("functions", functions);
+        return map;
+    }
+
+    /**
+     * 查询所有与手机端交互的任务
+     * @Param lasthours 查询几个小时以内
+     * @return
+     */
+    @RequestMapping(value = "/tasks/{lasthours}", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> showTasks(@PathVariable("lasthours") int lasthours){
+        ArrayList<Task> tasks = taskService.queryTasksBeforeTime(lasthours);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("tasks", tasks);
         return map;
     }
 

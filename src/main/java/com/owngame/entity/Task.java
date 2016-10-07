@@ -13,6 +13,8 @@ public class Task {
 
     long id;
     int state;
+    String name;
+    String description;
     String receivers;
     String content;
     Date createTime;
@@ -31,6 +33,22 @@ public class Task {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getReceivers() {

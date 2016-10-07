@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public interface TaskDao {
     Task queryById(long id);
 
-
     /**
      * 查询所有待处理的任务
      * TODO 需要分页
@@ -25,12 +24,16 @@ public interface TaskDao {
      * TODO 需要分页
      * 根据偏移量查询秒杀商品列表
      *
-     * @param offet
-     * @param limit
      * @return
      */
-    ArrayList<Task> queryTasks(@Param("offset") int offet, @Param("limit") int limit);
+    ArrayList<Task> queryAllTasks(@Param("offset") int offet, @Param("limit") int limit);
 
+    /**
+     * 查询时间点以前的任务
+     * @param time
+     * @return
+     */
+    ArrayList<Task> queryTasksBeforeTime(String time);
     /**
      * 插入新任务
      *

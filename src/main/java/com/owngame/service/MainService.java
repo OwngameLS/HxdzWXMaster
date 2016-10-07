@@ -14,11 +14,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * SimpleService主要执行定时调度业务
+ * MainService主要执行定时调度业务的逻辑功能指向
  * Created by Administrator on 2016-8-30.
  */
-@Service("simpleService")
-public class SimpleService implements Serializable {
+@Service("mainService")
+public class MainService implements Serializable {
     private String func_wxzb = "wxzb";
     private String func_fdjz = "fdjz";
     @Autowired
@@ -39,7 +39,9 @@ public class SimpleService implements Serializable {
         */
         String functions = (String) jobDataMap.get("functions");
         String receiversIds = (String) jobDataMap.get("receivers");
-        String infomation = "abcdefghijk";
+        String contents = "abcdefghijk";
+        String name = "testName";
+        String description = "descirption test....";
         // 查询所要结果
 //        if (functions.equals(func_fdjz)) {
 //            infomation = fdjzDao.querylatest().toString();
@@ -56,7 +58,9 @@ public class SimpleService implements Serializable {
         }
         // 将结果组织成Task
         Task task = new Task();
-        task.setContent(infomation);
+        task.setName(name);
+        task.setDescription(description);
+        task.setContent(contents);
         task.setReceivers(receivers);
         task.setState(Task.STATE_WAITING);
         task.setCreateTime(new Date(System.currentTimeMillis()));

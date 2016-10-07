@@ -8,21 +8,27 @@
     </select>
 
     <select id="queryByState" resultType="Task" parameterType="int">
-        select * from task where state=#{state} order by createTime desc
+        select * from task where state=#{state} order by createTime asc
     </select>
 
     <select id="queryAll" resultType="Task">
         select * from task where state=#{state} order by createTime desc limit #{offset},#{limit}
     </select>
 
+    <select id="queryTasksBeforeTime" resultType="Task" parameterType="String">
+        select * from task where createTime > #{createTime} order by state asc
+    </select>
+
     <insert id="insert" parameterType="Task">
         insert ignore into task
-        (id, state,content,receivers,createTime)
+        (id, name, description, state,content,receivers,createTime)
         values
-        (#{id}, #{state},#{content},#{receivers},#{createTime})
+        (#{id}, #{name}, #{description}, #{state},#{content},#{receivers},#{createTime})
     </insert>
     <update id="update" parameterType="Task">
         update task set
+        name=#{name},
+        description=#{description},
         state=#{state},
         content=#{content},
         receivers=#{receivers},

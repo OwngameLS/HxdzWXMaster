@@ -31,7 +31,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav nav-pills">
-                    <li><a href="#">首 页</a></li>
+                    <li><a href="<%=basePath%>Smserver/view/taskstate" target="display">首 页</a></li>
                     <li><a href="<%=basePath%>Smserver/view/timertask" target="display">定时任务</a></li>
                     <li><a href="<%=basePath%>Smserver/view/contact" target="display">通讯录</a></li>
                     <%--target指的是name--%>
@@ -63,7 +63,7 @@
 
     <!-- 16:9 aspect ratio -->
     <div class="embed-responsive embed-responsive-16by9">
-        <iframe class="embed-responsive-item" name="display"></iframe>
+        <iframe class="embed-responsive-item" name="display" src="<%=basePath%>Smserver/view/taskstate"></iframe>
     </div>
     <footer class="center-block container text-center">
         <p>------技术支持------</p>

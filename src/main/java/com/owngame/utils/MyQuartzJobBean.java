@@ -1,6 +1,6 @@
 package com.owngame.utils;
 
-import com.owngame.service.SimpleService;
+import com.owngame.service.MainService;
 import org.quartz.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
@@ -18,10 +18,10 @@ public class MyQuartzJobBean extends QuartzJobBean {
     protected void executeInternal(JobExecutionContext jobexecutioncontext) throws JobExecutionException {
         Trigger trigger = jobexecutioncontext.getTrigger();
         String triggerName = trigger.getKey().getName();
-        SimpleService simpleService = getApplicationContext(jobexecutioncontext).getBean("simpleService",
-                SimpleService.class);
+        MainService mainService = getApplicationContext(jobexecutioncontext).getBean("mainService",
+                MainService.class);
         // 因为我设计的就是一个任务一个trigger，所以相应的数据也放在trigger中
-        simpleService.handleMethod(triggerName, trigger.getJobDataMap());
+        mainService.handleMethod(triggerName, trigger.getJobDataMap());
     }
 
     private ApplicationContext getApplicationContext(final JobExecutionContext jobexecutioncontext) {
