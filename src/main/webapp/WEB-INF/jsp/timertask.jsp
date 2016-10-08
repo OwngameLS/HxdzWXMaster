@@ -13,10 +13,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style type="text/css">
         /*设置单元格内容超长，用省略号代替的效果，前提是每一列的宽度都要指定*/
-        table{
+        table {
             table-layout: fixed;
         }
-        td{
+
+        td {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -165,12 +166,12 @@
                 <thead>
                 <tr class="info">
                     <th width="15%" class="text-center">序号（<input type="checkbox" id="selectAllContacts"
-                                                      onclick="changeSelectAllContacts()">全选）
+                                                                  onclick="changeSelectAllContacts()">全选）
                     </th>
                     <th width="15%" class="text-center">所在分组</th>
                     <th width="15%" class="text-center">姓名</th>
                     <th width="25%" class="text-center">职务</th>
-                    <th width="30%"class="text-center">手机号</th>
+                    <th width="30%" class="text-center">手机号</th>
                 </tr>
                 </thead>
                 <tbody id="contactsBody">
@@ -185,7 +186,7 @@
             <thead>
             <tr class="info">
                 <th width="12%" class="text-center">序号(<input type="checkbox" id="selectAllTimerTasks"
-                                                             onclick="changeSelectAllTimerTasks()">全选)
+                                                              onclick="changeSelectAllTimerTasks()">全选)
                 </th>
                 <th width="12%" class="text-center">功能</th>
                 <th width="12%" class="text-center">描述</th>

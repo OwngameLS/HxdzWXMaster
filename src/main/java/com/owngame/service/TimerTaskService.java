@@ -1,7 +1,6 @@
 package com.owngame.service;
 
 import com.owngame.entity.TimerTask;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
@@ -40,6 +39,7 @@ public interface TimerTaskService {
 
     /**
      * 通过id查询
+     *
      * @param id
      * @return
      */

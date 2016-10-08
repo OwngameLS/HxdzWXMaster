@@ -13,10 +13,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style type="text/css">
         /*设置单元格内容超长，用省略号代替的效果，前提是每一列的宽度都要指定*/
-        table{
+        table {
             table-layout: fixed;
         }
-        td{
+
+        td {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -83,7 +84,7 @@
 
     function queryTasks() {
         $.ajax({
-            url: bp + 'Smserver/tasks/'+lasthours,
+            url: bp + 'Smserver/tasks/' + lasthours,
             type: 'GET',
             success: function (data) {
                 // 初始化tasks相关的控件
@@ -93,7 +94,7 @@
     }
 
     // 当发生选择查询时段变化时
-    function changeQueryHours(){
+    function changeQueryHours() {
         // 得到查询时间段
         lasthours = $("#hours option:selected").val();
         queryTasks();
@@ -127,29 +128,28 @@
             htmlStr = htmlStr + '<td>' + tasks[i].name
                     + '</td><td>' + tasks[i].description
                     + '</td><td>' + time + '</td><td>'
-                    + stateDesc +'</td></tr>';
+                    + stateDesc + '</td></tr>';
         }
         $("#tasksBody").html(htmlStr);
         setInterval(queryTasks, refreshTime);// 自动刷新
     }
 
     // 时间转换
-    Date.prototype.Format = function(fmt)
-    { //author: meizz
+    Date.prototype.Format = function (fmt) { //author: meizz
         var o = {
-            "M+" : this.getMonth()+1,                 //月份
-            "d+" : this.getDate(),                    //日
-            "H+" : this.getHours(),                   //小时
-            "m+" : this.getMinutes(),                 //分
-            "s+" : this.getSeconds(),                 //秒
-            "q+" : Math.floor((this.getMonth()+3)/3), //季度
-            "S"  : this.getMilliseconds()             //毫秒
+            "M+": this.getMonth() + 1,                 //月份
+            "d+": this.getDate(),                    //日
+            "H+": this.getHours(),                   //小时
+            "m+": this.getMinutes(),                 //分
+            "s+": this.getSeconds(),                 //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds()             //毫秒
         };
-        if(/(y+)/.test(fmt))
-            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-        for(var k in o)
-            if(new RegExp("("+ k +")").test(fmt))
-                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
         return fmt;
     }
 

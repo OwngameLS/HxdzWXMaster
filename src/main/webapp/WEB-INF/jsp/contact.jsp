@@ -156,7 +156,8 @@
                     <button type="button" class="btn btn-warning btn-sm" onclick="cancleCreateGroup()">取消</button>
                 </td>
                 <td>分组名如果为已有分组名，则会将选中的联系人分组进行操作；<br>
-                    如果为新分组，则根据“选项”来确定如何操作联系人</td>
+                    如果为新分组，则根据“选项”来确定如何操作联系人
+                </td>
             </tr>
             </tbody>
         </table>

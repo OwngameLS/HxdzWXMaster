@@ -39,27 +39,27 @@ public class TimerTaskServiceImpl implements TimerTaskService {
         ArrayList<String> afNames = qrtz_triggersDao.getNames();
         // 找出插入的name
         String newName = null;
-        for(String s : afNames){
+        for (String s : afNames) {
             boolean isFound = false;// 新名字是否找到
-            for(String bs : bNames){
-                if(s.equals(bs)){
+            for (String bs : bNames) {
+                if (s.equals(bs)) {
                     isFound = true;
                     break;// 160919
                 }
             }
-            if(isFound){
+            if (isFound) {
                 continue;
-            }else{
+            } else {
                 newName = s;
             }
         }
-        if(newName != null) {
+        if (newName != null) {
             timerTask.setName(newName);
             // 还要判断状态 因为可能插入的时候是一个暂停任务
             updateState(newName, timerTask.getState());
             // 插入timertask表
             return timerTaskDao.insert(timerTask);
-        }else {
+        } else {
             return -1;
         }
     }
@@ -80,22 +80,22 @@ public class TimerTaskServiceImpl implements TimerTaskService {
         Map<String, String> map = new HashMap<String, String>();
         map.put("functions", timerTask.getFunctions());
         map.put("receivers", timerTask.getReceivers());
-        quartzTriggerService.updateTrigger(timerTask.getName(),timerTask.getFirerules(), map);
+        quartzTriggerService.updateTrigger(timerTask.getName(), timerTask.getFirerules(), map);
         String state = timerTask.getState();
         // 更新状态
         updateState(timerTask.getName(), timerTask.getState());
         return timerTaskDao.update(timerTask);
     }
 
-    public TimerTask queryById(long id){
+    public TimerTask queryById(long id) {
         return timerTaskDao.queryById(id);
     }
 
     // 更新状态
-    private void updateState(String name, String state){
-        if(state.equals("run")){
+    private void updateState(String name, String state) {
+        if (state.equals("run")) {
             quartzTriggerService.resumeTrigger(name);
-        }else if(state.equals("pause")){
+        } else if (state.equals("pause")) {
             quartzTriggerService.pauseTrigger(name);
         }
     }

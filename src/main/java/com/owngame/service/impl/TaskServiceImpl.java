@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 /**
  * Created by Administrator on 2016/10/7.
@@ -19,8 +17,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     TaskDao taskDao;
+
     /**
      * 查询几个小时之内的任务状态
+     *
      * @param hours
      * @return
      */

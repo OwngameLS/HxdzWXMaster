@@ -1,7 +1,5 @@
 package com.owngame.dao;
 
-import com.owngame.entity.TimerTask;
-
 import java.util.ArrayList;
 
 /**
@@ -11,6 +9,7 @@ import java.util.ArrayList;
 public interface Qrtz_triggersDao {
     /**
      * 查询所有的名字
+     *
      * @return
      */
     ArrayList<String> getNames();

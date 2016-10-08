@@ -1,7 +1,7 @@
 package com.owngame.service.impl;
 
-import com.owngame.service.QuartzTriggerService;
 import com.owngame.service.QuartzService;
+import com.owngame.service.QuartzTriggerService;
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,6 @@ public class QuartzTriggerServiceImpl implements QuartzTriggerService {
     public void updateTrigger(String triggerName, String strCronExpression, Map<String, String> map) {
 
 
-
     }
 
     public void showTriggers() {
@@ -49,7 +48,7 @@ public class QuartzTriggerServiceImpl implements QuartzTriggerService {
         quartzService.pauseTrigger(triggerName);
     }
 
-    public void resumeTrigger(String triggerName){
+    public void resumeTrigger(String triggerName) {
         quartzService.resumeTrigger(triggerName);
     }
 

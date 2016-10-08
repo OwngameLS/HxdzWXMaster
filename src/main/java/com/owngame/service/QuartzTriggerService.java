@@ -11,6 +11,7 @@ public interface QuartzTriggerService {
 
     /**
      * 新增触发器
+     *
      * @param strCronExpression
      * @param map
      */
@@ -39,6 +40,7 @@ public interface QuartzTriggerService {
 
     /**
      * 恢复触发器
+     *
      * @param triggerName
      */
     void resumeTrigger(String triggerName);

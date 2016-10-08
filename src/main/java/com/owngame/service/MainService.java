@@ -50,9 +50,9 @@ public class MainService implements Serializable {
 //        }
         String receivers = "";// 因为上面得到的是ids，这里就查询成对应的手机号码吧
         String receiversArr[] = receiversIds.split(",");
-        for(int i = 0; i<receiversArr.length;i++){
+        for (int i = 0; i < receiversArr.length; i++) {
             receivers = receivers + contactDao.queryById(Long.parseLong(receiversArr[i])).getPhone();
-            if(i+1<receiversArr.length){
+            if (i + 1 < receiversArr.length) {
                 receivers = receivers + ",";
             }
         }

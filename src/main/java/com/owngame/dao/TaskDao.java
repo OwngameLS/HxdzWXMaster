@@ -30,10 +30,12 @@ public interface TaskDao {
 
     /**
      * 查询时间点以前的任务
+     *
      * @param time
      * @return
      */
     ArrayList<Task> queryTasksBeforeTime(String time);
+
     /**
      * 插入新任务
      *

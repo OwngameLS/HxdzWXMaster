@@ -87,6 +87,7 @@ public class MainController {
 
     /**
      * 处理来自微信服务器转发的微信消息事件
+     *
      * @param request
      * @param response
      * @throws IOException
@@ -142,6 +143,7 @@ public class MainController {
 
     /**
      * 处理上传通讯录文件
+     *
      * @param file
      * @return
      */
@@ -178,6 +180,7 @@ public class MainController {
 
     /**
      * 下载文件
+     *
      * @return
      * @throws IOException
      */
@@ -194,6 +197,7 @@ public class MainController {
 
     /**
      * 返回试图（网页）
+     *
      * @param view
      * @return
      */
@@ -205,6 +209,7 @@ public class MainController {
 
     /**
      * 根据组名返回该组的联系人信息
+     *
      * @param groupname
      * @return
      */
@@ -219,6 +224,7 @@ public class MainController {
 
     /**
      * 返回所有的分组信息
+     *
      * @return
      */
     @RequestMapping(value = "/contacts/groups", method = RequestMethod.GET)
@@ -232,6 +238,7 @@ public class MainController {
 
     /**
      * 更新某个联系人的信息
+     *
      * @param contact
      * @return
      */
@@ -254,6 +261,7 @@ public class MainController {
 
     /**
      * 删除联系人
+     *
      * @param p
      * @return
      */
@@ -273,6 +281,7 @@ public class MainController {
 
     /**
      * 通过姓名查询联系人（模糊查询）
+     *
      * @param p
      * @return
      */
@@ -287,6 +296,7 @@ public class MainController {
 
     /**
      * 通过ids查询联系人信息
+     *
      * @param p
      * @return
      */
@@ -302,6 +312,7 @@ public class MainController {
 
     /**
      * 对分组信息的增删改查
+     *
      * @param p
      * @param action
      * @return
@@ -327,6 +338,7 @@ public class MainController {
 
     /**
      * 操作定时任务
+     *
      * @param p
      * @param action
      * @return
@@ -340,9 +352,9 @@ public class MainController {
             System.out.println("update");
             long id = Long.parseLong(p.get("id"));
             TimerTask timerTask;
-            if(id <= 0){// 插入
+            if (id <= 0) {// 插入
                 timerTask = new TimerTask();
-            }else{
+            } else {
                 timerTask = timerTaskService.queryById(id);
             }
             timerTask.setFunctions(p.get("functions"));
@@ -350,9 +362,9 @@ public class MainController {
             timerTask.setFirerules(p.get("cron"));
             timerTask.setDescription(p.get("description"));
             timerTask.setState(p.get("state"));
-            if(id <= 0){// 插入
+            if (id <= 0) {// 插入
                 timerTaskService.createTimerTask(timerTask);
-            }else{
+            } else {
                 timerTaskService.update(timerTask);
             }
         } else if (action.equals("delete")) {
@@ -366,6 +378,7 @@ public class MainController {
 
     /**
      * 查询所有定时任务
+     *
      * @return
      */
     @RequestMapping(value = "/timertask/getall", method = RequestMethod.GET)
@@ -379,6 +392,7 @@ public class MainController {
 
     /**
      * 查询所有功能
+     *
      * @return
      */
     @RequestMapping(value = "/functions", method = RequestMethod.GET)
@@ -392,12 +406,13 @@ public class MainController {
 
     /**
      * 查询所有与手机端交互的任务
-     * @Param lasthours 查询几个小时以内
+     *
      * @return
+     * @Param lasthours 查询几个小时以内
      */
     @RequestMapping(value = "/tasks/{lasthours}", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> showTasks(@PathVariable("lasthours") int lasthours){
+    public Map<String, Object> showTasks(@PathVariable("lasthours") int lasthours) {
         ArrayList<Task> tasks = taskService.queryTasksBeforeTime(lasthours);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("tasks", tasks);
