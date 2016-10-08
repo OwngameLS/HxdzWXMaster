@@ -32,7 +32,8 @@
 
 <div class="danger" style="padding: 5px;"><%--通讯录操作部分--%>
 
-    <div style="width:50%;">
+
+    <div style="width:30%;float: left">
         <label for="hours">选择查询时段：</label>
         <select id="hours" onchange="changeQueryHours()">
             <option value="1">最近1小时</option>
@@ -42,7 +43,7 @@
             <option value="24">最近1天</option>
         </select>
     </div>
-    <div style="width:50%;">
+    <div style="width:30%;float: left">
         <label for="hours">自动刷新时间：</label>
         <select id="refreshtime" onchange="changeRefreshTime()">
             <option value="0.5" selected>30秒</option>
@@ -77,6 +78,7 @@
     var bp = '<%=basePath%>';
     var refreshTime = 30000;// 30秒
     var lasthours = 1;// 1小时
+    var intervalId;
     // 文档被加载完成时
     $(document).ready(function () {
         queryTasks();// 默认查询一小时之内的
@@ -131,7 +133,8 @@
                     + stateDesc + '</td></tr>';
         }
         $("#tasksBody").html(htmlStr);
-        setInterval(queryTasks, refreshTime);// 自动刷新
+        clearInterval(intervalId);
+        intervalId = setInterval(queryTasks, refreshTime);// 自动刷新
     }
 
     // 时间转换
