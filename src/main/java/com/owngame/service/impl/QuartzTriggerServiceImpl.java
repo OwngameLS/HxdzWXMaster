@@ -1,5 +1,7 @@
-package com.owngame.service;
+package com.owngame.service.impl;
 
+import com.owngame.service.QuartzTriggerService;
+import com.owngame.service.QuartzService;
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,10 +14,10 @@ import java.util.Map;
  * Created by Administrator on 2016/8/30.
  */
 @Service
-public class HandleQuartzServiceImpl implements HandleQuartzService {
+public class QuartzTriggerServiceImpl implements QuartzTriggerService {
 
     @Autowired
-    private SchedulerService schedulerService;
+    private QuartzService quartzService;
     @Autowired
     private Scheduler scheduler;
 
@@ -30,7 +32,7 @@ public class HandleQuartzServiceImpl implements HandleQuartzService {
 
     public void addTrigger(String strCronExpression, Map<String, String> map) {
         // 添加默认属性的触发器
-        schedulerService.schedule(strCronExpression, map);
+        quartzService.schedule(strCronExpression, map);
     }
 
     public void updateTrigger(String triggerName, String strCronExpression, Map<String, String> map) {
@@ -44,15 +46,15 @@ public class HandleQuartzServiceImpl implements HandleQuartzService {
     }
 
     public void pauseTrigger(String triggerName) {
-        schedulerService.pauseTrigger(triggerName);
+        quartzService.pauseTrigger(triggerName);
     }
 
     public void resumeTrigger(String triggerName){
-        schedulerService.resumeTrigger(triggerName);
+        quartzService.resumeTrigger(triggerName);
     }
 
     public void deleteTrigger(String triggerName) {
-        schedulerService.removeTrigdger(triggerName);
+        quartzService.removeTrigdger(triggerName);
     }
 
 }

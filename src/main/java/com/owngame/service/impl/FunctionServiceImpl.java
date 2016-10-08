@@ -1,7 +1,8 @@
-package com.owngame.service;
+package com.owngame.service.impl;
 
 import com.owngame.dao.FunctionDao;
 import com.owngame.entity.Function;
+import com.owngame.service.FunctionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

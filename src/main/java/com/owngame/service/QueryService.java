@@ -3,7 +3,7 @@ package com.owngame.service;
 import com.owngame.menu.ManageMenu;
 
 /**
- * 查询接口
+ * 查询各项数据的接口
  * Created by Administrator on 2016-8-19.
  */
 public class QueryService {

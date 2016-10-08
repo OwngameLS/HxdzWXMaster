@@ -1,6 +1,6 @@
 package com.owngame.utils;
 
-import com.owngame.service.SchedulerService;
+import com.owngame.service.QuartzService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.quartz.SchedulerException;
@@ -31,7 +31,7 @@ public class TestQuartz {
     private static String TRIGGER_GROUP_NAME = "zydTriggerGroup";
     private static SchedulerFactory sf = new StdSchedulerFactory();
     @Autowired
-    private SchedulerService schedulerService;
+    private QuartzService quartzService;
 
     private static Date parse(String dateStr) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -58,80 +58,80 @@ public class TestQuartz {
 //}
 //
 
-schedulerService.schedule("0/2 * * ? * * *");
+quartzService.schedule("0/2 * * ? * * *");
 Date startTime = parse("2015-08-05 10:15:00");
 Date endTime = parse("2015-08-05 15:15:00");
 int repeatCount=10;
 long repeatInterval=2;
 // String name="b870cf9b-c313-4fd6-87ad-e99de7580290";
 
-// schedulerService.schedule(name, startTime, endTime, repeatCount, repeatInterval);
+// quartzService.schedule(name, startTime, endTime, repeatCount, repeatInterval);
 
 
-schedulerService.schedule("0/10 * * ? * * *");
+quartzService.schedule("0/10 * * ? * * *");
 
 
 
 
 // 2014-08-19 16:33:00开始执行调度
-schedulerService.schedule(startTime);
+quartzService.schedule(startTime);
 
 // 2014-08-19 16:33:00开始执行调度，2014-08-22 21:10:00结束执行调试
-schedulerService.schedule(startTime, endTime);
+quartzService.schedule(startTime, endTime);
 
 // 2014-08-19 16:33:00开始执行调度，执行5次结束
-schedulerService.schedule(startTime, 5);
+quartzService.schedule(startTime, 5);
 
 // 2014-08-19 16:33:00开始执行调度，每隔20秒执行一次，执行5次结束
-schedulerService.schedule(startTime, 5, 20);
+quartzService.schedule(startTime, 5, 20);
 
 
 */
 
-// schedulerService.schedule("quartz1", "ZYD", "0/2 * * ? * * *");
+// quartzService.schedule("quartz1", "ZYD", "0/2 * * ? * * *");
 
     @Test
     public void test() throws SchedulerException {//,Exception,ParseException
 //schedule ("", Date startTime, Date endTime,int repeatCount, long repeatInterval, String group)
         Date startTime = parse("2016-08-30 20:55:00");
         Date endTime = parse("2016-08-30 20:40:00");
-// schedulerService.resumeTrigger("f64eee37-62f4-473f-b5b9-d7a76d86c443");
+// quartzService.resumeTrigger("f64eee37-62f4-473f-b5b9-d7a76d86c443");
 
-//        schedulerService.schedule("0 28 17 * * ? *");
-//        schedulerService.schedule("f64eee37-62f4-473f-b5b9-d7a76d86c443", "0 0/1 * * * ? *");
-//        schedulerService.pauseTrigger("f64eee37-62f4-473f-b5b9-d7a76d86c443");
-//        schedulerService.resumeTrigger("0fdb7134-9701-494c-9879-bbf2e30120b8");
+//        quartzService.schedule("0 28 17 * * ? *");
+//        quartzService.schedule("f64eee37-62f4-473f-b5b9-d7a76d86c443", "0 0/1 * * * ? *");
+//        quartzService.pauseTrigger("f64eee37-62f4-473f-b5b9-d7a76d86c443");
+//        quartzService.resumeTrigger("0fdb7134-9701-494c-9879-bbf2e30120b8");
         Map<String, String> map = new LinkedHashMap<String, String>();
         map.put("functions", "gogogogo");
         map.put("", "13581695827;13974348591;15874358616");
-//        schedulerService.schedule("0 0/1 * * * ? *", map);
-//        schedulerService.schedule(startTime);
-        schedulerService.pauseTrigger("0c7b9fcc-3b3d-4a4d-b3ce-b4892035881b");
-// schedulerService.schedule(startTime, endTime,5,5);
-// schedulerService.schedule("ZYD", startTime, endTime, 1, 10);
-// schedulerService.schedule(startTime);
-//        schedulerService.removeTrigdger("8b037a34-2c8f-40a9-a3cb-fb34b1dda222");
+//        quartzService.schedule("0 0/1 * * * ? *", map);
+//        quartzService.schedule(startTime);
+        quartzService.pauseTrigger("0c7b9fcc-3b3d-4a4d-b3ce-b4892035881b");
+// quartzService.schedule(startTime, endTime,5,5);
+// quartzService.schedule("ZYD", startTime, endTime, 1, 10);
+// quartzService.schedule(startTime);
+//        quartzService.removeTrigdger("8b037a34-2c8f-40a9-a3cb-fb34b1dda222");
         int repeatCount = 10;
         long repeatInterval = 2;
 // String name="b870cf9b-c313-4fd6-87ad-e99de7580290";
 
-// schedulerService.schedule(name, startTime, endTime, repeatCount, repeatInterval);
+// quartzService.schedule(name, startTime, endTime, repeatCount, repeatInterval);
 
 
-/* schedulerService.schedule("0/10 * * ? * * *");
+/* quartzService.schedule("0/10 * * ? * * *");
 
 
 // 2014-08-19 16:33:00开始执行调度
-schedulerService.schedule(startTime);
+quartzService.schedule(startTime);
 
 // 2014-08-19 16:33:00开始执行调度，2014-08-22 21:10:00结束执行调试
-schedulerService.schedule(startTime, endTime);
+quartzService.schedule(startTime, endTime);
 
 // 2014-08-19 16:33:00开始执行调度，执行5次结束
-schedulerService.schedule(startTime, 5);*/
+quartzService.schedule(startTime, 5);*/
 
 // 2014-08-19 16:33:00开始执行调度，每隔20秒执行一次，执行5次结束
-// schedulerService.schedule(startTime, 5, 20);
+// quartzService.schedule(startTime, 5, 20);
 
     }
 }

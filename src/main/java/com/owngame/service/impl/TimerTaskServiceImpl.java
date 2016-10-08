@@ -1,8 +1,10 @@
-package com.owngame.service;
+package com.owngame.service.impl;
 
 import com.owngame.dao.Qrtz_triggersDao;
 import com.owngame.dao.TimerTaskDao;
 import com.owngame.entity.TimerTask;
+import com.owngame.service.QuartzTriggerService;
+import com.owngame.service.TimerTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,7 @@ public class TimerTaskServiceImpl implements TimerTaskService {
     @Autowired
     Qrtz_triggersDao qrtz_triggersDao;
     @Autowired
-    HandleQuartzService handleQuartzService;
+    QuartzTriggerService quartzTriggerService;
 
 
     public int createTimerTask(TimerTask timerTask) {
@@ -32,7 +34,7 @@ public class TimerTaskServiceImpl implements TimerTaskService {
         Map<String, String> map = new HashMap<String, String>();
         map.put("functions", timerTask.getFunctions());
         map.put("receivers", timerTask.getReceivers());
-        handleQuartzService.addTrigger(strCronExpression, map);
+        quartzTriggerService.addTrigger(strCronExpression, map);
         // 插入之后的names
         ArrayList<String> afNames = qrtz_triggersDao.getNames();
         // 找出插入的name
@@ -69,7 +71,7 @@ public class TimerTaskServiceImpl implements TimerTaskService {
     public int deleteById(long id) {
         // 先根据id查询触发器 然后删除它
         TimerTask timerTask = timerTaskDao.queryById(id);
-        handleQuartzService.deleteTrigger(timerTask.getName());
+        quartzTriggerService.deleteTrigger(timerTask.getName());
         return timerTaskDao.deleteById(id);
     }
 
@@ -78,7 +80,7 @@ public class TimerTaskServiceImpl implements TimerTaskService {
         Map<String, String> map = new HashMap<String, String>();
         map.put("functions", timerTask.getFunctions());
         map.put("receivers", timerTask.getReceivers());
-        handleQuartzService.updateTrigger(timerTask.getName(),timerTask.getFirerules(), map);
+        quartzTriggerService.updateTrigger(timerTask.getName(),timerTask.getFirerules(), map);
         String state = timerTask.getState();
         // 更新状态
         updateState(timerTask.getName(), timerTask.getState());
@@ -92,9 +94,9 @@ public class TimerTaskServiceImpl implements TimerTaskService {
     // 更新状态
     private void updateState(String name, String state){
         if(state.equals("run")){
-            handleQuartzService.resumeTrigger(name);
+            quartzTriggerService.resumeTrigger(name);
         }else if(state.equals("pause")){
-            handleQuartzService.pauseTrigger(name);
+            quartzTriggerService.pauseTrigger(name);
         }
     }
 

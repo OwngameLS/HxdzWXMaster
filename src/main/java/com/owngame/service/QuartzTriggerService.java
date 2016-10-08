@@ -3,11 +3,11 @@ package com.owngame.service;
 import java.util.Map;
 
 /**
- * 初始化定时任务的入口
+ * 操作QuartzTrigger的服务接口
  * Created by Administrator on 2016-8-30.
  */
 
-public interface HandleQuartzService {
+public interface QuartzTriggerService {
 
     /**
      * 新增触发器

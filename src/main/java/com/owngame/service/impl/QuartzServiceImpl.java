@@ -1,5 +1,6 @@
-package com.owngame.service;
+package com.owngame.service.impl;
 
+import com.owngame.service.QuartzService;
 import org.quartz.*;
 import org.quartz.impl.triggers.CronTriggerImpl;
 import org.quartz.impl.triggers.SimpleTriggerImpl;
@@ -15,7 +16,7 @@ import java.util.UUID;
  * Created by Administrator on 2016-8-30.
  */
 @Service("schedulerService")
-public class SchedulerServiceImpl implements SchedulerService {
+public class QuartzServiceImpl implements QuartzService {
     private static final String NULLSTRING = null;
     private static final Date NULLDATE = null;
 

@@ -13,7 +13,7 @@ import java.util.Map;
  * 需要自己实现一个动态调 度服务类，在其中构建CronTrigger或SimpleTrigger，动态配置时间。
  * Created by Administrator on 2016-8-30.
  */
-public interface SchedulerService {
+public interface QuartzService {
 
     /**
      * 真正调用的创建定时任务的入口方法

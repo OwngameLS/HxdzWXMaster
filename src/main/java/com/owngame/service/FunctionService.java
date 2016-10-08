@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2016-9-19.
+ * 可实现的方法的服务类
  */
 public interface FunctionService {
     /**
