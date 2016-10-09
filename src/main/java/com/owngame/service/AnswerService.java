@@ -71,15 +71,12 @@ public class AnswerService {
     public Map<String, Object> handleCommit(long id, int state) {
         System.out.println("handleCommit....");
         Map<String, Object> map = new HashMap<String, Object>();
-        Task task = taskDao.queryById(id);
-
-        task.setState(state);
-        taskDao.update(task);
-//        taskDao.updateState(id, state);
-
+        if(state == 0){// 客户端发来没找到该任务，说明该任务已经正在处理了
+            state = 1;
+        }
+        taskDao.updateState(id, state);
         map.put("type", "GOON");
         return map;
-
     }
 
     /**

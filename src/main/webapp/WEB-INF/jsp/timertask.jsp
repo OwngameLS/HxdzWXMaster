@@ -39,18 +39,18 @@
             </p>
         </dd>
     </dl>
-    <div id="editDoneDiv" class="bg-success"
+    <div id="editDoneDiv" class="alert alert-success" role="alert"
          style="display: none;width: 30%;margin:0 auto;text-align:center"><%--操作完成--%>
         操作完成！
     </div>
 
-    <div id="editFailDiv" class="bg-danger"
+    <div id="editFailDiv" class="alert alert-danger" role="alert"
          style="padding:5px;display: none;width: 30%;margin:0 auto;text-align:center"><%--操作失败--%>
         <h5>操作失败！</h5>
         <p class="text-danger" id="failCause"></p>
     </div>
 
-    <div id="timertaskEditDiv" style="display: none"><%--编辑定时任务的表格--%>
+    <div id="timertaskEditDiv" style="display: none" class="well"><%--编辑定时任务的表格--%>
         <table class="table table-hover table-bordered text-center">
             <thead>
             <tr class="info">
@@ -104,10 +104,10 @@
     </div>
 
     <div id="cronExpressionDiv" class="embed-responsive embed-responsive-16by9" style="display:none">
-        <iframe class="embed-responsive-item" src="../../resources/cronpage/cronpage.htm"></iframe>
+        <iframe class="embed-responsive-item well" src="../../resources/cronpage/cronpage.htm"></iframe>
     </div>
 
-    <div id="functionsEditDiv" class="bg-success" style="display: none;text-align:center"> <!--编辑定时任务功能的方法-->
+    <div id="functionsEditDiv" class="well" style="display: none;text-align:center"> <!--编辑定时任务功能的方法-->
         <h4>在下面勾选你需要的功能</h4>
         <div style="float:left;">
             <button type="button" class="btn btn-success btn-sm" onclick="editFunctionsDone('done')">完成</button>
@@ -181,7 +181,7 @@
     </div>
 
     <button type="button" class="btn btn-warning btn-sm" onclick="initEditTimerTask(-1)">新建任务</button>
-    <div id="tasks" style="width:100%;float:left;overflow:scroll; height:400px;">
+    <div id="tasks" style="width:100%;float:left;overflow:scroll; height:400px;" class="well">
         <table class="table table-hover table-bordered text-center">
             <thead>
             <tr class="info">
@@ -416,7 +416,7 @@
 
     function initEditTimerTask(id, functions, description, firerules, receivers, state) {
         // 先将编辑框展示出来
-        $("#timertaskEditDiv").show(1500);
+        $("#timertaskEditDiv").show(2000);
         if (id != -1) {
             $("#ttIdEdit").html(id);
             $("#ttfunctionsEdit").html(functions);
@@ -500,18 +500,18 @@
                 }
                 $("#ttfunctionsEdit").html(tt);
             }
-            $("#functionsEditDiv").hide(1500);
+            $("#functionsEditDiv").hide(2000);
         } else if (action == 'cancle') {
-            $("#functionsEditDiv").hide(1500);
+            $("#functionsEditDiv").hide(2000);
         }
     }
 
     // 展示定时任务触发规则的UI
     function editCron() {
         // 显示按钮
-        $("#editCronDoneDiv").show(1000);
+        $("#editCronDoneDiv").show(2000);
         // 显示操作页面
-        $("#cronExpressionDiv").show(1000);
+        $("#cronExpressionDiv").show(2000);
         // 将原来的cron表达式在UI界面上显示出来
         var formerCron = $("#ttcronEdit").html();
         $("iframe").contents().find("#cron").val(formerCron);
@@ -532,15 +532,15 @@
     // 隐藏展示定时任务触发规则的UI
     function hideCronEdit() {
         // 显示按钮
-        $("#editCronDoneDiv").hide(1000);
+        $("#editCronDoneDiv").hide(2000);
         // 显示操作页面
-        $("#cronExpressionDiv").hide(1000);
+        $("#cronExpressionDiv").hide(2000);
     }
 
     // 取消编辑定时任务
     function cancelEditTimerTask() {
         // 编辑框
-        $("#timertaskEditDiv").hide(1500);
+        $("#timertaskEditDiv").hide(2000);
         hideEditFail();
         hideCronEdit();
     }
@@ -589,7 +589,7 @@
                 // 初始化timertasks相关的控件
                 initTbodyOfTasks(data['timerTasks']);// 选择控件
                 // 先将编辑框隐藏
-                $("#timertaskEditDiv").hide(1500);
+                $("#timertaskEditDiv").hide(2000);
                 showEditDone();
                 hideEditFail();
             }
@@ -601,12 +601,12 @@
     }
 
     function hideContactsDiv() {
-        $("#contactsDiv").hide(1500);
+        $("#contactsDiv").hide(2000);
     }
 
     function showEditDone() {
-        $("#editDoneDiv").show(2200);
-        $("#editDoneDiv").hide(1000);
+        $("#editDoneDiv").show(2000);
+        $("#editDoneDiv").hide(2000);
     }
     function showEditFail(msg, el) {
         myAnimate(el, 8, el.attr("style"));

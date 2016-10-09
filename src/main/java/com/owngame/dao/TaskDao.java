@@ -48,6 +48,5 @@ public interface TaskDao {
 
     int update(Task task);
 
-    // TODO 没有实现
     void updateState(long id, int state);
 }

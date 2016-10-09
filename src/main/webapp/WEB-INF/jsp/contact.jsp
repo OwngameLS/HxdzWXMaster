@@ -29,7 +29,7 @@
 <body>
 <h3>通讯录操作</h3>
 <button type="button" class="btn btn-primary btn-sm" onclick="showOrHideUpload()">上传通讯录</button>
-<div id="uploadDiv" class="bg-success" style="padding: 5px;display: none"><%--文件上传部分--%>
+<div id="uploadDiv" class="bg-success well" style="padding: 5px;display: none"><%--文件上传部分--%>
     <dl>
         <dd>
             <p class="text-warning">
@@ -62,19 +62,18 @@
             </p>
         </dd>
     </dl>
-    <div id="editDoneDiv" class="bg-success"
+    <div id="editDoneDiv" class="alert alert-success" role="alert"
          style="display: none;width: 30%;margin:0 auto;text-align:center"><%--操作完成--%>
         操作完成！
     </div>
 
-    <div id="editFailDiv" class="bg-danger"
+    <div id="editFailDiv" class="alert alert-danger" role="alert"
          style="padding:5px;display: none;width: 30%;margin:0 auto;text-align:center"><%--操作失败--%>
         <h5>操作失败！</h5>
         <p class="text-danger" id="failCause"></p>
     </div>
 
-
-    <div id="editContactDiv" class="bg-warning" style="padding: 5px;display: none;text-align:center"><%--单个联系人信息修改部分--%>
+    <div id="editContactDiv" class="well" style="padding: 5px;display: none;text-align:center"><%--单个联系人信息修改部分--%>
         <table class="text-center">
             <thead>
             <tr class="warning">
@@ -104,7 +103,7 @@
             </tbody>
         </table>
     </div>
-    <div id="editGroupDiv" class="bg-warning" style="padding: 5px;display: none;text-align:center"><%--单个组信息修改部分--%>
+    <div id="editGroupDiv" class="well" style="padding: 5px;display: none;text-align:center"><%--单个组信息修改部分--%>
         <table class="text-center">
             <thead>
             <tr class="warning">
@@ -129,7 +128,7 @@
         </table>
     </div>
 
-    <div id="createGroupDiv" class="bg-warning" style="padding: 5px;display: none;text-align:center"><%--创建新分组部分--%>
+    <div id="createGroupDiv" class="well" style="padding: 5px;display: none;text-align:center"><%--创建新分组部分--%>
         <table class="text-center table-condensed">
             <thead>
             <tr class="warning">
@@ -317,7 +316,7 @@
 
     // 显示或隐藏上传通讯录div
     function showOrHideUpload() {
-        $("#uploadDiv").toggle(1000);
+        $("#uploadDiv").toggle(2000);
     }
 
 
@@ -400,7 +399,7 @@
 
     // 准备好创建新分组的控件
     function initCreateGroup(type) {
-        $("#createGroupDiv").show(1000);
+        $("#createGroupDiv").show(2000);
         if (type == null) {//新建分组
             // 将原有添加到联系人idtextarea的内容清空
             $("#newGroupName").val("");
@@ -449,7 +448,7 @@
         // 标记编辑的组名
         originalGroupName = groupname;
         // 显示编辑部分
-        $("#editGroupDiv").show(1000);
+        $("#editGroupDiv").show(2000);
         // 初始化数据
         $("#editGroupOriginalName").text(groupname);
         $("#editGroupName").val(groupname);
@@ -491,9 +490,9 @@
                 showEditDone();
                 hideEditFail();
                 if (action == "insert") {
-                    $("#createGroupDiv").hide(1000);
+                    $("#createGroupDiv").hide(2000);
                 } else {
-                    $("#editGroupDiv").hide(1000);
+                    $("#editGroupDiv").hide(2000);
                 }
                 initContactsUIs(groupname);
             }
@@ -502,7 +501,7 @@
 
     // 取消编辑组
     function cancleEditGroup() {
-        $("#editGroupDiv").hide(1000);
+        $("#editGroupDiv").hide(2000);
         hideEditFail();
     }
 
@@ -511,7 +510,7 @@
         // 标记编辑的id
         updateContactId = id;
         // 显示编辑部分
-        $("#editContactDiv").show(1000);
+        $("#editContactDiv").show(2000);
         // 初始化数据
         // 分组是select editContactGroup
         if (groupname == '') {
@@ -530,7 +529,7 @@
 
     // 取消编辑联系人
     function cancleEditContact() {
-        $("#editContactDiv").hide(1000);
+        $("#editContactDiv").hide(2000);
         hideEditFail();
     }
 
@@ -591,7 +590,7 @@
             success: function (data) {
                 showEditDone();
                 hideEditFail();
-                $("#editContactDiv").hide(1000);
+                $("#editContactDiv").hide(2000);
                 var contacts = data['contacts'];
                 initTbodyOfContacts(contacts);
             },
@@ -614,13 +613,13 @@
     }
 
     function cancleCreateGroup() {
-        $("#createGroupDiv").hide(1000);
+        $("#createGroupDiv").hide(2000);
         hideEditFail();
     }
 
     function showEditDone() {
-        $("#editDoneDiv").show(2200);
-        $("#editDoneDiv").hide(1000);
+        $("#editDoneDiv").show(2000);
+        $("#editDoneDiv").hide(2000);
     }
     function showEditFail(msg, el) {
         myAnimate(el, 8, el.attr("style"));

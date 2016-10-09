@@ -30,9 +30,9 @@
 <body>
 <h2>当前任务</h2>
 
-<div class="danger" style="padding: 5px;"><%--通讯录操作部分--%>
-
-
+<div class="danger" style="padding: 5px;">
+    <div id="refreshDone" class="alert alert-success" role="alert"
+         style="display: none;width: 30%;margin:0 auto;text-align:center">刷新完成！</div>
     <div style="width:30%;float: left">
         <label for="hours">选择查询时段：</label>
         <select id="hours" onchange="changeQueryHours()">
@@ -53,14 +53,14 @@
             <option value="30">30分钟</option>
         </select>
     </div>
-    <div id="tasks" style="width:100%;float:left;overflow:scroll; height:400px;">
+    <div id="tasks" style="width:100%;float:left;overflow:scroll; height:400px;" class="well">
         <table class="table table-hover table-bordered text-center">
             <thead>
             <tr class="info">
                 <th width="20%" class="text-center">任务名称</th>
-                <th width="50%" class="text-center">描述</th>
-                <th width="20%" class="text-center">时间</th>
-                <th width="10%" class="text-center">状态</th>
+                <th width="50%" class="text-center">任务描述</th>
+                <th width="20%" class="text-center">生成时间</th>
+                <th width="10%" class="text-center">当前状态</th>
             </tr>
             </thead>
             <tbody id="tasksBody">
@@ -133,8 +133,10 @@
                     + stateDesc + '</td></tr>';
         }
         $("#tasksBody").html(htmlStr);
+        $("#refreshDone").show(2000);
         clearInterval(intervalId);
         intervalId = setInterval(queryTasks, refreshTime);// 自动刷新
+        $("#refreshDone").hide(2000);
     }
 
     // 时间转换
