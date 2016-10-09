@@ -34,10 +34,11 @@
                     <li><a href="<%=basePath%>Smserver/view/taskstate" target="display">首 页</a></li>
                     <li><a href="<%=basePath%>Smserver/view/timertask" target="display">定时任务</a></li>
                     <li><a href="<%=basePath%>Smserver/view/contact" target="display">通讯录</a></li>
+                    <li><a href="<%=basePath%>Smserver/view/function" target="display">功 能</a></li>
                     <%--target指的是name--%>
                     <li><a href="#">关 于</a></li>
                 </ul>
-                <form class="navbar-form navbar-left" role="search">
+                <%--<form class="navbar-form navbar-left" role="search">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Search">
                     </div>
@@ -55,7 +56,7 @@
                             <li><a href="#">Separated link</a></li>
                         </ul>
                     </li>
-                </ul>
+                </ul>--%>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
