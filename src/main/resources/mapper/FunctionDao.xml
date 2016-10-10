@@ -6,4 +6,45 @@
     <select id="queryAll" resultType="Function">
         select * from function
     </select>
+
+    <select id="queryByName" resultType="Function">
+        select * from function where name=#{name}
+    </select>
+
+    <select id="queryByKeywords" resultType="Function">
+        select * from function where keywords like #{keywords}
+    </select>
+
+    <select id="queryById" resultType="Function">
+        select * from function where id=#{id}
+    </select>
+
+    <insert id="insert" parameterType="Function">
+        insert into function
+        (id,name,description,keywords,ip,port,dbtype,dbname,username,password,tablename,sortfields,fields)
+        values
+        (#{id},#{name},#{description},#{keywords},#{ip},#{port},#{dbtype},#{dbname},#{username},#{password},#{tablename},#{sortfields},#{fields})
+    </insert>
+
+    <update id="update" parameterType="Function">
+        update function set
+        name=#{name},
+        description=#{description},
+        keywords=#{keywords},
+        ip=#{ip},
+        port=#{port},
+        dbtype=#{dbtype},
+        dbname=#{dbname},
+        username=#{username},
+        password=#{password},
+        tablename=#{tablename},
+        sortfields=#{sortfields},
+        fields=#{fields},
+        where id=#{id}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        delete from function where id=#{id}
+    </delete>
+
 </mapper>

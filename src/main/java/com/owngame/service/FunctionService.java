@@ -38,4 +38,17 @@ public interface FunctionService {
      */
     int update(Function function);
 
+    Function getByName(String name);
+
+    Function getByKeywords(String keywords);
+
+    Function getById(long id);
+
+    /**
+     * 通过function得到其对应的结果
+     * @param function
+     * @return
+     */
+    String getFunctionResult(Function function);
+
 }
