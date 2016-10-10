@@ -1,10 +1,8 @@
 package com.owngame.service;
 
 
-import com.owngame.dao.ContactDao;
-import com.owngame.dao.FdjzDao;
-import com.owngame.dao.TaskDao;
-import com.owngame.dao.WxzbDao;
+import com.owngame.dao.*;
+import com.owngame.entity.Function;
 import com.owngame.entity.Task;
 import org.quartz.JobDataMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +17,14 @@ import java.util.Date;
  */
 @Service("mainService")
 public class MainService implements Serializable {
-    private String func_wxzb = "wxzb";
-    private String func_fdjz = "fdjz";
-    @Autowired
-    private FdjzDao fdjzDao;
-    @Autowired
-    private WxzbDao wxzbDao;
     @Autowired
     private TaskDao taskDao;
     @Autowired
     private ContactDao contactDao;
+    @Autowired
+    private FunctionDao functionDao;
+    @Autowired
+    FunctionService functionService;
 
     public void handleMethod(String triggerName, JobDataMap jobDataMap) {
 // 这里执行定时调度业务
@@ -37,17 +33,19 @@ public class MainService implements Serializable {
             functions:准备进行何种操作 此处是准备何种信息
             receivers:包含了什么信息 此处是准备传递给哪些人
         */
-        String functions = (String) jobDataMap.get("functions");
+        String functions[] = ((String) jobDataMap.get("functions")).split(",");
         String receiversIds = (String) jobDataMap.get("receivers");
-        String contents = "abcdefghijk";
+        String contents = "";
         String name = "testName";
         String description = "descirption test....";
         // 查询所要结果
-//        if (functions.equals(func_fdjz)) {
-//            infomation = fdjzDao.querylatest().toString();
-//        } else if (functions.equals(func_wxzb)) {
-//            infomation = wxzbDao.querylatest().toString();
-//        }
+        // 根据所涉及的function来处理
+        for(int i=0;i<functions.length;i++){
+            // 拿到function信息
+            Function function = functionDao.queryByName(functions[i]);
+            contents = function.getDescription() + "的结果::";
+            contents = contents + functionService.getFunctionResult(function);
+        }
         String receivers = "";// 因为上面得到的是ids，这里就查询成对应的手机号码吧
         String receiversArr[] = receiversIds.split(",");
         for (int i = 0; i < receiversArr.length; i++) {

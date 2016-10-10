@@ -16,8 +16,8 @@ public class Function {
     String password;
     String tablename;
     String sortfields;// 排序字段，根据这个字段才能查询到最新的数据 A ASC,B DESC 默认为降序排列
-    String fields;// a,-1,NN#b,5,BB#c,200,LL#d,abcd,NE@V
-    // 字段，值，规则 根据规则来判断
+    String fields;// a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,NE@V
+    // 字段，字段名，值，规则 根据规则来判断
     // 当规则为NN 表示没有规则不报警
     // 当规则为BB 表示大于值时报警
     // 当规则为BE 表示大于等于值时报警

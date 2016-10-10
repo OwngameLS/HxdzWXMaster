@@ -2,7 +2,7 @@ package com.owngame.service.impl;
 
 import com.owngame.dao.FunctionDao;
 import com.owngame.entity.Function;
-import com.owngame.entity.FunctionFields;
+import com.owngame.entity.FunctionField;
 import com.owngame.service.FunctionService;
 import com.owngame.utils.DBUtil;
 import com.owngame.utils.FunctionFieldUtil;
@@ -55,30 +55,29 @@ public class FunctionServiceImpl implements FunctionService {
         // 1.现根据function获得服务组件
         // 获得数据库链接
         Connection connection = DBUtil.createConn(function);
-        ArrayList<FunctionFields> functionFieldses = FunctionFieldUtil.parseFieldsString(function.getFields());
+        ArrayList<FunctionField> functionFields = FunctionFieldUtil.parseFieldsString(function.getFields());
         // 根据要获取的表和字段名，构造查询语句
-        String sql = getQueryStatement(function.getTablename(),function.getSortfields(),functionFieldses);
-        // 构造查询并得到结果
-
-        return null;
+        String sql = getQueryStatement(function.getTablename(),function.getSortfields(),functionFields);
+        // 查询并得到结果
+        return doQuery(connection, sql, functionFields);
     }
 
     /**
      * 构造查询语句
      * @param tableName
      * @param sortfields
-     * @param functionFieldses
+     * @param functionFields
      * @return
      */
-    private String getQueryStatement(String tableName, String sortfields, ArrayList<FunctionFields> functionFieldses){
+    private String getQueryStatement(String tableName, String sortfields, ArrayList<FunctionField> functionFields){
         String sql = "select ";
-        for(int i=0;i<functionFieldses.size();i++){
-            sql = sql + functionFieldses.get(i).getFieldName();
-            if((i+1)<functionFieldses.size()){
+        for(int i=0;i<functionFields.size();i++){
+            sql = sql + functionFields.get(i).getField();
+            if((i+1)<functionFields.size()){
                 sql = sql + ",";
             }
         }
-        sql = sql + " from " + tableName + "order by ";
+        sql = sql + " from " + tableName + " order by ";
         String sortF[] = sortfields.split(",");
         for(int i=0;i<sortF.length;i++){
             sql = sql + sortF[i];
@@ -91,16 +90,19 @@ public class FunctionServiceImpl implements FunctionService {
     }
 
     // 根据用户的手机号查询其姓名
-    private String doQuery(Connection conn, String sql, ArrayList<FunctionFields> functionFieldses) {
+    private String doQuery(Connection conn, String sql, ArrayList<FunctionField> functionFields) {
 		System.out.println("sql: " + sql);
         PreparedStatement ps = DBUtil.prepare(conn, sql);
         ResultSet rs = null;
-        String result = null;
+        String result = "";
         try {
             rs = ps.executeQuery();
             if (rs.next()) {// 只选第一条就行
                 // 根据规则来处理查询结果
-
+                for(FunctionField functionField:functionFields){
+                    result = result + functionField.getFieldName()+":"+rs.getObject(functionField.getField())+";";
+                }
+                result = result + "#";// 该次查询结束结尾符号
             }else{
                 result = "NONE";
             }

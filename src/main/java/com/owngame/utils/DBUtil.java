@@ -41,9 +41,10 @@ public class DBUtil {
             url = "jdbc:odbc:dbsource";
         }
         try {
-            Class.forName(fullName).newInstance();
-            conn = java.sql.DriverManager.getConnection(url,username,password);
+            Class.forName(fullName);
+            conn = DriverManager.getConnection(url,username,password);
         } catch (Exception e) {
+            System.out.println("aaaaa exception!!!!!");
             e.printStackTrace();
         }
          System.out.println("createConn");

@@ -2,7 +2,7 @@ package com.owngame.entity;
 
 /**
  * 功能对应表中的字段和其规则
- * a,-1,NN#b,5,BB#c,200,LL#d,abcd,NE@V
+ // a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,NE@V
  // 字段，值，规则 根据规则来判断
  // 当规则为NN 表示没有规则不报警
  // 当规则为BB 表示大于值时报警
@@ -13,10 +13,19 @@ package com.owngame.entity;
  *
  * Created by Administrator on 2016-10-10.
  */
-public class FunctionFields {
-    String fieldName;// 字段名
+public class FunctionField {
+    String field;// 字段（在表中的名字）
+    String fieldName;//字段名（用于理解）
     String value;// 值
     String rule;// 规则
+
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
+    }
 
     public String getFieldName() {
         return fieldName;

@@ -1,6 +1,6 @@
 package com.owngame.utils;
 
-import com.owngame.entity.FunctionFields;
+import com.owngame.entity.FunctionField;
 
 import java.util.ArrayList;
 
@@ -14,18 +14,19 @@ public class FunctionFieldUtil {
      * @param fields
      * @return
      */
-    public static ArrayList<FunctionFields> parseFieldsString(String fields){
-        // a,-1,NN#b,5,BB#c,200,LL#d,abcd,NE@V
+    public static ArrayList<FunctionField> parseFieldsString(String fields){
+        // a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,NE@V
         String f[] = fields.split("#");
-        ArrayList<FunctionFields> functionFieldses = new ArrayList<FunctionFields>();
+        ArrayList<FunctionField> functionFields = new ArrayList<FunctionField>();
         for(int i=0;i<f.length;i++){
-            FunctionFields functionFields = new FunctionFields();
+            FunctionField functionField = new FunctionField();
             String ff[] = f[i].split(",");
-            functionFields.setFieldName(ff[0]);
-            functionFields.setValue(ff[1]);
-            functionFields.setRule(ff[2]);
-            functionFieldses.add(functionFields);
+            functionField.setField(ff[0]);
+            functionField.setFieldName(ff[1]);
+            functionField.setValue(ff[2]);
+            functionField.setRule(ff[3]);
+            functionFields.add(functionField);
         }
-        return functionFieldses;
+        return functionFields;
     }
 }
