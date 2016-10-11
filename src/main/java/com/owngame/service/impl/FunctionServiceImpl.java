@@ -59,7 +59,7 @@ public class FunctionServiceImpl implements FunctionService {
         // 根据要获取的表和字段名，构造查询语句
         String sql = getQueryStatement(function.getTablename(),function.getSortfields(),functionFields);
         // 查询并得到结果
-        return doQuery(connection, sql, functionFields);
+        return doQuery(connection, sql, functionFields, function.getRules());
     }
 
     /**
@@ -96,7 +96,7 @@ public class FunctionServiceImpl implements FunctionService {
      * @param functionFields
      * @return
      */
-    private String doQuery(Connection conn, String sql, ArrayList<FunctionField> functionFields) {
+    private String doQuery(Connection conn, String sql, ArrayList<FunctionField> functionFields, String resultrules) {
 		System.out.println("sql: " + sql);
         PreparedStatement ps = DBUtil.prepare(conn, sql);
         ResultSet rs = null;
@@ -109,6 +109,10 @@ public class FunctionServiceImpl implements FunctionService {
                     // a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,NE@V
                     String value = (String) rs.getObject(functionField.getField());
                     String rule = functionField.getRule();
+                    boolean isReturn = false;// 是否返回查询结果
+                    if(resultrules.equals("anyway")){// 当返回要求为必须返回时
+                        isReturn = true;
+                    }
                     if(rule.startsWith("NN")){// 不需要判断
 
                     }else if(rule.equals("BB")){// 大于给定值

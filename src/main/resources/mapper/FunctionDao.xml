@@ -21,9 +21,9 @@
 
     <insert id="insert" parameterType="Function">
         insert into function
-        (id,name,description,keywords,ip,port,dbtype,dbname,username,password,tablename,sortfields,fields)
+        (id,name,description,keywords,ip,port,dbtype,dbname,username,password,tablename,sortfields,fields,rules)
         values
-        (#{id},#{name},#{description},#{keywords},#{ip},#{port},#{dbtype},#{dbname},#{username},#{password},#{tablename},#{sortfields},#{fields})
+        (#{id},#{name},#{description},#{keywords},#{ip},#{port},#{dbtype},#{dbname},#{username},#{password},#{tablename},#{sortfields},#{fields},#{rules})
     </insert>
 
     <update id="update" parameterType="Function">
@@ -40,6 +40,7 @@
         tablename=#{tablename},
         sortfields=#{sortfields},
         fields=#{fields},
+        rules=#{rules}
         where id=#{id}
     </update>
 

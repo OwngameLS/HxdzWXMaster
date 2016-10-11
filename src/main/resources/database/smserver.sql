@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2016-10-11 11:21:25
+Date: 2016-10-11 17:08:13
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -98,16 +98,17 @@ CREATE TABLE `function` (
   `tablename` varchar(20) DEFAULT NULL,
   `sortfields` text,
   `fields` text,
+  `rules` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of function
 -- ----------------------------
-INSERT INTO `function` VALUES ('1', 'abc', 'Test1', 'abc', '192.168.1.111', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'gametime desc', 'player_statids_home,home,-1,NN#player_statids_guest,guest,-1,NN');
-INSERT INTO `function` VALUES ('2', 'cde', 'Test2', null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `function` VALUES ('3', 'efg', 'Test3', null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `function` VALUES ('4', 'ghi', 'Test4', null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `function` VALUES ('1', 'abc', 'Test1', 'abc', '192.168.1.111', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'gametime desc', 'player_statids_home,home,-1,NN#player_statids_guest,guest,-1,NN', 'anyway');
+INSERT INTO `function` VALUES ('2', 'cde', 'Test2', null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `function` VALUES ('3', 'efg', 'Test3', null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `function` VALUES ('4', 'ghi', 'Test4', null, null, null, null, null, null, null, null, null, null, null);
 
 -- ----------------------------
 -- Table structure for `qrtz_calendars`

@@ -24,6 +24,10 @@ public class Function {
     // 当规则为LL 表示小于值时报警
     // 当规则为LE 表示小于等于值时报警
     // 当规则为NE@V 表示不等于值(在V范围内)时报警
+    String rules;// 读取结果是否返回的规则（由于需要涉及到预警功能，所以需要定义规则）
+    // 由于功能是定时执行，因此不一定是每次都读取到数据就需要告知
+    // anyway: 不论如何都返回
+    // oncase: 监听几个字段，当其中一个字段达到报警要求时就需要告知
 
     public long getId() {
         return id;
@@ -127,5 +131,13 @@ public class Function {
 
     public void setFields(String fields) {
         this.fields = fields;
+    }
+
+    public String getRules() {
+        return rules;
+    }
+
+    public void setRules(String rules) {
+        this.rules = rules;
     }
 }
