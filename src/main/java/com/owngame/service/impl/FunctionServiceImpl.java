@@ -89,7 +89,13 @@ public class FunctionServiceImpl implements FunctionService {
         return sql;
     }
 
-    // 根据用户的手机号查询其姓名
+    /**
+     * 做查询
+     * @param conn
+     * @param sql
+     * @param functionFields
+     * @return
+     */
     private String doQuery(Connection conn, String sql, ArrayList<FunctionField> functionFields) {
 		System.out.println("sql: " + sql);
         PreparedStatement ps = DBUtil.prepare(conn, sql);
@@ -100,6 +106,18 @@ public class FunctionServiceImpl implements FunctionService {
             if (rs.next()) {// 只选第一条就行
                 // 根据规则来处理查询结果
                 for(FunctionField functionField:functionFields){
+                    // a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,NE@V
+                    String value = (String) rs.getObject(functionField.getField());
+                    String rule = functionField.getRule();
+                    if(rule.startsWith("NN")){// 不需要判断
+
+                    }else if(rule.equals("BB")){// 大于给定值
+
+                    }else if(rule.equals("LL")){// 小雨给定值
+
+                    }else if (rule.startsWith("NE")){ // 不等于给定值
+
+                    }
                     result = result + functionField.getFieldName()+":"+rs.getObject(functionField.getField())+";";
                 }
                 result = result + "#";// 该次查询结束结尾符号

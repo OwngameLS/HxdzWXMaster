@@ -36,13 +36,15 @@ public class MainService implements Serializable {
         String functions[] = ((String) jobDataMap.get("functions")).split(",");
         String receiversIds = (String) jobDataMap.get("receivers");
         String contents = "";
-        String name = "testName";
-        String description = "descirption test....";
+        String name = "";
+        String description = "";
         // 查询所要结果
         // 根据所涉及的function来处理
         for(int i=0;i<functions.length;i++){
             // 拿到function信息
             Function function = functionDao.queryByName(functions[i]);
+            name = name + function.getName()+"::";
+            description = description + function.getDescription()+"::";
             contents = function.getDescription() + "的结果::";
             contents = contents + functionService.getFunctionResult(function);
         }

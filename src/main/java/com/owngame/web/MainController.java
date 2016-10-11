@@ -162,7 +162,6 @@ public class MainController {
             e.printStackTrace();
         }
         String ss = o.toString();
-        ArrayList<Contact> contacts = null;
         if (ss.startsWith("ERR")) {
             //上传失败，返回到前台，调用uploadFailed()这个方法
             return "<script>window.parent.uploadFailed('" + ss + "');</script>";
