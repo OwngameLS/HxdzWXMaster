@@ -57,31 +57,32 @@ public class FunctionServiceImpl implements FunctionService {
         Connection connection = DBUtil.createConn(function);
         ArrayList<FunctionField> functionFields = FunctionFieldUtil.parseFieldsString(function.getFields());
         // 根据要获取的表和字段名，构造查询语句
-        String sql = getQueryStatement(function.getTablename(),function.getSortfields(),functionFields);
+        String sql = getQueryStatement(function.getTablename(), function.getSortfields(), functionFields);
         // 查询并得到结果
         return doQuery(connection, sql, functionFields, function.getRules());
     }
 
     /**
      * 构造查询语句
+     *
      * @param tableName
      * @param sortfields
      * @param functionFields
      * @return
      */
-    private String getQueryStatement(String tableName, String sortfields, ArrayList<FunctionField> functionFields){
+    private String getQueryStatement(String tableName, String sortfields, ArrayList<FunctionField> functionFields) {
         String sql = "select ";
-        for(int i=0;i<functionFields.size();i++){
+        for (int i = 0; i < functionFields.size(); i++) {
             sql = sql + functionFields.get(i).getField();
-            if((i+1)<functionFields.size()){
+            if ((i + 1) < functionFields.size()) {
                 sql = sql + ",";
             }
         }
         sql = sql + " from " + tableName + " order by ";
         String sortF[] = sortfields.split(",");
-        for(int i=0;i<sortF.length;i++){
+        for (int i = 0; i < sortF.length; i++) {
             sql = sql + sortF[i];
-            if((i+1)<sortF.length){
+            if ((i + 1) < sortF.length) {
                 sql = sql + ",";
             }
         }
@@ -91,42 +92,151 @@ public class FunctionServiceImpl implements FunctionService {
 
     /**
      * 做查询
+     *
      * @param conn
      * @param sql
      * @param functionFields
      * @return
      */
     private String doQuery(Connection conn, String sql, ArrayList<FunctionField> functionFields, String resultrules) {
-		System.out.println("sql: " + sql);
+        System.out.println("sql: " + sql);
         PreparedStatement ps = DBUtil.prepare(conn, sql);
         ResultSet rs = null;
         String result = "";
         try {
             rs = ps.executeQuery();
             if (rs.next()) {// 只选第一条就行
-                // 根据规则来处理查询结果
-                for(FunctionField functionField:functionFields){
-                    // a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,NE@V
-                    String value = (String) rs.getObject(functionField.getField());
-                    String rule = functionField.getRule();
-                    boolean isReturn = false;// 是否返回查询结果
-                    if(resultrules.equals("anyway")){// 当返回要求为必须返回时
-                        isReturn = true;
+                if (resultrules.equals("anyway")) {// 当返回要求为必须返回时
+                    for (FunctionField functionField : functionFields) {
+                        result = result + functionField.getFieldName() + ":" + rs.getObject(functionField.getField()) + ";";
                     }
-                    if(rule.startsWith("NN")){// 不需要判断
-
-                    }else if(rule.equals("BB")){// 大于给定值
-
-                    }else if(rule.equals("LL")){// 小雨给定值
-
-                    }else if (rule.startsWith("NE")){ // 不等于给定值
-
+                } else if (resultrules.equals("oncase")) {// 根据规则来处理查询结果
+                    ArrayList<Integer> isReturns = new ArrayList<Integer>();
+                    ArrayList<String> values = new ArrayList<String>();
+                    for (FunctionField functionField : functionFields) {
+                        boolean isReturn = false;// 是否返回查询结果
+                        if (resultrules.equals("oncase")) {// 根据条件返回
+                            // a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,NE@V
+                            // 从数据库读到的数据
+                            String value = (String) rs.getObject(functionField.getField());
+                            // 判断规则
+                            String rule = functionField.getRule();
+                            if (rule.startsWith("NN")) {// 不需要判断
+                                isReturns.add(0);
+                                values.add(value);
+                            } else {// 需要判断
+                                if (isNum(value)) {
+                                    boolean isInt = true;
+                                    int intValue = 0, intCompareValue = 0;
+                                    float floatValue = 0.0f, floatCompareValue = 0.0f;
+                                    if (value.contains(".")) {// 判断是否为整数
+                                        isInt = false;
+                                    }
+                                    if (isInt) {
+                                        intValue = Integer.parseInt(value);
+                                        intCompareValue = Integer.parseInt(functionField.getCompareValue());
+                                    } else {
+                                        floatValue = Float.parseFloat(value);
+                                        floatCompareValue = Float.parseFloat(functionField.getCompareValue());
+                                    }
+                                    if (rule.equals("BB")) {// 大于给定值
+                                        if (isInt) {
+                                            if (intValue > intCompareValue) {
+                                                isReturn = true;
+                                            }
+                                        } else {
+                                            if (floatValue > floatCompareValue) {
+                                                isReturn = true;
+                                            }
+                                        }
+                                        if(isReturn){
+                                            value = functionField.getFieldName()+":"+value+",大于给定值"+functionField.getCompareValue()+";";
+                                            isReturns.add(1);
+                                            values.add(value);
+                                        }
+                                    } else if (rule.equals("LL")) {// 小雨给定值
+                                        if (isInt) {
+                                            if (intValue < intCompareValue) {
+                                                isReturn = true;
+                                            }
+                                        } else {
+                                            if (floatValue < floatCompareValue) {
+                                                isReturn = true;
+                                            }
+                                        }
+                                        if(isReturn){
+                                            value = functionField.getFieldName()+":"+value+",小于给定值"+functionField.getCompareValue()+";";
+                                            isReturns.add(1);
+                                            values.add(value);
+                                        }
+                                    } else if (rule.startsWith("EQ")) { // 等于给定值
+                                        if (isInt) {
+                                            if (intValue == intCompareValue) {
+                                                isReturn = true;
+                                            }
+                                        } else {
+                                            if (floatValue == floatCompareValue) {
+                                                isReturn = true;
+                                            }
+                                        }
+                                        if(isReturn){
+                                            value = functionField.getFieldName()+":"+value+",等于给定值"+functionField.getCompareValue()+";";
+                                            isReturns.add(1);
+                                            values.add(value);
+                                        }
+                                    } else if (rule.startsWith("NE")) { // 不等于给定值
+                                        if (isInt) {
+                                            if (intValue != intCompareValue) {
+                                                isReturn = true;
+                                            }
+                                        } else {
+                                            if (floatValue != floatCompareValue) {
+                                                isReturn = true;
+                                            }
+                                        }
+                                        if(isReturn){
+                                            value = functionField.getFieldName()+":"+value+",不等于给定值"+functionField.getCompareValue()+";";
+                                            isReturns.add(1);
+                                            values.add(value);
+                                        }
+                                    }
+                                } else {// 不是数字
+                                    if (rule.startsWith("EQ")) { // 等于给定值
+                                        if (value.contains(functionField.getCompareValue())) {
+                                            isReturn = true;
+                                            value = functionField.getFieldName()+":"+value+",等于给定值"+functionField.getCompareValue()+";";
+                                            isReturns.add(1);
+                                            values.add(value);
+                                        }
+                                    } else if (rule.startsWith("NE")) { // 不等于给定值
+                                        if (value.contains(functionField.getCompareValue()) == false) {
+                                            isReturn = true;
+                                            value = functionField.getFieldName()+":"+value+",不等于给定值"+functionField.getCompareValue()+";";
+                                            isReturns.add(1);
+                                            values.add(value);
+                                        }
+                                    }
+                                }
+                                if (isReturn == false) {// 根据规则判断之后 需要返回
+                                    value = functionField.getFieldName()+":"+value+";";
+                                    isReturns.add(0);
+                                    values.add(value);
+                                }
+                            }
+                        }
                     }
-                    result = result + functionField.getFieldName()+":"+rs.getObject(functionField.getField())+";";
+                    // 判断查询的字段里是否有需要返回的，当一个字段需要返回时，就将所有的都返回了
+                    if(isReturns.contains(new Integer(1))){
+                        for(String s : values){
+                            result = result + s;
+                        }
+                    }else{
+                        result = "NOTNEED";// 不需要返回
+                    }
                 }
-                result = result + "#";// 该次查询结束结尾符号
-            }else{
-                result = "NONE";
+//                result = result + "#";// 该次查询结束结尾符号
+            } else {
+                result = "NONE";// 未查询到
             }
             DBUtil.close(rs);
         } catch (Exception e) {
@@ -138,5 +248,10 @@ public class FunctionServiceImpl implements FunctionService {
         return result;
     }
 
+
+    // 判断字符串是不是数字
+    public static boolean isNum(String str) {
+        return str.matches("^[-+]?(([0-9]+)([.]([0-9]+))?|([.]([0-9]+))?)$");
+    }
 
 }

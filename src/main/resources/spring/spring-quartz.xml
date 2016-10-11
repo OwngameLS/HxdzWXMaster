@@ -5,19 +5,19 @@
     <bean name="quartzScheduler"
           class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
           autowire="no"><!-- 容器启动随机启动lazy-init="false" autowire="no"-->
-        <property name="autoStartup" value="true"/>
+        <property name="autoStartup" compareValue="true"/>
         <property name="dataSource">
             <ref bean="dataSource"/>
         </property>
-        <property name="applicationContextSchedulerContextKey" value="applicationContextKey"/>
-        <property name="waitForJobsToCompleteOnShutdown" value="true"/>
-        <property name="configLocation" value="classpath:quartz.properties"/>
+        <property name="applicationContextSchedulerContextKey" compareValue="applicationContextKey"/>
+        <property name="waitForJobsToCompleteOnShutdown" compareValue="true"/>
+        <property name="configLocation" compareValue="classpath:quartz.properties"/>
     </bean>
     <bean id="jobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
         <property name="jobClass">
-            <value>com.owngame.utils.MyQuartzJobBean</value>
+            <compareValue>com.owngame.utils.MyQuartzJobBean</compareValue>
         </property>
-        <property name="durability" value="true"/>
+        <property name="durability" compareValue="true"/>
     </bean>
 
 </beans>

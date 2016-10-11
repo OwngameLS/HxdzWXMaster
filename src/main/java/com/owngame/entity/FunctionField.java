@@ -10,13 +10,14 @@ package com.owngame.entity;
  // 当规则为LL 表示小于值时报警
  // 当规则为LE 表示小于等于值时报警
  // 当规则为NE@V 表示不等于值(在V范围内)时报警
+ // 当规则为EQ 表示等于给定值时报警（比如查询是否有报警）
  *
  * Created by Administrator on 2016-10-10.
  */
 public class FunctionField {
     String field;// 字段（在表中的名字）
     String fieldName;//字段名（用于理解）
-    String value;// 值
+    String compareValue;// 值
     String rule;// 规则
 
     public String getField() {
@@ -35,12 +36,12 @@ public class FunctionField {
         this.fieldName = fieldName;
     }
 
-    public String getValue() {
-        return value;
+    public String getCompareValue() {
+        return compareValue;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setCompareValue(String compareValue) {
+        this.compareValue = compareValue;
     }
 
     public String getRule() {

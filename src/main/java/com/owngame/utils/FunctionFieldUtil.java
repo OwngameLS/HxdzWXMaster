@@ -23,7 +23,7 @@ public class FunctionFieldUtil {
             String ff[] = f[i].split(",");
             functionField.setField(ff[0]);
             functionField.setFieldName(ff[1]);
-            functionField.setValue(ff[2]);
+            functionField.setCompareValue(ff[2]);
             functionField.setRule(ff[3]);
             functionFields.add(functionField);
         }

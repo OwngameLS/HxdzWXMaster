@@ -147,8 +147,8 @@
                     <button type="button" class="btn btn-primary btn-sm" onclick="emptyContactIds()">清空</button>
                 </td>
                 <td>
-                    <input type="radio" name="addContactsType" id="addContactsType1" value="copy" checked>复制<br>
-                    <input type="radio" name="addContactsType" id="addContactsType2" value="move">迁移
+                    <input type="radio" name="addContactsType" id="addContactsType1" compareValue="copy" checked>复制<br>
+                    <input type="radio" name="addContactsType" id="addContactsType2" compareValue="move">迁移
                 </td>
                 <td>
                     <button type="button" class="btn btn-primary btn-sm" onclick="createGroup()">确定</button>
@@ -257,7 +257,7 @@
     function initSelect(groups) {
         var html = '';
         for (var i = 0; i < groups.length; i++) {
-            html = html + '<option value ="' + groups[i] + '">' + groups[i] + '</option>';
+            html = html + '<option compareValue ="' + groups[i] + '">' + groups[i] + '</option>';
         }
         $("#editContactGroup").html(html);
     }
@@ -324,7 +324,7 @@
     function initTbodyOfContacts(contacts) {
         var htmlStr = '';
         for (var i = 0; i < contacts.length; i++) {
-            htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" value="' + contacts[i].id + '"> ' + contacts[i].id
+            htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" compareValue="' + contacts[i].id + '"> ' + contacts[i].id
                     + '</td><td>' + contacts[i].groupname
                     + '</td><td>' + contacts[i].name
                     + '</td><td>' + contacts[i].title
