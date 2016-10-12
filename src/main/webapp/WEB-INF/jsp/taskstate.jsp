@@ -36,21 +36,21 @@
     <div style="width:30%;float: left">
         <label for="hours">选择查询时段：</label>
         <select id="hours" onchange="changeQueryHours()">
-            <option compareValue="1">最近1小时</option>
-            <option compareValue="3">最近3小时</option>
-            <option compareValue="5">最近5小时</option>
-            <option compareValue="10">最近10小时</option>
-            <option compareValue="24">最近1天</option>
+            <option value="1">最近1小时</option>
+            <option value="3">最近3小时</option>
+            <option value="5">最近5小时</option>
+            <option value="10">最近10小时</option>
+            <option value="24">最近1天</option>
         </select>
     </div>
     <div style="width:30%;float: left">
         <label for="hours">自动刷新时间：</label>
         <select id="refreshtime" onchange="changeRefreshTime()">
-            <option compareValue="0.5" selected>30秒</option>
-            <option compareValue="1">1分钟</option>
-            <option compareValue="5">5分钟</option>
-            <option compareValue="10">10分钟</option>
-            <option compareValue="30">30分钟</option>
+            <option value="0.5" selected>30秒</option>
+            <option value="1">1分钟</option>
+            <option value="5">5分钟</option>
+            <option value="10">10分钟</option>
+            <option value="30">30分钟</option>
         </select>
     </div>
     <div id="tasks" style="width:100%;float:left;overflow:scroll; height:400px;" class="well">

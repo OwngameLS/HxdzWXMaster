@@ -16,14 +16,8 @@ public class Function {
     String password;
     String tablename;
     String sortfields;// 排序字段，根据这个字段才能查询到最新的数据 A ASC,B DESC 默认为降序排列
-    String fields;// a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,NE@V
+    String fields;// a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,EQ#,e,eName,bcde,NE#f,fName,cdef,RG@12BT34
     // 字段，字段名，值，规则 根据规则来判断
-    // 当规则为NN 表示没有规则不报警
-    // 当规则为BB 表示大于值时报警
-    // 当规则为BE 表示大于等于值时报警
-    // 当规则为LL 表示小于值时报警
-    // 当规则为LE 表示小于等于值时报警
-    // 当规则为NE@V 表示不等于值(在V范围内)时报警
     String rules;// 读取结果是否返回的规则（由于需要涉及到预警功能，所以需要定义规则）
     // 由于功能是定时执行，因此不一定是每次都读取到数据就需要告知
     // anyway: 不论如何都返回

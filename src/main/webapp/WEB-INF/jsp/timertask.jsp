@@ -89,8 +89,8 @@
                 </td>
                 <td width="7%">
                     <select id="ttstateEdit">
-                        <option compareValue="run">正常运行</option>
-                        <option compareValue="pause">暂停运行</option>
+                        <option value="run">正常运行</option>
+                        <option value="pause">暂停运行</option>
                     </select>
                 </td>
                 <td width="8%">
@@ -230,7 +230,7 @@
     function initTbodyOfTasks(timertasks) {
         var htmlStr = '';
         for (var i = 0; i < timertasks.length; i++) {
-            htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" compareValue="' + timertasks[i].id + '"> ' + timertasks[i].id
+            htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" value="' + timertasks[i].id + '"> ' + timertasks[i].id
                     + '</td><td>' + timertasks[i].functions
                     + '</td><td>' + timertasks[i].description
                     + '</td><td>' + timertasks[i].firerules
@@ -293,7 +293,7 @@
     function initTbodyOfContacts(contacts) {
         var htmlStr = '';
         for (var i = 0; i < contacts.length; i++) {
-            htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" compareValue="' + contacts[i].id + '"> ' + contacts[i].id
+            htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" value="' + contacts[i].id + '"> ' + contacts[i].id
                     + '</td><td>' + contacts[i].groupname
                     + '</td><td>' + contacts[i].name
                     + '</td><td>' + contacts[i].title
@@ -449,7 +449,7 @@
                 // 整理成表格展示
                 var htmlStr = '';
                 for (var i = 0; i < functions.length; i++) {
-                    htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="functionsCheckbox" compareValue="' + functions[i].name + '"';
+                    htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="functionsCheckbox" value="' + functions[i].name + '"';
                     var isInSelected = false;
                     for (var j = 0; j < selectedFunctions.length; j++) {
                         if (selectedFunctions[j] == functions[i].name) {

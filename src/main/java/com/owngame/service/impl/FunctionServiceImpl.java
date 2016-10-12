@@ -8,11 +8,11 @@ import com.owngame.utils.DBUtil;
 import com.owngame.utils.FunctionFieldUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.test.web.servlet.result.FlashAttributeResultMatchers;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 
 /**
@@ -53,18 +53,43 @@ public class FunctionServiceImpl implements FunctionService {
 
     /**
      * 查询是否连接的上指定数据库
+     * 如果查询到了就返回该表包含的字段
      * @param function
      * @return
      */
-    public boolean canConnect(Function function){
+    public ArrayList<String> canConnect(Function function){
         Connection connection = DBUtil.createConn(function);
         if(connection != null){
+            // 连接上了就读取该表的字段属性
+            ArrayList<String> colNames = getTableInfos(connection, function.getTablename());
             DBUtil.close(connection);
-            return true;
+            return colNames;
         }else{
-            return false;
+            return null;
         }
     }
+
+    /**
+     * 获取表字段
+     * @param tablename
+     */
+    private ArrayList<String> getTableInfos(Connection conn, String tablename){
+        String sql="select * from "+ tablename + ";";
+        PreparedStatement ps = DBUtil.prepare(conn, sql);
+        ResultSet rs = null;
+        ArrayList<String> colNames = new ArrayList<String>();
+        try {
+            rs=ps.executeQuery();
+            ResultSetMetaData meta=rs.getMetaData();
+            for(int i=1;i<=meta.getColumnCount();i++){
+                colNames.add(meta.getColumnName(i));//获取字段名
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return colNames;
+    }
+
 
     /**
      * 查询得到该功能的结果（最复杂的方法）
