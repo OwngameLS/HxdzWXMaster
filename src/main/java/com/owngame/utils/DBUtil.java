@@ -45,6 +45,7 @@ public class DBUtil {
             Class.forName(fullName);
             conn = DriverManager.getConnection(url,username,password);
         } catch (Exception e) {
+            conn = null;
             e.printStackTrace();
         }
          System.out.println("createConn");
