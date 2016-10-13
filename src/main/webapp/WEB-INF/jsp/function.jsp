@@ -50,92 +50,81 @@
         <p class="text-danger" id="failCause"></p>
     </div>
 
-    <div id="functionEditDiv" style="display: none" class="well"><%--编辑定时任务的表格--%>
-        <table class="table table-hover table-bordered text-center">
-            <tbody>
-                ---功能描述性设置-------------------------
-                <tr class="info">
-                    <th width="20%" class="text-center">名称</th>
-                    <th width="30%" class="text-center">关键字</th>
-                    <th width="50%" class="text-center">描述</th>
-                </tr>
-                <tr class="info">
-                    <td width="20%" class="text-center">
-                        <input class="form-control" id="editName" placeholder="给功能起一个名字...">
-                    </td>
-                    <td width="30%" class="text-center">
-                        <input class="form-control" id="editKeywords" placeholder="关键字，区别于其他功能的关键字..." onchange="">
-                    </td>
-                    <td width="50%" class="text-center">
-                        <input class="form-control" id="editContactName" placeholder="描述这个功能，它将作为返回信息的起始部分...">
-                    </td>
-                </tr>
-                ---数据库连接属性设置---------------------
-                <tr>
-                    <th width="30%" class="text-center">IP地址</th>
-                    <th width="20%" class="text-center">端口号</th>
-                    <th width="25%" class="text-center">数据库类型</th>
-                    <th width="25%" class="text-center">数据库名称</th>
-                </tr>
-                <tr>
-                    <td width="30%" class="text-center">
-                        <input class="form-control" id="editIP" placeholder="欲读取数据库所在机器的IP地址...">
-                    </td>
-                    <td width="20%" class="text-center">
-                        <input class="form-control" id="editPort" placeholder="其数据库开放的端口...">
-                    </td>
-                    <td width="25%" class="text-center">
-                        <select id="editDbtype">
-                            <option value="MySQL">MySQL</option>
-                            <option value="Microsoft SQL Server">Microsoft SQL Server</option>
-                            <option value="Oracle">Oracle</option>
-                            <option value="PostgreSQL">PostgreSQL</option>
-                            <option value="DB2">DB2</option>
-                            <option value="Informix">Informix</option>
-                            <option value="JDBC-ODBC">JDBC-ODBC</option>
-                        </select>
-                    </td>
-                    <td width="25%" class="text-center">
-                        <input class="form-control" id="editDbname" placeholder="数据库名...">
-                    </td>
-                </tr>
-                <tr>
-                    <th width="25%" class="text-center">用户名</th>
-                    <th width="25%" class="text-center">密码</th>
-                    <th width="30%" class="text-center">表名</th>
-                    <th width="20%" class="text-center" id="connectResult"></th>
-                </tr>
-                <tr>
-                    <td width="25%" class="text-center">
-                        <input class="form-control" id="editUsername" placeholder="数据库用户名...">
-                    </td>
-                    <td width="25%" class="text-center">
-                        <input class="form-control" id="editPassword" placeholder="数据库密码...">
-                    </td>
-                    <td width="30%" class="text-center">
-                        <input class="form-control" id="editTablename" placeholder="读取的表名...">
-                    </td>
-                    <td width="20%" class="text-center">
-                        <button type="button" class="btn btn-success btn-sm" onclick="testConnect()">连接测试</button>
-                    </td>
-                </tr>
-                ---读取字段的设置-------------------------
-                <tr>
-                    <td width="15%" class="text-center">是否排序</td>
-                    <td width="15%" class="text-center">是否使用</td>
-                    <td width="23%" class="text-center">字段名</td>
-                    <td width="12%" class="text-center">自定义名称</td>
-                    <td width="15%" class="text-center">是否使用规则</td>
-                    <td width="15%" class="text-center">标准值</td>
-                    <td width="15%" class="text-center">规则</td>
-                </tr>
-            </tbody>
-        </table>
-        <table>
-            ---读取字段-------------------------------
-            <tbody id="colsTR"><%--在这里列出所有字段--%>
-            </tbody>
-        </table>
+    <div id="functionEditDiv" style="" class="well"><%--编辑定时任务的表格--%>
+        ---功能描述性设置-------------------------
+        <div class="row bg-success">
+            <div class="col-md-3 text-center">名称</div>
+            <div class="col-md-4 text-center">关键字</div>
+            <div class="col-md-5 text-center">关键字</div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 text-center">
+                <input class="form-control" id="editName" placeholder="给功能起一个名字..."></div>
+            <div class="col-md-4 text-center">
+                <input class="form-control" id="editKeywords" placeholder="关键字，区别于其他功能的关键字..." onchange=""></div>
+            <div class="col-md-5 text-center">
+                <input class="form-control" id="editContactName" placeholder="描述这个功能，它将作为返回信息的起始部分..."></div>
+        </div>
+        ---数据库连接属性设置---------------------
+        <div class="row bg-success">
+            <div class="col-md-4 text-center">IP地址</div>
+            <div class="col-md-2 text-center">端口号</div>
+            <div class="col-md-3 text-center">数据库类型</div>
+            <div class="col-md-3 text-center">数据库名称</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <input class="form-control" id="editIP" placeholder="欲读取数据库所在机器的IP地址...">
+                </div>
+            <div class="col-md-2 text-center">
+                <input class="form-control" id="editPort" placeholder="其数据库开放的端口...">
+                </div>
+            <div class="col-md-3 text-center">
+                <select id="editDbtype">
+                    <option value="MySQL">MySQL</option>
+                    <option value="Microsoft SQL Server">Microsoft SQL Server</option>
+                    <option value="Oracle">Oracle</option>
+                    <option value="PostgreSQL">PostgreSQL</option>
+                    <option value="DB2">DB2</option>
+                    <option value="Informix">Informix</option>
+                    <option value="JDBC-ODBC">JDBC-ODBC</option>
+                </select>
+                </div>
+            <div class="col-md-3 text-center">
+                <input class="form-control" id="editDbname" placeholder="数据库名...">
+            </div>
+        </div>
+        <div class="row bg-success">
+            <div class="col-md-4 text-center">用户名</div>
+            <div class="col-md-2 text-center">密码</div>
+            <div class="col-md-3 text-center">表名</div>
+            <div class="col-md-3 text-center" id="connectResult"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <input class="form-control" id="editUsername" placeholder="数据库用户名...">
+            </div>
+            <div class="col-md-2 text-center">
+                <input class="form-control" id="editPassword" placeholder="数据库密码...">
+            </div>
+            <div class="col-md-3 text-center">
+                <input class="form-control" id="editTablename" placeholder="读取的表名...">
+            </div>
+            <div class="col-md-3 text-center">
+                <button type="button" class="btn btn-success btn-sm" onclick="testConnect()">连接测试</button>
+            </div>
+        </div>
+        <div id="colsDIV" style="display:none">
+        ---读取字段的设置-------------------------
+        <div class="row bg-success">
+            <div class="col-md-2 text-center">数据库字段名</div>
+            <div class="col-md-4 text-center">是否参与排序</div>
+            <div class="col-md-2 text-center">是否读取该字段的值</div>
+            <div class="col-md-4 text-center">自定义名称</div>
+        </div>
+        <div class="row" id="colsTR"><%--在这里列出所有字段--%>
+        </div>
+            </div>
     </div>
 
     <button type="button" class="btn btn-warning btn-sm" onclick="initEditTimerTask(-1)">新建任务</button>
@@ -167,7 +156,23 @@
 
 <script type="application/javascript">
     var bp = '<%=basePath%>';
-    var collength = 0;
+    var colLength = 0;
+// 数据库链接相关变量
+    var name;
+    var description;
+    var keywords;// 关键字，当用户自主查询时，通过关键字匹配
+    var ip;
+    var port;
+    var dbtype;
+    var dbname;
+    var username;
+    var password;
+    var tablename;
+    var sortfields;// 排序字段，根据这个字段才能查询到最新的数据 A ASC,B DESC 默认为降序排列
+    var fields;// a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,EQ#,e,eName,bcde,NE#f,fName,cdef,RG@12BT34
+    // 字段，字段名，值，规则 根据规则来判断
+    var rules;
+
     // 文档被加载完成时
     $(document).ready(function () {
         queryTimerTasks();
@@ -182,6 +187,49 @@
                 initTbodyOfTasks(data['timerTasks']);// 选择控件
             }
         });
+    }
+
+    // 检查数据库连通性
+    function testConnect() {
+        ip = $("#editIP").val();
+        port = $("#editPort").val();
+        dbtype = $("#editDbtype  option:selected").val();
+        dbname = $("#editDbname").val();
+        username = $("#editUsername").val();
+        password = $("#editPassword").val();
+        tablename = $("#editTablename").val();
+        var jsonData ="{\"ip\":\"" + ip
+                + "\",\"port\":\"" + port
+                + "\",\"dbtype\":\"" + dbtype
+                + "\",\"dbname\":\"" + dbname
+                + "\",\"username\":\"" + username
+                + "\",\"password\":\"" + password
+                + "\",\"tablename\":\"" + tablename + "\"}";
+        console.log("jsonData:" + jsonData);
+        // 访问服务器
+        $.ajax({
+            url: bp + 'Smserver/functions/testconnect',
+            type: 'POST',
+            data: jsonData,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                var colsNames = data['colNames'];
+                if(colsNames != null){
+                    // 初始化colNames相关的控件
+                    var htmlStr = '<p style="color: #0000FF">连接成功!</p>';
+                    $("#connectResult").html(htmlStr);
+                    initTbodyOfCols(data['colNames']);// 选择控件
+                }else{
+                    var htmlStr = '<p style="color: #c9302c">连接失败!</p>';
+                    $("#connectResult").html(htmlStr);
+                }
+                myAnimate($("#connectResult"), 8, $("#connectResult").attr("style"));
+
+            }
+        });
+
+
     }
 
     // 使用联系人json数据组合成联系人表格内容
@@ -251,21 +299,46 @@
     function initTbodyOfCols(colNames) {
         var htmlStr = '';
         for (var i = 0; i < colNames.length; i++) {
+            if(i%2 == 0){
+                htmlStr = htmlStr
+                        + '<div class="row bg-warning">';
+            }else{
+                htmlStr = htmlStr
+                        + '<div class="row">';
+            }
+
             htmlStr = htmlStr
-                    + '<tr>'
-                    + '<td><input type="checkbox" name="isSort'+i+'"><br>'
-                    + '<input type="radio" name=""></td>'
-                    + '<td><input type="checkbox" name="isused" value="' + colNames[i] + '"></td>'
-                    + '<td>' + contacts[i].groupname
-                    + '</td><td>' + contacts[i].name
-                    + '</td><td>' + contacts[i].title
-                    + '</td><td>' + contacts[i].phone
-                    + '</td>'
-                    + '</tr>';
+                    + '<div class="col-md-2 text-center"><b>' + colNames[i] + '</b></div>'
+                    + '<div class="col-md-4 text-center">'
+                        + '<input type="checkbox" id="isSort'+i+'">是 '
+                        + '<input type="radio" name="sort'+i+'" value="desc" checked>降序 <input type="radio" name="sort'+i+'" value="asc">升序</div>'
+                    + '<div class="col-md-2 text-center"><input type="checkbox" id="isused'+i+'" value="' + colNames[i] + '">读取</div>'
+                    + '<div class="col-md-4 text-center"><input class="form-control" id="colNameSelf'+i+'" placeholder="名称"></div>'
+            +'</div>';
+            if(i%2 == 0){
+                htmlStr = htmlStr
+                        + '<div class="row bg-warning">';
+            }else{
+                htmlStr = htmlStr
+                        + '<div class="row">';
+            }
+            htmlStr = htmlStr
+                        + '<div class="col-md-2 text-center"><input type="checkbox" name="isusedRule'+i+'">使用规则</div>'
+                        + '<div class="col-md-2 text-center"><input type="radio" name="rule'+i+'" value="equal" checked>等于 <input type="radio" name="rule'+i+'" value="notequal">不等于<br>'
+                            + '参照值<input class="form-control" id="compareValue'+i+'"></div>'
+                        + '<div class="col-md-1 text-center"><input type="radio" name="rule'+i+'" value="above">大于<input class="form-control" id="above'+i+'" placeholder="大于"></div>'
+                        + '<div class="col-md-1 text-center"><input type="radio" name="rule'+i+'" value="below">小于<input class="form-control" id="below'+i+'" placeholder="小于"></div>'
+                        + '<div class="col-md-6 text-center" style="border-style: groove">'
+                                + '<input type="radio" name="rule'+i+'" value="range">范围<br>'
+                                + '<div class="col-md-4 text-center"><input type="radio" name="range'+i+'" value="between" checked>在内 <input type="radio" name="range'+i+'" value="out">在外 </div>'
+                                + '<div class="col-md-4 text-center">下限值:<input class="form-control" id="rangedown'+i+'"></div>'
+                                + '<div class="col-md-4 text-center">上限值:<input class="form-control" id="rangeup'+i+'"></div>'
+                        + '</div>'
+                    + '</div><br>';
         }
-        $("#contactsBody").html(htmlStr);
-        // 取消全选的勾选
-        $("#selectAllContacts").prop("checked", false);
+        $("#colsTR").html(htmlStr);
+        $("#colsDIV").show(2000);
+
     }
 
     // 初始化联系人组UI控件

@@ -42,6 +42,7 @@ public class DBUtil {
             url = "jdbc:odbc:dbsource";
         }
         try {
+            System.out.println("fullName:" + fullName + ";url:" + url + ";username:" + username + ";password:" + password );
             Class.forName(fullName);
             conn = DriverManager.getConnection(url,username,password);
         } catch (Exception e) {

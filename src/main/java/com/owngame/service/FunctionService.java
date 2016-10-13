@@ -44,6 +44,8 @@ public interface FunctionService {
 
     Function getById(long id);
 
+    ArrayList<String> testConnect(Function function);
+
     /**
      * 通过function得到其对应的结果
      * @param function

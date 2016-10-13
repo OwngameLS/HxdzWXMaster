@@ -57,7 +57,7 @@ public class FunctionServiceImpl implements FunctionService {
      * @param function
      * @return
      */
-    public ArrayList<String> canConnect(Function function){
+    public ArrayList<String> testConnect(Function function){
         Connection connection = DBUtil.createConn(function);
         if(connection != null){
             // 连接上了就读取该表的字段属性

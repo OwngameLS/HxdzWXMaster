@@ -58,6 +58,7 @@ public class MainController {
     @Autowired
     TaskService taskService;
 
+
     /**
      * 处理来自微信服务器的验证
      *
@@ -400,6 +401,29 @@ public class MainController {
         ArrayList<Function> functions = functionService.queryAll();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("functions", functions);
+        return map;
+    }
+
+    /**
+     * 查询所有功能
+     *
+     * @return
+     */
+    @RequestMapping(value = "/functions/testconnect", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> testFunctionConnect(@RequestBody Map<String, String> p) {
+        Function function = new Function();
+        function.setIp(p.get("ip"));
+        function.setPort(p.get("port"));
+        function.setDbtype(p.get("dbtype"));
+        function.setDbname(p.get("dbname"));
+        function.setUsername(p.get("username"));
+        function.setPassword(p.get("password"));
+        function.setTablename(p.get("tablename"));
+        // 检查连通性
+        ArrayList<String> colNames = functionService.testConnect(function);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("colNames", colNames);
         return map;
     }
 
