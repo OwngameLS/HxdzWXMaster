@@ -51,11 +51,18 @@
     </div>
 
     <div id="functionEditDiv" style="" class="well"><%--编辑定时任务的表格--%>
+        <div class="row">
+            <div class="col-md-10 text-center"></div>
+            <div class="col-md-2 text-center">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveFunction()">保 存</button>
+                <button type="button" class="btn btn-warning btn-sm" onclick="initEditTimerTask(-1)">取 消</button>
+            </div>
+        </div>
         ---功能描述性设置-------------------------
         <div class="row bg-success">
             <div class="col-md-3 text-center">名称</div>
             <div class="col-md-4 text-center">关键字</div>
-            <div class="col-md-5 text-center">关键字</div>
+            <div class="col-md-5 text-center">描述</div>
         </div>
         <div class="row">
             <div class="col-md-3 text-center">
@@ -63,7 +70,7 @@
             <div class="col-md-4 text-center">
                 <input class="form-control" id="editKeywords" placeholder="关键字，区别于其他功能的关键字..." onchange=""></div>
             <div class="col-md-5 text-center">
-                <input class="form-control" id="editContactName" placeholder="描述这个功能，它将作为返回信息的起始部分..."></div>
+                <input class="form-control" id="editDescription" placeholder="描述这个功能，它将作为返回信息的起始部分..."></div>
         </div>
         ---数据库连接属性设置---------------------
         <div class="row bg-success">
@@ -111,7 +118,7 @@
                 <input class="form-control" id="editTablename" placeholder="读取的表名...">
             </div>
             <div class="col-md-3 text-center">
-                <button type="button" class="btn btn-success btn-sm" onclick="testConnect()">连接测试</button>
+                <button type="button" class="btn btn-success btn-sm" onclick="testConnect(true)">连接测试</button>
             </div>
         </div>
         <div id="colsDIV" style="display:none">
@@ -158,6 +165,7 @@
     var bp = '<%=basePath%>';
     var colLength = 0;
 // 数据库链接相关变量
+    var id = 0;// 新建
     var name;
     var description;
     var keywords;// 关键字，当用户自主查询时，通过关键字匹配
@@ -189,15 +197,110 @@
         });
     }
 
-    // 检查数据库连通性
-    function testConnect() {
+    // 保存function
+    function saveFunction(){
+        // 验证所填写的字段非空且符合要求
+        // 验证功能描述性设置
+        var result1 = testFunctionDescPart();
+        var result2 = testConnect();
+        var result3 = false
+        if(result1 && result2){// 基础输入检查完毕
+            // 检查规则
+            result3 = testRules();
+        }
+
+    }
+
+    // 验证功能描述性设置
+    function testFunctionDescPart(){
+        // 功能名称
+        name = $("#editName").val();
+        if (name == '' || name == null) {
+            // 错误信息
+            showEditFail("必须输入功能名称！", $("#editName"));
+            return false;
+        }
+        // 关键字
+        keywords = $("#editKeywords").val();
+        if (keywords == '' || keywords == null) {
+            // 错误信息
+            showEditFail("必须输入关键字！", $("#editKeywords"));
+            return false;
+        }
+        // keywords不为空，还要检测它的唯一性
+        $.ajax({
+            url: bp + 'Smserver/functions/keywords/',
+            type: 'POST',
+            async:false,
+            data: "{\"keywords\":\"" + keywords + "\"}",
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                var result = data['result'];
+                if(result != true){
+                    // 会返回类似的关键字，将他们罗列出来
+                    var errorMsg = "关键字重复！下列的关键字都不能使用哦：";
+                    for(var i=0;i<errorMsg.length;i++){
+                        text = text + errorMsg[i];
+                        if((i+1)< errorMsg.length){
+                            text = text + ",";
+                        }
+                    }
+                    showEditFail(errorMsg, $("#editKeywords"));
+                    return false;
+                }
+            }
+        });
+        // 检查描述
+        description = $("#editDescription").val();
+        if (description == '' || description == null) {
+            // 错误信息
+            showEditFail("必须输入描述！", $("#editName"));
+            return false;
+        }
+        return true;
+    }
+
+    // 检查数据库连通性 showCols 是否需要将查询得到的字段展示出来 true:展示，fasle:不展示
+    function testConnect(showCols) {
         ip = $("#editIP").val();
+        if (ip == '' || ip == null) {
+            // 错误信息
+            showEditFail("必须输入IP地址！", $("#editIP"));
+            return false;
+        }
         port = $("#editPort").val();
+        if (port == '' || port == null) {
+            // 错误信息
+            showEditFail("必须输入端口号！", $("#editPort"));
+            return false;
+        }
         dbtype = $("#editDbtype  option:selected").val();
+
         dbname = $("#editDbname").val();
+        if (dbname == '' || dbname == null) {
+            // 错误信息
+            showEditFail("必须输入数据库名！", $("#editDbname"));
+            return false;
+        }
         username = $("#editUsername").val();
+        if (username == '' || username == null) {
+            // 错误信息
+            showEditFail("必须输入用户名！", $("#editUsername"));
+            return false;
+        }
         password = $("#editPassword").val();
+        if (password == '' || password == null) {
+            // 错误信息
+            showEditFail("必须输入密码！", $("#editPassword"));
+            return false;
+        }
         tablename = $("#editTablename").val();
+        if (tablename == '' || tablename == null) {
+            // 错误信息
+            showEditFail("必须输入表名！", $("#editTablename"));
+            return false;
+        }
         var jsonData ="{\"ip\":\"" + ip
                 + "\",\"port\":\"" + port
                 + "\",\"dbtype\":\"" + dbtype
@@ -210,25 +313,90 @@
         $.ajax({
             url: bp + 'Smserver/functions/testconnect',
             type: 'POST',
+            async:false,
             data: jsonData,
             dataType: "json",
             contentType: "application/json",
             success: function (data) {
                 var colsNames = data['colNames'];
                 if(colsNames != null){
-                    // 初始化colNames相关的控件
                     var htmlStr = '<p style="color: #0000FF">连接成功!</p>';
                     $("#connectResult").html(htmlStr);
+                    if(showCols == false){// 只需告知结果
+                        return true;
+                    }
+                    // 初始化colNames相关的控件
                     initTbodyOfCols(data['colNames']);// 选择控件
                 }else{
                     var htmlStr = '<p style="color: #c9302c">连接失败!</p>';
                     $("#connectResult").html(htmlStr);
+                    if(showCols == false){// 只需告知结果
+                        if (confirm("数据库连接没有成功，确认保存？")){
+                            return true;// 当保存时数据库出现问题，设置没有问题时
+                        }else{
+                            return false;
+                        }
+                    }
+                    $("#colsDIV").hide(2000);
                 }
-                myAnimate($("#connectResult"), 8, $("#connectResult").attr("style"));
-
+                if(showCols == true){
+                    myAnimate($("#connectResult"), 8, $("#connectResult").attr("style"));
+                }
             }
         });
+    }
 
+    // 检查字段规则
+    function testRules(){
+        for(var i=0;i<colLength;i++){
+
+        }
+    }
+
+    // 初始化表字段UI控件 用于编辑字段规则
+    function initTbodyOfCols(colNames) {
+        colLength = colNames.length;
+        var htmlStr = '';
+        for (var i = 0; i < colNames.length; i++) {
+            if(i%2 == 0){
+                htmlStr = htmlStr
+                        + '<div class="row bg-warning">';
+            }else{
+                htmlStr = htmlStr
+                        + '<div class="row">';
+            }
+
+            htmlStr = htmlStr
+                    + '<div class="col-md-2 text-center"><b id="colName'+i+'">' + colNames[i] + '</b></div>'
+                    + '<div class="col-md-4 text-center">'
+                    + '<input type="checkbox" id="isSort'+i+'">是 '
+                    + '<input type="radio" name="sort'+i+'" value="desc" checked>降序 <input type="radio" name="sort'+i+'" value="asc">升序</div>'
+                    + '<div class="col-md-2 text-center"><input type="checkbox" id="isused'+i+'" value="' + colNames[i] + '">读取</div>'
+                    + '<div class="col-md-4 text-center"><input class="form-control" id="colNameSelf'+i+'" placeholder="名称"></div>'
+                    +'</div>';
+            if(i%2 == 0){
+                htmlStr = htmlStr
+                        + '<div class="row bg-warning">';
+            }else{
+                htmlStr = htmlStr
+                        + '<div class="row">';
+            }
+            htmlStr = htmlStr
+                    + '<div class="col-md-2 text-center"><input type="checkbox" name="isusedRule'+i+'">使用规则</div>'
+                    + '<div class="col-md-2 text-center"><input type="radio" name="rule'+i+'" value="equal" checked>等于 <input type="radio" name="rule'+i+'" value="notequal">不等于<br>'
+                    + '参照值<input class="form-control" id="compareValue'+i+'"></div>'
+                    + '<div class="col-md-1 text-center"><input type="radio" name="rule'+i+'" value="above">大于<input class="form-control" id="above'+i+'" placeholder="大于"></div>'
+                    + '<div class="col-md-1 text-center"><input type="radio" name="rule'+i+'" value="below">小于<input class="form-control" id="below'+i+'" placeholder="小于"></div>'
+                    + '<div class="col-md-6 text-center" style="border-style: groove">'
+                    + '<input type="radio" name="rule'+i+'" value="range">范围<br>'
+                    + '<div class="col-md-4 text-center"><input type="radio" name="range'+i+'" value="between" checked>在内 <input type="radio" name="range'+i+'" value="out">在外 </div>'
+                    + '<div class="col-md-4 text-center">下限值:<input class="form-control" id="rangedown'+i+'"></div>'
+                    + '<div class="col-md-4 text-center">上限值:<input class="form-control" id="rangeup'+i+'"></div>'
+                    + '</div>'
+                    + '</div><br>';
+        }
+        $("#colsTR").html(htmlStr);
+        $("#colsDIV").show(2000);
 
     }
 
@@ -295,51 +463,7 @@
         initTbodyOfGroups();
     }
 
-    // 初始化表字段UI控件 用于编辑字段规则
-    function initTbodyOfCols(colNames) {
-        var htmlStr = '';
-        for (var i = 0; i < colNames.length; i++) {
-            if(i%2 == 0){
-                htmlStr = htmlStr
-                        + '<div class="row bg-warning">';
-            }else{
-                htmlStr = htmlStr
-                        + '<div class="row">';
-            }
 
-            htmlStr = htmlStr
-                    + '<div class="col-md-2 text-center"><b>' + colNames[i] + '</b></div>'
-                    + '<div class="col-md-4 text-center">'
-                        + '<input type="checkbox" id="isSort'+i+'">是 '
-                        + '<input type="radio" name="sort'+i+'" value="desc" checked>降序 <input type="radio" name="sort'+i+'" value="asc">升序</div>'
-                    + '<div class="col-md-2 text-center"><input type="checkbox" id="isused'+i+'" value="' + colNames[i] + '">读取</div>'
-                    + '<div class="col-md-4 text-center"><input class="form-control" id="colNameSelf'+i+'" placeholder="名称"></div>'
-            +'</div>';
-            if(i%2 == 0){
-                htmlStr = htmlStr
-                        + '<div class="row bg-warning">';
-            }else{
-                htmlStr = htmlStr
-                        + '<div class="row">';
-            }
-            htmlStr = htmlStr
-                        + '<div class="col-md-2 text-center"><input type="checkbox" name="isusedRule'+i+'">使用规则</div>'
-                        + '<div class="col-md-2 text-center"><input type="radio" name="rule'+i+'" value="equal" checked>等于 <input type="radio" name="rule'+i+'" value="notequal">不等于<br>'
-                            + '参照值<input class="form-control" id="compareValue'+i+'"></div>'
-                        + '<div class="col-md-1 text-center"><input type="radio" name="rule'+i+'" value="above">大于<input class="form-control" id="above'+i+'" placeholder="大于"></div>'
-                        + '<div class="col-md-1 text-center"><input type="radio" name="rule'+i+'" value="below">小于<input class="form-control" id="below'+i+'" placeholder="小于"></div>'
-                        + '<div class="col-md-6 text-center" style="border-style: groove">'
-                                + '<input type="radio" name="rule'+i+'" value="range">范围<br>'
-                                + '<div class="col-md-4 text-center"><input type="radio" name="range'+i+'" value="between" checked>在内 <input type="radio" name="range'+i+'" value="out">在外 </div>'
-                                + '<div class="col-md-4 text-center">下限值:<input class="form-control" id="rangedown'+i+'"></div>'
-                                + '<div class="col-md-4 text-center">上限值:<input class="form-control" id="rangeup'+i+'"></div>'
-                        + '</div>'
-                    + '</div><br>';
-        }
-        $("#colsTR").html(htmlStr);
-        $("#colsDIV").show(2000);
-
-    }
 
     // 初始化联系人组UI控件
     function initTbodyOfGroups() {

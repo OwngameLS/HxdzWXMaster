@@ -385,7 +385,6 @@
         for (var j = 0; j < formerIds.length; j++) {
             if (j == 0) {
                 tempStr = '' + formerIds[j];
-                console.log("youyisima :" + tempStr);
             } else {
                 tempStr = tempStr + ',' + formerIds[j];
             }
