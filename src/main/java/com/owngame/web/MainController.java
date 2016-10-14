@@ -405,8 +405,7 @@ public class MainController {
     }
 
     /**
-     * 查询所有功能
-     *
+     * 查询数据库设置连接的连通性
      * @return
      */
     @RequestMapping(value = "/functions/testconnect", method = RequestMethod.POST)
@@ -424,6 +423,23 @@ public class MainController {
         ArrayList<String> colNames = functionService.testConnect(function);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("colNames", colNames);
+        return map;
+    }
+
+    /**
+     * 查询关键字
+     * @return
+     */
+    @RequestMapping(value = "/functions/keywords", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> checkKeywords(@RequestBody Map<String, String> p) {
+        String idString = p.get("id");
+        String keywords = p.get("keywords");
+        long id = Long.parseLong(idString);
+        // 检查关键字
+        FunctionKeywordsResult keywordResult = functionService.checkKeywords(id, keywords);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("keywordResult", keywordResult);
         return map;
     }
 

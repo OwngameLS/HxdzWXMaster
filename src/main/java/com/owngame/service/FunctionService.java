@@ -1,6 +1,7 @@
 package com.owngame.service;
 
 import com.owngame.entity.Function;
+import com.owngame.entity.FunctionKeywordsResult;
 
 import java.util.ArrayList;
 
@@ -52,5 +53,12 @@ public interface FunctionService {
      * @return
      */
     String getFunctionResult(Function function);
+
+    /**
+     * 检查关键词
+     * @param keywords
+     * @return
+     */
+    FunctionKeywordsResult checkKeywords(long id, String keywords);
 
 }

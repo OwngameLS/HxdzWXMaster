@@ -19,6 +19,10 @@
         select * from function where id=#{id}
     </select>
 
+    <select id="checkKeywords" resultType="Function" parameterType="String">
+        select * from function where keywords like #{keywords}
+    </select>
+
     <insert id="insert" parameterType="Function">
         insert into function
         (id,name,description,keywords,ip,port,dbtype,dbname,username,password,tablename,sortfields,fields,rules)

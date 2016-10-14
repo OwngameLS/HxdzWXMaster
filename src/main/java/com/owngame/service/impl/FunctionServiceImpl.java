@@ -3,6 +3,7 @@ package com.owngame.service.impl;
 import com.owngame.dao.FunctionDao;
 import com.owngame.entity.Function;
 import com.owngame.entity.FunctionField;
+import com.owngame.entity.FunctionKeywordsResult;
 import com.owngame.service.FunctionService;
 import com.owngame.utils.DBUtil;
 import com.owngame.utils.FunctionFieldUtil;
@@ -14,6 +15,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016-9-27.
@@ -106,6 +110,83 @@ public class FunctionServiceImpl implements FunctionService {
         // 查询并得到结果
         return doQuery(connection, sql, functionFields, function.getRules());
     }
+
+    /**
+     * 检查关键字
+     * @param keywords
+     * @return
+     */
+    public FunctionKeywordsResult checkKeywords(long id, String keywords) {
+        FunctionKeywordsResult functionKeywordsResult = new FunctionKeywordsResult();
+        if(id > 0){// 是更新原来的功能，检测其关键字是否更改了
+            // 通过id查询原来的关键字
+            Function function = functionDao.queryById(id);
+            if(keywords.equals(function.getKeywords())){// 与原来的一样，没有改变
+                functionKeywordsResult.setSuccess(true);
+                return functionKeywordsResult;
+            }
+        }
+        String keys[] = keywords.split(",");// 分割关键字组合
+        HashMap<String, String> similarKeys = new HashMap<String, String>();
+        for(int i=0;i<keys.length;i++){
+            ArrayList<Function> rr = functionDao.checkKeywords("%" + keys[i] + "%");// 模糊查询
+            if(rr != null){
+                for(int j=0;j<rr.size();j++){
+                    String formerKeys[] = rr.get(j).getKeywords().split(",");
+                    if(id < 0){//新建
+                        for(String fk : formerKeys){
+                            if(fk.equals(keys[i])){// 关键字重复
+                                functionKeywordsResult.setSuccess(false);//有重复的了
+                                similarKeys = putKeyswords(similarKeys, keys[i], fk, true);
+                            }else if(fk.contains(keys[i])){// 关键字有类似的
+                                similarKeys = putKeyswords(similarKeys, keys[i], fk, false);
+                            }
+                        }
+                    }else{// 更新
+                        long formerId = rr.get(j).getId();
+                        for(String fk : formerKeys){
+                            if(fk.equals(keys[i])){// 关键字重复
+                                if(formerId != id){// 不是原来的关键字
+                                    functionKeywordsResult.setSuccess(false);//有重复的了
+                                    similarKeys = putKeyswords(similarKeys, keys[i], fk, true);
+                                }
+                            }else if(fk.contains(keys[i])){// 关键字有类似的
+                                // 更新时发现类似的关键字，不用管
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        if(functionKeywordsResult.isSuccess() == false){// 需要返回错误信息
+            ArrayList<String> keysInfo = new ArrayList<String>();
+            Iterator iter = similarKeys.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                keysInfo.add((String) entry.getValue());
+            }
+            functionKeywordsResult.setSimlarKeys(keysInfo);
+        }
+        return functionKeywordsResult;
+    }
+
+    // 将关键字重复信息进行整理
+    private HashMap<String, String> putKeyswords(HashMap<String, String> similarKeys, String key, String value, boolean isEqual){
+        String v = "";
+        if(similarKeys.containsKey(key)) {// 原来已经添加了这个key的对象
+            v = similarKeys.get(key);
+        }
+        if(isEqual){// 关键字重复的只会查询到一次 TODO 前台要避免出现 keyA,keyA这样的关键字组合
+            v = "关键字"+key+"已存在，类似的还有：" + v;
+        }else{
+            v = v +"[" +value + "] ";
+        }
+        similarKeys.put(key, v);
+        return similarKeys;
+    }
+
 
     /**
      * 构造查询语句

@@ -15,4 +15,5 @@ public interface FunctionDao {
     Function queryByKeywords(String keywords);
     Function queryById(long id);
     int deleteById(long id);
+    ArrayList<Function> checkKeywords(String keywords);
 }
