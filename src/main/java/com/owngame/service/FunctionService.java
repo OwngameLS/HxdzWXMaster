@@ -2,6 +2,7 @@ package com.owngame.service;
 
 import com.owngame.entity.Function;
 import com.owngame.entity.FunctionKeywordsResult;
+import com.owngame.entity.FunctionSqlResult;
 
 import java.util.ArrayList;
 
@@ -60,5 +61,13 @@ public interface FunctionService {
      * @return
      */
     FunctionKeywordsResult checkKeywords(long id, String keywords);
+
+    /**
+     * 检查SQL语句
+     * @param function : 主要用于获取数据库连接
+     * @param sql
+     * @return
+     */
+    FunctionSqlResult checkSql(Function function,String sql);
 
 }

@@ -74,7 +74,7 @@
         </div>
         ---数据库连接属性设置---------------------
         <div class="row bg-success">
-            <div class="col-md-4 text-center">IP地址</div>
+            <div class="col-md-4 text-center">IP地址/主机名</div>
             <div class="col-md-2 text-center">端口号</div>
             <div class="col-md-3 text-center">数据库类型</div>
             <div class="col-md-3 text-center">数据库名称</div>
@@ -121,8 +121,47 @@
                 <button type="button" class="btn btn-success btn-sm" onclick="testConnect(true)">连接测试</button>
             </div>
         </div>
-        <div id="colsDIV" style="display:none">
+
+        <div id="colsDIV">
+        <%--<div id="colsDIV" style="display:none">--%>
+            ---如果你够专业，您可以在这里编写SQL语句-------------------------
+            <div class="row bg-success">
+                <input type="radio" name="whichType" value="sql">使用SQL语句
+            </div>
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    Sql语句(只支持查询语句)：
+                </div>
+                <div class="col-md-7 text-center">
+                    <input id="editSQL" class="form-control">
+                </div>
+                <div class="col-md-2 text-center">
+                    <button type="button" class="btn btn-success btn-sm" onclick="testSQL(true)">测试</button>
+                    <button type="button" class="btn btn-warning btn-sm" onclick="saveSQL()">保存SQL</button>
+                </div>
+            </div>
+            <div id="sqlresultDiv" style="display: none">
+                <div class="row bg-warning">
+                    <div class="col-md-1 text-center"></div>
+                    <div class="col-md-10 text-center">
+                            根据你的sql语句，得知你要查询以下几个字段的值，为了让你的查询结果更容易理解，
+                            请将字段进行命名，并按照你的需求给出字段的顺序，便于整理结果。<br>
+                        <em>
+                            例如，你查询了A,B,C三个字段，分别命名为 AAA,BBB,CCC，顺序分别为2,1,3，则查询结果为：<br>
+                            功能XXX的查询结果如下：BBB的值为bbb,AAA的值为aaa,CCC的值为ccc。
+                            </em>
+                    </div>
+                </div>
+                <div id="sqlFields">
+
+                </div>
+
+            </div>
+            <br>
             ---读取字段的设置-------------------------
+            <div class="row bg-success">
+                <input type="radio" name="whichType" value="rule" checked>使用规则
+            </div>
             <div class="row bg-success">
                 <div class="col-md-2 text-center">数据库字段名</div>
                 <div class="col-md-4 text-center">是否参与排序</div>
@@ -180,10 +219,13 @@
     var fields;// a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,EQ#,e,eName,bcde,NE#f,fName,cdef,RG@12BT34
     // 字段，字段名，值，规则 根据规则来判断
     var rules;
+    var sql;
+    var isConnectSuccess = false;// 设置的数据库连接是否成功的实际情况
+    var formerSqlFieldsHTML="";//前一次编辑的Sql字段结果
 
     // 文档被加载完成时
     $(document).ready(function () {
-        queryTimerTasks();
+//        queryTimerTasks();
     });
 
     function queryTimerTasks() {
@@ -212,6 +254,59 @@
 
     }
 
+    // 测试SQL语句
+    function testSQL(){
+        // 先检查sql语句，排除非法操作
+        sql = $("#editSQL").val();
+        if (sql == '' || sql == null) {
+            showEditFail("您还没有输入SQL语句呢！", $("#editSQL"));
+            return false;
+        }
+        if(sql.indexOf("remove")>=0 || sql.indexOf("delete")>=0 || sql.indexOf("update")>=0){
+            showEditFail("您输入的SQL语句不是查询语句，请检查！<br><b>注意:</b>只能是查询语句！", $("#editSQL"));
+            return false;
+        }
+        // 再检查数据库连通性
+        testConnect(false);
+        if(isConnectSuccess == false){
+            // 数据库不可连通，建议放弃操作
+            if (confirm("数据库连接没有成功，确认继续操作？")) {
+                // 保存sql语句供下次编辑就好了
+            } else {
+                return false;
+            }
+        }
+        var jsonData = "{\"ip\":\"" + ip
+                + "\",\"port\":\"" + port
+                + "\",\"dbtype\":\"" + dbtype
+                + "\",\"dbname\":\"" + dbname
+                + "\",\"username\":\"" + username
+                + "\",\"password\":\"" + password
+                + "\",\"tablename\":\"" + tablename
+                + "\",\"sql\":\"" + sql+"\"}";
+
+        //暂时没错了，交给后台检查吧
+        $.ajax({
+            url: bp + 'Smserver/functions/sql/',
+            type: 'POST',
+            async: false,
+            data: jsonData,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                var result = data['sqlResult'];
+                if (result.isSuccess < 0 ) {// 有错误信息
+                    // 会返回类似的关键字，将他们罗列出来
+                    var errorMsg = "您输入的sql语句存在错误：<br>" + result.fields[0];
+                    showEditFail(errorMsg, $("#editSQL"));
+                    return false;
+                }else{
+                    initTbodyOfSQL(result.fields);
+                }
+            }
+        });
+    }
+
     // 验证功能描述性设置
     function testFunctionDescPart() {
         // 功能名称
@@ -238,7 +333,7 @@
             contentType: "application/json",
             success: function (data) {
                 var result = data['keywordResult'];
-                if (result.isSuccess != true) {
+                if (result.isSuccess < 0) {
                     // 会返回类似的关键字，将他们罗列出来
                     var errorMsg = "关键字重复！<br>";
                     for (var i = 0; i < result.simlarKeys.length; i++) {
@@ -262,8 +357,8 @@
         return true;
     }
 
-    // 检查数据库连通性 showCols 是否需要将查询得到的字段展示出来 true:展示，fasle:不展示
-    function testConnect(showCols) {
+    // 检查数据库连通性 isShowCols 是否需要将查询得到的字段展示出来 true:展示，fasle:不展示
+    function testConnect(isShowCols) {
         ip = $("#editIP").val();
         if (ip == '' || ip == null) {
             // 错误信息
@@ -330,7 +425,7 @@
                 + "\",\"username\":\"" + username
                 + "\",\"password\":\"" + password
                 + "\",\"tablename\":\"" + tablename + "\"}";
-        console.log("jsonData:" + jsonData);
+//        console.log("jsonData:" + jsonData);
         // 访问服务器
         $.ajax({
             url: bp + 'Smserver/functions/testconnect',
@@ -342,18 +437,20 @@
             success: function (data) {
                 var colsNames = data['colNames'];
                 if (colsNames != null) {
+                    isConnectSuccess = true;
                     var htmlStr = '<p style="color: #0000FF">连接成功!</p>';
                     $("#connectResult").html(htmlStr);
-                    if (showCols == false) {// 只需告知结果
+                    if (isShowCols == false) {// 只需告知结果
                         return true;
                     }
                     // 初始化colNames相关的控件
                     initTbodyOfCols(data['colNames']);// 选择控件
                 } else {
+                    isConnectSuccess = false;
                     var htmlStr = '<p style="color: #c9302c">连接失败!</p>';
                     $("#connectResult").html(htmlStr);
-                    if (showCols == false) {// 只需告知结果
-                        if (confirm("数据库连接没有成功，确认保存？")) {
+                    if (isShowCols == false) {// 只需告知结果
+                        if (confirm("数据库连接没有成功，确认继续操作？")) {
                             return true;// 当保存时数据库出现问题，设置没有问题时
                         } else {
                             return false;
@@ -361,9 +458,12 @@
                     }
                     $("#colsDIV").hide(2000);
                 }
-                if (showCols == true) {
+                if (isShowCols == true) {
                     myAnimate($("#connectResult"), 8, $("#connectResult").attr("style"));
                 }
+            },
+            error:function(){
+                isConnectSuccess = false;
             }
         });
     }
@@ -419,6 +519,92 @@
         }
         $("#colsTR").html(htmlStr);
         $("#colsDIV").show(2000);
+    }
+
+    // 当使用sql语句规则时的相关设置
+    function initTbodyOfSQL(fields){
+        formerSqlFieldsHTML = $("#sqlFields").html();
+        var htmlStr = '<div class="row"><div class="col-md-3 text-center">字段名</div><div class="col-md-3 text-center">名称</div><div class="col-md-3 text-center">排序序号</div></div>';
+        for(var i=0;i<fields.length;i++){
+            htmlStr = htmlStr + '<div class="row">';
+            htmlStr = htmlStr + '<div class="col-md-3 text-center"><b id="sqlFieldCol'+i+'" >'+fields[i]+'</b></div>';
+            htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="sqlFieldName'+i+'" placeholder="名称"></div>';
+            htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="sqlFieldSort'+i+'" value="'+(i+1)+'"></div>';
+            htmlStr = htmlStr + '</div>';
+        }
+        $("#sqlFields").html(htmlStr);
+        $("#sqlresultDiv").show(2000);
+    }
+
+
+
+    // 保存SQL规则
+    function saveSQL(){
+        // 获得字段集合
+        var fields = new Array();
+        var fieldsHtml = $("[id*='sqlFieldCol']");
+        for(var i=0;i<fieldsHtml.length;i++){
+            fields.push($(fieldsHtml[i]).text());
+        }
+        // 检查非空
+        var nameHtml = $("[id*='sqlFieldName']");
+        var names = new Array();
+        var hasError = false;
+        var errorInfo = '';
+        for(var i=0;i<nameHtml.length;i++){
+            var value = $(nameHtml[i]).val();
+            if(value == null || value == ''){
+                hasError = true;
+                errorInfo = errorInfo + "字段("+fields[i]+")必须设置名称哦！<br>";
+                myAnimate($(nameHtml[i]), 8, $(nameHtml[i]).attr("style"));
+            }else{
+                names.push(value);
+            }
+        }
+        if(hasError){
+            showEditFail(errorInfo, null);
+            return false;
+        }
+        // 检查不重复？用户是傻逼吧
+
+        // 顺序
+        var sortHtml = $("[id*='sqlFieldSort']");
+        var sortsValue = new Array();
+        // 检查顺序非空
+        for(var i=0;i<sortHtml.length;i++){
+            var sort = $(sortHtml[i]).val();
+            if(sort == null || sort == ''){
+                hasError = true;
+                errorInfo = errorInfo + "字段("+fields[i]+")必须设置排列顺序哦！<br>";
+                myAnimate($(sortHtml[i]), 8, $(sortHtml[i]).attr("style"));
+            }else if(isInteger(sort) == false){
+                hasError = true;
+                errorInfo = errorInfo + "字段("+fields[i]+")的排列顺序必须为正整数哦！<br>";
+                myAnimate($(sortHtml[i]), 8, $(sortHtml[i]).attr("style"));
+            }else{
+                sortsValue.push(sort);
+            }
+        }
+        if(hasError){
+            showEditFail(errorInfo, null);
+            return false;
+        }
+        // 检查顺寻顺序
+        // 不能有一样的顺序
+        // 新建个数组
+        var s = sortsValue;
+        s = s.sort();
+        for(var i=0;i<s.length;i++){
+            if (s[i]==s[i+1]){
+                alert("数组重复内容为:"+s[i]);
+            }
+        }
+
+
+
+        hideEditFail();
+
+
 
     }
 
@@ -826,7 +1012,9 @@
         $("#editDoneDiv").hide(2000);
     }
     function showEditFail(msg, el) {
-        myAnimate(el, 8, el.attr("style"));
+        if(el != null){
+            myAnimate(el, 8, el.attr("style"));
+        }
         $("#failCause").html(msg);
         $("#editFailDiv").show(2000);
 

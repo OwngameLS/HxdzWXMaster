@@ -4,6 +4,7 @@ import com.owngame.dao.FunctionDao;
 import com.owngame.entity.Function;
 import com.owngame.entity.FunctionField;
 import com.owngame.entity.FunctionKeywordsResult;
+import com.owngame.entity.FunctionSqlResult;
 import com.owngame.service.FunctionService;
 import com.owngame.utils.DBUtil;
 import com.owngame.utils.FunctionFieldUtil;
@@ -111,6 +112,52 @@ public class FunctionServiceImpl implements FunctionService {
         return doQuery(connection, sql, functionFields, function.getRules());
     }
 
+
+    /**
+     * 检查Sql语句
+     * @param sql
+     * @return
+     */
+    public FunctionSqlResult checkSql(Function function, String sql) {
+        FunctionSqlResult functionSqlResult = new FunctionSqlResult();
+        // 1.现根据function获得服务组件
+        // 获得数据库链接
+        Connection conn = DBUtil.createConn(function);
+        if(conn != null){// 连接上了
+            if(sql.endsWith(";") == false){// 可能忘了写分号
+                sql = sql + ";";
+            }
+            PreparedStatement ps = DBUtil.prepare(conn, sql);
+            ResultSet rs = null;
+            ArrayList<String> fields = new ArrayList<String>();
+            try {
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    functionSqlResult.setIsSuccess(1);
+                    ResultSetMetaData meta = rs.getMetaData();
+                    for(int i=1;i<=meta.getColumnCount();i++){ // 序号从1开始
+                        fields.add(meta.getColumnName(i));//获得字段名
+                    }
+                    functionSqlResult.setFields(fields);
+                }
+                DBUtil.close(rs);
+            } catch (Exception e) {
+                e.printStackTrace();
+                functionSqlResult.setIsSuccess(-1);
+                fields.add(e.getMessage());// 添加错误信息
+                functionSqlResult.setFields(fields);
+                DBUtil.close(ps);
+                DBUtil.close(conn);
+                return functionSqlResult;
+            }
+            DBUtil.close(ps);
+            DBUtil.close(conn);
+        }else {
+            functionSqlResult.setIsSuccess(-1);
+        }
+        return functionSqlResult;
+    }
+
     /**
      * 检查关键字
      * @param keywords
@@ -122,7 +169,7 @@ public class FunctionServiceImpl implements FunctionService {
             // 通过id查询原来的关键字
             Function function = functionDao.queryById(id);
             if(keywords.equals(function.getKeywords())){// 与原来的一样，没有改变
-                functionKeywordsResult.setSuccess(true);
+                functionKeywordsResult.setIsSuccess(1);
                 return functionKeywordsResult;
             }
         }
@@ -136,7 +183,7 @@ public class FunctionServiceImpl implements FunctionService {
                     if(id < 0){//新建
                         for(String fk : formerKeys){
                             if(fk.equals(keys[i])){// 关键字重复
-                                functionKeywordsResult.setSuccess(false);//有重复的了
+                                functionKeywordsResult.setIsSuccess(-1);//有重复的了
                                 similarKeys = putKeyswords(similarKeys, keys[i], fk, true);
                             }else if(fk.contains(keys[i])){// 关键字有类似的
                                 similarKeys = putKeyswords(similarKeys, keys[i], fk, false);
@@ -147,7 +194,7 @@ public class FunctionServiceImpl implements FunctionService {
                         for(String fk : formerKeys){
                             if(fk.equals(keys[i])){// 关键字重复
                                 if(formerId != id){// 不是原来的关键字
-                                    functionKeywordsResult.setSuccess(false);//有重复的了
+                                    functionKeywordsResult.setIsSuccess(-1);//有重复的了
                                     similarKeys = putKeyswords(similarKeys, keys[i], fk, true);
                                 }
                             }else if(fk.contains(keys[i])){// 关键字有类似的
@@ -160,7 +207,7 @@ public class FunctionServiceImpl implements FunctionService {
             }
         }
 
-        if(functionKeywordsResult.isSuccess() == false){// 需要返回错误信息
+        if(functionKeywordsResult.getIsSuccess() < 0 ){// 需要返回错误信息
             ArrayList<String> keysInfo = new ArrayList<String>();
             Iterator iter = similarKeys.entrySet().iterator();
             while (iter.hasNext()) {

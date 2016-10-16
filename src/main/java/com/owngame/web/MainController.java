@@ -444,6 +444,29 @@ public class MainController {
     }
 
     /**
+     * 检查Sql语句
+     * @return
+     */
+    @RequestMapping(value = "/functions/sql", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> checkSql(@RequestBody Map<String, String> p) {
+        Function function = new Function();
+        function.setIp(p.get("ip"));
+        function.setPort(p.get("port"));
+        function.setDbtype(p.get("dbtype"));
+        function.setDbname(p.get("dbname"));
+        function.setUsername(p.get("username"));
+        function.setPassword(p.get("password"));
+        function.setTablename(p.get("tablename"));
+        String sql = p.get("sql");
+        // 检查关键字
+        FunctionSqlResult sqlResult = functionService.checkSql(function, sql);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("sqlResult", sqlResult);
+        return map;
+    }
+
+    /**
      * 查询所有与手机端交互的任务
      *
      * @return
