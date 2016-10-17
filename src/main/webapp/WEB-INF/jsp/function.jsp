@@ -148,7 +148,7 @@
                             请将字段进行命名，并按照你的需求给出字段的顺序，便于整理结果。<br>
                         <em>
                             例如，你查询了A,B,C三个字段，分别命名为 AAA,BBB,CCC，顺序分别为2,1,3，则查询结果为：<br>
-                            功能XXX的查询结果如下：BBB的值为bbb,AAA的值为aaa,CCC的值为ccc。
+                            【功能XXX的查询结果如下：BBB的值为bbb,AAA的值为aaa,CCC的值为ccc。】
                             </em>
                     </div>
                 </div>
@@ -219,7 +219,8 @@
     var fields;// a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,EQ#,e,eName,bcde,NE#f,fName,cdef,RG@12BT34
     // 字段，字段名，值，规则 根据规则来判断
     var rules;
-    var sql;
+    var sqlstmt = "";// sql语句
+    var sqlfields = "";//sql语句查询字段的名称
     var isConnectSuccess = false;// 设置的数据库连接是否成功的实际情况
     var formerSqlFieldsHTML="";//前一次编辑的Sql字段结果
 
@@ -596,17 +597,32 @@
         s = s.sort();
         for(var i=0;i<s.length;i++){
             if (s[i]==s[i+1]){
-                alert("数组重复内容为:"+s[i]);
+                hasError = true;
+                var index1 = sortsValue.indexOf(s[i]);
+                sortsValue[index1] = (-sortsValue[index1]);// 置负数 避免下面被找到 我觉得我真牛^_^
+                var index2 = sortsValue.indexOf(s[i+1]);
+                errorInfo = errorInfo + "字段("+fields[index1]+")和("+fields[index2]+")的排列顺序不能相同！<br>";
+                myAnimate($(sortHtml[index1]), 8, $(sortHtml[index1]).attr("style"));
+                myAnimate($(sortHtml[index2]), 8, $(sortHtml[index2]).attr("style"));
             }
         }
-
-
-
+        if(hasError){
+            showEditFail(errorInfo, null);
+            return false;
+        }
+//        没有错误，则根据排序结果整理成所需要的数据吧
+        sqlstmt = $("#editSQL").val();
+        sqlfields = "";//qingk
+        for(var i=0;i<s.length;i++){
+            var index = sortsValue.indexOf(s[i]);
+            sqlfields = sqlfields + fields[index] + "," + names[index];
+            if((i+1)<s.length){
+                sqlfields = sqlfields + "#";
+            }
+        }
         hideEditFail();
-
-
-
     }
+
 
     // 使用联系人json数据组合成联系人表格内容
     function initTbodyOfTasks(timertasks) {
