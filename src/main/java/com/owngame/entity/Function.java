@@ -17,7 +17,7 @@ public class Function {
     String tablename;
     String usetype;// 由于加入了SQL语句查询，需要确定使用哪个 sql或rules
     String sortfields;// 排序字段，根据这个字段才能查询到最新的数据 A ASC,B DESC 默认为降序排列
-    String fields;// a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,EQ#e,eName,bcde,NE#f,fName,cdef,RG@12BT34
+    String fields;// a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,EQ#e,eName,bcde,NE#f,fName,xxxx,RG@12BT34
     // 字段，字段名，值，规则 根据规则来判断
     String rules;// 读取结果是否返回的规则（由于需要涉及到预警功能，所以需要定义规则）
     // 由于功能是定时执行，因此不一定是每次都读取到数据就需要告知

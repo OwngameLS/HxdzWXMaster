@@ -246,11 +246,11 @@
         // 验证所填写的字段非空且符合要求
         // 验证功能描述性设置
         var result1 = testFunctionDescPart();
-        var result2 = false;//testConnect();
-        var result3 = false
+        var result2 = testConnect();
+        var result3 = saveRules();
         if (result1 && result2) {// 基础输入检查完毕
             // 检查规则
-            result3 = testRules();
+//            result3 = saveRules();
         }
 
     }
@@ -469,12 +469,7 @@
         });
     }
 
-    // 检查字段规则
-    function testRules() {
-        for (var i = 0; i < colLength; i++) {
 
-        }
-    }
 
     // 初始化表字段UI控件 用于编辑字段规则
     function initTbodyOfCols(colNames) {
@@ -506,13 +501,13 @@
             }
             htmlStr = htmlStr
                     + '<div class="col-md-2 text-center"><input type="checkbox" name="isusedRule' + i + '">使用规则</div>'
-                    + '<div class="col-md-2 text-center"><input type="radio" name="rule' + i + '" value="equal" checked>等于 <input type="radio" name="rule' + i + '" value="notequal">不等于<br>'
-                    + '参照值<input class="form-control" id="compareValue' + i + '"></div>'
-                    + '<div class="col-md-1 text-center"><input type="radio" name="rule' + i + '" value="above">大于<input class="form-control" id="above' + i + '" placeholder="大于"></div>'
-                    + '<div class="col-md-1 text-center"><input type="radio" name="rule' + i + '" value="below">小于<input class="form-control" id="below' + i + '" placeholder="小于"></div>'
+                    + '<div class="col-md-2 text-center"><input type="radio" name="rule' + i + '" value="EQ" checked>等于 <input type="radio" name="rule' + i + '" value="NE">不等于<br>'
+                    + '参照值<input class="form-control" id="compareValue' + i + '" placeholder="该字段的合理值"></div>'
+                    + '<div class="col-md-1 text-center"><input type="radio" name="rule' + i + '" value="BB">大于<input class="form-control" id="above' + i + '" placeholder="大于"></div>'
+                    + '<div class="col-md-1 text-center"><input type="radio" name="rule' + i + '" value="LL">小于<input class="form-control" id="below' + i + '" placeholder="小于"></div>'
                     + '<div class="col-md-6 text-center" style="border-style: groove">'
-                    + '<input type="radio" name="rule' + i + '" value="range">范围<br>'
-                    + '<div class="col-md-4 text-center"><input type="radio" name="range' + i + '" value="between" checked>在内 <input type="radio" name="range' + i + '" value="out">在外 </div>'
+                    + '<input type="radio" name="rule' + i + '" value="RG">范围<br>'
+                    + '<div class="col-md-4 text-center"><input type="radio" name="range' + i + '" value="BT" checked>在内 <input type="radio" name="range' + i + '" value="OUT">在外 </div>'
                     + '<div class="col-md-4 text-center">下限值:<input class="form-control" id="rangedown' + i + '"></div>'
                     + '<div class="col-md-4 text-center">上限值:<input class="form-control" id="rangeup' + i + '"></div>'
                     + '</div>'
@@ -537,6 +532,116 @@
         $("#sqlresultDiv").show(2000);
     }
 
+
+    // 检查字段规则
+    function saveRules() {
+        // 先获得被选中的要求添加规则的字段
+        var sortArray = new Array();// 排序字段
+        var rulesArray = new Array();// 读取字段的规则
+        var fields = new Array();
+        var fieldsHtml = $("[id*='colName']");
+        for(var i=0;i<fieldsHtml.length;i++){
+            fields.push($(fieldsHtml[i]).text());
+        }
+        for (var i = 0; i < fields.length; i++) {
+            // 是否参与排序
+            var isSort = $("#isSort"+i).prop("checked");
+            if(isSort){
+                var order = $('input[name="sort'+i+'"]:checked ').val();
+                sortArray.push(fields + " " + order);// 添加到排序数组里
+            }
+            var isUsed = $("#isused"+i).prop("checked");
+            if(isUsed){
+                // 检查其名称是否填写
+                var colNameSelf = $("#colNameSelf"+i).val();
+                if(colNameSelf == null || colNameSelf == ''){
+                    showEditFail("你选择使用字段<b>"+fields[i]+"</b>,所以必须填写它的自定义名称。", $("#colNameSelf"+i));
+                    return false;
+                }else{
+                    // 检查是否使用规则
+                    var isusedRule = $("#isusedRule"+i).prop("checked");
+                    if(isusedRule == false){// 不使用规则，直接读取
+                        //  a,aName,-1,NN
+                        rulesArray.push(fields[i] + ","+colNameSelf + ",-1,NN");
+                    }else{// 使用规则 进一步判断
+                        var ruleType = $('input[name="rule'+i+'"]:checked ').val();
+                        if(ruleType == 'EQ' || ruleType == 'NE'){// 等于或者不等于的规则
+                            // 检查参照值为合法输入 非空即可
+                            var compareValue = $("#compareValue"+i).val();
+                            if(compareValue == null || compareValue == '') {
+                                showEditFail("字段<b>" + fields[i] + "</b>使用规则，其参照值不能为空！", $("#compareValue"+i));
+                                return false;
+                            }else{
+                                rulesArray.push(fields[i] + ","+colNameSelf + "," + compareValue + ","+ ruleType);
+                            }
+                        }else if(ruleType == 'BB'){// 大于
+                            var aboveValue = $("#above"+i).val();
+                            if(aboveValue == null || aboveValue == '') {
+                                showEditFail("字段<b>" + fields[i] + "</b>使用‘大于’规则，其参照值不能为空！", $("#above"+i));
+                                return false;
+                            }else{
+                                rulesArray.push(fields[i] + ","+colNameSelf + "," + aboveValue + ","+ ruleType);
+                            }
+                        }else if(ruleType == 'LL'){// 小于
+                            var belowValue = $("#below"+i).val();
+                            if(belowValue == null || belowValue == '') {
+                                showEditFail("字段<b>" + fields[i] + "</b>使用‘小于’规则，其参照值不能为空！", $("#below"+i));
+                                return false;
+                            }else{
+                                rulesArray.push(fields[i] + ","+colNameSelf + "," + belowValue + ","+ ruleType);
+                            }
+                        }else if(ruleType == 'RG'){// 范围
+                            // f,fName,cdef,RG@12BT34
+                            // 范围区域（在内，在外）
+                            var rangeType = $('input[name="range'+i+'"]:checked ').val();
+                            // 两个标值
+                            // 检查不能为空
+                            var rangedown = $("#rangedown"+i).val();
+                            if(rangedown == null || rangedown == '') {
+                                showEditFail("字段<b>" + fields[i] + "</b>使用‘范围’规则，其下限值不能为空！", $("#rangedown"+i));
+                                return false;
+                            }
+                            var rangeup = $("#rangeup"+i).val();
+                            if(rangeup == null || rangeup == '') {
+                                showEditFail("字段<b>" + fields[i] + "</b>使用‘范围’规则，其上限值不能为空！", $("#rangeup" + i));
+                                return false;
+                            }
+                            // 检查大小、不要颠倒
+                            if(rangedown == rangeup){// 大小相同
+                                showEditFail("字段<b>" + fields[i] + "</b>使用‘范围’规则，其上限值和下限值不能相等！", $("#rangeup" + i));
+                                return false;
+                            }
+                            if(rangedown > rangeup){// 自动调整颠倒
+                                var t = rangedown;
+                                rangedown = rangeup;
+                                rangeup = t;
+                            }
+                            rulesArray.push(fields[i] + ","+colNameSelf + ",xxx,"+ ruleType+"@"+rangedown+rangeType+rangeup);
+                        }
+
+                    }
+                }
+
+            }
+
+        }
+        // 循环完了 整理成规则字符串
+        sortfields = "";
+        for(var i=0;i<sortArray.length;i++){
+            sortfields = sortfields + sortArray[i];
+            if((i+1)<sortArray.length){
+                sortfields = sortfields + ",";
+            }
+        }
+        rules = "";
+        for(var i=0;i<rulesArray.length;i++){
+            rules = rules + rulesArray[i];
+            if((i+1)<rulesArray.length){
+                rules = rulse + "#";
+            }
+        }
+        console.log("sortfields:" + sortfields + ";; rules:" + rules);
+    }
 
 
     // 保存SQL规则
