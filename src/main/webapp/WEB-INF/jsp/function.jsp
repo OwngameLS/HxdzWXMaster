@@ -123,7 +123,7 @@
         </div>
 
         <div id="colsDIV">
-        <%--<div id="colsDIV" style="display:none">--%>
+            <%--<div id="colsDIV" style="display:none">--%>
             ---如果你够专业，您可以在这里编写SQL语句-------------------------
             <div class="row bg-success">
                 <input type="radio" name="whichType" value="sql">使用SQL语句
@@ -144,12 +144,12 @@
                 <div class="row bg-warning">
                     <div class="col-md-1 text-center"></div>
                     <div class="col-md-10 text-center">
-                            根据你的sql语句，得知你要查询以下几个字段的值，为了让你的查询结果更容易理解，
-                            请将字段进行命名，并按照你的需求给出字段的顺序，便于整理结果。<br>
+                        根据你的sql语句，得知你要查询以下几个字段的值，为了让你的查询结果更容易理解，
+                        请将字段进行命名，并按照你的需求给出字段的顺序，便于整理结果。<br>
                         <em>
                             例如，你查询了A,B,C三个字段，分别命名为 AAA,BBB,CCC，顺序分别为2,1,3，则查询结果为：<br>
                             【功能XXX的查询结果如下：BBB的值为bbb,AAA的值为aaa,CCC的值为ccc。】
-                            </em>
+                        </em>
                     </div>
                 </div>
                 <div id="sqlFields">
@@ -222,7 +222,7 @@
     var sqlstmt = "";// sql语句
     var sqlfields = "";//sql语句查询字段的名称
     var isConnectSuccess = false;// 设置的数据库连接是否成功的实际情况
-    var formerSqlFieldsHTML="";//前一次编辑的Sql字段结果
+    var formerSqlFieldsHTML = "";//前一次编辑的Sql字段结果
 
     // 文档被加载完成时
     $(document).ready(function () {
@@ -246,7 +246,7 @@
         // 验证所填写的字段非空且符合要求
         // 验证功能描述性设置
         var result1 = testFunctionDescPart();
-        var result2 = testConnect();
+        var result2 = testConnect(false);
         var result3 = saveRules();
         if (result1 && result2) {// 基础输入检查完毕
             // 检查规则
@@ -256,20 +256,20 @@
     }
 
     // 测试SQL语句
-    function testSQL(){
+    function testSQL() {
         // 先检查sql语句，排除非法操作
         sql = $("#editSQL").val();
         if (sql == '' || sql == null) {
             showEditFail("您还没有输入SQL语句呢！", $("#editSQL"));
             return false;
         }
-        if(sql.indexOf("remove")>=0 || sql.indexOf("delete")>=0 || sql.indexOf("update")>=0){
+        if (sql.indexOf("remove") >= 0 || sql.indexOf("delete") >= 0 || sql.indexOf("update") >= 0) {
             showEditFail("您输入的SQL语句不是查询语句，请检查！<br><b>注意:</b>只能是查询语句！", $("#editSQL"));
             return false;
         }
         // 再检查数据库连通性
         testConnect(false);
-        if(isConnectSuccess == false){
+        if (isConnectSuccess == false) {
             // 数据库不可连通，建议放弃操作
             if (confirm("数据库连接没有成功，确认继续操作？")) {
                 // 保存sql语句供下次编辑就好了
@@ -284,7 +284,7 @@
                 + "\",\"username\":\"" + username
                 + "\",\"password\":\"" + password
                 + "\",\"tablename\":\"" + tablename
-                + "\",\"sql\":\"" + sql+"\"}";
+                + "\",\"sql\":\"" + sql + "\"}";
 
         //暂时没错了，交给后台检查吧
         $.ajax({
@@ -296,12 +296,12 @@
             contentType: "application/json",
             success: function (data) {
                 var result = data['sqlResult'];
-                if (result.isSuccess < 0 ) {// 有错误信息
+                if (result.isSuccess < 0) {// 有错误信息
                     // 会返回类似的关键字，将他们罗列出来
                     var errorMsg = "您输入的sql语句存在错误：<br>" + result.fields[0];
                     showEditFail(errorMsg, $("#editSQL"));
                     return false;
-                }else{
+                } else {
                     initTbodyOfSQL(result.fields);
                 }
             }
@@ -367,17 +367,17 @@
             return false;
         }
         var ignoreIp = false;
-        if(checkIpisHost(ip)){
+        if (checkIpisHost(ip)) {
             // 发现填写的可能是主机名
             if (confirm("发现你在Ip地址填写的不是合理的Ip,是否继续？")) {
                 ignoreIp = true;
             } else {
-                myAnimate($("#editIP"),8, $("#editIP").attr("style"));
+                myAnimate($("#editIP"), 8, $("#editIP").attr("style"));
                 return false;
             }
         }
-        if(ignoreIp == false){// 需要Ip检查
-            if(checkIP(ip) == false){
+        if (ignoreIp == false) {// 需要Ip检查
+            if (checkIP(ip) == false) {
                 showEditFail("必须输入IP地址！", $("#editIP"));
                 return false;
             }
@@ -388,7 +388,7 @@
             showEditFail("必须输入端口号！", $("#editPort"));
             return false;
         }
-        if(isInteger(port) == false){
+        if (isInteger(port) == false) {
             showEditFail("端口号必须输入正整数！", $("#editPort"));
             return false;
         }
@@ -463,12 +463,11 @@
                     myAnimate($("#connectResult"), 8, $("#connectResult").attr("style"));
                 }
             },
-            error:function(){
+            error: function () {
                 isConnectSuccess = false;
             }
         });
     }
-
 
 
     // 初始化表字段UI控件 用于编辑字段规则
@@ -490,7 +489,7 @@
                     + '<input type="checkbox" id="isSort' + i + '">是 '
                     + '<input type="radio" name="sort' + i + '" value="desc" checked>降序 <input type="radio" name="sort' + i + '" value="asc">升序</div>'
                     + '<div class="col-md-2 text-center"><input type="checkbox" id="isused' + i + '" value="' + colNames[i] + '">读取</div>'
-                    + '<div class="col-md-4 text-center"><input class="form-control" id="colNameSelf' + i + '" placeholder="名称"></div>'
+                    + '<div class="col-md-4 text-center"><input class="form-control" id="selfColName' + i + '" placeholder="名称"></div>'
                     + '</div>';
             if (i % 2 == 0) {
                 htmlStr = htmlStr
@@ -500,7 +499,7 @@
                         + '<div class="row">';
             }
             htmlStr = htmlStr
-                    + '<div class="col-md-2 text-center"><input type="checkbox" name="isusedRule' + i + '">使用规则</div>'
+                    + '<div class="col-md-2 text-center"><input type="checkbox" id="isusedRule' + i + '">使用规则</div>'
                     + '<div class="col-md-2 text-center"><input type="radio" name="rule' + i + '" value="EQ" checked>等于 <input type="radio" name="rule' + i + '" value="NE">不等于<br>'
                     + '参照值<input class="form-control" id="compareValue' + i + '" placeholder="该字段的合理值"></div>'
                     + '<div class="col-md-1 text-center"><input type="radio" name="rule' + i + '" value="BB">大于<input class="form-control" id="above' + i + '" placeholder="大于"></div>'
@@ -518,14 +517,14 @@
     }
 
     // 当使用sql语句规则时的相关设置
-    function initTbodyOfSQL(fields){
+    function initTbodyOfSQL(fields) {
         formerSqlFieldsHTML = $("#sqlFields").html();
         var htmlStr = '<div class="row"><div class="col-md-3 text-center">字段名</div><div class="col-md-3 text-center">名称</div><div class="col-md-3 text-center">排序序号</div></div>';
-        for(var i=0;i<fields.length;i++){
+        for (var i = 0; i < fields.length; i++) {
             htmlStr = htmlStr + '<div class="row">';
-            htmlStr = htmlStr + '<div class="col-md-3 text-center"><b id="sqlFieldCol'+i+'" >'+fields[i]+'</b></div>';
-            htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="sqlFieldName'+i+'" placeholder="名称"></div>';
-            htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="sqlFieldSort'+i+'" value="'+(i+1)+'"></div>';
+            htmlStr = htmlStr + '<div class="col-md-3 text-center"><b id="sqlFieldCol' + i + '" >' + fields[i] + '</b></div>';
+            htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="sqlFieldName' + i + '" placeholder="名称"></div>';
+            htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="sqlFieldSort' + i + '" value="' + (i + 1) + '"></div>';
             htmlStr = htmlStr + '</div>';
         }
         $("#sqlFields").html(htmlStr);
@@ -538,118 +537,116 @@
         // 先获得被选中的要求添加规则的字段
         var sortArray = new Array();// 排序字段
         var rulesArray = new Array();// 读取字段的规则
-        var fields = new Array();
-        var fieldsHtml = $("[id*='colName']");
-        for(var i=0;i<fieldsHtml.length;i++){
-            fields.push($(fieldsHtml[i]).text());
+        var queryfields = new Array();// 查询得到的所有字段
+        var fieldsHtml = $("[id^='colName']");
+        for (var i = 0; i < fieldsHtml.length; i++) {
+            queryfields.push($(fieldsHtml[i]).text());
         }
-        for (var i = 0; i < fields.length; i++) {
+        for (var i = 0; i < queryfields.length; i++) {
             // 是否参与排序
-            var isSort = $("#isSort"+i).prop("checked");
-            if(isSort){
-                var order = $('input[name="sort'+i+'"]:checked ').val();
-                sortArray.push(fields + " " + order);// 添加到排序数组里
+            var isSort = $("#isSort" + i).prop("checked");
+            if (isSort) {
+                var order = $('input[name="sort' + i + '"]:checked ').val();
+                sortArray.push(queryfields[i] + " " + order);// 添加到排序数组里
             }
-            var isUsed = $("#isused"+i).prop("checked");
-            if(isUsed){
+            // 是否读取字段
+            var isUsed = $("#isused" + i).prop("checked");
+            if (isUsed) {
                 // 检查其名称是否填写
-                var colNameSelf = $("#colNameSelf"+i).val();
-                if(colNameSelf == null || colNameSelf == ''){
-                    showEditFail("你选择使用字段<b>"+fields[i]+"</b>,所以必须填写它的自定义名称。", $("#colNameSelf"+i));
+                var selfColName = $("#selfColName" + i).val();
+                if (selfColName == null || selfColName == '') {
+                    showEditFail("你选择使用字段<b>" + queryfields[i] + "</b>,所以必须填写它的自定义名称。", $("#colNameSelf" + i));
                     return false;
-                }else{
-                    // 检查是否使用规则
-                    var isusedRule = $("#isusedRule"+i).prop("checked");
-                    if(isusedRule == false){// 不使用规则，直接读取
-                        //  a,aName,-1,NN
-                        rulesArray.push(fields[i] + ","+colNameSelf + ",-1,NN");
-                    }else{// 使用规则 进一步判断
-                        var ruleType = $('input[name="rule'+i+'"]:checked ').val();
-                        if(ruleType == 'EQ' || ruleType == 'NE'){// 等于或者不等于的规则
-                            // 检查参照值为合法输入 非空即可
-                            var compareValue = $("#compareValue"+i).val();
-                            if(compareValue == null || compareValue == '') {
-                                showEditFail("字段<b>" + fields[i] + "</b>使用规则，其参照值不能为空！", $("#compareValue"+i));
-                                return false;
-                            }else{
-                                rulesArray.push(fields[i] + ","+colNameSelf + "," + compareValue + ","+ ruleType);
-                            }
-                        }else if(ruleType == 'BB'){// 大于
-                            var aboveValue = $("#above"+i).val();
-                            if(aboveValue == null || aboveValue == '') {
-                                showEditFail("字段<b>" + fields[i] + "</b>使用‘大于’规则，其参照值不能为空！", $("#above"+i));
-                                return false;
-                            }else{
-                                rulesArray.push(fields[i] + ","+colNameSelf + "," + aboveValue + ","+ ruleType);
-                            }
-                        }else if(ruleType == 'LL'){// 小于
-                            var belowValue = $("#below"+i).val();
-                            if(belowValue == null || belowValue == '') {
-                                showEditFail("字段<b>" + fields[i] + "</b>使用‘小于’规则，其参照值不能为空！", $("#below"+i));
-                                return false;
-                            }else{
-                                rulesArray.push(fields[i] + ","+colNameSelf + "," + belowValue + ","+ ruleType);
-                            }
-                        }else if(ruleType == 'RG'){// 范围
-                            // f,fName,cdef,RG@12BT34
-                            // 范围区域（在内，在外）
-                            var rangeType = $('input[name="range'+i+'"]:checked ').val();
-                            // 两个标值
-                            // 检查不能为空
-                            var rangedown = $("#rangedown"+i).val();
-                            if(rangedown == null || rangedown == '') {
-                                showEditFail("字段<b>" + fields[i] + "</b>使用‘范围’规则，其下限值不能为空！", $("#rangedown"+i));
-                                return false;
-                            }
-                            var rangeup = $("#rangeup"+i).val();
-                            if(rangeup == null || rangeup == '') {
-                                showEditFail("字段<b>" + fields[i] + "</b>使用‘范围’规则，其上限值不能为空！", $("#rangeup" + i));
-                                return false;
-                            }
-                            // 检查大小、不要颠倒
-                            if(rangedown == rangeup){// 大小相同
-                                showEditFail("字段<b>" + fields[i] + "</b>使用‘范围’规则，其上限值和下限值不能相等！", $("#rangeup" + i));
-                                return false;
-                            }
-                            if(rangedown > rangeup){// 自动调整颠倒
-                                var t = rangedown;
-                                rangedown = rangeup;
-                                rangeup = t;
-                            }
-                            rulesArray.push(fields[i] + ","+colNameSelf + ",xxx,"+ ruleType+"@"+rangedown+rangeType+rangeup);
+                }
+                // 检查是否使用规则
+                var isusedRule = $("#isusedRule" + i).prop("checked");
+                if (isusedRule == false) {// 不使用规则，直接读取
+                    //  a,aName,-1,NN
+                    rulesArray.push(queryfields[i] + "," + selfColName + ",-1,NN");
+                } else {// 使用规则 进一步判断
+                    var ruleType = $('input[name="rule' + i + '"]:checked ').val();
+                    if (ruleType == 'EQ' || ruleType == 'NE') {// 等于或者不等于的规则
+                        // 检查参照值为合法输入 非空即可
+                        var compareValue = $("#compareValue" + i).val();
+                        if (compareValue == null || compareValue == '') {
+                            showEditFail("字段<b>" + queryfields[i] + "</b>使用规则，其参照值不能为空！", $("#compareValue" + i));
+                            return false;
+                        } else {
+                            rulesArray.push(queryfields[i] + "," + selfColName + "," + compareValue + "," + ruleType);
                         }
-
+                    } else if (ruleType == 'BB') {// 大于
+                        var aboveValue = $("#above" + i).val();
+                        if (aboveValue == null || aboveValue == '') {
+                            showEditFail("字段<b>" + queryfields[i] + "</b>使用‘大于’规则，其参照值不能为空！", $("#above" + i));
+                            return false;
+                        } else {
+                            rulesArray.push(queryfields[i] + "," + selfColName + "," + aboveValue + "," + ruleType);
+                        }
+                    } else if (ruleType == 'LL') {// 小于
+                        var belowValue = $("#below" + i).val();
+                        if (belowValue == null || belowValue == '') {
+                            showEditFail("字段<b>" + queryfields[i] + "</b>使用‘小于’规则，其参照值不能为空！", $("#below" + i));
+                            return false;
+                        } else {
+                            rulesArray.push(queryfields[i] + "," + selfColName + "," + belowValue + "," + ruleType);
+                        }
+                    } else if (ruleType == 'RG') {// 范围
+                        // f,fName,cdef,RG@12BT34
+                        // 范围区域（在内，在外）
+                        var rangeType = $('input[name="range' + i + '"]:checked ').val();
+                        // 两个标值
+                        // 检查不能为空
+                        var rangedown = $("#rangedown" + i).val();
+                        if (rangedown == null || rangedown == '') {
+                            showEditFail("字段<b>" + queryfields[i] + "</b>使用‘范围’规则，其下限值不能为空！", $("#rangedown" + i));
+                            return false;
+                        }
+                        var rangeup = $("#rangeup" + i).val();
+                        if (rangeup == null || rangeup == '') {
+                            showEditFail("字段<b>" + queryfields[i] + "</b>使用‘范围’规则，其上限值不能为空！", $("#rangeup" + i));
+                            return false;
+                        }
+                        // 检查大小、不要颠倒
+                        if (rangedown == rangeup) {// 大小相同
+                            showEditFail("字段<b>" + queryfields[i] + "</b>使用‘范围’规则，其上限值和下限值不能相等！", $("#rangeup" + i));
+                            return false;
+                        }
+                        if (rangedown > rangeup) {// 自动调整颠倒
+                            var t = rangedown;
+                            rangedown = rangeup;
+                            rangeup = t;
+                        }
+                        rulesArray.push(queryfields[i] + "," + selfColName + ",xxx," + ruleType + "@" + rangedown + rangeType + rangeup);
                     }
                 }
 
             }
-
         }
         // 循环完了 整理成规则字符串
         sortfields = "";
-        for(var i=0;i<sortArray.length;i++){
+        for (var i = 0; i < sortArray.length; i++) {
             sortfields = sortfields + sortArray[i];
-            if((i+1)<sortArray.length){
+            if ((i + 1) < sortArray.length) {
                 sortfields = sortfields + ",";
             }
         }
-        rules = "";
-        for(var i=0;i<rulesArray.length;i++){
-            rules = rules + rulesArray[i];
-            if((i+1)<rulesArray.length){
-                rules = rulse + "#";
+        fields = "";
+        for (var i = 0; i < rulesArray.length; i++) {
+            fields = fields + rulesArray[i];
+            if ((i + 1) < rulesArray.length) {
+                fields = fields + "#";
             }
         }
-        console.log("sortfields:" + sortfields + ";; rules:" + rules);
+        console.log("sortfields:" + sortfields + "; fields:" + fields);
     }
 
 
     // 保存SQL规则
-    function saveSQL(){
+    function saveSQL() {
         // 获得字段集合
         var fields = new Array();
         var fieldsHtml = $("[id*='sqlFieldCol']");
-        for(var i=0;i<fieldsHtml.length;i++){
+        for (var i = 0; i < fieldsHtml.length; i++) {
             fields.push($(fieldsHtml[i]).text());
         }
         // 检查非空
@@ -657,17 +654,17 @@
         var names = new Array();
         var hasError = false;
         var errorInfo = '';
-        for(var i=0;i<nameHtml.length;i++){
+        for (var i = 0; i < nameHtml.length; i++) {
             var value = $(nameHtml[i]).val();
-            if(value == null || value == ''){
+            if (value == null || value == '') {
                 hasError = true;
-                errorInfo = errorInfo + "字段("+fields[i]+")必须设置名称哦！<br>";
+                errorInfo = errorInfo + "字段(" + fields[i] + ")必须设置名称哦！<br>";
                 myAnimate($(nameHtml[i]), 8, $(nameHtml[i]).attr("style"));
-            }else{
+            } else {
                 names.push(value);
             }
         }
-        if(hasError){
+        if (hasError) {
             showEditFail(errorInfo, null);
             return false;
         }
@@ -677,21 +674,21 @@
         var sortHtml = $("[id*='sqlFieldSort']");
         var sortsValue = new Array();
         // 检查顺序非空
-        for(var i=0;i<sortHtml.length;i++){
+        for (var i = 0; i < sortHtml.length; i++) {
             var sort = $(sortHtml[i]).val();
-            if(sort == null || sort == ''){
+            if (sort == null || sort == '') {
                 hasError = true;
-                errorInfo = errorInfo + "字段("+fields[i]+")必须设置排列顺序哦！<br>";
+                errorInfo = errorInfo + "字段(" + fields[i] + ")必须设置排列顺序哦！<br>";
                 myAnimate($(sortHtml[i]), 8, $(sortHtml[i]).attr("style"));
-            }else if(isInteger(sort) == false){
+            } else if (isInteger(sort) == false) {
                 hasError = true;
-                errorInfo = errorInfo + "字段("+fields[i]+")的排列顺序必须为正整数哦！<br>";
+                errorInfo = errorInfo + "字段(" + fields[i] + ")的排列顺序必须为正整数哦！<br>";
                 myAnimate($(sortHtml[i]), 8, $(sortHtml[i]).attr("style"));
-            }else{
+            } else {
                 sortsValue.push(sort);
             }
         }
-        if(hasError){
+        if (hasError) {
             showEditFail(errorInfo, null);
             return false;
         }
@@ -700,28 +697,28 @@
         // 新建个数组
         var s = sortsValue;
         s = s.sort();
-        for(var i=0;i<s.length;i++){
-            if (s[i]==s[i+1]){
+        for (var i = 0; i < s.length; i++) {
+            if (s[i] == s[i + 1]) {
                 hasError = true;
                 var index1 = sortsValue.indexOf(s[i]);
                 sortsValue[index1] = (-sortsValue[index1]);// 置负数 避免下面被找到 我觉得我真牛^_^
-                var index2 = sortsValue.indexOf(s[i+1]);
-                errorInfo = errorInfo + "字段("+fields[index1]+")和("+fields[index2]+")的排列顺序不能相同！<br>";
+                var index2 = sortsValue.indexOf(s[i + 1]);
+                errorInfo = errorInfo + "字段(" + fields[index1] + ")和(" + fields[index2] + ")的排列顺序不能相同！<br>";
                 myAnimate($(sortHtml[index1]), 8, $(sortHtml[index1]).attr("style"));
                 myAnimate($(sortHtml[index2]), 8, $(sortHtml[index2]).attr("style"));
             }
         }
-        if(hasError){
+        if (hasError) {
             showEditFail(errorInfo, null);
             return false;
         }
 //        没有错误，则根据排序结果整理成所需要的数据吧
         sqlstmt = $("#editSQL").val();
         sqlfields = "";//qingk
-        for(var i=0;i<s.length;i++){
+        for (var i = 0; i < s.length; i++) {
             var index = sortsValue.indexOf(s[i]);
             sqlfields = sqlfields + fields[index] + "," + names[index];
-            if((i+1)<s.length){
+            if ((i + 1) < s.length) {
                 sqlfields = sqlfields + "#";
             }
         }
@@ -1087,8 +1084,8 @@
     // 判断是不是大于0的整数
     function isInteger(obj) {
         var o = Math.floor(obj);
-        if(o == obj) { // ==== 就不行
-            if(o >= 0) {
+        if (o == obj) { // ==== 就不行
+            if (o >= 0) {
                 return true;
             } else {
                 return false;
@@ -1099,12 +1096,12 @@
     }
 
     // 检查ip地址填写的是主机名
-    function checkIpisHost(value){
+    function checkIpisHost(value) {
         var exp = /^[a-zA-Z]/;
         var reg = value.match(exp);
         if (reg == null) {
             return false;
-        }else {
+        } else {
             return true;
         }
     }
@@ -1115,7 +1112,7 @@
         var reg = value.match(exp);
         if (reg == null) {
             return false;
-        }else {
+        } else {
             return true;
         }
     }
@@ -1133,7 +1130,7 @@
         $("#editDoneDiv").hide(2000);
     }
     function showEditFail(msg, el) {
-        if(el != null){
+        if (el != null) {
             myAnimate(el, 8, el.attr("style"));
         }
         $("#failCause").html(msg);
