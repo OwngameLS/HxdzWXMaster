@@ -536,6 +536,7 @@
     function saveRules() {
         // 先获得被选中的要求添加规则的字段
         var sortArray = new Array();// 排序字段
+        var usedArray =
         var rulesArray = new Array();// 读取字段的规则
         var queryfields = new Array();// 查询得到的所有字段
         var fieldsHtml = $("[id^='colName']");
@@ -558,68 +559,67 @@
                     showEditFail("你选择使用字段<b>" + queryfields[i] + "</b>,所以必须填写它的自定义名称。", $("#colNameSelf" + i));
                     return false;
                 }
-                // 检查是否使用规则
-                var isusedRule = $("#isusedRule" + i).prop("checked");
-                if (isusedRule == false) {// 不使用规则，直接读取
-                    //  a,aName,-1,NN
-                    rulesArray.push(queryfields[i] + "," + selfColName + ",-1,NN");
-                } else {// 使用规则 进一步判断
-                    var ruleType = $('input[name="rule' + i + '"]:checked ').val();
-                    if (ruleType == 'EQ' || ruleType == 'NE') {// 等于或者不等于的规则
-                        // 检查参照值为合法输入 非空即可
-                        var compareValue = $("#compareValue" + i).val();
-                        if (compareValue == null || compareValue == '') {
-                            showEditFail("字段<b>" + queryfields[i] + "</b>使用规则，其参照值不能为空！", $("#compareValue" + i));
-                            return false;
-                        } else {
-                            rulesArray.push(queryfields[i] + "," + selfColName + "," + compareValue + "," + ruleType);
-                        }
-                    } else if (ruleType == 'BB') {// 大于
-                        var aboveValue = $("#above" + i).val();
-                        if (aboveValue == null || aboveValue == '') {
-                            showEditFail("字段<b>" + queryfields[i] + "</b>使用‘大于’规则，其参照值不能为空！", $("#above" + i));
-                            return false;
-                        } else {
-                            rulesArray.push(queryfields[i] + "," + selfColName + "," + aboveValue + "," + ruleType);
-                        }
-                    } else if (ruleType == 'LL') {// 小于
-                        var belowValue = $("#below" + i).val();
-                        if (belowValue == null || belowValue == '') {
-                            showEditFail("字段<b>" + queryfields[i] + "</b>使用‘小于’规则，其参照值不能为空！", $("#below" + i));
-                            return false;
-                        } else {
-                            rulesArray.push(queryfields[i] + "," + selfColName + "," + belowValue + "," + ruleType);
-                        }
-                    } else if (ruleType == 'RG') {// 范围
-                        // f,fName,cdef,RG@12BT34
-                        // 范围区域（在内，在外）
-                        var rangeType = $('input[name="range' + i + '"]:checked ').val();
-                        // 两个标值
-                        // 检查不能为空
-                        var rangedown = $("#rangedown" + i).val();
-                        if (rangedown == null || rangedown == '') {
-                            showEditFail("字段<b>" + queryfields[i] + "</b>使用‘范围’规则，其下限值不能为空！", $("#rangedown" + i));
-                            return false;
-                        }
-                        var rangeup = $("#rangeup" + i).val();
-                        if (rangeup == null || rangeup == '') {
-                            showEditFail("字段<b>" + queryfields[i] + "</b>使用‘范围’规则，其上限值不能为空！", $("#rangeup" + i));
-                            return false;
-                        }
-                        // 检查大小、不要颠倒
-                        if (rangedown == rangeup) {// 大小相同
-                            showEditFail("字段<b>" + queryfields[i] + "</b>使用‘范围’规则，其上限值和下限值不能相等！", $("#rangeup" + i));
-                            return false;
-                        }
-                        if (rangedown > rangeup) {// 自动调整颠倒
-                            var t = rangedown;
-                            rangedown = rangeup;
-                            rangeup = t;
-                        }
-                        rulesArray.push(queryfields[i] + "," + selfColName + ",xxx," + ruleType + "@" + rangedown + rangeType + rangeup);
+            }
+            // 检查是否使用规则
+            var isusedRule = $("#isusedRule" + i).prop("checked");
+            if (isusedRule == false) {// 不使用规则，直接读取
+                //  a,aName,-1,NN
+                rulesArray.push(queryfields[i] + "," + selfColName + ",-1,NN");
+            } else {// 使用规则 进一步判断
+                var ruleType = $('input[name="rule' + i + '"]:checked ').val();
+                if (ruleType == 'EQ' || ruleType == 'NE') {// 等于或者不等于的规则
+                    // 检查参照值为合法输入 非空即可
+                    var compareValue = $("#compareValue" + i).val();
+                    if (compareValue == null || compareValue == '') {
+                        showEditFail("字段<b>" + queryfields[i] + "</b>使用规则，其参照值不能为空！", $("#compareValue" + i));
+                        return false;
+                    } else {
+                        rulesArray.push(queryfields[i] + "," + selfColName + "," + compareValue + "," + ruleType);
                     }
+                } else if (ruleType == 'BB') {// 大于
+                    var aboveValue = $("#above" + i).val();
+                    if (aboveValue == null || aboveValue == '') {
+                        showEditFail("字段<b>" + queryfields[i] + "</b>使用‘大于’规则，其参照值不能为空！", $("#above" + i));
+                        return false;
+                    } else {
+                        rulesArray.push(queryfields[i] + "," + selfColName + "," + aboveValue + "," + ruleType);
+                    }
+                } else if (ruleType == 'LL') {// 小于
+                    var belowValue = $("#below" + i).val();
+                    if (belowValue == null || belowValue == '') {
+                        showEditFail("字段<b>" + queryfields[i] + "</b>使用‘小于’规则，其参照值不能为空！", $("#below" + i));
+                        return false;
+                    } else {
+                        rulesArray.push(queryfields[i] + "," + selfColName + "," + belowValue + "," + ruleType);
+                    }
+                } else if (ruleType == 'RG') {// 范围
+                    // f,fName,cdef,RG@12BT34
+                    // 范围区域（在内，在外）
+                    var rangeType = $('input[name="range' + i + '"]:checked ').val();
+                    // 两个标值
+                    // 检查不能为空
+                    var rangedown = $("#rangedown" + i).val();
+                    if (rangedown == null || rangedown == '') {
+                        showEditFail("字段<b>" + queryfields[i] + "</b>使用‘范围’规则，其下限值不能为空！", $("#rangedown" + i));
+                        return false;
+                    }
+                    var rangeup = $("#rangeup" + i).val();
+                    if (rangeup == null || rangeup == '') {
+                        showEditFail("字段<b>" + queryfields[i] + "</b>使用‘范围’规则，其上限值不能为空！", $("#rangeup" + i));
+                        return false;
+                    }
+                    // 检查大小、不要颠倒
+                    if (rangedown == rangeup) {// 大小相同
+                        showEditFail("字段<b>" + queryfields[i] + "</b>使用‘范围’规则，其上限值和下限值不能相等！", $("#rangeup" + i));
+                        return false;
+                    }
+                    if (rangedown > rangeup) {// 自动调整颠倒
+                        var t = rangedown;
+                        rangedown = rangeup;
+                        rangeup = t;
+                    }
+                    rulesArray.push(queryfields[i] + "," + selfColName + ",xxx," + ruleType + "@" + rangedown + rangeType + rangeup);
                 }
-
             }
         }
         // 循环完了 整理成规则字符串
