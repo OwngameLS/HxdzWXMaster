@@ -15,7 +15,7 @@ package com.owngame.entity;
  *
  * Created by Administrator on 2016-10-10.
  */
-public class FunctionField {
+public class FunctionFieldRule {
     String field;// 字段（在表中的名字）
     String fieldName;//字段名（用于理解）
     String compareValue;// 值

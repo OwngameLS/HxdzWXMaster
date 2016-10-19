@@ -2,21 +2,21 @@
 Navicat MySQL Data Transfer
 
 Source Server         : mysql
-Source Server Version : 50709
+Source Server Version : 50711
 Source Host           : localhost:3306
 Source Database       : smserver
 
 Target Server Type    : MYSQL
-Target Server Version : 50709
+Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2016-10-16 22:37:25
+Date: 2016-10-19 15:42:40
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for contact
+-- Table structure for `contact`
 -- ----------------------------
 DROP TABLE IF EXISTS `contact`;
 CREATE TABLE `contact` (
@@ -81,7 +81,7 @@ INSERT INTO `contact` VALUES ('59', 'B', 'def', 'asd', '13945677891', 'adsfasd')
 INSERT INTO `contact` VALUES ('60', 'B', 'efg', 'asd', '13945677891', 'adsfasd');
 
 -- ----------------------------
--- Table structure for function
+-- Table structure for `function`
 -- ----------------------------
 DROP TABLE IF EXISTS `function`;
 CREATE TABLE `function` (
@@ -97,9 +97,10 @@ CREATE TABLE `function` (
   `password` varchar(20) DEFAULT NULL,
   `tablename` varchar(20) DEFAULT NULL,
   `usetype` varchar(5) DEFAULT NULL,
+  `readfields` text,
   `sortfields` text,
-  `fields` text,
-  `rules` varchar(10) DEFAULT NULL,
+  `fieldsrules` text,
+  `isreturn` varchar(10) DEFAULT NULL,
   `sqlstmt` text,
   `sqlfields` text,
   PRIMARY KEY (`id`)
@@ -108,13 +109,13 @@ CREATE TABLE `function` (
 -- ----------------------------
 -- Records of function
 -- ----------------------------
-INSERT INTO `function` VALUES ('1', 'abc', 'Test1', 'abc', '192.168.1.111', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', null, 'gametime desc', 'player_statids_home,home,-1,NN#player_statids_guest,guest,-1,NN', 'anyway', null, null);
-INSERT INTO `function` VALUES ('2', 'cde', 'Test2', null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `function` VALUES ('3', 'efg', 'Test3', null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `function` VALUES ('4', 'ghi', 'Test4', null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `function` VALUES ('1', 'abc', 'Test1', 'abc', '192.168.1.111', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', null, null, 'gametime desc', 'player_statids_home,home,-1,NN#player_statids_guest,guest,-1,NN', 'anyway', null, null);
+INSERT INTO `function` VALUES ('2', 'cde', 'Test2', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `function` VALUES ('3', 'efg', 'Test3', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `function` VALUES ('4', 'ghi', 'Test4', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
 -- ----------------------------
--- Table structure for qrtz_calendars
+-- Table structure for `qrtz_calendars`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_calendars`;
 CREATE TABLE `qrtz_calendars` (
@@ -129,7 +130,7 @@ CREATE TABLE `qrtz_calendars` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for qrtz_fired_triggers
+-- Table structure for `qrtz_fired_triggers`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_fired_triggers`;
 CREATE TABLE `qrtz_fired_triggers` (
@@ -160,7 +161,7 @@ CREATE TABLE `qrtz_fired_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for qrtz_job_details
+-- Table structure for `qrtz_job_details`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_job_details`;
 CREATE TABLE `qrtz_job_details` (
@@ -185,7 +186,7 @@ CREATE TABLE `qrtz_job_details` (
 INSERT INTO `qrtz_job_details` VALUES ('quartzScheduler', 'jobDetail', 'DEFAULT', null, 'com.owngame.utils.MyQuartzJobBean', '1', '1', '1', '0', 0xACED0005737200156F72672E71756172747A2E4A6F62446174614D61709FB083E8BFA9B0CB020000787200266F72672E71756172747A2E7574696C732E537472696E674B65794469727479466C61674D61708208E8C3FBC55D280200015A0013616C6C6F77735472616E7369656E74446174617872001D6F72672E71756172747A2E7574696C732E4469727479466C61674D617013E62EAD28760ACE0200025A000564697274794C00036D617074000F4C6A6176612F7574696C2F4D61703B787000737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F40000000000010770800000010000000007800);
 
 -- ----------------------------
--- Table structure for qrtz_locks
+-- Table structure for `qrtz_locks`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_locks`;
 CREATE TABLE `qrtz_locks` (
@@ -200,7 +201,7 @@ CREATE TABLE `qrtz_locks` (
 INSERT INTO `qrtz_locks` VALUES ('quartzScheduler', 'TRIGGER_ACCESS');
 
 -- ----------------------------
--- Table structure for qrtz_paused_trigger_grps
+-- Table structure for `qrtz_paused_trigger_grps`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_paused_trigger_grps`;
 CREATE TABLE `qrtz_paused_trigger_grps` (
@@ -214,7 +215,7 @@ CREATE TABLE `qrtz_paused_trigger_grps` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for qrtz_scheduler_state
+-- Table structure for `qrtz_scheduler_state`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_scheduler_state`;
 CREATE TABLE `qrtz_scheduler_state` (
@@ -230,7 +231,7 @@ CREATE TABLE `qrtz_scheduler_state` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for qrtz_simple_triggers
+-- Table structure for `qrtz_simple_triggers`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_simple_triggers`;
 CREATE TABLE `qrtz_simple_triggers` (
@@ -249,7 +250,7 @@ CREATE TABLE `qrtz_simple_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for qrtz_simprop_triggers
+-- Table structure for `qrtz_simprop_triggers`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_simprop_triggers`;
 CREATE TABLE `qrtz_simprop_triggers` (
@@ -276,7 +277,7 @@ CREATE TABLE `qrtz_simprop_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for qrtz_triggers
+-- Table structure for `qrtz_triggers`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_triggers`;
 CREATE TABLE `qrtz_triggers` (
@@ -318,7 +319,7 @@ CREATE TABLE `qrtz_triggers` (
 INSERT INTO `qrtz_triggers` VALUES ('quartzScheduler', 'ad3e2749-f5f5-4bcd-a8d8-89260ff2da99', 'DEFAULT', 'jobDetail', 'DEFAULT', null, '1476154140000', '1476154121335', '5', 'PAUSED', 'CRON', '1476152342000', '0', null, '0', 0xACED0005737200156F72672E71756172747A2E4A6F62446174614D61709FB083E8BFA9B0CB020000787200266F72672E71756172747A2E7574696C732E537472696E674B65794469727479466C61674D61708208E8C3FBC55D280200015A0013616C6C6F77735472616E7369656E74446174617872001D6F72672E71756172747A2E7574696C732E4469727479466C61674D617013E62EAD28760ACE0200025A000564697274794C00036D617074000F4C6A6176612F7574696C2F4D61703B787001737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F4000000000000C7708000000100000000274000966756E6374696F6E73740003616263740009726563656976657273740007312C332C342C357800);
 
 -- ----------------------------
--- Table structure for task
+-- Table structure for `task`
 -- ----------------------------
 DROP TABLE IF EXISTS `task`;
 CREATE TABLE `task` (
@@ -338,7 +339,7 @@ CREATE TABLE `task` (
 INSERT INTO `task` VALUES ('378', 'testName', 'descirption test....', '0', 'Test1???::home:4,5,6;guest:7,8,9;#', '13945671987,13945677891,13945677891,13945677891', '2016-10-11 10:48:41');
 
 -- ----------------------------
--- Table structure for timertask
+-- Table structure for `timertask`
 -- ----------------------------
 DROP TABLE IF EXISTS `timertask`;
 CREATE TABLE `timertask` (

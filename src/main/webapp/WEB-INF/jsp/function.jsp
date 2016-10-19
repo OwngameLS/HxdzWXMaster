@@ -164,9 +164,10 @@
             </div>
             <div class="row bg-success">
                 <div class="col-md-2 text-center">数据库字段名</div>
-                <div class="col-md-4 text-center">是否参与排序</div>
+                <div class="col-md-3 text-center">自定义名称</div>
+                <div class="col-md-3 text-center">是否参与排序</div>
                 <div class="col-md-2 text-center">是否读取该字段的值</div>
-                <div class="col-md-4 text-center">自定义名称</div>
+                <div class="col-md-2 text-center">是否使用规则</div>
             </div>
             <div class="row" id="colsTR"><%--在这里列出所有字段--%>
             </div>
@@ -215,12 +216,16 @@
     var username;
     var password;
     var tablename;
+    var usetype;// 由于加入了SQL语句查询，需要确定使用哪个 sql或rules
+    var readfields;// 要读取的字段 用户查询所需的字段a,aName#b,bName
     var sortfields;// 排序字段，根据这个字段才能查询到最新的数据 A ASC,B DESC 默认为降序排列
-    var fields;// a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,EQ#,e,eName,bcde,NE#f,fName,cdef,RG@12BT34
-    // 字段，字段名，值，规则 根据规则来判断
-    var rules;
-    var sqlstmt = "";// sql语句
-    var sqlfields = "";//sql语句查询字段的名称
+    var fieldrules;// 规则字段，字段名，值，规则 根据规则来判断 a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,EQ#e,eName,bcde,NE#f,fName,xxxx,RG@12BT34
+    var isreturn;// 读取结果是否返回的规则（由于需要涉及到预警功能，所以需要定义规则）
+    // 由于功能是定时执行，因此不一定是每次都读取到数据就需要告知
+    // anyway: 不论如何都返回
+    // oncase: 监听几个字段，当其中一个字段达到报警要求时就需要告知
+    var sqlstmt;//sql语句
+    var sqlfields;// sql查询的字段属性，按照顺序来a,aName#b,bName
     var isConnectSuccess = false;// 设置的数据库连接是否成功的实际情况
     var formerSqlFieldsHTML = "";//前一次编辑的Sql字段结果
 
@@ -247,7 +252,7 @@
         // 验证功能描述性设置
         var result1 = testFunctionDescPart();
         var result2 = testConnect(false);
-        var result3 = saveRules();
+        var result3 = testRules();
         if (result1 && result2) {// 基础输入检查完毕
             // 检查规则
 //            result3 = saveRules();
@@ -485,21 +490,22 @@
 
             htmlStr = htmlStr
                     + '<div class="col-md-2 text-center"><b id="colName' + i + '">' + colNames[i] + '</b></div>'
-                    + '<div class="col-md-4 text-center">'
-                    + '<input type="checkbox" id="isSort' + i + '">是 '
+                    + '<div class="col-md-3 text-center"><input class="form-control" id="selfColName' + i + '" placeholder="名称"></div>'
+                    + '<div class="col-md-3 text-center">'
+                    + '<input type="checkbox" id="isSort' + i + '">是'
                     + '<input type="radio" name="sort' + i + '" value="desc" checked>降序 <input type="radio" name="sort' + i + '" value="asc">升序</div>'
-                    + '<div class="col-md-2 text-center"><input type="checkbox" id="isused' + i + '" value="' + colNames[i] + '">读取</div>'
-                    + '<div class="col-md-4 text-center"><input class="form-control" id="selfColName' + i + '" placeholder="名称"></div>'
+                    + '<div class="col-md-2 text-center"><input type="checkbox" id="isread' + i + '" value="' + colNames[i] + '">读取</div>'
+                    + '<div class="col-md-2 text-center"><input type="checkbox" id="isusedRule' + i + '">使用规则</div>'
                     + '</div>';
             if (i % 2 == 0) {
                 htmlStr = htmlStr
-                        + '<div class="row bg-warning">';
+                        + '<div class="row bg-warning" style="border-bottom:1px solid #222222;">';
             } else {
                 htmlStr = htmlStr
-                        + '<div class="row">';
+                        + '<div class="row" style="border-bottom:1px solid #245580;">';
             }
             htmlStr = htmlStr
-                    + '<div class="col-md-2 text-center"><input type="checkbox" id="isusedRule' + i + '">使用规则</div>'
+                    + '<div class="col-md-2 text-center">设置规则</div>'
                     + '<div class="col-md-2 text-center"><input type="radio" name="rule' + i + '" value="EQ" checked>等于 <input type="radio" name="rule' + i + '" value="NE">不等于<br>'
                     + '参照值<input class="form-control" id="compareValue' + i + '" placeholder="该字段的合理值"></div>'
                     + '<div class="col-md-1 text-center"><input type="radio" name="rule' + i + '" value="BB">大于<input class="form-control" id="above' + i + '" placeholder="大于"></div>'
@@ -533,10 +539,10 @@
 
 
     // 检查字段规则
-    function saveRules() {
+    function testRules() {
         // 先获得被选中的要求添加规则的字段
         var sortArray = new Array();// 排序字段
-        var usedArray =
+        var readArray = new Array();// 读取字段
         var rulesArray = new Array();// 读取字段的规则
         var queryfields = new Array();// 查询得到的所有字段
         var fieldsHtml = $("[id^='colName']");
@@ -551,21 +557,25 @@
                 sortArray.push(queryfields[i] + " " + order);// 添加到排序数组里
             }
             // 是否读取字段
-            var isUsed = $("#isused" + i).prop("checked");
-            if (isUsed) {
-                // 检查其名称是否填写
-                var selfColName = $("#selfColName" + i).val();
+            var isRead = $("#isread" + i).prop("checked");
+            var selfColName = $("#selfColName" + i).val();
+            if (isRead) {
+                // 检查其自定义名称是否填写
                 if (selfColName == null || selfColName == '') {
-                    showEditFail("你选择使用字段<b>" + queryfields[i] + "</b>,所以必须填写它的自定义名称。", $("#colNameSelf" + i));
+                    showEditFail("你选择读取字段<b>" + queryfields[i] + "</b>,所以必须填写它的自定义名称。", $("#selfColName" + i));
                     return false;
                 }
+                // 添加进读取字段数组中
+                readArray.push(queryfields[i] + "," + selfColName);
             }
             // 检查是否使用规则
             var isusedRule = $("#isusedRule" + i).prop("checked");
-            if (isusedRule == false) {// 不使用规则，直接读取
-                //  a,aName,-1,NN
-                rulesArray.push(queryfields[i] + "," + selfColName + ",-1,NN");
-            } else {// 使用规则 进一步判断
+            if (isusedRule){// 使用规则 进一步判断
+                // 为方便告知规则情况，需要了解字段自定义名称
+                if (selfColName == null || selfColName == '') {
+                    showEditFail("你选择使用规则，则字段<b>" + queryfields[i] + "</b>必须填写它的自定义名称。", $("#selfColName" + i));
+                    return false;
+                }
                 var ruleType = $('input[name="rule' + i + '"]:checked ').val();
                 if (ruleType == 'EQ' || ruleType == 'NE') {// 等于或者不等于的规则
                     // 检查参照值为合法输入 非空即可
@@ -623,6 +633,13 @@
             }
         }
         // 循环完了 整理成规则字符串
+        readfields = "";
+        for (var i = 0; i < readArray.length; i++) {
+            readfields = readfields + readArray[i];
+            if ((i + 1) < readArray.length) {
+                readfields = readfields + "#";
+            }
+        }
         sortfields = "";
         for (var i = 0; i < sortArray.length; i++) {
             sortfields = sortfields + sortArray[i];
@@ -630,14 +647,19 @@
                 sortfields = sortfields + ",";
             }
         }
-        fields = "";
+        fieldrules = "";
         for (var i = 0; i < rulesArray.length; i++) {
-            fields = fields + rulesArray[i];
+            fieldrules = fieldrules + rulesArray[i];
             if ((i + 1) < rulesArray.length) {
-                fields = fields + "#";
+                fieldrules = fieldrules + "#";
             }
         }
-        console.log("sortfields:" + sortfields + "; fields:" + fields);
+        if(fieldrules == ""){// 没有定义规则，就是查询到了就返回
+            isreturn = "anyway";
+        }else{
+            isreturn = "oncase";
+        }
+//        console.log("readfields:" + readfields+";sortfields:" + sortfields + "; fieldrules:" + fieldrules);
     }
 
 

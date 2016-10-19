@@ -1,6 +1,7 @@
 package com.owngame.utils;
 
-import com.owngame.entity.FunctionField;
+import com.owngame.entity.FieldAndSelfName;
+import com.owngame.entity.FunctionFieldRule;
 
 import java.util.ArrayList;
 
@@ -14,12 +15,12 @@ public class FunctionFieldUtil {
      * @param fields
      * @return
      */
-    public static ArrayList<FunctionField> parseFieldsString(String fields){
+    public static ArrayList<FunctionFieldRule> parseFieldsString(String fields){
         // a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,NE@V
         String f[] = fields.split("#");
-        ArrayList<FunctionField> functionFields = new ArrayList<FunctionField>();
+        ArrayList<FunctionFieldRule> functionFields = new ArrayList<FunctionFieldRule>();
         for(int i=0;i<f.length;i++){
-            FunctionField functionField = new FunctionField();
+            FunctionFieldRule functionField = new FunctionFieldRule();
             String ff[] = f[i].split(",");
             functionField.setField(ff[0]);
             functionField.setFieldName(ff[1]);
@@ -28,5 +29,24 @@ public class FunctionFieldUtil {
             functionFields.add(functionField);
         }
         return functionFields;
+    }
+
+    /**
+     * 解析字段和其自定义名称的字符串
+     * a,aName#b,bName#c,cName
+     * @param fieldandSelfaNamesStr
+     * @return
+     */
+    public static ArrayList<FieldAndSelfName> parseFieldSelfName(String fieldandSelfaNamesStr){
+        String f[] = fieldandSelfaNamesStr.split("#");
+        ArrayList<FieldAndSelfName> fieldAndSelfNames = new ArrayList<FieldAndSelfName>();
+        for(int i=0;i<f.length;i++){
+            FieldAndSelfName fieldAndSelfName = new FieldAndSelfName();
+            String ff[] = f[i].split(",");
+            fieldAndSelfName.setField(ff[0]);
+            fieldAndSelfName.setSelfName(ff[1]);
+            fieldAndSelfNames.add(fieldAndSelfName);
+        }
+        return fieldAndSelfNames;
     }
 }

@@ -1,10 +1,7 @@
 package com.owngame.service.impl;
 
 import com.owngame.dao.FunctionDao;
-import com.owngame.entity.Function;
-import com.owngame.entity.FunctionField;
-import com.owngame.entity.FunctionKeywordsResult;
-import com.owngame.entity.FunctionSqlResult;
+import com.owngame.entity.*;
 import com.owngame.service.FunctionService;
 import com.owngame.utils.DBUtil;
 import com.owngame.utils.FunctionFieldUtil;
@@ -105,11 +102,12 @@ public class FunctionServiceImpl implements FunctionService {
         // 1.现根据function获得服务组件
         // 获得数据库链接
         Connection connection = DBUtil.createConn(function);
-        ArrayList<FunctionField> functionFields = FunctionFieldUtil.parseFieldsString(function.getFields());
+        ArrayList<FieldAndSelfName> readFields = FunctionFieldUtil.parseFieldSelfName(function.getReadfields());// 所需获取的字段
+        ArrayList<FunctionFieldRule> fieldRules = FunctionFieldUtil.parseFieldsString(function.getFieldrules());// 判断规则的字段
         // 根据要获取的表和字段名，构造查询语句
-        String sql = getQueryStatement(function.getTablename(), function.getSortfields(), functionFields);
+        String sql = getQueryStatement(function.getTablename(), function.getSortfields(), readFields, fieldRules);
         // 查询并得到结果
-        return doQuery(connection, sql, functionFields, function.getRules());
+        return doQuery(connection, sql, fieldRules, function.getFieldrules());
     }
 
 
@@ -240,14 +238,15 @@ public class FunctionServiceImpl implements FunctionService {
      *
      * @param tableName
      * @param sortfields
-     * @param functionFields
+     * @param readFields
+     * @param fieldRules
      * @return
      */
-    private String getQueryStatement(String tableName, String sortfields, ArrayList<FunctionField> functionFields) {
+    private String getQueryStatement(String tableName, String sortfields, ArrayList<FieldAndSelfName> readFields, ArrayList<FunctionFieldRule> fieldRules) {
         String sql = "select ";
-        for (int i = 0; i < functionFields.size(); i++) {
-            sql = sql + functionFields.get(i).getField();
-            if ((i + 1) < functionFields.size()) {
+        for (int i = 0; i < readFields.size(); i++) {
+            sql = sql + readFields.get(i).getField();
+            if ((i + 1) < readFields.size()) {
                 sql = sql + ",";
             }
         }
@@ -268,10 +267,10 @@ public class FunctionServiceImpl implements FunctionService {
      *
      * @param conn
      * @param sql
-     * @param functionFields
+     * @param fieldrules
      * @return
      */
-    private String doQuery(Connection conn, String sql, ArrayList<FunctionField> functionFields, String resultrules) {
+    private String doQuery(Connection conn, String sql, ArrayList<FunctionFieldRule> fieldrules, String isreturn) {
         System.out.println("sql: " + sql);
         PreparedStatement ps = DBUtil.prepare(conn, sql);
         ResultSet rs = null;
@@ -279,16 +278,16 @@ public class FunctionServiceImpl implements FunctionService {
         try {
             rs = ps.executeQuery();
             if (rs.next()) {// 只选第一条就行
-                if (resultrules.equals("anyway")) {// 当返回要求为必须返回时
-                    for (FunctionField functionField : functionFields) {
+                if (isreturn.equals("anyway")) {// 当返回要求为必须返回时
+                    for (FunctionFieldRule functionField : fieldrules) {
                         result = result + functionField.getFieldName() + ":" + rs.getObject(functionField.getField()) + ";";
                     }
-                } else if (resultrules.equals("oncase")) {// 根据规则来处理查询结果
+                } else if (isreturn.equals("oncase")) {// 根据规则来处理查询结果
                     ArrayList<Integer> isReturns = new ArrayList<Integer>();
                     ArrayList<String> values = new ArrayList<String>();
-                    for (FunctionField functionField : functionFields) {
+                    for (FunctionFieldRule functionField : fieldrules) {
                         boolean isReturn = false;// 是否返回查询结果
-                        if (resultrules.equals("oncase")) {// 根据条件返回
+                        if (isreturn.equals("oncase")) {// 根据条件返回
                             // a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,NE@V
                             // 从数据库读到的数据
                             String value = (String) rs.getObject(functionField.getField());

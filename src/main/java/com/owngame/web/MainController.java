@@ -459,7 +459,7 @@ public class MainController {
         function.setPassword(p.get("password"));
         function.setTablename(p.get("tablename"));
         String sql = p.get("sql");
-        // 检查关键字
+        // 检查Sql语句
         FunctionSqlResult sqlResult = functionService.checkSql(function, sql);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("sqlResult", sqlResult);
