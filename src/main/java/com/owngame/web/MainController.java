@@ -346,10 +346,8 @@ public class MainController {
     @RequestMapping(value = "/timertask/{action}", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> handleTimerTask(@RequestBody Map<String, String> p, @PathVariable("action") String action) {
-
         // 先判断操作
         if (action.equals("update")) {
-            System.out.println("update");
             long id = Long.parseLong(p.get("id"));
             TimerTask timerTask;
             if (id <= 0) {// 插入
@@ -384,6 +382,7 @@ public class MainController {
     @RequestMapping(value = "/timertask/getall", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> queryTimerTasks() {
+        System.out.println("queryTimerTasks...");
         ArrayList<TimerTask> timerTasks = timerTaskService.queryAll();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("timerTasks", timerTasks);
@@ -463,6 +462,49 @@ public class MainController {
         FunctionSqlResult sqlResult = functionService.checkSql(function, sql);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("sqlResult", sqlResult);
+        return map;
+    }
+
+    /**
+     * 操作function 增、改、删
+     * @return
+     */
+    @RequestMapping(value = "/functions/{action}", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> handleFunction(@RequestBody Map<String, String> p, @PathVariable("action") String action) {
+        long id = Long.parseLong(p.get("id"));
+        if(action.equals("update")){
+            Function function = new Function();
+            function.setName(p.get("name"));
+            function.setDescription(p.get("description"));
+            function.setKeywords(p.get("keywords"));
+            function.setIp(p.get("ip"));
+            function.setPort(p.get("port"));
+            function.setDbtype(p.get("dbtype"));
+            function.setDbname(p.get("dbname"));
+            function.setUsername(p.get("username"));
+            function.setPassword(p.get("password"));
+            function.setTablename(p.get("tablename"));
+            function.setUsetype(p.get("usetype"));
+            function.setReadfields(p.get("readfields"));
+            function.setSortfields(p.get("sortfields"));
+            function.setFieldrules(p.get("fieldrules"));
+            function.setIsreturn(p.get("isreturn"));
+            function.setSqlstmt(p.get("sqlstmt"));
+            function.setSqlfields(p.get("sqlfields"));
+            if(id>0){// 更新
+                function.setId(id);
+                functionService.update(function);
+            }else{
+                function.toString();
+                functionService.createFunction(function);
+            }
+        }else if(action.equals("delete")){
+            functionService.deleteById(id);
+        }
+        // 查询所有功能
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("updateResult", true);
         return map;
     }
 

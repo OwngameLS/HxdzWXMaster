@@ -107,7 +107,8 @@ public class FunctionServiceImpl implements FunctionService {
         // 根据要获取的表和字段名，构造查询语句
         String sql = getQueryStatement(function.getTablename(), function.getSortfields(), readFields, fieldRules);
         // 查询并得到结果
-        return doQuery(connection, sql, fieldRules, function.getFieldrules());
+        return doQuery(connection, sql, readFields);
+//        return doQuery(connection, sql, readFields, fieldRules, function.getIsreturn());
     }
 
 
@@ -258,9 +259,104 @@ public class FunctionServiceImpl implements FunctionService {
                 sql = sql + ",";
             }
         }
-        sql = sql + ";";
+        sql = sql + parseFieldRulesToWhereStmt(fieldRules) +";";
         return sql;
     }
+
+
+    /**
+     * 将字段规则转换为where子句
+     * @param fieldRules
+     * @return
+     */
+    private String parseFieldRulesToWhereStmt(ArrayList<FunctionFieldRule> fieldRules){
+        String whereStmt= " where ";
+        if(fieldRules.size() == 0){
+            whereStmt = "";
+        }else{
+            for(int i=0;i<fieldRules.size();i++){
+                // a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,EQ#,e,eName,bcde,NE#f,fName,xxx,RG@12BT34
+                FunctionFieldRule fieldRule = fieldRules.get(i);
+
+                if(fieldRule.getRule().equals("BB")){
+                    whereStmt = whereStmt + "(" + fieldRule.getField() + " > " + fieldRule.getCompareValue() + ")";
+                }else if(fieldRule.getRule().equals("LL")){
+                    whereStmt = whereStmt + "(" + fieldRule.getField() + " < " + fieldRule.getCompareValue() + ")";
+                }else if(fieldRule.getRule().equals("EQ")){
+                    if(isNum(fieldRule.getCompareValue())){
+                        whereStmt = whereStmt + "(" + fieldRule.getField() + " = " + fieldRule.getCompareValue() + ")";
+                    }else{
+                        whereStmt = whereStmt + "(" + fieldRule.getField() + " = '" + fieldRule.getCompareValue() + "')";
+                    }
+                }else if(fieldRule.getRule().equals("NE")){
+                    if(isNum(fieldRule.getCompareValue())) {
+                        whereStmt = whereStmt + "(" + fieldRule.getField() + " != " + fieldRule.getCompareValue() + ")";
+                    }else {
+                        whereStmt = whereStmt + "(" + fieldRule.getField() + " != '" + fieldRule.getCompareValue() + "')";
+                    }
+                }else if(fieldRule.getRule().startsWith("RG")){
+                    String rgRule = fieldRule.getRule();
+                    String below,above;
+                    int indexOfB, indexOfO, indexOfT, indexOfAt;
+                    indexOfAt = rgRule.indexOf("@");
+                    if(rgRule.contains("BT")){
+                        indexOfB = rgRule.indexOf("B");
+                        indexOfT = rgRule.indexOf("T");
+                        below = rgRule.substring(indexOfAt+1,indexOfB);
+                        above = rgRule.substring(indexOfT+1);
+                        whereStmt = whereStmt + "(" + fieldRule.getField() + " > " + below + " and " + fieldRule.getField() + " < " + above +")";
+                    }else if(rgRule.contains("OUT")){
+                        indexOfO = rgRule.indexOf("O");
+                        indexOfT = rgRule.indexOf("T");
+                        below = rgRule.substring(indexOfAt+1,indexOfO);
+                        above = rgRule.substring(indexOfT+1);
+                        whereStmt = whereStmt + "(" + fieldRule.getField() + " < " + below + " or " + fieldRule.getField() + " > " + above +")";
+                    }
+                }else if(fieldRule.getRule().equals("NN")){
+                    continue;
+                }
+                if((i+1) < fieldRules.size()){
+                    whereStmt = whereStmt + " and ";
+                }
+            }
+        }
+        return whereStmt;
+    }
+
+
+    /**
+     * 根据sql语句查询
+     * @param conn
+     * @param sql
+     * @param readFields
+     * @return
+     */
+    private String doQuery(Connection conn, String sql, ArrayList<FieldAndSelfName> readFields){
+        System.out.println("sql: " + sql);
+        PreparedStatement ps = DBUtil.prepare(conn, sql);
+        ResultSet rs = null;
+        String result = "";
+        try {
+            rs = ps.executeQuery();
+            if (rs.next()) {// 只选第一条就行
+                for (int i=0;i< readFields.size();i++){
+                    FieldAndSelfName fieldAndSelfName = readFields.get(i);
+                    result = result + fieldAndSelfName.getSelfName() + ":" + rs.getObject(fieldAndSelfName.getField());
+                    if((i+1)<readFields.size()){
+                        result = result + ";";
+                    }
+                }
+            }
+            DBUtil.close(rs);
+        } catch (Exception e) {
+            DBUtil.close(ps);
+            DBUtil.close(conn);
+        }
+        DBUtil.close(ps);
+        DBUtil.close(conn);
+        return result;
+    }
+
 
     /**
      * 做查询
@@ -270,7 +366,7 @@ public class FunctionServiceImpl implements FunctionService {
      * @param fieldrules
      * @return
      */
-    private String doQuery(Connection conn, String sql, ArrayList<FunctionFieldRule> fieldrules, String isreturn) {
+    private String doQuery(Connection conn, String sql, ArrayList<FieldAndSelfName> readFields, ArrayList<FunctionFieldRule> fieldrules, String isreturn) {
         System.out.println("sql: " + sql);
         PreparedStatement ps = DBUtil.prepare(conn, sql);
         ResultSet rs = null;
@@ -279,8 +375,8 @@ public class FunctionServiceImpl implements FunctionService {
             rs = ps.executeQuery();
             if (rs.next()) {// 只选第一条就行
                 if (isreturn.equals("anyway")) {// 当返回要求为必须返回时
-                    for (FunctionFieldRule functionField : fieldrules) {
-                        result = result + functionField.getFieldName() + ":" + rs.getObject(functionField.getField()) + ";";
+                    for (FieldAndSelfName fieldAndSelfName : readFields) {
+                        result = result + fieldAndSelfName.getSelfName() + ":" + rs.getObject(fieldAndSelfName.getField()) + ";";
                     }
                 } else if (isreturn.equals("oncase")) {// 根据规则来处理查询结果
                     ArrayList<Integer> isReturns = new ArrayList<Integer>();

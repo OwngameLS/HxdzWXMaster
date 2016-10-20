@@ -52,7 +52,11 @@
 
     <div id="functionEditDiv" style="" class="well"><%--编辑定时任务的表格--%>
         <div class="row">
-            <div class="col-md-10 text-center"></div>
+            <div class="col-md-4 text-center"></div>
+            <div class="col-md-4 text-center">
+                <h4>功能属性编辑</h4>
+            </div>
+            <div class="col-md-2 text-center"></div>
             <div class="col-md-2 text-center">
                 <button type="button" class="btn btn-success btn-sm" onclick="saveFunction()">保 存</button>
                 <button type="button" class="btn btn-warning btn-sm" onclick="initEditTimerTask(-1)">取 消</button>
@@ -124,9 +128,9 @@
 
         <div id="colsDIV">
             <%--<div id="colsDIV" style="display:none">--%>
-            ---如果你够专业，您可以在这里编写SQL语句-------------------------
+            ---对数据库字段的读取规则-------------------------
             <div class="row bg-success">
-                <input type="radio" name="whichType" value="sql">使用SQL语句
+                <input type="radio" name="whichType" value="sql">使用SQL语句（如果你够专业，您可以在这里编写SQL语句）
             </div>
             <div class="row">
                 <div class="col-md-3 text-center">
@@ -136,8 +140,7 @@
                     <input id="editSQL" class="form-control">
                 </div>
                 <div class="col-md-2 text-center">
-                    <button type="button" class="btn btn-success btn-sm" onclick="testSQL(true)">测试</button>
-                    <button type="button" class="btn btn-warning btn-sm" onclick="saveSQL()">保存SQL</button>
+                    <button type="button" class="btn btn-success btn-sm" onclick="testSQL(false)">测试</button>
                 </div>
             </div>
             <div id="sqlresultDiv" style="display: none">
@@ -158,9 +161,8 @@
 
             </div>
             <br>
-            ---读取字段的设置-------------------------
             <div class="row bg-success">
-                <input type="radio" name="whichType" value="rule" checked>使用规则
+                <input type="radio" name="whichType" value="rule" checked>使用规则（读取字段的设置，注意：所有的规则都满足才能查询到结果）
             </div>
             <div class="row bg-success">
                 <div class="col-md-2 text-center">数据库字段名</div>
@@ -250,18 +252,72 @@
         hideEditFail();
         // 验证所填写的字段非空且符合要求
         // 验证功能描述性设置
+        var result1 = false, result2 = false, result3 = false;
+        console.log("check testFunctionDescPart...");
         var result1 = testFunctionDescPart();
-        var result2 = testConnect(false);
-        var result3 = testRules();
-        if (result1 && result2) {// 基础输入检查完毕
-            // 检查规则
-//            result3 = saveRules();
-        }
 
+        if(result1){
+            console.log("check testConnect...");
+            result2 = testConnect(false);
+        }
+        if(isConnectSuccess){
+            console.log("check settings...");
+            // 检查读取规则类型
+            usetype = $('input[name="whichType"]:checked ').val();
+            if(usetype == 'sql'){
+                result3 = testSQL(true);
+            }else{
+                result3 = testRules();
+            }
+        }
+        if(result3){
+            // 提交
+            doAjaxHandleFunction('update');
+        }
     }
 
+
+    // 处理TimerTask操作提交给服务器部分
+    function doAjaxHandleFunction(action) {
+        console.log("doAjaxHandleFunction...");
+        var jsonData = "{\"id\":\"" + id
+                + "\",\"name\":\"" + name
+                + "\",\"description\":\"" + description
+                + "\",\"keywords\":\"" + keywords
+                + "\",\"ip\":\"" + ip
+                + "\",\"port\":\"" + port
+                + "\",\"dbtype\":\"" + dbtype
+                + "\",\"dbname\":\"" + dbname
+                + "\",\"username\":\"" + username
+                + "\",\"password\":\"" + password
+                + "\",\"tablename\":\"" + tablename
+                + "\",\"usetype\":\"" + usetype
+                + "\",\"readfields\":\"" + readfields
+                + "\",\"sortfields\":\"" + sortfields
+                + "\",\"fieldrules\":\"" + fieldrules
+                + "\",\"isreturn\":\"" + isreturn
+                + "\",\"sqlstmt\":\"" + sqlstmt
+                + "\",\"sqlfields\":\"" + sqlfields
+                + "\"}";
+        $.ajax({
+            type: 'POST',
+            url: bp + 'Smserver/function/' + action,
+            data: jsonData,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                console.log(data['updateResult']);
+                // 先将编辑框隐藏
+                $("#timertaskEditDiv").hide(2000);
+                showEditDone();
+                hideEditFail();
+            }
+        });
+    }
+
+
     // 测试SQL语句
-    function testSQL() {
+    function testSQL(isSaveSQL) {
         // 先检查sql语句，排除非法操作
         sql = $("#editSQL").val();
         if (sql == '' || sql == null) {
@@ -273,7 +329,9 @@
             return false;
         }
         // 再检查数据库连通性
-        testConnect(false);
+        if(isSaveSQL == false){// 不是保存阶段，就要检查连通性
+            testConnect(false);
+        }
         if (isConnectSuccess == false) {
             // 数据库不可连通，建议放弃操作
             if (confirm("数据库连接没有成功，确认继续操作？")) {
@@ -306,12 +364,21 @@
                     var errorMsg = "您输入的sql语句存在错误：<br>" + result.fields[0];
                     showEditFail(errorMsg, $("#editSQL"));
                     return false;
-                } else {
-                    initTbodyOfSQL(result.fields);
+                } else {// 返回的是列表信息
+                    if(isSaveSQL){
+                        // 返回的列表信息与设置的是否一致？
+                        console.log("saving sql....");
+                        return saveSQL(result.fields);
+                    }else{
+                        initTbodyOfSQL(result.fields);
+                    }
                 }
             }
         });
     }
+
+
+
 
     // 验证功能描述性设置
     function testFunctionDescPart() {
@@ -524,7 +591,8 @@
 
     // 当使用sql语句规则时的相关设置
     function initTbodyOfSQL(fields) {
-        formerSqlFieldsHTML = $("#sqlFields").html();
+//        formerSqlFieldsHTML = $("#sqlFields").html();
+        $("#sqlFields").html("");
         var htmlStr = '<div class="row"><div class="col-md-3 text-center">字段名</div><div class="col-md-3 text-center">名称</div><div class="col-md-3 text-center">排序序号</div></div>';
         for (var i = 0; i < fields.length; i++) {
             htmlStr = htmlStr + '<div class="row">';
@@ -664,13 +732,42 @@
 
 
     // 保存SQL规则
-    function saveSQL() {
+    function saveSQL(queryFileds) {
         // 获得字段集合
         var fields = new Array();
         var fieldsHtml = $("[id*='sqlFieldCol']");
         for (var i = 0; i < fieldsHtml.length; i++) {
             fields.push($(fieldsHtml[i]).text());
         }
+        var errorMsg = '';
+        // 与查询得到的字段进行对比
+        if(queryFileds.length != fields.length){
+            // 新旧长度不统一
+            // 重新初始化并告知
+            initTbodyOfSQL(queryFileds);
+            if(fields.length == 0){
+                errorMsg = "您必须对您的查询字段做相应的设置。";
+            }else{
+                errorMsg = "您查询的字段与您设置的字段不一样，请重新设置。";
+            }
+            showEditFail(errorMsg, $("#editSQL"));
+            return false;
+        }
+        var hasNotFound = false;
+        for(var i=0;i<queryFileds.length;i++){
+            if(fields.indexOf(queryFileds[i]) == -1){
+                hasNotFound  = true;
+            }
+        }
+
+        if(hasNotFound) {
+            // 重新初始化并告知
+            initTbodyOfSQL(queryFileds);
+            errorMsg = "您查询的字段与您设置的字段不一样，请重新设置。";
+            showEditFail(errorMsg, $("#editSQL"));
+            return false;
+        }
+
         // 检查非空
         var nameHtml = $("[id*='sqlFieldName']");
         var names = new Array();
@@ -745,6 +842,7 @@
             }
         }
         hideEditFail();
+        return true;
     }
 
 
@@ -1053,55 +1151,7 @@
     }
 
 
-    // 处理TimerTask操作UI逻辑部分
-    function handleTimerTask(action) {
-        var id = $("#ttIdEdit").html();
-        if (action == 'delete') {
-            if (id == '新建') {// 新建情况删除个屁啊
-                showEditFail("这是新建呢，不能执行删除操作！", $("#ttIdEdit"));
-            } else {
-                doAjaxHandleTimerTask('delete', '{\"id\":\"' + id + '\"}');
-            }
-        } else if (action == 'save') {
-            // 获取其他的值
-            var functions = $("#ttfunctionsEdit").html();
-            var description = $("#ttdescriptionEdit").val();
-            var cron = $("#ttcronEdit").html();
-            var contacts = $("#ttcontactsEdit").val();
-            var state = $("#ttstateEdit  option:selected").val();
-            // 判断合理值
-            // 整理成JsonStr
-            if (id == '新建') {
-                id = 0;// 新建
-            }
-            var jsonStr = "{\"id\":\"" + id
-                    + "\",\"functions\":\"" + functions
-                    + "\",\"description\":\"" + description
-                    + "\",\"cron\":\"" + cron
-                    + "\",\"contacts\":\"" + contacts
-                    + "\",\"state\":\"" + state + "\"}";
-            doAjaxHandleTimerTask('update', jsonStr);
-        }
-    }
 
-    // 处理TimerTask操作提交给服务器部分
-    function doAjaxHandleTimerTask(action, jsonData) {
-        $.ajax({
-            type: 'POST',
-            url: bp + 'Smserver/timertask/' + action,
-            data: jsonData,
-            dataType: "json",
-            contentType: "application/json",
-            success: function (data) {
-                // 初始化timertasks相关的控件
-                initTbodyOfTasks(data['timerTasks']);// 选择控件
-                // 先将编辑框隐藏
-                $("#timertaskEditDiv").hide(2000);
-                showEditDone();
-                hideEditFail();
-            }
-        });
-    }
 
     // 判断是不是大于0的整数
     function isInteger(obj) {

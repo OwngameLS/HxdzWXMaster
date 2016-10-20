@@ -16,6 +16,7 @@ public class FunctionFieldUtil {
      * @return
      */
     public static ArrayList<FunctionFieldRule> parseFieldsString(String fields){
+        System.out.println("fields:" + fields);
         // a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,NE@V
         String f[] = fields.split("#");
         ArrayList<FunctionFieldRule> functionFields = new ArrayList<FunctionFieldRule>();

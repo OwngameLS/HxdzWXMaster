@@ -169,4 +169,28 @@ public class Function {
     public void setSqlfields(String sqlfields) {
         this.sqlfields = sqlfields;
     }
+
+    @Override
+    public String toString() {
+        return "Function{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", keywords='" + keywords + '\'' +
+                ", ip='" + ip + '\'' +
+                ", port='" + port + '\'' +
+                ", dbtype='" + dbtype + '\'' +
+                ", dbname='" + dbname + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", tablename='" + tablename + '\'' +
+                ", usetype='" + usetype + '\'' +
+                ", readfields='" + readfields + '\'' +
+                ", sortfields='" + sortfields + '\'' +
+                ", fieldrules='" + fieldrules + '\'' +
+                ", isreturn='" + isreturn + '\'' +
+                ", sqlstmt='" + sqlstmt + '\'' +
+                ", sqlfields='" + sqlfields + '\'' +
+                '}';
+    }
 }
