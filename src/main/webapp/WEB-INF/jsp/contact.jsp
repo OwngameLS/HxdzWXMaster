@@ -10,18 +10,7 @@
 <head>
     <title>Bootstrap 模板</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <style type="text/css">
-        /*设置单元格内容超长，用省略号代替的效果，前提是每一列的宽度都要指定*/
-        table {
-            table-layout: fixed;
-        }
 
-        td {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    </style>
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
@@ -266,8 +255,9 @@
     function initGroupsBody(groups) {
         var html = '';
         for (var i = 0; i < groups.length; i++) {
-            html = html + '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="getContactsByGroups(\'' + groups[i] + '\')">' + groups[i] + '</button>  ' +
-                    '<button type="button" class="btn btn-primary btn-sm" onclick="initEditGroup(\'' + groups[i] + '\')">编辑</button></td></tr>';
+            html = html + '<tr><td>'
+                    +'<button type="button" class="btn btn-danger btn-sm" onclick="getContactsByGroups(\'' + groups[i] + '\')">' + parseToAbbr(groups[i], 5, null) + '</button>  '
+                    +'<button type="button" class="btn btn-primary btn-sm" onclick="initEditGroup(\'' + groups[i] + '\')">编辑</button></td></tr>';
         }
         $("#groupsBody").html(html);
     }
@@ -327,9 +317,9 @@
             htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" value="' + contacts[i].id + '"> ' + contacts[i].id
                     + '</td><td>' + contacts[i].groupname
                     + '</td><td>' + contacts[i].name
-                    + '</td><td>' + contacts[i].title
+                    + '</td><td>' + parseToAbbr(contacts[i].title, 5, null)
                     + '</td><td>' + contacts[i].phone
-                    + '</td><td>' + contacts[i].description
+                    + '</td><td>' + parseToAbbr(contacts[i].description, 10, null)
                     + '</td><td>' + '<button type="button" class="btn btn-primary btn-sm" onclick="initEditContact(\'' + contacts[i].id
                     + '\',\'' + contacts[i].groupname + '\',\'' + contacts[i].name + '\',\'' + contacts[i].title + '\',\'' + contacts[i].phone + '\',\'' + contacts[i].description + '\')">编辑</button>'
                     + '</td></tr>';

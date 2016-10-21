@@ -11,18 +11,6 @@
 <head>
     <title>定时任务</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <style type="text/css">
-        /*设置单元格内容超长，用省略号代替的效果，前提是每一列的宽度都要指定*/
-        table {
-            table-layout: fixed;
-        }
-
-        td {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    </style>
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
@@ -58,9 +46,9 @@
                 <th width="10%" class="text-center">功能</th>
                 <th width="20%" class="text-center">描述</th>
                 <th width="15%" class="text-center">触发规则</th>
-                <th width="23%" class="text-center">接收者们</th>
-                <th width="12%" class="text-center">状态</th>
-                <th width="15%" class="text-center">操作</th>
+                <th width="20%" class="text-center">接收者们</th>
+                <th width="7%" class="text-center">状态</th>
+                <th width="20%" class="text-center">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -81,19 +69,19 @@
                         <button type="button" class="btn btn-warning btn-sm" onclick="hideCronEdit()">取消</button>
                     </div>
                 </td>
-                <td width="35%">
+                <td width="30%">
                     <textarea id="ttcontactsEdit" placeholder="这里将展示选中人员的id"></textarea><br>
                     <button type="button" class="btn btn-success btn-sm" onclick="queryContactsDetailsWithIds()">查看已选
                     </button>
                     <button type="button" class="btn btn-success btn-sm" onclick="showContactsUI()">新增人员</button>
                 </td>
-                <td width="7%">
+                <td width="5%">
                     <select id="ttstateEdit">
-                        <option value="run">正常运行</option>
-                        <option value="pause">暂停运行</option>
+                        <option value="run">运行</option>
+                        <option value="pause">暂停</option>
                     </select>
                 </td>
-                <td width="8%">
+                <td width="15%">
                     <button type="button" class="btn btn-success btn-sm" onclick="handleTimerTask('save')">保存</button>
                     <button type="button" class="btn btn-warning btn-sm" onclick="handleTimerTask('delete')">删除</button>
                     <button type="button" class="btn btn-primary btn-sm" onclick="cancelEditTimerTask()">取消</button>
@@ -232,9 +220,9 @@
         for (var i = 0; i < timertasks.length; i++) {
             htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" value="' + timertasks[i].id + '"> ' + timertasks[i].id
                     + '</td><td>' + timertasks[i].functions
-                    + '</td><td>' + timertasks[i].description
+                    + '</td><td>' + parseToAbbr(timertasks[i].description, 10, null)
                     + '</td><td>' + timertasks[i].firerules
-                    + '</td><td>' + timertasks[i].receivers;
+                    + '</td><td>' + parseToAbbr(timertasks[i].receivers, 15, null)
             var stateDesc = '';
             if (timertasks[i].state == 'run') {
                 stateDesc = '正常运行';
@@ -296,7 +284,7 @@
             htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" value="' + contacts[i].id + '"> ' + contacts[i].id
                     + '</td><td>' + contacts[i].groupname
                     + '</td><td>' + contacts[i].name
-                    + '</td><td>' + contacts[i].title
+                    + '</td><td>' + parseToAbbr(contacts[i].title, 10, null)
                     + '</td><td>' + contacts[i].phone
                     + '</td></tr>';
         }

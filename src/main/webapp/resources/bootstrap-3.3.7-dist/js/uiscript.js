@@ -35,3 +35,23 @@ function cancleWarning(el) {
     el.attr("style", "background:#FFF");
 }
 
+/**
+ * 将一段内容处理成缩略词格式
+ * @param source 源内容
+ * @param limit 长度限制
+ * @param description 描述
+ */
+function parseToAbbr(source, limit, description){
+    var abbr = '';// 缩略后
+    if(description != null){// 只需要在源上添加说明
+        abbr = source;
+        return '<abbr title="'+description+'">'+abbr+'</abbr>';
+    }
+    if(source.length > limit){
+        abbr = source.substring(0, limit) + '...';
+        return '<abbr title="'+source+'">'+abbr+'</abbr>';
+    }else{
+        return source;
+    }
+
+}

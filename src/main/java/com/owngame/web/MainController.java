@@ -496,8 +496,9 @@ public class MainController {
                 function.setId(id);
                 functionService.update(function);
             }else{
-                function.toString();
-                functionService.createFunction(function);
+                System.out.println(function.toString());
+                int ret = functionService.createFunction(function);
+                System.out.println("ret:" + ret);
             }
         }else if(action.equals("delete")){
             functionService.deleteById(id);

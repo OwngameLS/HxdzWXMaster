@@ -11,18 +11,6 @@
 <head>
     <title>定时任务</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <style type="text/css">
-        /*设置单元格内容超长，用省略号代替的效果，前提是每一列的宽度都要指定*/
-        table {
-            table-layout: fixed;
-        }
-
-        td {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    </style>
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2016-10-19 15:42:40
+Date: 2016-10-21 17:12:26
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -99,20 +99,40 @@ CREATE TABLE `function` (
   `usetype` varchar(5) DEFAULT NULL,
   `readfields` text,
   `sortfields` text,
-  `fieldsrules` text,
+  `fieldrules` text,
   `isreturn` varchar(10) DEFAULT NULL,
   `sqlstmt` text,
   `sqlfields` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of function
 -- ----------------------------
-INSERT INTO `function` VALUES ('1', 'abc', 'Test1', 'abc', '192.168.1.111', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', null, null, 'gametime desc', 'player_statids_home,home,-1,NN#player_statids_guest,guest,-1,NN', 'anyway', null, null);
+INSERT INTO `function` VALUES ('1', 'abc', 'Test1Test1Test1Test1Test1', 'abc', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', null, 'id,序号#count_type,计时类型', 'gametime desc', 'player_statids_home,home,-1,NN#player_statids_guest,guest,-1,NN', 'anyway', null, null);
 INSERT INTO `function` VALUES ('2', 'cde', 'Test2', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `function` VALUES ('3', 'efg', 'Test3', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `function` VALUES ('3', 'efg', 'Test3Test3Test3Test3', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 INSERT INTO `function` VALUES ('4', 'ghi', 'Test4', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `function` VALUES ('5', 'te22', '23442', '222', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'sql', 'undefined', 'undefined', 'undefined', 'undefined', 'select id, count_type from gameinfos', 'id,序号#count_type,统计类型');
+INSERT INTO `function` VALUES ('6', '23234', '23442', '32', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'rule', 'id,序号#count_type,统计类型', 'id desc', 'count_type,统计类型,5,NE', 'oncase', 'undefined', 'undefined');
+
+-- ----------------------------
+-- Table structure for `qrtz_blob_triggers`
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_blob_triggers`;
+CREATE TABLE `qrtz_blob_triggers` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `BLOB_DATA` blob,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  KEY `SCHED_NAME` (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `qrtz_blob_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `qrtz_triggers` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_blob_triggers
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `qrtz_calendars`
@@ -128,6 +148,25 @@ CREATE TABLE `qrtz_calendars` (
 -- ----------------------------
 -- Records of qrtz_calendars
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for `qrtz_cron_triggers`
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_cron_triggers`;
+CREATE TABLE `qrtz_cron_triggers` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `CRON_EXPRESSION` varchar(120) NOT NULL,
+  `TIME_ZONE_ID` varchar(80) DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `qrtz_cron_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `qrtz_triggers` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_cron_triggers
+-- ----------------------------
+INSERT INTO `qrtz_cron_triggers` VALUES ('quartzScheduler', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'DEFAULT', '0 * * * * ? *', 'GMT+08:00');
 
 -- ----------------------------
 -- Table structure for `qrtz_fired_triggers`
@@ -316,7 +355,7 @@ CREATE TABLE `qrtz_triggers` (
 -- ----------------------------
 -- Records of qrtz_triggers
 -- ----------------------------
-INSERT INTO `qrtz_triggers` VALUES ('quartzScheduler', 'ad3e2749-f5f5-4bcd-a8d8-89260ff2da99', 'DEFAULT', 'jobDetail', 'DEFAULT', null, '1476154140000', '1476154121335', '5', 'PAUSED', 'CRON', '1476152342000', '0', null, '0', 0xACED0005737200156F72672E71756172747A2E4A6F62446174614D61709FB083E8BFA9B0CB020000787200266F72672E71756172747A2E7574696C732E537472696E674B65794469727479466C61674D61708208E8C3FBC55D280200015A0013616C6C6F77735472616E7369656E74446174617872001D6F72672E71756172747A2E7574696C732E4469727479466C61674D617013E62EAD28760ACE0200025A000564697274794C00036D617074000F4C6A6176612F7574696C2F4D61703B787001737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F4000000000000C7708000000100000000274000966756E6374696F6E73740003616263740009726563656976657273740007312C332C342C357800);
+INSERT INTO `qrtz_triggers` VALUES ('quartzScheduler', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'DEFAULT', 'jobDetail', 'DEFAULT', null, '1476928680000', '1476928648239', '5', 'PAUSED', 'CRON', '1476928060000', '0', null, '0', 0xACED0005737200156F72672E71756172747A2E4A6F62446174614D61709FB083E8BFA9B0CB020000787200266F72672E71756172747A2E7574696C732E537472696E674B65794469727479466C61674D61708208E8C3FBC55D280200015A0013616C6C6F77735472616E7369656E74446174617872001D6F72672E71756172747A2E7574696C732E4469727479466C61674D617013E62EAD28760ACE0200025A000564697274794C00036D617074000F4C6A6176612F7574696C2F4D61703B787001737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F4000000000000C7708000000100000000274000966756E6374696F6E73740003616263740009726563656976657273740007312C332C342C357800);
 
 -- ----------------------------
 -- Table structure for `task`
@@ -336,7 +375,6 @@ CREATE TABLE `task` (
 -- ----------------------------
 -- Records of task
 -- ----------------------------
-INSERT INTO `task` VALUES ('378', 'testName', 'descirption test....', '0', 'Test1???::home:4,5,6;guest:7,8,9;#', '13945671987,13945677891,13945677891,13945677891', '2016-10-11 10:48:41');
 
 -- ----------------------------
 -- Table structure for `timertask`
@@ -351,9 +389,9 @@ CREATE TABLE `timertask` (
   `receivers` text,
   `state` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of timertask
 -- ----------------------------
-INSERT INTO `timertask` VALUES ('2', 'ad3e2749-f5f5-4bcd-a8d8-89260ff2da99', 'abc', 'abc的功能，测试。', '0 0/1 * * * ? *', '1,3,4,5', 'pause');
+INSERT INTO `timertask` VALUES ('3', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'abc', '关于ABC的故事', '0 * * * * ? *', '1,3,4,5', 'pause');
