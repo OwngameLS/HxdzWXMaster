@@ -274,46 +274,46 @@
         }
         if(result3){
             // 提交
-            doAjaxHandleFunction('update');
+            var jsonData = "{\"id\":\"" + id
+                    + "\",\"name\":\"" + name
+                    + "\",\"description\":\"" + description
+                    + "\",\"keywords\":\"" + keywords
+                    + "\",\"ip\":\"" + ip
+                    + "\",\"port\":\"" + port
+                    + "\",\"dbtype\":\"" + dbtype
+                    + "\",\"dbname\":\"" + dbname
+                    + "\",\"username\":\"" + username
+                    + "\",\"password\":\"" + password
+                    + "\",\"tablename\":\"" + tablename
+                    + "\",\"usetype\":\"" + usetype
+                    + "\",\"readfields\":\"" + readfields
+                    + "\",\"sortfields\":\"" + sortfields
+                    + "\",\"fieldrules\":\"" + fieldrules
+                    + "\",\"isreturn\":\"" + isreturn
+                    + "\",\"sqlstmt\":\"" + sqlstmt
+                    + "\",\"sqlfields\":\"" + sqlfields
+                    + "\"}";
+            doAjaxHandleFunction('update', jsonData, 'POST');
         }
     }
 
 
-    // 处理TimerTask操作提交给服务器部分
-    function doAjaxHandleFunction(action) {
-        console.log("doAjaxHandleFunction...");
-        var jsonData = "{\"id\":\"" + id
-                + "\",\"name\":\"" + name
-                + "\",\"description\":\"" + description
-                + "\",\"keywords\":\"" + keywords
-                + "\",\"ip\":\"" + ip
-                + "\",\"port\":\"" + port
-                + "\",\"dbtype\":\"" + dbtype
-                + "\",\"dbname\":\"" + dbname
-                + "\",\"username\":\"" + username
-                + "\",\"password\":\"" + password
-                + "\",\"tablename\":\"" + tablename
-                + "\",\"usetype\":\"" + usetype
-                + "\",\"readfields\":\"" + readfields
-                + "\",\"sortfields\":\"" + sortfields
-                + "\",\"fieldrules\":\"" + fieldrules
-                + "\",\"isreturn\":\"" + isreturn
-                + "\",\"sqlstmt\":\"" + sqlstmt
-                + "\",\"sqlfields\":\"" + sqlfields
-                + "\"}";
+    // 处理Functions操作提交给服务器部分
+    function doAjaxHandleFunction(action, jsonStr, type) {
+        console.log("doAjaxHandleFunction action:" + action);
         $.ajax({
-            type: 'POST',
+            type: type,
             url: bp + 'Smserver/functions/' + action,
-            data: jsonData,
+            data: jsonStr,
             dataType: "json",
             contentType: "application/json",
             success: function (data) {
-                console.log(data['updateResult']);
                 // 先将编辑框隐藏
                 $("#functionEditDiv").hide(2000);
                 showEditDone();
                 hideEditFail();
                 // 刷新功能展示列表
+                initTbodyOfFunctions(data['functions']);
             }
         });
     }
@@ -590,16 +590,37 @@
         $("#colsDIV").show(2000);
     }
 
+    
+    function sqlField(name, selfName, sort) {
+        this.name = name;
+        this.selfName = selfName;
+        this.sort = sort;
+    }
+    
     // 当使用sql语句规则时的相关设置
-    function initTbodyOfSQL(fields) {
-//        formerSqlFieldsHTML = $("#sqlFields").html();
+    function initTbodyOfSQL(fields, isEdit) {
+        var arr = new Array();
         $("#sqlFields").html("");
+        if(isEdit){// 是编辑功能，说明有内容
+            // id,序号#count_type,统计类型
+            var t = fields.split("#");
+            for(var i=0;i<t.length;i++){
+                var temp = t[i].split(",");
+                var a = new sqlField(t[0], t[1], i+1);
+                arr.push(a);
+            }
+        }else{
+            for(var i=0;i<fields.length;i++){
+                var a = new sqlField(fields[i], '', i+1);
+                arr.push(a);
+            }
+        }
         var htmlStr = '<div class="row"><div class="col-md-3 text-center">字段名</div><div class="col-md-3 text-center">名称</div><div class="col-md-3 text-center">排序序号</div></div>';
-        for (var i = 0; i < fields.length; i++) {
+        for (var i = 0; i < arr.length; i++) {
             htmlStr = htmlStr + '<div class="row">';
-            htmlStr = htmlStr + '<div class="col-md-3 text-center"><b id="sqlFieldCol' + i + '" >' + fields[i] + '</b></div>';
-            htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="sqlFieldName' + i + '" placeholder="名称"></div>';
-            htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="sqlFieldSort' + i + '" value="' + (i + 1) + '"></div>';
+            htmlStr = htmlStr + '<div class="col-md-3 text-center"><b id="sqlFieldCol' + i + '" >' + arr[i].name + '</b></div>';
+            htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="sqlFieldName' + i + '" placeholder="名称" value="' + arr[i].selfName + '"></div>';
+            htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="sqlFieldSort' + i + '" placeholder="序号" value="' + arr[i].sort + '"></div>';
             htmlStr = htmlStr + '</div>';
         }
         $("#sqlFields").html(htmlStr);
@@ -859,7 +880,7 @@
                     + '</td><td>'
                     + '<button type="button" class="btn btn-warning btn-sm" onclick="detail(\'' + functions[i].id + '\')">详情</button> '
                     + '<button type="button" class="btn btn-primary btn-sm" onclick="edit(\'' + functions[i].id + '\')">编辑</button> '
-                    + '<button type="button" class="btn btn-danger btn-sm" onclick="delete(\'' + functions[i].id + '\')">删除</button> '
+                    + '<button type="button" class="btn btn-danger btn-sm" onclick="deleteFunction(\'' + functions[i].id + '\')">删除</button> '
                     + '</td></tr>';
         }
         $("#functionsBody").html(htmlStr);
@@ -867,11 +888,90 @@
     }
 
 
+    // 查看某个功能的信息
     function detail(id) {
         $("#mbody").html('<img src="/resources/bootstrap-3.3.7-dist/img/loading.gif" style="width: 100px;height: 100px"/> 请稍后...');
         $("#myModal").modal("show");
+        // 查询详情
+        $.ajax({
+            type: 'GET',
+            url: bp + 'Smserver/functions/get/'+id,
+            success: function (data) {
+                var func = data['function'];
+                var htmlStr = ''
+                +'<b>名称: </b>'+ func.name + '<br>'
+                +'<b>描述: </b>'+  parseToAbbr(func.description, 20, null) + '<br>'
+                +'<b>关键词: </b>'+  func.keywords + '<br>'// 关键字，当用户自主查询时，通过关键字匹配
+                +'<b>IP: </b>'+  func.ip + '<br>'
+                +'<b>端口: </b>'+  func.port + '<br>'
+                +'<b>数据库类型: </b>'+  func.dbtype + '<br>'
+                +'<b>数据库名称: </b>'+  func.dbname + '<br>'
+                +'<b>用户名: </b>'+  func.username + '<br>'
+                +'<b>密码: </b>'+  func.password + '<br>'
+                +'<b>表名: </b>'+  func.tablename + '<br>'
+                +'<b>规则类型: </b>'+  func.usetype + '<br>'// 由于加入了SQL语句查询，需要确定使用哪个 sql或rules
+                +'<b>读取字段: </b>'+  func.readfields + '<br>'// 要读取的字段 用户查询所需的字段a,aName#b,bName
+                +'<b>排序字段: </b>'+  func.sortfields + '<br>'// 排序字段，根据这个字段才能查询到最新的数据 A ASC,B DESC 默认为降序排列
+                +'<b>筛选规则: </b>'+  func.fieldrules + '<br>'// 规则字段，字段名，值，规则 根据规则来判断 a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,EQ#e,eName,bcde,NE#f,fName,xxxx,RG@12BT34
+                +'<b>是否返回: </b>'+  func.isreturn + '<br>'// 读取结果是否返回的规则（由于需要涉及到预警功能，所以需要定义规则）
+                +'<b>sql语句: </b>'+  func.sqlstmt + '<br>'//sql语句
+                +'<b>sql读取字段: </b>'+  func.sqlfields + '<br>';// sql查询的字段属性，按照顺序来a,aName#b,bName
+                $("#mbody").html(htmlStr);
+            }
+        });
     }
 
+    // 编辑某个功能
+    function edit(id){
+        $.ajax({
+            type: 'GET',
+            url: bp + 'Smserver/functions/get/' + id,
+            success: function (data) {
+                var func = data['function'];
+                id = func.id;
+                // 依次初始化相关控件
+                $("#editName").val(func.name);
+                $("#editKeywords").val(func.keywords);
+                $("#editDescription").val(func.description);
+                $("#editIP").val(func.ip);
+                $("#editPort").val(func.port);
+                $("#editDbtype").val(func.dbtype);
+                $("#editDbname").val(func.dbname);
+                $("#editUsername").val(func.username);
+                $("#editPassword").val(func.password);
+                $("input[name='whichType'][value='"+func.usetype+"']").attr("checked",true);  //根据Value值设置Radio为选中状态
+                if(func.sqlstmt == 'null' || func.sqlstmt == 'undefined' || func.sqlstmt == 'undefined'){
+                    $("#editSQL").val('');
+                }else{
+                    $("#editSQL").val(func.sqlstmt);
+                    // 展示字段
+                    initTbodyOfSQL(func.sqlfields);
+                }
+                // swq here
+                $("#editKeywords").val(func.keywords);
+                $("#editKeywords").val(func.keywords);
+                $("#editKeywords").val(func.keywords);
+                $("#editKeywords").val(func.keywords);
+                $("#editKeywords").val(func.keywords);
+
+
+                $("#functionEditDiv").show(2000);
+
+            }
+        }
+        );
+    }
+
+    // 删除某个功能
+    function deleteFunction(id){
+        // 弹出确认对话框
+        if (confirm("确认删除？")) {
+            var jsonStr = "{\"id\":" + id + "}";
+            doAjaxHandleFunction('delete', jsonStr, 'POST');
+        } else {
+            return;
+        }
+    }
 
     // 判断是不是大于0的整数
     function isInteger(obj) {

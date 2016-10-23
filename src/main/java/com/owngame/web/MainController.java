@@ -404,6 +404,20 @@ public class MainController {
     }
 
     /**
+     * 通过id查询功能
+     *
+     * @return
+     */
+    @RequestMapping(value = "/functions/get/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> queryFunctionsById(@PathVariable("id") long id) {
+        Function function = functionService.getById(id);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("function", function);
+        return map;
+    }
+
+    /**
      * 查询数据库设置连接的连通性
      * @return
      */
@@ -472,6 +486,7 @@ public class MainController {
     @RequestMapping(value = "/functions/{action}", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> handleFunction(@RequestBody Map<String, String> p, @PathVariable("action") String action) {
+        System.out.println("handleFunction action:" + action);
         long id = Long.parseLong(p.get("id"));
         if(action.equals("update")){
             Function function = new Function();
@@ -496,17 +511,14 @@ public class MainController {
                 function.setId(id);
                 functionService.update(function);
             }else{
-                System.out.println(function.toString());
                 int ret = functionService.createFunction(function);
-                System.out.println("ret:" + ret);
             }
         }else if(action.equals("delete")){
+            System.out.println("delete....");
             functionService.deleteById(id);
         }
         // 查询所有功能
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("updateResult", true);
-        return map;
+        return queryFunctions();
     }
 
     /**
