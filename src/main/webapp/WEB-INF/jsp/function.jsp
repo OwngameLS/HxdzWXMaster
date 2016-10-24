@@ -606,7 +606,7 @@
             var t = fields.split("#");
             for(var i=0;i<t.length;i++){
                 var temp = t[i].split(",");
-                var a = new sqlField(t[0], t[1], i+1);
+                var a = new sqlField(temp[0], temp[1], i+1);
                 arr.push(a);
             }
         }else{
@@ -940,13 +940,18 @@
                 $("#editUsername").val(func.username);
                 $("#editPassword").val(func.password);
                 $("input[name='whichType'][value='"+func.usetype+"']").attr("checked",true);  //根据Value值设置Radio为选中状态
-                if(func.sqlstmt == 'null' || func.sqlstmt == 'undefined' || func.sqlstmt == 'undefined'){
+                if(func.sqlstmt == 'null' || func.sqlstmt == 'undefined' || func.sqlstmt == null){
                     $("#editSQL").val('');
                 }else{
                     $("#editSQL").val(func.sqlstmt);
                     // 展示字段
-                    initTbodyOfSQL(func.sqlfields);
+                    initTbodyOfSQL(func.sqlfields, true);
                 }
+                if(func.readfields == 'null' || func.readfields == 'undefined' || func.readfields == null){
+
+
+                }
+
                 // swq here
                 $("#editKeywords").val(func.keywords);
                 $("#editKeywords").val(func.keywords);
@@ -961,6 +966,186 @@
         }
         );
     }
+
+    // 用来初始化每一个规则字段控件的对象
+    function ruleField(){
+        var name;// 字段在数据库中的字段名
+        var selfname = null;// 用户自定义名
+        var sort = null;// 是否排序 有值就是要排序
+        var isread = null;// 是否读取
+        var camparevalue = null;// 对比值
+        var rule = null;// 判断条件
+    }
+
+    function initRuleFieldArray(readfields, sortfields, fieldrules){
+        var ruleFields = new Array();
+        // 先分析 readfields : id,序号#count_type,计时类型
+        var rf = readfields.split("#");
+        for(var i=0;i<rf.length;i++){
+            var t = rf[i].split(",");
+            var temp = new ruleField();
+            temp.name = t[0];
+            temp.selfname = t[1];
+            temp.isread = true;
+            ruleFields.push(temp);
+        }
+        // 再分析 sortfields : a desc,b asc
+        var sf = sortfields.split(",");
+        for(var i=0;i<sf.length;i++){
+            var t = sf[i].split(" ");
+            var name = t[0];
+            var sort = t[1];
+            var index = indexInRuleFields(name, ruleFields);
+            if( index == -1){// 不存在
+                // 需要新增加
+                var temp = new ruleField();
+                temp.name = name;
+                temp.sort = sort;
+                ruleFields.push(temp);
+            }else{// 存在
+                ruleFields[index].sort = sort;
+            }
+        }
+        // 最后分析 fieldrules : player_statids_home,home,-1,NN#player_statids_guest,guest,-1,NN
+        var fr = fieldrules.split("#");
+        for(var i=0;i<fr.length;i++){
+            var t = fr[i].split(",");
+            var name = t[0];
+            var selfname = t[1];
+            var comparevalue = t[2];
+            var rule = t[3];
+            var index = indexInRuleFields(name, ruleFields);
+            if( index == -1){// 不存在
+                // 需要新增加
+                var temp = new ruleField();
+                temp.name = name;
+                temp.selfname = selfname;
+                temp.comparevalue = comparevalue;
+                temp.rule = rule;
+                ruleFields.push(temp);
+            }else{// 存在
+                ruleFields[index].name = name;
+                ruleFields[index].selfname = selfname;
+                ruleFields[index].comparevalue = comparevalue;
+                ruleFields[index].rule = rule;
+            }
+        }
+        return ruleFields;
+    }
+
+    // 检查某个字段是否在规则对象数组中
+    function indexInRuleFields(name, ruleFields){
+        for(var i=0;i<ruleFields.length;i++){
+            if(ruleFields[i].name == name){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // 初始化字段规则设置UI（从数据库读出的字段）
+    function initColFromDB(ruleFields){
+        var htmlStr = '';
+        for (var i = 0; i < ruleFields.length; i++) {
+            if (i % 2 == 0) {
+                htmlStr = htmlStr
+                        + '<div class="row bg-warning">';
+            } else {
+                htmlStr = htmlStr
+                        + '<div class="row">';
+            }
+
+            htmlStr = htmlStr
+                    + '<div class="col-md-2 text-center"><b id="colName' + i + '">' + ruleFields[i].name + '</b></div>'
+                    + '<div class="col-md-3 text-center"><input class="form-control" id="selfColName' + i + '" placeholder="名称">'+ruleFields[i].selfname+'</div>'
+                    + '<div class="col-md-3 text-center">';
+            if(ruleFields[i].sort != null){// 需要排序
+                htmlStr = htmlStr + '<input type="checkbox" id="isSort' + i + '" checked>是';
+                if(ruleFields[i].sort == 'desc'){
+                    htmlStr = htmlStr + '<input type="radio" name="sort' + i + '" value="desc" checked>降序 <input type="radio" name="sort' + i + '" value="asc">升序</div>';
+                }else{
+                    htmlStr = htmlStr + '<input type="radio" name="sort' + i + '" value="desc">降序 <input type="radio" name="sort' + i + '" value="asc" checked>升序</div>';
+                }
+            }else {
+                htmlStr = htmlStr
+                        + '<input type="checkbox" id="isSort' + i + '">是'
+                        + '<input type="radio" name="sort' + i + '" value="desc" checked>降序 <input type="radio" name="sort' + i + '" value="asc">升序</div>';
+            }
+            if(ruleFields[i].isread != null){
+                htmlStr = htmlStr + '<div class="col-md-2 text-center"><input type="checkbox" id="isread' + i + '" value="' + colNames[i] + ' checked">读取</div>';
+            }else{
+                htmlStr = htmlStr + '<div class="col-md-2 text-center"><input type="checkbox" id="isread' + i + '" value="' + colNames[i] + '">读取</div>';
+            }
+            if(ruleFields[i].rule != null){
+                htmlStr = htmlStr + '<div class="col-md-2 text-center"><input type="checkbox" id="isusedRule' + i + ' checked">使用规则</div>'
+                        + '</div>';
+            }else{
+                htmlStr = htmlStr + '<div class="col-md-2 text-center"><input type="checkbox" id="isusedRule' + i + '">使用规则</div>'
+                        + '</div>';
+            }
+            if (i % 2 == 0) {
+                htmlStr = htmlStr
+                        + '<div class="row bg-warning" style="border-bottom:1px solid #222222;">';
+            } else {
+                htmlStr = htmlStr
+                        + '<div class="row" style="border-bottom:1px solid #245580;">';
+            }
+            if(ruleFields[i].rule == null){
+                htmlStr = htmlStr
+                        + '<div class="col-md-2 text-center">设置规则</div>'
+                        + '<div class="col-md-2 text-center"><input type="radio" name="rule' + i + '" value="EQ" checked>等于 <input type="radio" name="rule' + i + '" value="NE">不等于<br>'
+                        + '参照值<input class="form-control" id="compareValue' + i + '" placeholder="该字段的合理值"></div>'
+                        + '<div class="col-md-1 text-center"><input type="radio" name="rule' + i + '" value="BB">大于<input class="form-control" id="above' + i + '" placeholder="大于"></div>'
+                        + '<div class="col-md-1 text-center"><input type="radio" name="rule' + i + '" value="LL">小于<input class="form-control" id="below' + i + '" placeholder="小于"></div>'
+                        + '<div class="col-md-6 text-center" style="border-style: groove">'
+                        + '<input type="radio" name="rule' + i + '" value="RG">范围<br>'
+                        + '<div class="col-md-4 text-center"><input type="radio" name="range' + i + '" value="BT" checked>在内 <input type="radio" name="range' + i + '" value="OUT">在外 </div>'
+                        + '<div class="col-md-4 text-center">下限值:<input class="form-control" id="rangedown' + i + '"></div>'
+                        + '<div class="col-md-4 text-center">上限值:<input class="form-control" id="rangeup' + i + '"></div>'
+                        + '</div>'
+                        + '</div><br>';
+            }else{
+                htmlStr = htmlStr + '<div class="col-md-2 text-center">设置规则</div>' + '<div class="col-md-2 text-center">';
+                var htmlStrEQ = '', htmlStrNE = '', htmlStrCompareValue = '', htmlStrBB = '', htmlStrLL = '', htmlStrRG = '';
+                var isEQorNE = false; // 规则是大于或者小于
+                if(ruleFields[i].rule.indexOf("EQ") == 0){
+                    isEQorNE = true;
+                    htmlStrEQ = '<input type="radio" name="rule' + i + '" value="EQ" checked>等于 ';
+                }else{
+                    htmlStrEQ = '<input type="radio" name="rule' + i + '" value="EQ">等于 ';
+                }
+                if(ruleFields[i].rule.indexOf("NE") == 0){
+                    isEQorNE = true;
+                    htmlStrNE = '<input type="radio" name="rule' + i + '" value="NE" checked>不等于<br>';
+                }else{
+                    htmlStrNE = '<input type="radio" name="rule' + i + '" value="NE">不等于<br>';
+                }
+                if(isEQorNE){
+                    htmlStrCompareValue = '参照值<input class="form-control" id="compareValue' + i + '" placeholder="该字段的合理值" value="'+ruleFields[i].comparevalue+'"></div>';
+                }else{
+                    htmlStrCompareValue = '参照值<input class="form-control" id="compareValue' + i + '" placeholder="该字段的合理值"></div>'
+                }
+                // swq here
+                if(ruleFields[i].rule.indexOf("BB") == 0){
+                    htmlStrBB = '<div class="col-md-1 text-center"><input type="radio" name="rule' + i + '" value="BB" checked>大于<input class="form-control" id="above' + i + '" placeholder="大于"></div>'
+                }else{
+                    htmlStrBB = '<input type="radio" name="rule' + i + '" value="NE">不等于<br>';
+                }
+
+                        + '<div class="col-md-1 text-center"><input type="radio" name="rule' + i + '" value="BB">大于<input class="form-control" id="above' + i + '" placeholder="大于"></div>'
+                        + '<div class="col-md-1 text-center"><input type="radio" name="rule' + i + '" value="LL">小于<input class="form-control" id="below' + i + '" placeholder="小于"></div>'
+                        + '<div class="col-md-6 text-center" style="border-style: groove">'
+                        + '<input type="radio" name="rule' + i + '" value="RG">范围<br>'
+                        + '<div class="col-md-4 text-center"><input type="radio" name="range' + i + '" value="BT" checked>在内 <input type="radio" name="range' + i + '" value="OUT">在外 </div>'
+                        + '<div class="col-md-4 text-center">下限值:<input class="form-control" id="rangedown' + i + '"></div>'
+                        + '<div class="col-md-4 text-center">上限值:<input class="form-control" id="rangeup' + i + '"></div>'
+                        + '</div>'
+                        + '</div><br>';
+            }
+
+        }
+    }
+
 
     // 删除某个功能
     function deleteFunction(id){
