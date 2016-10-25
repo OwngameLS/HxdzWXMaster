@@ -19,8 +19,19 @@
 <h2>当前任务</h2>
 
 <div class="danger" style="padding: 5px;">
-    <div id="refreshDone" class="alert alert-success" role="alert"
-         style="display: none;width: 30%;margin:0 auto;text-align:center">刷新完成！</div>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div id="mbody" class="modal-body"><img src="../../resources/bootstrap-3.3.7-dist/img/success.png"/>刷新成功</div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+
     <div style="width:30%;float: left">
         <label for="hours">选择查询时段：</label>
         <select id="hours" onchange="changeQueryHours()">
@@ -121,11 +132,17 @@
                     + stateDesc + '</td></tr>';
         }
         $("#tasksBody").html(htmlStr);
-        $("#refreshDone").show(2000);
+        $("#myModal").modal("show");
         clearInterval(intervalId);
         intervalId = setInterval(queryTasks, refreshTime);// 自动刷新
-        $("#refreshDone").hide(2000);
+        setTimeout(hideModal, 2000);
     }
+
+    // 隐藏Modal
+    function hideModal(){
+        $("#myModal").modal("hide");
+    }
+
 
     // 时间转换
     Date.prototype.Format = function (fmt) { //author: meizz
