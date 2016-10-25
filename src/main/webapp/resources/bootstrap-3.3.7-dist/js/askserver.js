@@ -3,15 +3,34 @@
  * 访问服务器的一些公共方法
  */
 
-function ajaxGet(url, isAsync){
+// ajaxGET 包装 通过 异步队列 deferred
+function myAjaxGet(url){
+    console.log("myAjaxGet here...");
+    var defer = $.Deferred();
     $.ajax({
         type: 'GET',
-        url: bp + 'Smserver/functions',
-        async: isAsync,// 是否为异步请求
-        success: function (data) {
-            return data;
-            initTbodyOfFunctions(data['functions']);
-        },
-
+        url: url
+    }).done(function(data){
+        defer.resolve(data);
+    }).fail(function(data){
+        defer.resolve(null);
     });
+    return defer.promise();
+}
+
+function myAjaxPost(url, jsonStr){
+    console.log("myAjaxPost here...");
+    var defer = $.Deferred();
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: jsonStr,
+        dataType: "json",
+        contentType: "application/json",
+    }).done(function(data){
+        defer.resolve(data);
+    }).fail(function(data){
+        defer.resolve(null);
+    });
+    return defer.promise();
 }

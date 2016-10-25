@@ -14,6 +14,7 @@
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
 </head>
 <body>
 <h3>定时任务操作</h3>
@@ -240,10 +241,8 @@
 
     // 向服务器请求所有方法的信息
     function getFunctions() {
-        $.ajax({
-            type: 'GET',
-            url: bp + 'Smserver/functions',
-            success: function (data) {
+        $.when(myAjaxGet(bp + 'Smserver/functions')).done(function (data) {//这里的data为defer在ajax保存下来的数据
+            if (data != null) {
                 initTbodyOfFunctions(data['functions']);
             }
         });
@@ -301,13 +300,9 @@
     // 处理Functions操作提交给服务器部分
     function doAjaxHandleFunction(action, jsonStr, type) {
         console.log("doAjaxHandleFunction action:" + action);
-        $.ajax({
-            type: type,
-            url: bp + 'Smserver/functions/' + action,
-            data: jsonStr,
-            dataType: "json",
-            contentType: "application/json",
-            success: function (data) {
+        $.when(myAjaxPost(bp + 'Smserver/functions/' + action,jsonStr)).done(function (data) {//这里的data为defer在ajax保存下来的数据
+            var htmlStr = '';
+            if (data != null) {
                 // 先将编辑框隐藏
                 $("#functionEditDiv").hide(2000);
                 showEditDone();
@@ -316,6 +311,24 @@
                 initTbodyOfFunctions(data['functions']);
             }
         });
+
+//
+//
+//        $.ajax({
+//            type: type,
+//            url: bp + 'Smserver/functions/' + action,
+//            data: jsonStr,
+//            dataType: "json",
+//            contentType: "application/json",
+//            success: function (data) {
+//                // 先将编辑框隐藏
+//                $("#functionEditDiv").hide(2000);
+//                showEditDone();
+//                hideEditFail();
+//                // 刷新功能展示列表
+//                initTbodyOfFunctions(data['functions']);
+//            }
+//        });
     }
 
     // 测试SQL语句
@@ -343,7 +356,7 @@
                 return false;
             }
         }
-        var jsonData = "{\"ip\":\"" + ip
+        var jsonStr = "{\"ip\":\"" + ip
                 + "\",\"port\":\"" + port
                 + "\",\"dbtype\":\"" + dbtype
                 + "\",\"dbname\":\"" + dbname
@@ -353,14 +366,8 @@
                 + "\",\"sql\":\"" + sql + "\"}";
 
         //暂时没错了，交给后台检查吧
-        return $.ajax({
-            url: bp + 'Smserver/functions/sql/',
-            type: 'POST',
-            async: false,
-            data: jsonData,
-            dataType: "json",
-            contentType: "application/json",
-            success: function (data) {
+        $.when(myAjaxPost(bp + 'Smserver/functions/sql/',jsonStr)).done(function (data) {//这里的data为defer在ajax保存下来的数据
+            if (data != null) {
                 var result = data['sqlResult'];
                 if (result.isSuccess < 0) {// 有错误信息
                     // 会返回类似的关键字，将他们罗列出来
@@ -378,6 +385,32 @@
                 }
             }
         });
+
+//        return $.ajax({
+//            url: bp + 'Smserver/functions/sql/',
+//            type: 'POST',
+//            async: false,
+//            data: jsonData,
+//            dataType: "json",
+//            contentType: "application/json",
+//            success: function (data) {
+//                var result = data['sqlResult'];
+//                if (result.isSuccess < 0) {// 有错误信息
+//                    // 会返回类似的关键字，将他们罗列出来
+//                    var errorMsg = "您输入的sql语句存在错误：<br>" + result.fields[0];
+//                    showEditFail(errorMsg, $("#editSQL"));
+//                    return false;
+//                } else {// 返回的是列表信息
+//                    if (isSaveSQL) {
+//                        // 返回的列表信息与设置的是否一致？
+//                        console.log("saving sql....");
+//                        return saveSQL(result.fields);
+//                    } else {
+//                        initTbodyOfSQL(result.fields);
+//                    }
+//                }
+//            }
+//        });
     }
 
 
@@ -397,15 +430,18 @@
             showEditFail("必须输入关键字！", $("#editKeywords"));
             return false;
         }
+        // 检查描述
+        description = $("#editDescription").val();
+        if (description == '' || description == null) {
+            // 错误信息
+            showEditFail("必须输入描述！", $("#editDescription"));
+            return false;
+        }
+
         // keywords不为空，还要检测它的唯一性
-        $.ajax({
-            url: bp + 'Smserver/functions/keywords/',
-            type: 'POST',
-            async: false,
-            data: "{\"id\":\"" + id + "\",\"keywords\":\"" + keywords + "\"}",
-            dataType: "json",
-            contentType: "application/json",
-            success: function (data) {
+        var jsonStr = "{\"id\":\"" + id + "\",\"keywords\":\"" + keywords + "\"}";
+        $.when(myAjaxPost(bp + 'Smserver/functions/keywords/',jsonStr)).done(function (data) {//这里的data为defer在ajax保存下来的数据
+            if (data != null) {
                 var result = data['keywordResult'];
                 if (result.isSuccess < 0) {
                     // 会返回类似的关键字，将他们罗列出来
@@ -418,26 +454,53 @@
                     }
                     showEditFail(errorMsg, $("#editKeywords"));
                     return false;
+                    console.log("worinige at 222");
+                }else{
+                    return true;
                 }
+
             }
         });
-        // 检查描述
-        description = $("#editDescription").val();
-        if (description == '' || description == null) {
-            // 错误信息
-            showEditFail("必须输入描述！", $("#editDescription"));
-            return false;
-        }
-        return true;
+        console.log("worinige at 32");
+
+//
+//        $.ajax({
+//            url: bp + 'Smserver/functions/keywords/',
+//            type: 'POST',
+//            async: false,
+//            data: "{\"id\":\"" + id + "\",\"keywords\":\"" + keywords + "\"}",
+//            dataType: "json",
+//            contentType: "application/json",
+//            success: function (data) {
+//                var result = data['keywordResult'];
+//                if (result.isSuccess < 0) {
+//                    // 会返回类似的关键字，将他们罗列出来
+//                    var errorMsg = "关键字重复！<br>";
+//                    for (var i = 0; i < result.simlarKeys.length; i++) {
+//                        errorMsg = errorMsg + result.simlarKeys[i];
+//                        if ((i + 1) < result.simlarKeys.length) {
+//                            errorMsg = errorMsg + "<br>";
+//                        }
+//                    }
+//                    showEditFail(errorMsg, $("#editKeywords"));
+//                    return false;
+//                }
+//            }
+//        });
+
     }
 
     // 检查数据库连通性 isShowCols 是否需要将查询得到的字段展示出来 true:展示，fasle:不展示
     function testConnect(isShowCols) {
+        var result = false;
+        var defer = $.Deferred();
+
         ip = $("#editIP").val();
         if (ip == '' || ip == null) {
             // 错误信息
             showEditFail("必须输入IP地址！", $("#editIP"));
-            return false;
+            defer.resolve(false);
+            return defer.promise();
         }
         var ignoreIp = false;
         if (checkIpisHost(ip)) {
@@ -446,24 +509,28 @@
                 ignoreIp = true;
             } else {
                 myAnimate($("#editIP"), 8, $("#editIP").attr("style"));
-                return false;
+                defer.resolve(false);
+                return defer.promise();
             }
         }
         if (ignoreIp == false) {// 需要Ip检查
             if (checkIP(ip) == false) {
                 showEditFail("必须输入IP地址！", $("#editIP"));
-                return false;
+                defer.resolve(false);
+                return defer.promise();
             }
         }
         port = $("#editPort").val();
         if (port == '' || port == null) {
             // 错误信息
             showEditFail("必须输入端口号！", $("#editPort"));
-            return false;
+            defer.resolve(false);
+            return defer.promise();
         }
         if (isInteger(port) == false) {
             showEditFail("端口号必须输入正整数！", $("#editPort"));
-            return false;
+            defer.resolve(false);
+            return defer.promise();
         }
 
         dbtype = $("#editDbtype  option:selected").val();
@@ -472,27 +539,31 @@
         if (dbname == '' || dbname == null) {
             // 错误信息
             showEditFail("必须输入数据库名！", $("#editDbname"));
-            return false;
+            defer.resolve(false);
+            return defer.promise();
         }
         username = $("#editUsername").val();
         if (username == '' || username == null) {
             // 错误信息
             showEditFail("必须输入用户名！", $("#editUsername"));
-            return false;
+            defer.resolve(false);
+            return defer.promise();
         }
         password = $("#editPassword").val();
         if (password == '' || password == null) {
             // 错误信息
             showEditFail("必须输入密码！", $("#editPassword"));
-            return false;
+            defer.resolve(false);
+            return defer.promise();
         }
         tablename = $("#editTablename").val();
         if (tablename == '' || tablename == null) {
             // 错误信息
             showEditFail("必须输入表名！", $("#editTablename"));
-            return false;
+            defer.resolve(false);
+            return defer.promise();
         }
-        var jsonData = "{\"ip\":\"" + ip
+        var jsonStr = "{\"ip\":\"" + ip
                 + "\",\"port\":\"" + port
                 + "\",\"dbtype\":\"" + dbtype
                 + "\",\"dbname\":\"" + dbname
@@ -501,33 +572,27 @@
                 + "\",\"tablename\":\"" + tablename + "\"}";
 //        console.log("jsonData:" + jsonData);
         // 访问服务器
-        return $.ajax({
-            url: bp + 'Smserver/functions/testconnect',
-            type: 'POST',
-            async: false,
-            data: jsonData,
-            dataType: "json",
-            contentType: "application/json",
-            success: function (data) {
+        $.when(myAjaxPost(bp + 'Smserver/functions/testconnect',jsonStr)).done(function (data) {//这里的data为defer在ajax保存下来的数据
+            if (data != null) {
+                var result = false;
                 var colsNames = data['colNames'];
-                if (colsNames != null) {
+                if (colsNames != null) {// 获得了字段信息
                     isConnectSuccess = true;
                     var htmlStr = '<p style="color: #0000FF">连接成功!</p>';
                     $("#connectResult").html(htmlStr);
-                    if (isShowCols == false) {// 只需告知结果
-                        return true;
+                    if (isShowCols){// 需要展示控件
+                        // 初始化colNames相关的控件
+                        initTbodyOfCols(data['colNames']);// 选择控件
                     }
-                    // 初始化colNames相关的控件
-                    initTbodyOfCols(data['colNames']);// 选择控件
-                } else {
+                    result = true;
+                } else {// 没有获得字段信息
+                    result = false;
                     isConnectSuccess = false;
                     var htmlStr = '<p style="color: #c9302c">连接失败!</p>';
                     $("#connectResult").html(htmlStr);
                     if (isShowCols == false) {// 只需告知结果
                         if (confirm("数据库连接没有成功，确认继续操作？")) {
-                            return true;// 当保存时数据库出现问题，设置没有问题时
-                        } else {
-                            return false;
+                            result = true;// 当保存时数据库出现问题，设置没有问题时
                         }
                     }
                     $("#colsDIV").hide(2000);
@@ -535,11 +600,55 @@
                 if (isShowCols == true) {
                     myAnimate($("#connectResult"), 8, $("#connectResult").attr("style"));
                 }
-            },
-            error: function () {
+                defer.resolve(result);
+                return defer.promise();
+            }else{
                 isConnectSuccess = false;
+                defer.resolve(false);
+                return defer.promise();
             }
         });
+
+//
+//        return $.ajax({
+//            url: bp + 'Smserver/functions/testconnect',
+//            type: 'POST',
+//            async: false,
+//            data: jsonData,
+//            dataType: "json",
+//            contentType: "application/json",
+//            success: function (data) {
+//                var colsNames = data['colNames'];
+//                if (colsNames != null) {
+//                    isConnectSuccess = true;
+//                    var htmlStr = '<p style="color: #0000FF">连接成功!</p>';
+//                    $("#connectResult").html(htmlStr);
+//                    if (isShowCols == false) {// 只需告知结果
+//                        return true;
+//                    }
+//                    // 初始化colNames相关的控件
+//                    initTbodyOfCols(data['colNames']);// 选择控件
+//                } else {
+//                    isConnectSuccess = false;
+//                    var htmlStr = '<p style="color: #c9302c">连接失败!</p>';
+//                    $("#connectResult").html(htmlStr);
+//                    if (isShowCols == false) {// 只需告知结果
+//                        if (confirm("数据库连接没有成功，确认继续操作？")) {
+//                            return true;// 当保存时数据库出现问题，设置没有问题时
+//                        } else {
+//                            return false;
+//                        }
+//                    }
+//                    $("#colsDIV").hide(2000);
+//                }
+//                if (isShowCols == true) {
+//                    myAnimate($("#connectResult"), 8, $("#connectResult").attr("style"));
+//                }
+//            },
+//            error: function () {
+//                isConnectSuccess = false;
+//            }
+//        });
     }
 
 
@@ -892,13 +1001,11 @@
     function detail(id) {
         $("#mbody").html('<img src="/resources/bootstrap-3.3.7-dist/img/loading.gif" style="width: 100px;height: 100px"/> 请稍后...');
         $("#myModal").modal("show");
-        // 查询详情
-        $.ajax({
-            type: 'GET',
-            url: bp + 'Smserver/functions/get/' + id,
-            success: function (data) {
+        $.when(myAjaxGet(bp + 'Smserver/functions/get/' + id)).done(function (data) {//这里的data为defer在ajax保存下来的数据
+            var htmlStr = '';
+            if (data != null) {
                 var func = data['function'];
-                var htmlStr = ''
+                htmlStr = ''
                         + '<b>名称: </b>' + func.name + '<br>'
                         + '<b>描述: </b>' + parseToAbbr(func.description, 20, null) + '<br>'
                         + '<b>关键词: </b>' + func.keywords + '<br>'// 关键字，当用户自主查询时，通过关键字匹配
@@ -916,48 +1023,47 @@
                         + '<b>是否返回: </b>' + func.isreturn + '<br>'// 读取结果是否返回的规则（由于需要涉及到预警功能，所以需要定义规则）
                         + '<b>sql语句: </b>' + func.sqlstmt + '<br>'//sql语句
                         + '<b>sql读取字段: </b>' + func.sqlfields + '<br>';// sql查询的字段属性，按照顺序来a,aName#b,bName
-                $("#mbody").html(htmlStr);
+
+            } else {
+                htmlStr = '获取失败！<img src="../../resources/bootstrap-3.3.7-dist/img/error.png" />';
             }
+            $("#mbody").html(htmlStr);
         });
     }
-
     // 编辑某个功能
     function edit(id) {
-        $.ajax({
-                    type: 'GET',
-                    url: bp + 'Smserver/functions/get/' + id,
-                    success: function (data) {
-                        var func = data['function'];
-                        id = func.id;
-                        // 依次初始化相关控件
-                        $("#editName").val(func.name);
-                        $("#editKeywords").val(func.keywords);
-                        $("#editDescription").val(func.description);
-                        $("#editIP").val(func.ip);
-                        $("#editPort").val(func.port);
-                        $("#editDbtype").val(func.dbtype);
-                        $("#editDbname").val(func.dbname);
-                        $("#editUsername").val(func.username);
-                        $("#editPassword").val(func.password);
-                        $("#editTablename").val(func.tablename);
-                        $("input[name='whichType'][value='" + func.usetype + "']").attr("checked", true);  //根据Value值设置Radio为选中状态
-                        if (func.sqlstmt == 'null' || func.sqlstmt == 'undefined' || func.sqlstmt == null) {
-                            $("#editSQL").val('');
-                        } else {
-                            $("#editSQL").val(func.sqlstmt);
-                            // 展示字段
-                            initTbodyOfSQL(func.sqlfields, true);
-                        }
-                        if (func.readfields == 'null' || func.readfields == 'undefined' || func.readfields == null) {
-                            $("#colsTR").html("");
-                        }else{
-                            initColFromDB(initRuleFieldArray(func.readfields, func.sortfields, func.fieldrules));
-                        }
-                        $("#functionEditDiv").show(2000);
-
-                    }
+        $.when(myAjaxGet(bp + 'Smserver/functions/get/' + id)).done(function (data) {//这里的data为defer在ajax保存下来的数据
+            var htmlStr = '';
+            if (data != null) {
+                var func = data['function'];
+                id = func.id;
+                // 依次初始化相关控件
+                $("#editName").val(func.name);
+                $("#editKeywords").val(func.keywords);
+                $("#editDescription").val(func.description);
+                $("#editIP").val(func.ip);
+                $("#editPort").val(func.port);
+                $("#editDbtype").val(func.dbtype);
+                $("#editDbname").val(func.dbname);
+                $("#editUsername").val(func.username);
+                $("#editPassword").val(func.password);
+                $("#editTablename").val(func.tablename);
+                $("input[name='whichType'][value='" + func.usetype + "']").attr("checked", true);  //根据Value值设置Radio为选中状态
+                if (func.sqlstmt == 'null' || func.sqlstmt == 'undefined' || func.sqlstmt == null) {
+                    $("#editSQL").val('');
+                } else {
+                    $("#editSQL").val(func.sqlstmt);
+                    // 展示字段
+                    initTbodyOfSQL(func.sqlfields, true);
                 }
-        );
+                if (func.readfields == 'null' || func.readfields == 'undefined' || func.readfields == null) {
+                    $("#colsTR").html("");
+                } else {
+                    initColFromDB(initRuleFieldArray(func.readfields, func.sortfields, func.fieldrules));
+                }
+                $("#functionEditDiv").show(2000);
+            }
+        });
     }
 
     // 用来初始化每一个规则字段控件的对象
@@ -1024,8 +1130,8 @@
             }
         }
 
-        for(var i=0;i<ruleFields.length;i++){
-            console.log(i+":"+ruleFields[i].name+","+ruleFields[i].selfname+"," + ruleFields[i].issort + ","+ ruleFields[i].isread+","+ruleFields[i].comparevalue+","+ruleFields[i].rule);
+        for (var i = 0; i < ruleFields.length; i++) {
+            console.log(i + ":" + ruleFields[i].name + "," + ruleFields[i].selfname + "," + ruleFields[i].issort + "," + ruleFields[i].isread + "," + ruleFields[i].comparevalue + "," + ruleFields[i].rule);
         }
 
         return ruleFields;
@@ -1056,7 +1162,7 @@
 
             if (ruleFields[i].isread != null || ruleFields[i].rule != null) {
                 htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="selfColName' + i + '" placeholder="名称" value="' + ruleFields[i].selfname + '"></div>'
-            }else{
+            } else {
                 htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="selfColName' + i + '" placeholder="名称"></div>'
             }
             htmlStr = htmlStr + '<div class="col-md-3 text-center">';
