@@ -14,6 +14,7 @@
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
 </head>
 <body>
 <h2>当前任务</h2>
@@ -84,14 +85,23 @@
     });
 
     function queryTasks() {
-        $.ajax({
-            url: bp + 'Smserver/tasks/' + lasthours,
-            type: 'GET',
-            success: function (data) {
+        $.when(myAjaxGet(bp + 'Smserver/tasks/' + lasthours)).done(function (data) {//这里的data为defer在ajax保存下来的数据
+            var htmlStr = '';
+            if (data != null) {
                 // 初始化tasks相关的控件
                 initTbodyOfTasks(data['tasks']);// 选择控件
             }
         });
+
+
+//        $.ajax({
+//            url: bp + 'Smserver/tasks/' + lasthours,
+//            type: 'GET',
+//            success: function (data) {
+//                // 初始化tasks相关的控件
+//                initTbodyOfTasks(data['tasks']);// 选择控件
+//            }
+//        });
     }
 
     // 当发生选择查询时段变化时
@@ -109,7 +119,7 @@
 
     // 初始化表格内容
     function initTbodyOfTasks(tasks) {
-        console.log("at here : " + new Date().Format("yyyy-MM-dd HH:mm:ss"));
+//        console.log("at here : " + new Date().Format("yyyy-MM-dd HH:mm:ss"));
         var htmlStr = '';
         var stateDesc = '';
         for (var i = 0; i < tasks.length; i++) {

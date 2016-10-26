@@ -56,7 +56,7 @@
         <p class="text-danger" id="failCause"></p>
     </div>
 
-    <div id="functionEditDiv" style="display:none" class="well"><%--编辑定时任务的表格--%>
+    <div id="functionEditDiv" class="well"><%--编辑定时任务的表格 style="display:none"--%>
         <div class="row">
             <div class="col-md-4 text-center"></div>
             <div class="col-md-4 text-center">
@@ -333,15 +333,18 @@
 
     // 测试SQL语句
     function testSQL(isSaveSQL) {
+        var defer = $.Deferred();
+        var errorinfo = '';
         console.log("check testSQL...");
         // 先检查sql语句，排除非法操作
         sql = $("#editSQL").val();
         if (sql == '' || sql == null) {
-            showEditFail("您还没有输入SQL语句呢！", $("#editSQL"));
-            return false;
+            errorinfo = errorinfo + "您还没有输入SQL语句呢;<br>"
+            showEditFail(errorinfo, $("#editSQL"));
         }
         if (sql.indexOf("remove") >= 0 || sql.indexOf("delete") >= 0 || sql.indexOf("update") >= 0) {
-            showEditFail("您输入的SQL语句不是查询语句，请检查！<br><b>注意:</b>只能是查询语句！", $("#editSQL"));
+            errorinfo = errorinfo + "您输入的SQL语句不是查询语句，请检查！<br><b>注意:</b>只能是查询语句！<br>"
+            showEditFail(errorinfo, $("#editSQL"));
             return false;
         }
         // 再检查数据库连通性
@@ -366,7 +369,7 @@
                 + "\",\"sql\":\"" + sql + "\"}";
 
         //暂时没错了，交给后台检查吧
-        $.when(myAjaxPost(bp + 'Smserver/functions/sql/',jsonStr)).done(function (data) {//这里的data为defer在ajax保存下来的数据
+        $.when(myAjaxPost(bp + 'Smserver/functions/sql/',jsonStr)).done(function (data) {
             if (data != null) {
                 var result = data['sqlResult'];
                 if (result.isSuccess < 0) {// 有错误信息
@@ -416,31 +419,34 @@
 
     // 验证功能描述性设置
     function testFunctionDescPart() {
+        var defer = $.Deferred();
+        var errorinfo = '';
         // 功能名称
         name = $("#editName").val();
         if (name == '' || name == null) {
-            // 错误信息
-            showEditFail("必须输入功能名称！", $("#editName"));
-            return false;
+            errorinfo = errorinfo + "必须输入功能名称；<br>";
+            showEditFail(errorinfo, $("#editName"));
         }
         // 关键字
         keywords = $("#editKeywords").val();
         if (keywords == '' || keywords == null) {
-            // 错误信息
-            showEditFail("必须输入关键字！", $("#editKeywords"));
-            return false;
+            errorinfo = errorinfo + "必须输入关键字；<br>";
+            showEditFail(errorinfo, $("#editKeywords"));
         }
         // 检查描述
         description = $("#editDescription").val();
         if (description == '' || description == null) {
-            // 错误信息
-            showEditFail("必须输入描述！", $("#editDescription"));
-            return false;
+            errorinfo = errorinfo + "必须输入描述；<br>";
+            showEditFail(errorinfo, $("#editDescription"));
+        }
+        if(errorinfo != ''){
+            defer.reject(errorinfo);
+            return defer.promise();
         }
 
         // keywords不为空，还要检测它的唯一性
         var jsonStr = "{\"id\":\"" + id + "\",\"keywords\":\"" + keywords + "\"}";
-        $.when(myAjaxPost(bp + 'Smserver/functions/keywords/',jsonStr)).done(function (data) {//这里的data为defer在ajax保存下来的数据
+        $.when(myAjaxPost(bp + 'Smserver/functions/keywords/',jsonStr)).done(function (data) {
             if (data != null) {
                 var result = data['keywordResult'];
                 if (result.isSuccess < 0) {
@@ -453,15 +459,20 @@
                         }
                     }
                     showEditFail(errorMsg, $("#editKeywords"));
-                    return false;
-                    console.log("worinige at 222");
+                    defer.reject(errorMsg);
                 }else{
-                    return true;
+                    defer.resolve(true);
                 }
-
+            }else{
+                showEditFail("读取服务器信息失败，请稍后再试...", $("#editKeywords"));
+                defer.reject("读取服务器信息失败，请稍后再试...");
             }
+            return defer.promise();
+        }).fail(function (){
+            showEditFail("与服务器通讯失败，请稍后再试...", $("#editKeywords"));
+            defer.reject("与服务器通讯失败，请稍后再试...");
+            return defer.promise();
         });
-        console.log("worinige at 32");
 
 //
 //        $.ajax({
@@ -492,15 +503,12 @@
 
     // 检查数据库连通性 isShowCols 是否需要将查询得到的字段展示出来 true:展示，fasle:不展示
     function testConnect(isShowCols) {
-        var result = false;
         var defer = $.Deferred();
-
+        var errorinfo = '';
         ip = $("#editIP").val();
         if (ip == '' || ip == null) {
-            // 错误信息
-            showEditFail("必须输入IP地址！", $("#editIP"));
-            defer.resolve(false);
-            return defer.promise();
+            errorinfo = errorinfo + "必须输入IP地址；<br>";
+            showEditFail(errorinfo, $("#editIP"));
         }
         var ignoreIp = false;
         if (checkIpisHost(ip)) {
@@ -508,61 +516,56 @@
             if (confirm("发现你在Ip地址填写的不是合理的Ip,是否继续？")) {
                 ignoreIp = true;
             } else {
-                myAnimate($("#editIP"), 8, $("#editIP").attr("style"));
-                defer.resolve(false);
+                errorinfo = errorinfo + "不是合理的IP地址；<br>";
+                showEditFail(errorinfo, $("#editIP"));
+                defer.reject(errorinfo);
                 return defer.promise();
             }
         }
         if (ignoreIp == false) {// 需要Ip检查
             if (checkIP(ip) == false) {
-                showEditFail("必须输入IP地址！", $("#editIP"));
-                defer.resolve(false);
-                return defer.promise();
+                errorinfo = errorinfo + "必须输入IP地址；<br>";
+                showEditFail(errorinfo, $("#editIP"));
             }
         }
         port = $("#editPort").val();
         if (port == '' || port == null) {
-            // 错误信息
-            showEditFail("必须输入端口号！", $("#editPort"));
-            defer.resolve(false);
-            return defer.promise();
+            errorinfo = errorinfo + "必须输入端口号；<br>";
+            showEditFail(errorinfo, $("#editPort"));
         }
         if (isInteger(port) == false) {
-            showEditFail("端口号必须输入正整数！", $("#editPort"));
-            defer.resolve(false);
-            return defer.promise();
+            errorinfo = errorinfo + "端口号必须输入正整数；<br>";
+            showEditFail(errorinfo, $("#editPort"));
         }
 
         dbtype = $("#editDbtype  option:selected").val();
 
         dbname = $("#editDbname").val();
         if (dbname == '' || dbname == null) {
-            // 错误信息
-            showEditFail("必须输入数据库名！", $("#editDbname"));
-            defer.resolve(false);
-            return defer.promise();
+            errorinfo = errorinfo + "必须输入数据库名；<br>";
+            showEditFail(errorinfo, $("#editDbname"));
         }
         username = $("#editUsername").val();
         if (username == '' || username == null) {
-            // 错误信息
-            showEditFail("必须输入用户名！", $("#editUsername"));
-            defer.resolve(false);
-            return defer.promise();
+            errorinfo = errorinfo + "必须输入用户名；<br>";
+            showEditFail(errorinfo, $("#editUsername"));
         }
         password = $("#editPassword").val();
         if (password == '' || password == null) {
-            // 错误信息
-            showEditFail("必须输入密码！", $("#editPassword"));
-            defer.resolve(false);
-            return defer.promise();
+            errorinfo = errorinfo + "必须输入密码；<br>";
+            showEditFail(errorinfo, $("#editPassword"));
         }
         tablename = $("#editTablename").val();
         if (tablename == '' || tablename == null) {
-            // 错误信息
-            showEditFail("必须输入表名！", $("#editTablename"));
-            defer.resolve(false);
+            errorinfo = errorinfo + "必须输入表名；<br>";
+            showEditFail(errorinfo, $("#editTablename"));
+
+        }
+        if(errorinfo != ''){
+            defer.reject(errorinfo);
             return defer.promise();
         }
+
         var jsonStr = "{\"ip\":\"" + ip
                 + "\",\"port\":\"" + port
                 + "\",\"dbtype\":\"" + dbtype
@@ -570,9 +573,8 @@
                 + "\",\"username\":\"" + username
                 + "\",\"password\":\"" + password
                 + "\",\"tablename\":\"" + tablename + "\"}";
-//        console.log("jsonData:" + jsonData);
         // 访问服务器
-        $.when(myAjaxPost(bp + 'Smserver/functions/testconnect',jsonStr)).done(function (data) {//这里的data为defer在ajax保存下来的数据
+        $.when(myAjaxPost(bp + 'Smserver/functions/testconnect',jsonStr)).done(function (data) {
             if (data != null) {
                 var result = false;
                 var colsNames = data['colNames'];
@@ -587,11 +589,8 @@
                     result = true;
                 } else {// 没有获得字段信息
                     result = false;
-                    isConnectSuccess = false;
-                    var htmlStr = '<p style="color: #c9302c">连接失败!</p>';
-                    $("#connectResult").html(htmlStr);
                     if (isShowCols == false) {// 只需告知结果
-                        if (confirm("数据库连接没有成功，确认继续操作？")) {
+                        if (confirm("你设置的数据库连接没有成功，确认继续操作？")) {
                             result = true;// 当保存时数据库出现问题，设置没有问题时
                         }
                     }
@@ -600,13 +599,22 @@
                 if (isShowCols == true) {
                     myAnimate($("#connectResult"), 8, $("#connectResult").attr("style"));
                 }
-                defer.resolve(result);
-                return defer.promise();
+                if(result == false){
+                    defer.reject();
+                }else{
+                    defer.resolve(result);
+                }
             }else{
                 isConnectSuccess = false;
-                defer.resolve(false);
-                return defer.promise();
+                defer.reject();
             }
+            return defer.promise();
+        }).fail(function () {// 连接失败
+            isConnectSuccess = false;
+            var htmlStr = '<p style="color: #c9302c">连接失败!</p>';
+            $("#connectResult").html(htmlStr);
+            defer.reject();
+            return defer.promise();
         });
 
 //

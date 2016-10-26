@@ -14,6 +14,7 @@
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
 </head>
 <body>
 <h3>通讯录操作</h3>
@@ -211,10 +212,8 @@
     });
     // 初始化联系人控件
     function initContactsUIs(displayGroup) {
-        $.ajax({
-            url: bp + 'Smserver/contacts/groups',
-            type: 'GET',
-            success: function (data) {
+        $.when(myAjaxGet(bp + 'Smserver/contacts/groups')).done(function (data) {//这里的data为defer在ajax保存下来的数据
+            if (data != null) {
                 var groups = data['groups'];
                 // 初始化groups相关的控件
                 initSelect(groups);// 选择控件
@@ -226,20 +225,43 @@
                 }
             }
         });
+//
+//        $.ajax({
+//            url: bp + 'Smserver/contacts/groups',
+//            type: 'GET',
+//            success: function (data) {
+//                var groups = data['groups'];
+//                // 初始化groups相关的控件
+//                initSelect(groups);// 选择控件
+//                initGroupsBody(groups);// 分组链接
+//                if (displayGroup == null) {
+//                    getContactsByGroups(groups[0]);
+//                } else {
+//                    getContactsByGroups(displayGroup);
+//                }
+//            }
+//        });
     }
 
 
     // 向服务器请求联系人信息 通过分组名称
     function getContactsByGroups(groupname) {
-        $.ajax({
-            type: 'GET',
-            url: bp + 'Smserver/contacts/' + groupname,
-            success: function (data) {
+        $.when(myAjaxGet( bp + 'Smserver/contacts/' + groupname)).done(function (data) {//这里的data为defer在ajax保存下来的数据
+            if (data != null) {
                 var contacts = data['contacts'];
                 initTbodyOfContacts(contacts);
-
             }
         });
+
+//        $.ajax({
+//            type: 'GET',
+//            url: bp + 'Smserver/contacts/' + groupname,
+//            success: function (data) {
+//                var contacts = data['contacts'];
+//                initTbodyOfContacts(contacts);
+//
+//            }
+//        });
     }
 
     // 初始化单独编辑联系人信息的分组选项
@@ -469,13 +491,9 @@
 
     // 提交操作，然后更新页面组组件
     function commitEditGroup(action, jsonStr, groupname) {
-        $.ajax({
-            type: 'POST',
-            url: bp + 'Smserver/group/' + action,
-            data: jsonStr,
-            dataType: "json",
-            contentType: "application/json",
-            success: function (data) {
+        $.when(myAjaxPost(bp + 'Smserver/group/' + action, jsonStr)).done(function (data) {
+            var htmlStr = '';
+            if (data != null) {
                 showEditDone();
                 hideEditFail();
                 if (action == "insert") {
@@ -486,6 +504,24 @@
                 initContactsUIs(groupname);
             }
         });
+
+//        $.ajax({
+//            type: 'POST',
+//            url: bp + 'Smserver/group/' + action,
+//            data: jsonStr,
+//            dataType: "json",
+//            contentType: "application/json",
+//            success: function (data) {
+//                showEditDone();
+//                hideEditFail();
+//                if (action == "insert") {
+//                    $("#createGroupDiv").hide(2000);
+//                } else {
+//                    $("#editGroupDiv").hide(2000);
+//                }
+//                initContactsUIs(groupname);
+//            }
+//        });
     }
 
     // 取消编辑组
@@ -553,7 +589,7 @@
                 + "\",\"phone\":\"" + phone
                 + "\",\"description\":\"" + description + "\"}";
         console.log("jsonStr:" + jsonStr);
-        commitEditContact('update', jsonStr, "POST");
+        commitEditContact('update', jsonStr);
     }
 
     // 删除联系人
@@ -562,7 +598,7 @@
         // 弹出确认对话框
         if (confirm("确认删除？")) {
             var jsonStr = "{\"id\":" + id + "}";
-            commitEditContact('delete', jsonStr, "POST");
+            commitEditContact('delete', jsonStr);
         } else {
             return;
         }
@@ -570,23 +606,35 @@
 
     // 提交操作，然后更新页面联系人组件
     function commitEditContact(action, jsonStr, type) {
-        $.ajax({
-            type: type,
-            url: bp + 'Smserver/contacts/' + action,
-            data: jsonStr,
-            dataType: "json",
-            contentType: "application/json",
-            success: function (data) {
+        var url = bp + 'Smserver/contacts/' + action;
+        $.when(myAjaxPost(url,jsonStr)).done(function (data) {
+            var htmlStr = '';
+            if (data != null) {
                 showEditDone();
                 hideEditFail();
                 $("#editContactDiv").hide(2000);
                 var contacts = data['contacts'];
                 initTbodyOfContacts(contacts);
-            },
-            error: function (errdata) {
-//                showEditFail("abc");
             }
         });
+
+//        $.ajax({
+//            type: type,
+//            url: bp + 'Smserver/contacts/' + action,
+//            data: jsonStr,
+//            dataType: "json",
+//            contentType: "application/json",
+//            success: function (data) {
+//                showEditDone();
+//                hideEditFail();
+//                $("#editContactDiv").hide(2000);
+//                var contacts = data['contacts'];
+//                initTbodyOfContacts(contacts);
+//            },
+//            error: function (errdata) {
+////                showEditFail("abc");
+//            }
+//        });
     }
 
     // 查询联系人
@@ -597,7 +645,7 @@
             return;
         } else {
             var jsonStr = "{\"name\":\"" + name + "\"}";
-            commitEditContact('searchbyname', jsonStr, "POST");
+            commitEditContact('searchbyname', jsonStr);
         }
     }
 

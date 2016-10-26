@@ -14,6 +14,7 @@
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
 </head>
 <body>
 <h3>定时任务操作</h3>
@@ -204,14 +205,23 @@
     });
 
     function queryTimerTasks() {
-        $.ajax({
-            url: bp + 'Smserver/timertask/getall',
-            type: 'GET',
-            success: function (data) {
+        $.when(myAjaxGet(bp + 'Smserver/timertask/getall')).done(function (data) {//这里的data为defer在ajax保存下来的数据
+            var htmlStr = '';
+            if (data != null) {
                 // 初始化timertasks相关的控件
                 initTbodyOfTasks(data['timerTasks']);// 选择控件
             }
         });
+
+//
+//        $.ajax({
+//            url: bp + 'Smserver/timertask/getall',
+//            type: 'GET',
+//            success: function (data) {
+//                // 初始化timertasks相关的控件
+//                initTbodyOfTasks(data['timerTasks']);// 选择控件
+//            }
+//        });
     }
 
     // 使用联系人json数据组合成联系人表格内容
@@ -250,13 +260,9 @@
             return;
         }
         var jsonStr = "{\"ids\":\"" + ids + "\"}";
-        $.ajax({
-            type: 'POST',
-            url: bp + 'Smserver/contacts/searchbyids',
-            data: jsonStr,
-            dataType: "json",
-            contentType: "application/json",
-            success: function (data) {
+        $.when(myAjaxPost(bp + 'Smserver/contacts/searchbyids', jsonStr)).done(function (data) {
+            var htmlStr = '';
+            if (data != null) {
                 showEditDone();
                 hideEditFail();
                 // 显示联系人信息表格div
@@ -265,6 +271,23 @@
                 initTbodyOfContacts(data['contacts']);
             }
         });
+
+
+//        $.ajax({
+//            type: 'POST',
+//            url: bp + 'Smserver/contacts/searchbyids',
+//            data: jsonStr,
+//            dataType: "json",
+//            contentType: "application/json",
+//            success: function (data) {
+//                showEditDone();
+//                hideEditFail();
+//                // 显示联系人信息表格div
+//                showContactsDiv();
+//                // 分组信息
+//                initTbodyOfContacts(data['contacts']);
+//            }
+//        });
     }
 
     // 展示联系人选择
@@ -296,10 +319,9 @@
     // 初始化联系人组UI控件
     function initTbodyOfGroups() {
         var htmlStr = '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="queryContactsDetailsWithIds()">已选人员</button></td></tr>';
-        $.ajax({
-            url: bp + 'Smserver/contacts/groups',
-            type: 'GET',
-            success: function (data) {
+        $.when(myAjaxGet(bp + 'Smserver/contacts/groups')).done(function (data) {//这里的data为defer在ajax保存下来的数据
+            var htmlStr = '';
+            if (data != null) {
                 var groups = data['groups'];
                 for (var i = 0; i < groups.length; i++) {
                     htmlStr = htmlStr + '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="getContactsByGroups(\'' + groups[i] + '\')">' + groups[i] + '</button>';
@@ -309,17 +331,38 @@
                 getContactsByGroups(groups[0]);
             }
         });
+
+//        $.ajax({
+//            url: bp + 'Smserver/contacts/groups',
+//            type: 'GET',
+//            success: function (data) {
+//                var groups = data['groups'];
+//                for (var i = 0; i < groups.length; i++) {
+//                    htmlStr = htmlStr + '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="getContactsByGroups(\'' + groups[i] + '\')">' + groups[i] + '</button>';
+//                }
+//                $("#groupsBody").html(htmlStr);
+//                // 展示第一组
+//                getContactsByGroups(groups[0]);
+//            }
+//        });
     }
 
     // 向服务器请求联系人信息 通过分组名称
     function getContactsByGroups(groupname) {
-        $.ajax({
-            type: 'GET',
-            url: bp + 'Smserver/contacts/' + groupname,
-            success: function (data) {
+        $.when(myAjaxGet(bp + 'Smserver/contacts/' + groupname)).done(function (data) {//这里的data为defer在ajax保存下来的数据
+            var htmlStr = '';
+            if (data != null) {
                 initTbodyOfContacts(data['contacts']);
             }
         });
+
+//        $.ajax({
+//            type: 'GET',
+//            url: bp + 'Smserver/contacts/' + groupname,
+//            success: function (data) {
+//                initTbodyOfContacts(data['contacts']);
+//            }
+//        });
     }
 
 
@@ -429,10 +472,9 @@
         // 读取当前已经选择的功能
         var selectedFunctions = ($("#ttfunctionsEdit").html() + '').split(",");
         // 从服务器端获取可用的功能
-        $.ajax({
-            type: 'GET',
-            url: bp + 'Smserver/functions',
-            success: function (data) {
+        $.when(myAjaxGet(bp + 'Smserver/functions')).done(function (data) {//这里的data为defer在ajax保存下来的数据
+            var htmlStr = '';
+            if (data != null) {
                 var functions = (data['functions']);
                 // 整理成表格展示
                 var htmlStr = '';
@@ -458,6 +500,36 @@
                 $("#selectAllFunctions").prop("checked", false);
             }
         });
+
+//        $.ajax({
+//            type: 'GET',
+//            url: bp + 'Smserver/functions',
+//            success: function (data) {
+//                var functions = (data['functions']);
+//                // 整理成表格展示
+//                var htmlStr = '';
+//                for (var i = 0; i < functions.length; i++) {
+//                    htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="functionsCheckbox" value="' + functions[i].name + '"';
+//                    var isInSelected = false;
+//                    for (var j = 0; j < selectedFunctions.length; j++) {
+//                        if (selectedFunctions[j] == functions[i].name) {
+//                            isInSelected = true;
+//                            break;
+//                        }
+//                    }
+//                    if (isInSelected) {
+//                        htmlStr = htmlStr + 'checked';
+//                    }
+//                    htmlStr = htmlStr + '> ' + functions[i].id + '</input>'
+//                            + '</td><td>' + functions[i].name
+//                            + '</td><td>' + functions[i].description
+//                            + '</td></tr>';
+//                }
+//                $("#functionsBody").html(htmlStr);
+//                // 取消全选的勾选
+//                $("#selectAllFunctions").prop("checked", false);
+//            }
+//        });
     }
 
     // 完成或者取消编辑功能
@@ -566,14 +638,10 @@
     }
 
     // 处理TimerTask操作提交给服务器部分
-    function doAjaxHandleTimerTask(action, jsonData) {
-        $.ajax({
-            type: 'POST',
-            url: bp + 'Smserver/timertask/' + action,
-            data: jsonData,
-            dataType: "json",
-            contentType: "application/json",
-            success: function (data) {
+    function doAjaxHandleTimerTask(action, jsonStr) {
+        $.when(myAjaxPost(bp + 'Smserver/timertask/' + action, jsonStr)).done(function (data) {
+            var htmlStr = '';
+            if (data != null) {
                 // 初始化timertasks相关的控件
                 initTbodyOfTasks(data['timerTasks']);// 选择控件
                 // 先将编辑框隐藏
@@ -582,6 +650,22 @@
                 hideEditFail();
             }
         });
+//
+//        $.ajax({
+//            type: 'POST',
+//            url: bp + 'Smserver/timertask/' + action,
+//            data: jsonData,
+//            dataType: "json",
+//            contentType: "application/json",
+//            success: function (data) {
+//                // 初始化timertasks相关的控件
+//                initTbodyOfTasks(data['timerTasks']);// 选择控件
+//                // 先将编辑框隐藏
+//                $("#timertaskEditDiv").hide(2000);
+//                showEditDone();
+//                hideEditFail();
+//            }
+//        });
     }
 
     function showContactsDiv() {
