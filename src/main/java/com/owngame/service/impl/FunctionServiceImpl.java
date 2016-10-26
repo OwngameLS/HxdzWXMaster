@@ -213,7 +213,7 @@ public class FunctionServiceImpl implements FunctionService {
                 Map.Entry entry = (Map.Entry) iter.next();
                 keysInfo.add((String) entry.getValue());
             }
-            functionKeywordsResult.setSimlarKeys(keysInfo);
+            functionKeywordsResult.setSimilarKeys(keysInfo);
         }
         return functionKeywordsResult;
     }

@@ -59,12 +59,13 @@
     <div id="functionEditDiv" class="well"><%--编辑定时任务的表格 style="display:none"--%>
         <div class="row">
             <div class="col-md-4 text-center"></div>
-            <div class="col-md-4 text-center">
-                <h4>功能属性编辑</h4>
-            </div>
-            <div class="col-md-2 text-center"></div>
             <div class="col-md-2 text-center">
-                <button type="button" class="btn btn-success btn-sm" onclick="saveFunction()">保 存</button>
+                <b>功能属性编辑</b>
+            </div>
+            <div id="isUsable" class="col-md-2 text-center"></div>
+            <div class="col-md-4 text-center">
+                <button type="button" class="btn btn-danger btn-sm" onclick="saveFunctionAnyway()">仅保存</button>
+                <button type="button" class="btn btn-success btn-sm" onclick="saveFunction()">验证并保存</button>
                 <button type="button" class="btn btn-warning btn-sm" onclick="initEditTimerTask(-1)">取 消</button>
             </div>
         </div>
@@ -128,7 +129,7 @@
                 <input class="form-control" id="editTablename" placeholder="读取的表名...">
             </div>
             <div class="col-md-3 text-center">
-                <button type="button" class="btn btn-success btn-sm" onclick="testConnect(true)">连接测试</button>
+                <button type="button" class="btn btn-success btn-sm" onclick="queryTableCols4Edit()">连接测试</button>
             </div>
         </div>
 
@@ -146,7 +147,7 @@
                     <input id="editSQL" class="form-control">
                 </div>
                 <div class="col-md-2 text-center">
-                    <button type="button" class="btn btn-success btn-sm" onclick="testSQL(false)">测试</button>
+                    <button type="button" class="btn btn-success btn-sm" onclick="testSQLPart(false)">测试</button>
                 </div>
             </div>
             <div id="sqlresultDiv" style="display: none">
@@ -207,7 +208,6 @@
 
 <script type="application/javascript">
     var bp = '<%=basePath%>';
-    var colLength = 0;
     // 数据库链接相关变量
     var id = -1;// 新建
     var name;
@@ -225,13 +225,16 @@
     var sortfields;// 排序字段，根据这个字段才能查询到最新的数据 A ASC,B DESC 默认为降序排列
     var fieldrules;// 规则字段，字段名，值，规则 根据规则来判断 a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,EQ#e,eName,bcde,NE#f,fName,xxxx,RG@12BT34
     var isreturn;// 读取结果是否返回的规则（由于需要涉及到预警功能，所以需要定义规则）
-    // 由于功能是定时执行，因此不一定是每次都读取到数据就需要告知
-    // anyway: 不论如何都返回
-    // oncase: 监听几个字段，当其中一个字段达到报警要求时就需要告知
     var sqlstmt;//sql语句
     var sqlfields;// sql查询的字段属性，按照顺序来a,aName#b,bName
+    var usable;// 方法是否可用
     var isConnectSuccess = false;// 设置的数据库连接是否成功的实际情况
     var formerSqlFieldsHTML = "";//前一次编辑的Sql字段结果
+
+    // 因为访问服务器的过程中会得到一些数据，而这些数据并不是每次访问都需要用上，故先保存代用
+    var tableDefaultCols = null;// 某一张表的所有字段（服务器返回的）
+    var sqlSelectedFields = null;// 自定义sql语句筛选的字段（服务器返回的）
+
 
     // 文档被加载完成时
     $(document).ready(function () {
@@ -251,56 +254,44 @@
     // 保存function
     function saveFunction() {
         hideEditFail();
-        // 验证所填写的字段非空且符合要求
-        // 验证功能描述性设置
-        var result1 = false, result2 = false, result3 = false;
-        console.log("check testFunctionDescPart...");
-        var result1 = testFunctionDescPart();
+        // 利用新的Deferred来做多个同步操作
 
-        if (result1) {
-            console.log("check testConnect...");
-            result2 = testConnect(false);
-        }
-        if (isConnectSuccess) {
-            console.log("check settings...");
-            // 检查读取规则类型
-            usetype = $('input[name="whichType"]:checked ').val();
-            if (usetype == 'sql') {
-                result3 = testSQL(true);
-            } else {
-                result3 = testRules();
-            }
-        }
-        if (result3) {
-            // 提交
-            var jsonData = "{\"id\":\"" + id
-                    + "\",\"name\":\"" + name
-                    + "\",\"description\":\"" + description
-                    + "\",\"keywords\":\"" + keywords
-                    + "\",\"ip\":\"" + ip
-                    + "\",\"port\":\"" + port
-                    + "\",\"dbtype\":\"" + dbtype
-                    + "\",\"dbname\":\"" + dbname
-                    + "\",\"username\":\"" + username
-                    + "\",\"password\":\"" + password
-                    + "\",\"tablename\":\"" + tablename
-                    + "\",\"usetype\":\"" + usetype
-                    + "\",\"readfields\":\"" + readfields
-                    + "\",\"sortfields\":\"" + sortfields
-                    + "\",\"fieldrules\":\"" + fieldrules
-                    + "\",\"isreturn\":\"" + isreturn
-                    + "\",\"sqlstmt\":\"" + sqlstmt
-                    + "\",\"sqlfields\":\"" + sqlfields
-                    + "\"}";
-            doAjaxHandleFunction('update', jsonData, 'POST');
-        }
+        $.when(testConnect()).done(function () {// 先验证与数据库的链接可用
+            $.when(testFunctionDescPart(),// 验证功能描述性设置
+                    testSQLPart(),// 验证SQL语句
+                    testRules()// 验证规则
+            ).done(function (data) {
+                // 提交
+                var jsonStr = "{\"id\":\"" + id
+                        + "\",\"name\":\"" + name
+                        + "\",\"description\":\"" + description
+                        + "\",\"keywords\":\"" + keywords
+                        + "\",\"ip\":\"" + ip
+                        + "\",\"port\":\"" + port
+                        + "\",\"dbtype\":\"" + dbtype
+                        + "\",\"dbname\":\"" + dbname
+                        + "\",\"username\":\"" + username
+                        + "\",\"password\":\"" + password
+                        + "\",\"tablename\":\"" + tablename
+                        + "\",\"usetype\":\"" + usetype
+                        + "\",\"readfields\":\"" + readfields
+                        + "\",\"sortfields\":\"" + sortfields
+                        + "\",\"fieldrules\":\"" + fieldrules
+                        + "\",\"isreturn\":\"" + isreturn
+                        + "\",\"sqlstmt\":\"" + sqlstmt
+                        + "\",\"sqlfields\":\"" + sqlfields
+                        + "\"}";
+                doAjaxHandleFunction('update', jsonStr, 'POST');
+            });
+        }).fail(function (data2) {
+            showEditFail("保存失败！由于未能连接上你设置的数据库，此次保存无法生效。", $("#functionEditDiv"));
+        });
     }
-
 
     // 处理Functions操作提交给服务器部分
     function doAjaxHandleFunction(action, jsonStr, type) {
         console.log("doAjaxHandleFunction action:" + action);
-        $.when(myAjaxPost(bp + 'Smserver/functions/' + action,jsonStr)).done(function (data) {//这里的data为defer在ajax保存下来的数据
+        $.when(myAjaxPost(bp + 'Smserver/functions/' + action, jsonStr)).done(function (data) {//这里的data为defer在ajax保存下来的数据
             var htmlStr = '';
             if (data != null) {
                 // 先将编辑框隐藏
@@ -311,54 +302,26 @@
                 initTbodyOfFunctions(data['functions']);
             }
         });
-
-//
-//
-//        $.ajax({
-//            type: type,
-//            url: bp + 'Smserver/functions/' + action,
-//            data: jsonStr,
-//            dataType: "json",
-//            contentType: "application/json",
-//            success: function (data) {
-//                // 先将编辑框隐藏
-//                $("#functionEditDiv").hide(2000);
-//                showEditDone();
-//                hideEditFail();
-//                // 刷新功能展示列表
-//                initTbodyOfFunctions(data['functions']);
-//            }
-//        });
     }
 
-    // 测试SQL语句
-    function testSQL(isSaveSQL) {
-        var defer = $.Deferred();
+    // 本地检查SQL语句
+    function checkSQLLocally() {// 检查sql语句，排除非法操作
         var errorinfo = '';
-        console.log("check testSQL...");
-        // 先检查sql语句，排除非法操作
-        sql = $("#editSQL").val();
-        if (sql == '' || sql == null) {
+        if (sqlstmt == '' || sqlstmt == null) {
             errorinfo = errorinfo + "您还没有输入SQL语句呢;<br>"
             showEditFail(errorinfo, $("#editSQL"));
         }
-        if (sql.indexOf("remove") >= 0 || sql.indexOf("delete") >= 0 || sql.indexOf("update") >= 0) {
+        if (sqlstmt.indexOf("remove") >= 0 || sqlstmt.indexOf("delete") >= 0 || sqlstmt.indexOf("update") >= 0) {
             errorinfo = errorinfo + "您输入的SQL语句不是查询语句，请检查！<br><b>注意:</b>只能是查询语句！<br>"
             showEditFail(errorinfo, $("#editSQL"));
-            return false;
         }
-        // 再检查数据库连通性
-        if (isSaveSQL == false) {// 不是保存阶段，就要检查连通性
-            testConnect(false);
-        }
-        if (isConnectSuccess == false) {
-            // 数据库不可连通，建议放弃操作
-            if (confirm("数据库连接没有成功，确认继续操作？")) {
-                // 保存sql语句供下次编辑就好了
-            } else {
-                return false;
-            }
-        }
+        return errorinfo;
+    }
+
+
+    // 询问服务器 SQL
+    function askServer4SQL() {// 每次都是保证与数据库连接正常
+        var defer = $.Deferred();
         var jsonStr = "{\"ip\":\"" + ip
                 + "\",\"port\":\"" + port
                 + "\",\"dbtype\":\"" + dbtype
@@ -366,58 +329,198 @@
                 + "\",\"username\":\"" + username
                 + "\",\"password\":\"" + password
                 + "\",\"tablename\":\"" + tablename
-                + "\",\"sql\":\"" + sql + "\"}";
+                + "\",\"sqlstmt\":\"" + sqlstmt + "\"}";
 
         //暂时没错了，交给后台检查吧
-        $.when(myAjaxPost(bp + 'Smserver/functions/sql/',jsonStr)).done(function (data) {
+        $.when(myAjaxPost(bp + 'Smserver/functions/sql/', jsonStr)).done(function (data) {
             if (data != null) {
                 var result = data['sqlResult'];
                 if (result.isSuccess < 0) {// 有错误信息
-                    // 会返回类似的关键字，将他们罗列出来
+                    // 会返回错误信息
                     var errorMsg = "您输入的sql语句存在错误：<br>" + result.fields[0];
-                    showEditFail(errorMsg, $("#editSQL"));
-                    return false;
+                    sqlSelectedFields = null;// 置空
+                    defer.reject(errorMsg);
                 } else {// 返回的是列表信息
-                    if (isSaveSQL) {
-                        // 返回的列表信息与设置的是否一致？
-                        console.log("saving sql....");
-                        return saveSQL(result.fields);
-                    } else {
-                        initTbodyOfSQL(result.fields);
-                    }
+                    // 先保存起来就行
+                    sqlSelectedFields = result.fields;
+                    defer.resolve();
                 }
+            } else {
+                var errorMsg = "与服务器通讯失败，请稍后再试。<br>";
+                defer.reject(errorMsg);
             }
+            return defer.promise();
+        }).fail(function () {
+            var errorMsg = "与服务器通讯失败，请稍后再试。<br>";
+            defer.reject(errorMsg);
+            return defer.promise();
         });
+    }
 
-//        return $.ajax({
-//            url: bp + 'Smserver/functions/sql/',
-//            type: 'POST',
-//            async: false,
-//            data: jsonData,
-//            dataType: "json",
-//            contentType: "application/json",
-//            success: function (data) {
-//                var result = data['sqlResult'];
-//                if (result.isSuccess < 0) {// 有错误信息
-//                    // 会返回类似的关键字，将他们罗列出来
-//                    var errorMsg = "您输入的sql语句存在错误：<br>" + result.fields[0];
-//                    showEditFail(errorMsg, $("#editSQL"));
-//                    return false;
-//                } else {// 返回的是列表信息
-//                    if (isSaveSQL) {
-//                        // 返回的列表信息与设置的是否一致？
-//                        console.log("saving sql....");
-//                        return saveSQL(result.fields);
-//                    } else {
-//                        initTbodyOfSQL(result.fields);
-//                    }
-//                }
-//            }
-//        });
+    // 测试SQL语句设置部分
+    function testSQLPart(isSaveSql) {
+        var defer = $.Deferred();
+        var errorinfo = '';
+        if (isSaveSql == false) {// 按钮触发，必须要测试SQL
+            sqlstmt = $("#editSQL").val();
+            errorinfo = checkSQLLocally();
+            if (errorinfo != '') {
+                defer.reject();
+                return defer.promise();
+            }
+            $.when(testConnect(),askServer4SQL()).done(function () {
+                initTbodyOfSQL(result.fields, false);
+            }).fail(function (error) {
+                showEditFail(error, $("#editSQL"));
+            });
+
+        } else {// 保存function 带来的保存意图
+            usetype = getUseType();
+            if (usetype == 'sql') {// 是要保存sql规则，就需要检查
+                sqlstmt = $("#editSQL").val();
+                errorinfo = checkSQLLocally();
+                if (errorinfo != '') {
+                    defer.reject();
+                    return defer.promise();
+                }
+                $.when(testConnect(),askServer4SQL()).done(function () {
+                    // 返回的信息与已设置的进行对比
+                    if (saveSQL(sqlSelectedFields)) {
+                        defer.resolve();
+                    } else {
+                        defer.reject();
+                    }
+                    return defer.promise();
+                }).fail(function (error) {
+                    showEditFail(error, $("#editSQL"));
+                    defer.reject();
+                });
+            } else {// 不需要保存sql
+                // 置空
+                sqlstmt = '';
+                sqlfields = '';
+                defer.resolve();
+                return defer.promise();
+            }
+        }
+    }
+
+    // 保存SQL规则
+    function saveSQL(sqlSelectedFields) {
+        // 获得已经设置的字段集合
+        var settedFields = new Array();
+        var fieldsHtml = $("[id*='sqlFieldCol']");
+        for (var i = 0; i < fieldsHtml.length; i++) {
+            settedFields.push($(fieldsHtml[i]).text());
+        }
+        var errorMsg = '';
+        // 与查询得到的字段进行对比
+        if (sqlSelectedFields.length != settedFields.length) {
+            // 新旧长度不统一
+            // 重新初始化并告知
+            initTbodyOfSQL(sqlSelectedFields);
+            if (settedFields.length == 0) {
+                errorMsg = "您必须对您的查询字段做相应的设置。";
+            } else {
+                errorMsg = "您查询的字段与您设置的字段不一样，请重新设置。";
+            }
+            showEditFail(errorMsg, $("#editSQL"));
+            return false;
+        }
+        var hasNotFound = false;
+        for (var i = 0; i < sqlSelectedFields.length; i++) {
+            if (settedFields.indexOf(sqlSelectedFields[i]) == -1) {
+                hasNotFound = true;
+            }
+        }
+
+        if (hasNotFound) {
+            // 重新初始化并告知
+            initTbodyOfSQL(sqlSelectedFields, false);
+            errorMsg = "您查询的字段与您设置的字段不一样，请重新设置。";
+            showEditFail(errorMsg, $("#editSQL"));
+            return false;
+        }
+
+        // 检查非空
+        var nameHtml = $("[id*='sqlFieldName']");
+        var names = new Array();
+        var hasError = false;
+        var errorInfo = '';
+        for (var i = 0; i < nameHtml.length; i++) {
+            var value = $(nameHtml[i]).val();
+            if (value == null || value == '') {
+                hasError = true;
+                errorInfo = errorInfo + "字段(" + settedFields[i] + ")必须设置名称哦！<br>";
+                myAnimate($(nameHtml[i]), 8, $(nameHtml[i]).attr("style"));
+            } else {
+                names.push(value);
+            }
+        }
+        if (hasError) {
+            showEditFail(errorInfo, null);
+            return false;
+        }
+        // 检查不重复？用户是傻逼吧
+
+        // 顺序
+        var sortHtml = $("[id*='sqlFieldSort']");
+        var sortsValue = new Array();
+        // 检查顺序非空
+        for (var i = 0; i < sortHtml.length; i++) {
+            var sort = $(sortHtml[i]).val();
+            if (sort == null || sort == '') {
+                hasError = true;
+                errorInfo = errorInfo + "字段(" + settedFields[i] + ")必须设置排列顺序哦！<br>";
+                myAnimate($(sortHtml[i]), 8, $(sortHtml[i]).attr("style"));
+            } else if (isInteger(sort) == false) {
+                hasError = true;
+                errorInfo = errorInfo + "字段(" + settedFields[i] + ")的排列顺序必须为正整数哦！<br>";
+                myAnimate($(sortHtml[i]), 8, $(sortHtml[i]).attr("style"));
+            } else {
+                sortsValue.push(sort);
+            }
+        }
+        if (hasError) {
+            showEditFail(errorInfo, null);
+            return false;
+        }
+        // 检查顺寻顺序
+        // 不能有一样的顺序
+        // 新建个数组
+        var s = sortsValue;
+        s = s.sort();
+        for (var i = 0; i < s.length; i++) {
+            if (s[i] == s[i + 1]) {
+                hasError = true;
+                var index1 = sortsValue.indexOf(s[i]);
+                sortsValue[index1] = (-sortsValue[index1]);// 置负数 避免下面被找到 我觉得我真牛^_^
+                var index2 = sortsValue.indexOf(s[i + 1]);
+                errorInfo = errorInfo + "字段(" + settedFields[index1] + ")和(" + settedFields[index2] + ")的排列顺序不能相同！<br>";
+                myAnimate($(sortHtml[index1]), 8, $(sortHtml[index1]).attr("style"));
+                myAnimate($(sortHtml[index2]), 8, $(sortHtml[index2]).attr("style"));
+            }
+        }
+        if (hasError) {
+            showEditFail(errorInfo, null);
+            return false;
+        }
+//        没有错误，则根据排序结果整理成所需要的数据吧
+        sqlstmt = $("#editSQL").val();
+        sqlfields = "";//qingk
+        for (var i = 0; i < s.length; i++) {
+            var index = sortsValue.indexOf(s[i]);
+            sqlfields = sqlfields + settedFields[index] + "," + names[index];
+            if ((i + 1) < s.length) {
+                sqlfields = sqlfields + "#";
+            }
+        }
+        hideEditFail();
+        return true;
     }
 
 
-    // 验证功能描述性设置
+    // 验证功能描述性设置部分
     function testFunctionDescPart() {
         var defer = $.Deferred();
         var errorinfo = '';
@@ -439,70 +542,60 @@
             errorinfo = errorinfo + "必须输入描述；<br>";
             showEditFail(errorinfo, $("#editDescription"));
         }
-        if(errorinfo != ''){
+        if (errorinfo != '') {
             defer.reject(errorinfo);
             return defer.promise();
         }
 
         // keywords不为空，还要检测它的唯一性
         var jsonStr = "{\"id\":\"" + id + "\",\"keywords\":\"" + keywords + "\"}";
-        $.when(myAjaxPost(bp + 'Smserver/functions/keywords/',jsonStr)).done(function (data) {
+        $.when(myAjaxPost(bp + 'Smserver/functions/keywords/', jsonStr)).done(function (data) {
             if (data != null) {
                 var result = data['keywordResult'];
                 if (result.isSuccess < 0) {
                     // 会返回类似的关键字，将他们罗列出来
                     var errorMsg = "关键字重复！<br>";
-                    for (var i = 0; i < result.simlarKeys.length; i++) {
-                        errorMsg = errorMsg + result.simlarKeys[i];
-                        if ((i + 1) < result.simlarKeys.length) {
+                    for (var i = 0; i < result.similarKeys.length; i++) {
+                        errorMsg = errorMsg + result.similarKeys[i];
+                        if ((i + 1) < result.similarKeys.length) {
                             errorMsg = errorMsg + "<br>";
                         }
                     }
                     showEditFail(errorMsg, $("#editKeywords"));
                     defer.reject(errorMsg);
-                }else{
+                } else {
                     defer.resolve(true);
                 }
-            }else{
+            } else {
                 showEditFail("读取服务器信息失败，请稍后再试...", $("#editKeywords"));
                 defer.reject("读取服务器信息失败，请稍后再试...");
             }
             return defer.promise();
-        }).fail(function (){
+        }).fail(function () {
             showEditFail("与服务器通讯失败，请稍后再试...", $("#editKeywords"));
             defer.reject("与服务器通讯失败，请稍后再试...");
             return defer.promise();
         });
+    }
 
-//
-//        $.ajax({
-//            url: bp + 'Smserver/functions/keywords/',
-//            type: 'POST',
-//            async: false,
-//            data: "{\"id\":\"" + id + "\",\"keywords\":\"" + keywords + "\"}",
-//            dataType: "json",
-//            contentType: "application/json",
-//            success: function (data) {
-//                var result = data['keywordResult'];
-//                if (result.isSuccess < 0) {
-//                    // 会返回类似的关键字，将他们罗列出来
-//                    var errorMsg = "关键字重复！<br>";
-//                    for (var i = 0; i < result.simlarKeys.length; i++) {
-//                        errorMsg = errorMsg + result.simlarKeys[i];
-//                        if ((i + 1) < result.simlarKeys.length) {
-//                            errorMsg = errorMsg + "<br>";
-//                        }
-//                    }
-//                    showEditFail(errorMsg, $("#editKeywords"));
-//                    return false;
-//                }
-//            }
-//        });
-
+    // 请求查询表格的所有字段用来编辑
+    function queryTableCols4Edit(){
+        $.when(testConnect()).done(function () {
+            isConnectSuccess = true;
+            var htmlStr = '<p style="color: #0000FF">连接成功!</p>';
+            $("#connectResult").html(htmlStr);
+            myAnimate($("#connectResult"), 8, $("#connectResult").attr("style"));
+            initTbodyOfCols(tableDefaultCols);
+        }).fail(function () {
+            isConnectSuccess = false;
+            var htmlStr = '<p style="color: #c9302c">连接失败!</p>';
+            $("#connectResult").html(htmlStr);
+            myAnimate($("#connectResult"), 8, $("#connectResult").attr("style"));
+        });
     }
 
     // 检查数据库连通性 isShowCols 是否需要将查询得到的字段展示出来 true:展示，fasle:不展示
-    function testConnect(isShowCols) {
+    function testConnect() {
         var defer = $.Deferred();
         var errorinfo = '';
         ip = $("#editIP").val();
@@ -561,7 +654,7 @@
             showEditFail(errorinfo, $("#editTablename"));
 
         }
-        if(errorinfo != ''){
+        if (errorinfo != '') {
             defer.reject(errorinfo);
             return defer.promise();
         }
@@ -574,91 +667,38 @@
                 + "\",\"password\":\"" + password
                 + "\",\"tablename\":\"" + tablename + "\"}";
         // 访问服务器
-        $.when(myAjaxPost(bp + 'Smserver/functions/testconnect',jsonStr)).done(function (data) {
+        $.when(myAjaxPost(bp + 'Smserver/functions/testconnect', jsonStr)).done(function (data) {
             if (data != null) {
-                var result = false;
                 var colsNames = data['colNames'];
                 if (colsNames != null) {// 获得了字段信息
+                    tableDefaultCols = colsNames;// 保存到全局变量中
                     isConnectSuccess = true;
-                    var htmlStr = '<p style="color: #0000FF">连接成功!</p>';
-                    $("#connectResult").html(htmlStr);
-                    if (isShowCols){// 需要展示控件
-                        // 初始化colNames相关的控件
-                        initTbodyOfCols(data['colNames']);// 选择控件
-                    }
-                    result = true;
+                    defer.resolve();
                 } else {// 没有获得字段信息
-                    result = false;
-                    if (isShowCols == false) {// 只需告知结果
-                        if (confirm("你设置的数据库连接没有成功，确认继续操作？")) {
-                            result = true;// 当保存时数据库出现问题，设置没有问题时
-                        }
-                    }
-                    $("#colsDIV").hide(2000);
-                }
-                if (isShowCols == true) {
-                    myAnimate($("#connectResult"), 8, $("#connectResult").attr("style"));
-                }
-                if(result == false){
                     defer.reject();
-                }else{
-                    defer.resolve(result);
+                    tableDefaultCols = null;
+//                    if (isShowCols == false) {// 只需告知结果
+//                        if (confirm("你设置的数据库连接没有成功，确认继续操作？")) {
+//                            result = true;// 当保存时数据库出现问题，设置没有问题时
+//                        }
+//                    }
+//                    $("#colsDIV").hide(2000);
                 }
-            }else{
+            } else {
                 isConnectSuccess = false;
                 defer.reject();
             }
             return defer.promise();
         }).fail(function () {// 连接失败
-            isConnectSuccess = false;
-            var htmlStr = '<p style="color: #c9302c">连接失败!</p>';
-            $("#connectResult").html(htmlStr);
             defer.reject();
             return defer.promise();
         });
-
-//
-//        return $.ajax({
-//            url: bp + 'Smserver/functions/testconnect',
-//            type: 'POST',
-//            async: false,
-//            data: jsonData,
-//            dataType: "json",
-//            contentType: "application/json",
-//            success: function (data) {
-//                var colsNames = data['colNames'];
-//                if (colsNames != null) {
-//                    isConnectSuccess = true;
-//                    var htmlStr = '<p style="color: #0000FF">连接成功!</p>';
-//                    $("#connectResult").html(htmlStr);
-//                    if (isShowCols == false) {// 只需告知结果
-//                        return true;
-//                    }
-//                    // 初始化colNames相关的控件
-//                    initTbodyOfCols(data['colNames']);// 选择控件
-//                } else {
-//                    isConnectSuccess = false;
-//                    var htmlStr = '<p style="color: #c9302c">连接失败!</p>';
-//                    $("#connectResult").html(htmlStr);
-//                    if (isShowCols == false) {// 只需告知结果
-//                        if (confirm("数据库连接没有成功，确认继续操作？")) {
-//                            return true;// 当保存时数据库出现问题，设置没有问题时
-//                        } else {
-//                            return false;
-//                        }
-//                    }
-//                    $("#colsDIV").hide(2000);
-//                }
-//                if (isShowCols == true) {
-//                    myAnimate($("#connectResult"), 8, $("#connectResult").attr("style"));
-//                }
-//            },
-//            error: function () {
-//                isConnectSuccess = false;
-//            }
-//        });
     }
 
+    // 获得规则使用类型
+    function getUseType() {
+        usetype = $('input[name="whichType"]:checked ').val();
+    }
 
     // 初始化表字段UI控件 用于编辑字段规则
     function initTbodyOfCols(colNames) {
@@ -708,6 +748,7 @@
     }
 
 
+    // sql字段类
     function sqlField(name, selfName, sort) {
         this.name = name;
         this.selfName = selfName;
@@ -715,7 +756,7 @@
     }
 
     // 当使用sql语句规则时的相关设置
-    function initTbodyOfSQL(fields, isEdit) {
+    function initTbodyOfSQL(fields, isEdit) { // isEdit 是否是编辑，true，则 fields为字符串，false 为数组
         var arr = new Array();
         $("#sqlFields").html("");
         if (isEdit) {// 是编辑功能，说明有内容
@@ -747,6 +788,8 @@
 
     // 检查字段规则
     function testRules() {
+        var defer = $.Deferred();
+        var errorinfo = '';
         // 先获得被选中的要求添加规则的字段
         var sortArray = new Array();// 排序字段
         var readArray = new Array();// 读取字段
@@ -770,7 +813,9 @@
                 // 检查其自定义名称是否填写
                 if (selfColName == null || selfColName == '') {
                     showEditFail("你选择读取字段<b>" + queryfields[i] + "</b>,所以必须填写它的自定义名称。", $("#selfColName" + i));
-                    return false;
+                    defer.reject();
+                    return defer.promise();
+
                 }
                 // 添加进读取字段数组中
                 readArray.push(queryfields[i] + "," + selfColName);
@@ -781,7 +826,9 @@
                 // 为方便告知规则情况，需要了解字段自定义名称
                 if (selfColName == null || selfColName == '') {
                     showEditFail("你选择使用规则，则字段<b>" + queryfields[i] + "</b>必须填写它的自定义名称。", $("#selfColName" + i));
-                    return false;
+                    defer.reject();
+                    return defer.promise();
+
                 }
                 var ruleType = $('input[name="rule' + i + '"]:checked ').val();
                 if (ruleType == 'EQ' || ruleType == 'NE') {// 等于或者不等于的规则
@@ -789,7 +836,8 @@
                     var compareValue = $("#compareValue" + i).val();
                     if (compareValue == null || compareValue == '') {
                         showEditFail("字段<b>" + queryfields[i] + "</b>使用规则，其参照值不能为空！", $("#compareValue" + i));
-                        return false;
+                        defer.reject();
+                        return defer.promise();
                     } else {
                         rulesArray.push(queryfields[i] + "," + selfColName + "," + compareValue + "," + ruleType);
                     }
@@ -797,7 +845,8 @@
                     var aboveValue = $("#above" + i).val();
                     if (aboveValue == null || aboveValue == '') {
                         showEditFail("字段<b>" + queryfields[i] + "</b>使用‘大于’规则，其参照值不能为空！", $("#above" + i));
-                        return false;
+                        defer.reject();
+                        return defer.promise();
                     } else {
                         rulesArray.push(queryfields[i] + "," + selfColName + "," + aboveValue + "," + ruleType);
                     }
@@ -805,7 +854,8 @@
                     var belowValue = $("#below" + i).val();
                     if (belowValue == null || belowValue == '') {
                         showEditFail("字段<b>" + queryfields[i] + "</b>使用‘小于’规则，其参照值不能为空！", $("#below" + i));
-                        return false;
+                        defer.reject();
+                        return defer.promise();
                     } else {
                         rulesArray.push(queryfields[i] + "," + selfColName + "," + belowValue + "," + ruleType);
                     }
@@ -818,17 +868,20 @@
                     var rangedown = $("#rangedown" + i).val();
                     if (rangedown == null || rangedown == '') {
                         showEditFail("字段<b>" + queryfields[i] + "</b>使用‘范围’规则，其下限值不能为空！", $("#rangedown" + i));
-                        return false;
+                        defer.reject();
+                        return defer.promise();
                     }
                     var rangeup = $("#rangeup" + i).val();
                     if (rangeup == null || rangeup == '') {
                         showEditFail("字段<b>" + queryfields[i] + "</b>使用‘范围’规则，其上限值不能为空！", $("#rangeup" + i));
-                        return false;
+                        defer.reject();
+                        return defer.promise();
                     }
                     // 检查大小、不要颠倒
                     if (rangedown == rangeup) {// 大小相同
                         showEditFail("字段<b>" + queryfields[i] + "</b>使用‘范围’规则，其上限值和下限值不能相等！", $("#rangeup" + i));
-                        return false;
+                        defer.reject();
+                        return defer.promise();
                     }
                     if (rangedown > rangeup) {// 自动调整颠倒
                         var t = rangedown;
@@ -867,122 +920,8 @@
             isreturn = "oncase";
         }
         console.log("readfields:" + readfields + ";sortfields:" + sortfields + "; fieldrules:" + fieldrules);
-        return true;
-    }
-
-
-    // 保存SQL规则
-    function saveSQL(queryFileds) {
-        // 获得字段集合
-        var fields = new Array();
-        var fieldsHtml = $("[id*='sqlFieldCol']");
-        for (var i = 0; i < fieldsHtml.length; i++) {
-            fields.push($(fieldsHtml[i]).text());
-        }
-        var errorMsg = '';
-        // 与查询得到的字段进行对比
-        if (queryFileds.length != fields.length) {
-            // 新旧长度不统一
-            // 重新初始化并告知
-            initTbodyOfSQL(queryFileds);
-            if (fields.length == 0) {
-                errorMsg = "您必须对您的查询字段做相应的设置。";
-            } else {
-                errorMsg = "您查询的字段与您设置的字段不一样，请重新设置。";
-            }
-            showEditFail(errorMsg, $("#editSQL"));
-            return false;
-        }
-        var hasNotFound = false;
-        for (var i = 0; i < queryFileds.length; i++) {
-            if (fields.indexOf(queryFileds[i]) == -1) {
-                hasNotFound = true;
-            }
-        }
-
-        if (hasNotFound) {
-            // 重新初始化并告知
-            initTbodyOfSQL(queryFileds);
-            errorMsg = "您查询的字段与您设置的字段不一样，请重新设置。";
-            showEditFail(errorMsg, $("#editSQL"));
-            return false;
-        }
-
-        // 检查非空
-        var nameHtml = $("[id*='sqlFieldName']");
-        var names = new Array();
-        var hasError = false;
-        var errorInfo = '';
-        for (var i = 0; i < nameHtml.length; i++) {
-            var value = $(nameHtml[i]).val();
-            if (value == null || value == '') {
-                hasError = true;
-                errorInfo = errorInfo + "字段(" + fields[i] + ")必须设置名称哦！<br>";
-                myAnimate($(nameHtml[i]), 8, $(nameHtml[i]).attr("style"));
-            } else {
-                names.push(value);
-            }
-        }
-        if (hasError) {
-            showEditFail(errorInfo, null);
-            return false;
-        }
-        // 检查不重复？用户是傻逼吧
-
-        // 顺序
-        var sortHtml = $("[id*='sqlFieldSort']");
-        var sortsValue = new Array();
-        // 检查顺序非空
-        for (var i = 0; i < sortHtml.length; i++) {
-            var sort = $(sortHtml[i]).val();
-            if (sort == null || sort == '') {
-                hasError = true;
-                errorInfo = errorInfo + "字段(" + fields[i] + ")必须设置排列顺序哦！<br>";
-                myAnimate($(sortHtml[i]), 8, $(sortHtml[i]).attr("style"));
-            } else if (isInteger(sort) == false) {
-                hasError = true;
-                errorInfo = errorInfo + "字段(" + fields[i] + ")的排列顺序必须为正整数哦！<br>";
-                myAnimate($(sortHtml[i]), 8, $(sortHtml[i]).attr("style"));
-            } else {
-                sortsValue.push(sort);
-            }
-        }
-        if (hasError) {
-            showEditFail(errorInfo, null);
-            return false;
-        }
-        // 检查顺寻顺序
-        // 不能有一样的顺序
-        // 新建个数组
-        var s = sortsValue;
-        s = s.sort();
-        for (var i = 0; i < s.length; i++) {
-            if (s[i] == s[i + 1]) {
-                hasError = true;
-                var index1 = sortsValue.indexOf(s[i]);
-                sortsValue[index1] = (-sortsValue[index1]);// 置负数 避免下面被找到 我觉得我真牛^_^
-                var index2 = sortsValue.indexOf(s[i + 1]);
-                errorInfo = errorInfo + "字段(" + fields[index1] + ")和(" + fields[index2] + ")的排列顺序不能相同！<br>";
-                myAnimate($(sortHtml[index1]), 8, $(sortHtml[index1]).attr("style"));
-                myAnimate($(sortHtml[index2]), 8, $(sortHtml[index2]).attr("style"));
-            }
-        }
-        if (hasError) {
-            showEditFail(errorInfo, null);
-            return false;
-        }
-//        没有错误，则根据排序结果整理成所需要的数据吧
-        sqlstmt = $("#editSQL").val();
-        sqlfields = "";//qingk
-        for (var i = 0; i < s.length; i++) {
-            var index = sortsValue.indexOf(s[i]);
-            sqlfields = sqlfields + fields[index] + "," + names[index];
-            if ((i + 1) < s.length) {
-                sqlfields = sqlfields + "#";
-            }
-        }
-        hideEditFail();
-        return true;
+        defer.resolve();
+        return defer.promise();
     }
 
 
@@ -1074,7 +1013,7 @@
         });
     }
 
-    // 用来初始化每一个规则字段控件的对象
+    // 用来初始化每一个规则字段控件的类
     function ruleField() {
         this.name;// 字段在数据库中的字段名
         this.selfname = null;// 用户自定义名
@@ -1084,6 +1023,7 @@
         this.rule = null;// 判断条件
     }
 
+    // 初始化规则字段类对象数组
     function initRuleFieldArray(readfields, sortfields, fieldrules) {
         var ruleFields = new Array();
         // 先分析 readfields : id,序号#count_type,计时类型

@@ -25,6 +25,7 @@ public class Function {
     // oncase: 监听几个字段，当其中一个字段达到报警要求时就需要告知
     String sqlstmt;//sql语句
     String sqlfields;// sql查询的字段属性，按照顺序来a,aName#b,bName
+    String usable;// 是否可用
 
     public long getId() {
         return id;
@@ -170,27 +171,11 @@ public class Function {
         this.sqlfields = sqlfields;
     }
 
-    @Override
-    public String toString() {
-        return "Function{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", keywords='" + keywords + '\'' +
-                ", ip='" + ip + '\'' +
-                ", port='" + port + '\'' +
-                ", dbtype='" + dbtype + '\'' +
-                ", dbname='" + dbname + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", tablename='" + tablename + '\'' +
-                ", usetype='" + usetype + '\'' +
-                ", readfields='" + readfields + '\'' +
-                ", sortfields='" + sortfields + '\'' +
-                ", fieldrules='" + fieldrules + '\'' +
-                ", isreturn='" + isreturn + '\'' +
-                ", sqlstmt='" + sqlstmt + '\'' +
-                ", sqlfields='" + sqlfields + '\'' +
-                '}';
+    public String getUsable() {
+        return usable;
+    }
+
+    public void setUsable(String usable) {
+        this.usable = usable;
     }
 }

@@ -471,9 +471,9 @@ public class MainController {
         function.setUsername(p.get("username"));
         function.setPassword(p.get("password"));
         function.setTablename(p.get("tablename"));
-        String sql = p.get("sql");
+        String sqlstmt = p.get("sqlstmt");
         // 检查Sql语句
-        FunctionSqlResult sqlResult = functionService.checkSql(function, sql);
+        FunctionSqlResult sqlResult = functionService.checkSql(function, sqlstmt);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("sqlResult", sqlResult);
         return map;
@@ -507,6 +507,7 @@ public class MainController {
             function.setIsreturn(p.get("isreturn"));
             function.setSqlstmt(p.get("sqlstmt"));
             function.setSqlfields(p.get("sqlfields"));
+            function.setUsable(p.get("usable"));
             if(id>0){// 更新
                 function.setId(id);
                 functionService.update(function);
