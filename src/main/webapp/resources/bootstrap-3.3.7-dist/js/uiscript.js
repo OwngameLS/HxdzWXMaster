@@ -55,3 +55,19 @@ function parseToAbbr(source, limit, description){
     }
 
 }
+
+function showEditDone() {
+    $("#editDoneDiv").show(2000);
+    $("#editDoneDiv").hide(2000);
+}
+function showEditFail(msg, el) {
+    if (el != null) {
+        myAnimate(el, 8, el.attr("style"));
+    }
+    $("#failCause").html(msg);
+    $("#editFailDiv").show(2000);
+
+}
+function hideEditFail() {
+    $("#editFailDiv").hide(2000);
+}

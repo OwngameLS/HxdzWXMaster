@@ -463,6 +463,7 @@ public class MainController {
     @RequestMapping(value = "/functions/sql", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> checkSql(@RequestBody Map<String, String> p) {
+        System.out.println("checkSql...");
         Function function = new Function();
         function.setIp(p.get("ip"));
         function.setPort(p.get("port"));

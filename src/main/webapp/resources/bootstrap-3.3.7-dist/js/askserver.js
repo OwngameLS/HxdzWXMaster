@@ -13,7 +13,7 @@ function myAjaxGet(url){
     }).done(function(data){
         defer.resolve(data);
     }).fail(function(data){
-        defer.resolve(null);
+        defer.resolve(data);
     });
     return defer.promise();
 }
@@ -30,7 +30,7 @@ function myAjaxPost(url, jsonStr){
     }).done(function(data){
         defer.resolve(data);
     }).fail(function(data){
-        defer.resolve(null);
+        defer.resolve(data);
     });
     return defer.promise();
 }
