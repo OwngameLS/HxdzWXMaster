@@ -195,7 +195,7 @@ function initCreateGroup(type) {
 function createGroup() {
     // 检查分组名称是否填写
     var groupname = $("#newGroupName").val().trim();
-    if (groupname == '' || groupname == null) {
+    if (isEmpty(groupname)) {
         // 错误信息
         showEditFail("必须输入组名！", $("#newGroupName"));
         return;
@@ -203,13 +203,13 @@ function createGroup() {
     // 获取分组人员ids
     var pattern = /\d+(,\d+)*/;
     var ids = $("#GroupContactsIds").val().trim();
-    if (ids != "" || ids != undefined) {
+    if (isEmpty(ids) == false) {
         if (pattern.test(ids) == false) {
             showEditFail("联系人中存在非法字符，两个id之间必须用英文逗号  ','  分隔！", $("#GroupContactsIds"));
             return;
         }
     }
-    if (ids == undefined || ids == "") {
+    if (isEmpty(ids)) {
         ids = "empty";
     }
     // 获取联系人操作方式
@@ -239,7 +239,7 @@ function initEditGroup(groupname) {
 function doEditGroup() {
     var groupname = $("#editGroupName").val();
     // 判断新名称不为空
-    if (groupname == "") {
+    if (isEmpty(groupname)) {
         showEditFail("必须输入组名！", $("#editGroupName"));
         return;
     }
@@ -374,7 +374,7 @@ function commitEditContact(action, jsonStr, type) {
 // 查询联系人
 function searchContact() {
     var name = $("#searchContact").val().trim();
-    if (name == "" || name == undefined) {
+    if (isEmpty(name)) {
         myAnimate($("#searchContact"), 8, $("#searchContact").attr("style"));
         return;
     } else {
@@ -387,17 +387,4 @@ function cancleCreateGroup() {
     $("#createGroupDiv").hide(2000);
     hideEditFail();
 }
-//
-// function showEditDone() {
-//     $("#editDoneDiv").show(2000);
-//     $("#editDoneDiv").hide(2000);
-// }
-// function showEditFail(msg, el) {
-//     myAnimate(el, 8, el.attr("style"));
-//     $("#failCause").text(msg);
-//     $("#editFailDiv").show(2000);
-//
-// }
-// function hideEditFail() {
-//     $("#editFailDiv").hide(2000);
-// }
+

@@ -61,6 +61,7 @@ function showEditDone() {
     $("#editDoneDiv").hide(2000);
 }
 function showEditFail(msg, el) {
+    console.log("showEditFail " + el);
     if (el != null) {
         myAnimate(el, 8, el.attr("style"));
     }
@@ -70,4 +71,12 @@ function showEditFail(msg, el) {
 }
 function hideEditFail() {
     $("#editFailDiv").hide(2000);
+}
+
+function isEmpty(value){
+    if(value == null || value == '' || value == undefined || value== 'null' || value == 'undefined'){
+        return true;
+    }else{
+        return false;
+    }
 }

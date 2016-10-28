@@ -100,8 +100,8 @@ function checkSQLStmt() {// 检查sql语句，排除非法操作 有内容且合
     sqlstmt = $("#editSQL").val();
     var errorinfo = '';
     var canAskServer = true;// 是否能够询问服务器了
-    if (sqlstmt == '' || sqlstmt == null) {// 没有填写sql
-        if(usable == 'sql'){// 使用sql规则才需要检查
+    if (isEmpty(sqlstmt)) {// 没有填写sql
+        if(usetype == 'sql'){// 使用sql规则才需要检查
             errorinfo = errorinfo + "您还没有输入SQL语句呢;<br>"
             showEditFail(errorinfo, $("#editSQL"));
         }
@@ -158,11 +158,10 @@ function testSQLPart(isSaving) {
     isSavingSql = isSaving;
     var defer = $.Deferred();
     var canAskServer = false;
-    usetype = getUseType();
+    getUseType();
     canAskServer = checkSQLStmt();// 检查sql语句
     if (canAskServer == false) {// 是否可以询问服务器了
         defer.reject();
-        return defer.promise();
     }else{// 可以访问服务器
         $.when(testConnect(),askServer4SQL()).done(function () {
             // 检查SQL UI上的设置
@@ -197,7 +196,7 @@ function checkSQLFieldsUI() {// 检查出所有设置都不为空，且顺序不
     var errorInfo = '';
     for (var i = 0; i < nameHtml.length; i++) {
         var value = $(nameHtml[i]).val();
-        if (value == null || value == '') {
+        if (isEmpty(value)) {
             hasError = true;
             errorInfo = errorInfo + "字段(" + settedFields[i] + ")必须设置自定义名称哦！<br>";
             myAnimate($(nameHtml[i]), 8, $(nameHtml[i]).attr("style"));
@@ -217,7 +216,7 @@ function checkSQLFieldsUI() {// 检查出所有设置都不为空，且顺序不
     // 检查顺序非空
     for (var i = 0; i < sortHtml.length; i++) {
         var sort = $(sortHtml[i]).val();
-        if (sort == null || sort == '') {
+        if (isEmpty(sort)) {
             hasError = true;
             errorInfo = errorInfo + "字段(" + settedFields[i] + ")必须设置排列顺序哦！<br>";
             myAnimate($(sortHtml[i]), 8, $(sortHtml[i]).attr("style"));
@@ -274,19 +273,19 @@ function testFunctionDescPart() {
     var errorinfo = '';
     // 功能名称
     name = $("#editName").val();
-    if (name == '' || name == null) {
+    if (isEmpty(name)) {
         errorinfo = errorinfo + "必须输入功能名称；<br>";
         showEditFail(errorinfo, $("#editName"));
     }
     // 关键字
     keywords = $("#editKeywords").val();
-    if (keywords == '' || keywords == null) {
+    if (isEmpty(keywords)) {
         errorinfo = errorinfo + "必须输入关键字；<br>";
         showEditFail(errorinfo, $("#editKeywords"));
     }
     // 检查描述
     description = $("#editDescription").val();
-    if (description == '' || description == null) {
+    if (isEmpty(description)) {
         errorinfo = errorinfo + "必须输入描述；<br>";
         showEditFail(errorinfo, $("#editDescription"));
     }
@@ -373,7 +372,7 @@ function testConnect() {
     var defer = $.Deferred();
     var errorinfo = '';
     ip = $("#editIP").val();
-    if (ip == '' || ip == null) {
+    if (isEmpty(ip)) {
         errorinfo = errorinfo + "必须输入IP地址；<br>";
         showEditFail(errorinfo, $("#editIP"));
     }
@@ -396,7 +395,7 @@ function testConnect() {
         }
     }
     port = $("#editPort").val();
-    if (port == '' || port == null) {
+    if (isEmpty(port)) {
         errorinfo = errorinfo + "必须输入端口号；<br>";
         showEditFail(errorinfo, $("#editPort"));
     }
@@ -408,22 +407,22 @@ function testConnect() {
     dbtype = $("#editDbtype  option:selected").val();
 
     dbname = $("#editDbname").val();
-    if (dbname == '' || dbname == null) {
+    if (isEmpty(dbname)) {
         errorinfo = errorinfo + "必须输入数据库名；<br>";
         showEditFail(errorinfo, $("#editDbname"));
     }
     username = $("#editUsername").val();
-    if (username == '' || username == null) {
+    if (isEmpty(username)) {
         errorinfo = errorinfo + "必须输入用户名；<br>";
         showEditFail(errorinfo, $("#editUsername"));
     }
     password = $("#editPassword").val();
-    if (password == '' || password == null) {
+    if (isEmpty(password)) {
         errorinfo = errorinfo + "必须输入密码；<br>";
         showEditFail(errorinfo, $("#editPassword"));
     }
     tablename = $("#editTablename").val();
-    if (tablename == '' || tablename == null) {
+    if (isEmpty(tablename)) {
         errorinfo = errorinfo + "必须输入表名；<br>";
         showEditFail(errorinfo, $("#editTablename"));
 
@@ -543,7 +542,7 @@ function testRules() {
         var selfColName = $("#selfColName" + i).val();
         if (isRead) {
             // 检查其自定义名称是否填写
-            if (selfColName == null || selfColName == '') {
+            if (isEmpty(selfColName)) {
                 showEditFail("你选择读取字段<b>" + queryfields[i] + "</b>,所以必须填写它的自定义名称。", $("#selfColName" + i));
                 defer.reject();
             }
@@ -554,7 +553,7 @@ function testRules() {
         var isusedRule = $("#isusedRule" + i).prop("checked");
         if (isusedRule) {// 使用规则 进一步判断
             // 为方便告知规则情况，需要了解字段自定义名称
-            if (selfColName == null || selfColName == '') {
+            if (isEmpty(selfColName)) {
                 showEditFail("你选择使用规则，则字段<b>" + queryfields[i] + "</b>必须填写它的自定义名称。", $("#selfColName" + i));
                 defer.reject();
             }
@@ -562,7 +561,7 @@ function testRules() {
             if (ruleType == 'EQ' || ruleType == 'NE') {// 等于或者不等于的规则
                 // 检查参照值为合法输入 非空即可
                 var compareValue = $("#compareValue" + i).val();
-                if (compareValue == null || compareValue == '') {
+                if (isEmpty(compareValue)) {
                     showEditFail("字段<b>" + queryfields[i] + "</b>使用规则，其参照值不能为空！", $("#compareValue" + i));
                     defer.reject();
                 } else {
@@ -570,7 +569,7 @@ function testRules() {
                 }
             } else if (ruleType == 'BB') {// 大于
                 var aboveValue = $("#above" + i).val();
-                if (aboveValue == null || aboveValue == '') {
+                if (isEmpty(aboveValue)) {
                     showEditFail("字段<b>" + queryfields[i] + "</b>使用‘大于’规则，其参照值不能为空！", $("#above" + i));
                     defer.reject();
                 } else {
@@ -578,7 +577,7 @@ function testRules() {
                 }
             } else if (ruleType == 'LL') {// 小于
                 var belowValue = $("#below" + i).val();
-                if (belowValue == null || belowValue == '') {
+                if (isEmpty(belowValue)) {
                     showEditFail("字段<b>" + queryfields[i] + "</b>使用‘小于’规则，其参照值不能为空！", $("#below" + i));
                     defer.reject();
                 } else {
@@ -591,12 +590,12 @@ function testRules() {
                 // 两个标值
                 // 检查不能为空
                 var rangedown = $("#rangedown" + i).val();
-                if (rangedown == null || rangedown == '') {
+                if (isEmpty(rangedown)) {
                     showEditFail("字段<b>" + queryfields[i] + "</b>使用‘范围’规则，其下限值不能为空！", $("#rangedown" + i));
                     defer.reject();
                 }
                 var rangeup = $("#rangeup" + i).val();
-                if (rangeup == null || rangeup == '') {
+                if (isEmpty(rangeup)) {
                     showEditFail("字段<b>" + queryfields[i] + "</b>使用‘范围’规则，其上限值不能为空！", $("#rangeup" + i));
                     defer.reject();
                 }
@@ -719,14 +718,14 @@ function edit(tempId) {
             $("#editPassword").val(func.password);
             $("#editTablename").val(func.tablename);
             $("input[name='whichType'][value='" + func.usetype + "']").attr("checked", true);  //根据Value值设置Radio为选中状态
-            if (func.sqlstmt == 'null' || func.sqlstmt == 'undefined' || func.sqlstmt == null) {
+            if (isEmpty(func.sqlstmt)) {
                 $("#editSQL").val('');
             } else {
                 $("#editSQL").val(func.sqlstmt);
                 // 展示字段
                 initTbodyOfSQL(func.sqlfields, true);
             }
-            if (func.readfields == 'null' || func.readfields == 'undefined' || func.readfields == null) {
+            if (isEmpty(func.readfields)) {
                 $("#colsTR").html("");
             } else {
                 initRuleFieldArrayFromDB(func.readfields, func.sortfields, func.fieldrules);
@@ -1019,4 +1018,9 @@ function hideEditDiv(){
     $("#functionEditDiv").hide(2000);
 }
 
-
+// 复制已有方法
+function copyFunction() {
+    id = -1;
+    $("#infos").html("您已经复制了这个功能的信息，但是需要重新编辑相关信息后才能保存。");
+    myAnimate($("#infos"), 8, $("#infos").attr("style"));
+}

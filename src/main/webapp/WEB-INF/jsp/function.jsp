@@ -59,12 +59,13 @@
 
     <div id="functionEditDiv" style="display:none" class="well"><%--编辑定时任务的表格 style="display:none"--%>
         <div class="row">
-            <div class="col-md-4 text-center"></div>
+            <div id="infos" class="col-md-4 text-center"></div>
             <div class="col-md-2 text-center">
                 <b>功能属性编辑</b>
             </div>
             <div id="isUsable" class="col-md-2 text-center"></div>
             <div class="col-md-4 text-center">
+                <button type="button" class="btn btn-primary btn-sm" onclick="copyFunction()">复 制</button>
                 <button type="button" class="btn btn-danger btn-sm" onclick="saveFunctionAnyway()">仅保存</button>
                 <button type="button" class="btn btn-success btn-sm" onclick="saveFunction()">验证并保存</button>
                 <button type="button" class="btn btn-warning btn-sm" onclick="hideEditDiv()">取 消</button>

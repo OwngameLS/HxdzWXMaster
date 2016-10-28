@@ -42,7 +42,7 @@ function initTbodyOfTasks(timertasks) {
 function queryContactsDetailsWithIds() {
     var ids = $("#ttcontactsEdit").val();
     // 判断不为空
-    if (ids == '' || name == undefined) {
+    if (isEmpty(ids)) {
         showEditFail("当前还没有选择联系人！", $("#ttcontactsEdit"));
         hideEditFail();
         return;
@@ -379,17 +379,3 @@ function showContactsDiv() {
 function hideContactsDiv() {
     $("#contactsDiv").hide(2000);
 }
-//
-// function showEditDone() {
-//     $("#editDoneDiv").show(2000);
-//     $("#editDoneDiv").hide(2000);
-// }
-// function showEditFail(msg, el) {
-//     myAnimate(el, 8, el.attr("style"));
-//     $("#failCause").text(msg);
-//     $("#editFailDiv").show(2000);
-//
-// }
-// function hideEditFail() {
-//     $("#editFailDiv").hide(2000);
-// }
