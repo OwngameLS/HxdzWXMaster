@@ -29,7 +29,10 @@ var formerSqlFieldsHTML = "";//前一次编辑的Sql字段结果
 // 因为访问服务器的过程中会得到一些数据，而这些数据并不是每次访问都需要用上，故先保存代用
 var tableDefaultCols = null;// 某一张表的所有字段（服务器返回的）
 var sqlSelectedFields = null;// 自定义sql语句筛选的字段（服务器返回的）
+var sqlFieldsArray = null;// 用来展示sql字段设置部分的数组
+var ruleFieldsArray = null;// 用来展示rule字段设置部分的数组
 
+var isSavingSql = false;//当前是否在保存Sql规则
 
 // 向服务器请求所有方法的信息
 function getFunctions() {
@@ -44,10 +47,9 @@ function getFunctions() {
 function saveFunction() {
     hideEditFail();
     // 利用新的Deferred来做多个同步操作
-
     $.when(testConnect()).done(function () {// 先验证与数据库的链接可用
         $.when(testFunctionDescPart(),// 验证功能描述性设置
-            testSQLPart(),// 验证SQL语句
+            testSQLPart(true),// 验证SQL语句
             testRules()// 验证规则
         ).done(function (data) {
             // 提交
@@ -70,7 +72,7 @@ function saveFunction() {
                 + "\",\"sqlstmt\":\"" + sqlstmt
                 + "\",\"sqlfields\":\"" + sqlfields
                 + "\"}";
-            doAjaxHandleFunction('update', jsonStr, 'POST');
+            doAjaxHandleFunction('update', jsonStr);
         });
     }).fail(function (data2) {
         showEditFail("保存失败！由于未能连接上你设置的数据库，此次保存无法生效。", $("#functionEditDiv"));
@@ -78,7 +80,7 @@ function saveFunction() {
 }
 
 // 处理Functions操作提交给服务器部分
-function doAjaxHandleFunction(action, jsonStr, type) {
+function doAjaxHandleFunction(action, jsonStr) {
     console.log("doAjaxHandleFunction action:" + action);
     $.when(myAjaxPost(bp + 'Smserver/functions/' + action, jsonStr)).done(function (data) {
         var htmlStr = '';
@@ -94,17 +96,23 @@ function doAjaxHandleFunction(action, jsonStr, type) {
 }
 
 // 本地检查SQL语句
-function checkSQLLocally() {// 检查sql语句，排除非法操作
+function checkSQLStmt() {// 检查sql语句，排除非法操作 有内容且合法 就可以访问服务器
+    sqlstmt = $("#editSQL").val();
     var errorinfo = '';
-    if (sqlstmt == '' || sqlstmt == null) {
-        errorinfo = errorinfo + "您还没有输入SQL语句呢;<br>"
-        showEditFail(errorinfo, $("#editSQL"));
+    var canAskServer = true;// 是否能够询问服务器了
+    if (sqlstmt == '' || sqlstmt == null) {// 没有填写sql
+        if(usable == 'sql'){// 使用sql规则才需要检查
+            errorinfo = errorinfo + "您还没有输入SQL语句呢;<br>"
+            showEditFail(errorinfo, $("#editSQL"));
+        }
+        canAskServer = false;// 为空肯定不能询问服务器了
     }
     if (sqlstmt.indexOf("remove") >= 0 || sqlstmt.indexOf("delete") >= 0 || sqlstmt.indexOf("update") >= 0) {
-        errorinfo = errorinfo + "您输入的SQL语句不是查询语句，请检查！<br><b>注意:</b>只能是查询语句！<br>"
+        errorinfo = errorinfo + "您输入的SQL语句不是查询语句，请检查！<br><b>注意:</b>只能是查询语句！如果你不需要使用SQL语句，请不要填写任何内容。<br>"
         showEditFail(errorinfo, $("#editSQL"));
+        canAskServer = false;
     }
-    return errorinfo;
+    return canAskServer;
 }
 
 
@@ -130,9 +138,8 @@ function askServer4SQL() {// 每次都是保证与数据库连接正常
                 sqlSelectedFields = null;// 置空
                 defer.reject(errorMsg);
             } else {// 返回的是列表信息
-                // 先保存起来就行
                 sqlSelectedFields = result.fields;
-                console.log("sqlSelectedFields:" + sqlSelectedFields);
+                initTbodyOfSQL(sqlSelectedFields, false);// 将拿到的数据在UI上展示
                 defer.resolve();
             }
         } else {
@@ -147,92 +154,43 @@ function askServer4SQL() {// 每次都是保证与数据库连接正常
 }
 
 // 测试SQL语句设置部分
-function testSQLPart(isSaveSql) {
+function testSQLPart(isSaving) {
+    isSavingSql = isSaving;
     var defer = $.Deferred();
-    var errorinfo = '';
-    if (isSaveSql == false) {// 按钮触发，必须要测试SQL
-        sqlstmt = $("#editSQL").val();
-        errorinfo = checkSQLLocally();
-        if (errorinfo != '') {
-            defer.reject();
-            return defer.promise();
-        }
+    var canAskServer = false;
+    usetype = getUseType();
+    canAskServer = checkSQLStmt();// 检查sql语句
+    if (canAskServer == false) {// 是否可以询问服务器了
+        defer.reject();
+        return defer.promise();
+    }else{// 可以访问服务器
         $.when(testConnect(),askServer4SQL()).done(function () {
-            console.log("done here...");
-            initTbodyOfSQL(sqlSelectedFields, false);
-            defer.resolve();
+            // 检查SQL UI上的设置
+            if (checkSQLFieldsUI()) {
+                defer.resolve();
+            } else {
+                defer.reject();
+            }
         }).fail(function (error) {
             showEditFail(error, $("#editSQL"));
             defer.reject();
         });
-
-    } else {// 保存function 带来的保存意图
-        usetype = getUseType();
-        if (usetype == 'sql') {// 是要保存sql规则，就需要检查
-            sqlstmt = $("#editSQL").val();
-            errorinfo = checkSQLLocally();
-            if (errorinfo != '') {
-                defer.reject();
-            }
-            $.when(testConnect(),askServer4SQL()).done(function () {
-                // 返回的信息与已设置的进行对比
-                if (saveSQL(sqlSelectedFields)) {
-                    defer.resolve();
-                } else {
-                    defer.reject();
-                }
-            }).fail(function (error) {
-                showEditFail(error, $("#editSQL"));
-                defer.reject();
-            });
-        } else {// 不需要保存sql
-            // 置空
-            sqlstmt = '';
-            sqlfields = '';
-            defer.resolve();
-        }
     }
     return defer.promise();
 }
 
-// 保存SQL规则
-function saveSQL(sqlSelectedFields) {
+// 检查SQL字段设置是否完成
+function checkSQLFieldsUI() {// 检查出所有设置都不为空，且顺序不出错
+    if(isSaving == false){// 当前不是保存Sql规则 设置尚未完成 不做检查
+        return true;
+    }
     // 获得已经设置的字段集合
     var settedFields = new Array();
     var fieldsHtml = $("[id*='sqlFieldCol']");
     for (var i = 0; i < fieldsHtml.length; i++) {
         settedFields.push($(fieldsHtml[i]).text());
     }
-    var errorMsg = '';
-    // 与查询得到的字段进行对比
-    if (sqlSelectedFields.length != settedFields.length) {
-        // 新旧长度不统一
-        // 重新初始化并告知
-        initTbodyOfSQL(sqlSelectedFields, false);
-        if (settedFields.length == 0) {
-            errorMsg = "您必须对您的查询字段做相应的设置。";
-        } else {
-            errorMsg = "您查询的字段与您设置的字段不一样，请重新设置。";
-        }
-        showEditFail(errorMsg, $("#editSQL"));
-        return false;
-    }
-    var hasNotFound = false;
-    for (var i = 0; i < sqlSelectedFields.length; i++) {
-        if (settedFields.indexOf(sqlSelectedFields[i]) == -1) {
-            hasNotFound = true;
-        }
-    }
-
-    if (hasNotFound) {
-        // 重新初始化并告知
-        initTbodyOfSQL(sqlSelectedFields, false);
-        errorMsg = "您查询的字段与您设置的字段不一样，请重新设置。";
-        showEditFail(errorMsg, $("#editSQL"));
-        return false;
-    }
-
-    // 检查非空
+    // 检查自定义名称非空
     var nameHtml = $("[id*='sqlFieldName']");
     var names = new Array();
     var hasError = false;
@@ -241,7 +199,7 @@ function saveSQL(sqlSelectedFields) {
         var value = $(nameHtml[i]).val();
         if (value == null || value == '') {
             hasError = true;
-            errorInfo = errorInfo + "字段(" + settedFields[i] + ")必须设置名称哦！<br>";
+            errorInfo = errorInfo + "字段(" + settedFields[i] + ")必须设置自定义名称哦！<br>";
             myAnimate($(nameHtml[i]), 8, $(nameHtml[i]).attr("style"));
         } else {
             names.push(value);
@@ -275,7 +233,7 @@ function saveSQL(sqlSelectedFields) {
         showEditFail(errorInfo, null);
         return false;
     }
-    // 检查顺寻顺序
+    // 检查顺序
     // 不能有一样的顺序
     // 新建个数组
     var s = sortsValue;
@@ -295,9 +253,9 @@ function saveSQL(sqlSelectedFields) {
         showEditFail(errorInfo, null);
         return false;
     }
-//        没有错误，则根据排序结果整理成所需要的数据吧
+// 没有错误，则根据排序结果整理成所需要的数据吧
     sqlstmt = $("#editSQL").val();
-    sqlfields = "";//qingk
+    sqlfields = "";
     for (var i = 0; i < s.length; i++) {
         var index = sortsValue.indexOf(s[i]);
         sqlfields = sqlfields + settedFields[index] + "," + names[index];
@@ -368,13 +326,15 @@ function testFunctionDescPart() {
 }
 
 // 请求查询表格的所有字段用来编辑
-function queryTableCols4Edit(){
+function askServer4Cols2Edit(){
     $.when(testConnect()).done(function () {
         isConnectSuccess = true;
         var htmlStr = '<p style="color: #0000FF">连接成功!</p>';
         $("#connectResult").html(htmlStr);
         myAnimate($("#connectResult"), 8, $("#connectResult").attr("style"));
-        initTbodyOfCols(tableDefaultCols);
+
+        // initTbodyOfCols(tableDefaultCols);
+        initTbodyOfCols();
     }).fail(function () {
         isConnectSuccess = false;
         var htmlStr = '<p style="color: #c9302c">连接失败!</p>';
@@ -383,7 +343,32 @@ function queryTableCols4Edit(){
     });
 }
 
-// 检查数据库连通性 isShowCols 是否需要将查询得到的字段展示出来 true:展示，fasle:不展示
+// 将有规则的字段和无规则的字段整理成ruleField
+function setRuleFieldsArray(){
+    if(ruleFieldsArray == null){
+        ruleFieldsArray = new Array();
+    }
+    // 由于查询的表格可能发生了变化，因此要剔除原来设置的一些字段
+    var tArray = new Array();
+    for(var i=0;i<ruleFieldsArray.length;i++){
+        var index = $.inArray(ruleFieldsArray[i].name, tableDefaultCols);
+        if(index != -1){// 属于这个表中的字段
+            tArray.push(ruleFieldsArray[i]);
+        }
+    }
+    ruleFieldsArray = tArray;
+    for(var i=0;i<tableDefaultCols.length;i++){
+        var index = indexInRuleFields(tableDefaultCols[i], ruleFieldsArray);
+        if(index <0 ){// 未找到
+            var temp = new ruleField();
+            temp.name = tableDefaultCols[i];
+            ruleFieldsArray.push(temp);
+        }
+    }
+}
+
+
+// 检查数据库连通性
 function testConnect() {
     var defer = $.Deferred();
     var errorinfo = '';
@@ -461,17 +446,13 @@ function testConnect() {
             var colsNames = data['colNames'];
             if (colsNames != null) {// 获得了字段信息
                 tableDefaultCols = colsNames;// 保存到全局变量中
+                // 获得了表格所有字段名称，整理成展示所需的形式
+                setRuleFieldsArray();
                 isConnectSuccess = true;
                 defer.resolve();
             } else {// 没有获得字段信息
                 defer.reject();
                 tableDefaultCols = null;
-//                    if (isShowCols == false) {// 只需告知结果
-//                        if (confirm("你设置的数据库连接没有成功，确认继续操作？")) {
-//                            result = true;// 当保存时数据库出现问题，设置没有问题时
-//                        }
-//                    }
-//                    $("#colsDIV").hide(2000);
             }
         } else {
             isConnectSuccess = false;
@@ -488,54 +469,6 @@ function getUseType() {
     usetype = $('input[name="whichType"]:checked ').val();
 }
 
-// 初始化表字段UI控件 用于编辑字段规则
-function initTbodyOfCols(colNames) {
-    colLength = colNames.length;
-    var htmlStr = '';
-    for (var i = 0; i < colNames.length; i++) {
-        if (i % 2 == 0) {
-            htmlStr = htmlStr
-                + '<div class="row bg-warning">';
-        } else {
-            htmlStr = htmlStr
-                + '<div class="row">';
-        }
-
-        htmlStr = htmlStr
-            + '<div class="col-md-2 text-center"><b id="colName' + i + '">' + colNames[i] + '</b></div>'
-            + '<div class="col-md-3 text-center"><input class="form-control" id="selfColName' + i + '" placeholder="名称"></div>'
-            + '<div class="col-md-3 text-center">'
-            + '<input type="checkbox" id="isSort' + i + '">是'
-            + '<input type="radio" name="sort' + i + '" value="desc" checked>降序 <input type="radio" name="sort' + i + '" value="asc">升序</div>'
-            + '<div class="col-md-2 text-center"><input type="checkbox" id="isread' + i + '" value="' + colNames[i] + '">读取</div>'
-            + '<div class="col-md-2 text-center"><input type="checkbox" id="isusedRule' + i + '">使用规则</div>'
-            + '</div>';
-        if (i % 2 == 0) {
-            htmlStr = htmlStr
-                + '<div class="row bg-warning" style="border-bottom:1px solid #222222;">';
-        } else {
-            htmlStr = htmlStr
-                + '<div class="row" style="border-bottom:1px solid #245580;">';
-        }
-        htmlStr = htmlStr
-            + '<div class="col-md-2 text-center">设置规则</div>'
-            + '<div class="col-md-2 text-center"><input type="radio" name="rule' + i + '" value="EQ" checked>等于 <input type="radio" name="rule' + i + '" value="NE">不等于<br>'
-            + '参照值<input class="form-control" id="compareValue' + i + '" placeholder="该字段的合理值"></div>'
-            + '<div class="col-md-1 text-center"><input type="radio" name="rule' + i + '" value="BB">大于<input class="form-control" id="above' + i + '" placeholder="大于"></div>'
-            + '<div class="col-md-1 text-center"><input type="radio" name="rule' + i + '" value="LL">小于<input class="form-control" id="below' + i + '" placeholder="小于"></div>'
-            + '<div class="col-md-6 text-center" style="border-style: groove">'
-            + '<input type="radio" name="rule' + i + '" value="RG">范围<br>'
-            + '<div class="col-md-4 text-center"><input type="radio" name="range' + i + '" value="BT" checked>在内 <input type="radio" name="range' + i + '" value="OUT">在外 </div>'
-            + '<div class="col-md-4 text-center">下限值:<input class="form-control" id="rangedown' + i + '"></div>'
-            + '<div class="col-md-4 text-center">上限值:<input class="form-control" id="rangeup' + i + '"></div>'
-            + '</div>'
-            + '</div><br>';
-    }
-    $("#colsTR").html(htmlStr);
-    $("#colsDIV").show(2000);
-}
-
-
 // sql字段类
 function sqlField(name, selfName, sort) {
     this.name = name;
@@ -544,10 +477,10 @@ function sqlField(name, selfName, sort) {
 }
 
 // 当使用sql语句规则时的相关设置
-function initTbodyOfSQL(fields, isEdit) { // isEdit 是否是编辑，true，则 fields为字符串，false 为数组
+function initTbodyOfSQL(fields, isFromEdit) { // isFromEdit 是不是从“编辑”按钮过来的，true则 fields为字符串，false 为数组
     var arr = new Array();
     $("#sqlFields").html("");
-    if (isEdit) {// 是编辑功能，说明原来有内容
+    if (isFromEdit) {// 是编辑按钮
         // id,序号#count_type,统计类型
         var t = fields.split("#");
         for (var i = 0; i < t.length; i++) {
@@ -555,18 +488,29 @@ function initTbodyOfSQL(fields, isEdit) { // isEdit 是否是编辑，true，则
             var a = new sqlField(temp[0], temp[1], i + 1);
             arr.push(a);
         }
-    } else {
+    } else {// 是从sql语句得到的字段
+        // 现将新查询得到的组织成数组
         for (var i = 0; i < fields.length; i++) {
             var a = new sqlField(fields[i], '', i + 1);
             arr.push(a);
         }
+        // 将原有的设置保留
+        if(sqlFieldsArray != null){
+            for(var i=0;i<sqlFieldsArray.length;i++){
+                var index = $.inArray(sqlFieldsArray[i].name, fields);
+                if(index != -1){
+                    arr[index].selfName = sqlFieldsArray[i].selfName;
+                }
+            }
+        }
     }
+    sqlFieldsArray = arr;
     var htmlStr = '<div class="row"><div class="col-md-3 text-center">字段名</div><div class="col-md-3 text-center">名称</div><div class="col-md-3 text-center">排序序号</div></div>';
     for (var i = 0; i < arr.length; i++) {
         htmlStr = htmlStr + '<div class="row">';
-        htmlStr = htmlStr + '<div class="col-md-3 text-center"><b id="sqlFieldCol' + i + '" >' + arr[i].name + '</b></div>';
-        htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="sqlFieldName' + i + '" placeholder="名称" value="' + arr[i].selfName + '"></div>';
-        htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="sqlFieldSort' + i + '" placeholder="序号" value="' + arr[i].sort + '"></div>';
+        htmlStr = htmlStr + '<div class="col-md-3 text-center"><b id="sqlFieldCol' + i + '" >' + sqlFieldsArray[i].name + '</b></div>';
+        htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="sqlFieldName' + i + '" placeholder="名称" value="' + sqlFieldsArray[i].selfName + '"></div>';
+        htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="sqlFieldSort' + i + '" placeholder="序号" value="' + sqlFieldsArray[i].sort + '"></div>';
         htmlStr = htmlStr + '</div>';
     }
     $("#sqlFields").html(htmlStr);
@@ -785,7 +729,8 @@ function edit(tempId) {
             if (func.readfields == 'null' || func.readfields == 'undefined' || func.readfields == null) {
                 $("#colsTR").html("");
             } else {
-                initColFromDB(initRuleFieldArray(func.readfields, func.sortfields, func.fieldrules));
+                initRuleFieldArrayFromDB(func.readfields, func.sortfields, func.fieldrules);
+                initTbodyOfCols();
             }
             $("#functionEditDiv").show(3000);
         }
@@ -802,9 +747,9 @@ function ruleField() {
     this.rule = null;// 判断条件
 }
 
-// 初始化规则字段类对象数组
-function initRuleFieldArray(readfields, sortfields, fieldrules) {
-    var ruleFields = new Array();
+// 根据数据库读取的信息 初始化规则字段类对象数组
+function initRuleFieldArrayFromDB(readfields, sortfields, fieldrules) {
+    ruleFieldsArray = new Array();
     // 先分析 readfields : id,序号#count_type,计时类型
     var rf = readfields.split("#");
     for (var i = 0; i < rf.length; i++) {
@@ -813,7 +758,7 @@ function initRuleFieldArray(readfields, sortfields, fieldrules) {
         temp.name = t[0];
         temp.selfname = t[1];
         temp.isread = true;
-        ruleFields.push(temp);
+        ruleFieldsArray.push(temp);
     }
     // 再分析 sortfields : a desc,b asc
     var sf = sortfields.split(",");
@@ -821,15 +766,15 @@ function initRuleFieldArray(readfields, sortfields, fieldrules) {
         var t = sf[i].split(" ");
         var name = t[0];
         var issort = t[1];
-        var index = indexInRuleFields(name, ruleFields);
+        var index = indexInRuleFields(name, ruleFieldsArray);
         if (index == -1) {// 不存在
             // 需要新增加
             var temp = new ruleField();
             temp.name = name;
             temp.issort = issort;
-            ruleFields.push(temp);
+            ruleFieldsArray.push(temp);
         } else {// 存在
-            ruleFields[index].issort = issort;
+            ruleFieldsArray[index].issort = issort;
         }
     }
     // 最后分析 fieldrules : player_statids_home,home,-1,NN#player_statids_guest,guest,-1,NN
@@ -840,7 +785,7 @@ function initRuleFieldArray(readfields, sortfields, fieldrules) {
         var selfname = t[1];
         var comparevalue = t[2];
         var rule = t[3];
-        var index = indexInRuleFields(name, ruleFields);
+        var index = indexInRuleFields(name, ruleFieldsArray);
         if (index == -1) {// 不存在
             // 需要新增加
             var temp = new ruleField();
@@ -848,20 +793,18 @@ function initRuleFieldArray(readfields, sortfields, fieldrules) {
             temp.selfname = selfname;
             temp.comparevalue = comparevalue;
             temp.rule = rule;
-            ruleFields.push(temp);
+            ruleFieldsArray.push(temp);
         } else {// 存在
-            ruleFields[index].name = name;
-            ruleFields[index].selfname = selfname;
-            ruleFields[index].comparevalue = comparevalue;
-            ruleFields[index].rule = rule;
+            ruleFieldsArray[index].name = name;
+            ruleFieldsArray[index].selfname = selfname;
+            ruleFieldsArray[index].comparevalue = comparevalue;
+            ruleFieldsArray[index].rule = rule;
         }
     }
 
-    for (var i = 0; i < ruleFields.length; i++) {
-        console.log(i + ":" + ruleFields[i].name + "," + ruleFields[i].selfname + "," + ruleFields[i].issort + "," + ruleFields[i].isread + "," + ruleFields[i].comparevalue + "," + ruleFields[i].rule);
-    }
-
-    return ruleFields;
+    // for (var i = 0; i < ruleFieldsArray.length; i++) {
+    //     console.log(i + ":" + ruleFieldsArray[i].name + "," + ruleFieldsArray[i].selfname + "," + ruleFieldsArray[i].issort + "," + ruleFieldsArray[i].isread + "," + ruleFieldsArray[i].comparevalue + "," + ruleFieldsArray[i].rule);
+    // }
 }
 
 // 检查某个字段是否在规则对象数组中
@@ -874,10 +817,10 @@ function indexInRuleFields(name, ruleFields) {
     return -1;
 }
 
-// 初始化字段规则设置UI（从数据库读出的字段）
-function initColFromDB(ruleFields) {
+// 初始化字段规则设置UI
+function initTbodyOfCols() {
     var htmlStr = '';
-    for (var i = 0; i < ruleFields.length; i++) {
+    for (var i = 0; i < ruleFieldsArray.length; i++) {
         if (i % 2 == 0) {
             htmlStr = htmlStr
                 + '<div class="row bg-warning">';
@@ -885,18 +828,18 @@ function initColFromDB(ruleFields) {
             htmlStr = htmlStr
                 + '<div class="row">';
         }
-        htmlStr = htmlStr + '<div class="col-md-2 text-center"><b id="colName' + i + '">' + ruleFields[i].name + '</b></div>';
+        htmlStr = htmlStr + '<div class="col-md-2 text-center"><b id="colName' + i + '">' + ruleFieldsArray[i].name + '</b></div>';
 
-        if (ruleFields[i].isread != null || ruleFields[i].rule != null) {
-            htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="selfColName' + i + '" placeholder="名称" value="' + ruleFields[i].selfname + '"></div>'
+        if (ruleFieldsArray[i].isread != null || ruleFieldsArray[i].rule != null) {
+            htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="selfColName' + i + '" placeholder="名称" value="' + ruleFieldsArray[i].selfname + '"></div>'
         } else {
             htmlStr = htmlStr + '<div class="col-md-3 text-center"><input class="form-control" id="selfColName' + i + '" placeholder="名称"></div>'
         }
         htmlStr = htmlStr + '<div class="col-md-3 text-center">';
 
-        if (ruleFields[i].issort != null) {// 需要排序
+        if (ruleFieldsArray[i].issort != null) {// 需要排序
             htmlStr = htmlStr + '<input type="checkbox" id="isSort' + i + '" checked>是';
-            if (ruleFields[i].issort == 'desc') {
+            if (ruleFieldsArray[i].issort == 'desc') {
                 htmlStr = htmlStr + '<input type="radio" name="sort' + i + '" value="desc" checked>降序 <input type="radio" name="sort' + i + '" value="asc">升序</div>';
             } else {
                 htmlStr = htmlStr + '<input type="radio" name="sort' + i + '" value="desc">降序 <input type="radio" name="sort' + i + '" value="asc" checked>升序</div>';
@@ -907,12 +850,12 @@ function initColFromDB(ruleFields) {
                 + '<input type="radio" name="sort' + i + '" value="desc" checked>降序 <input type="radio" name="sort' + i + '" value="asc">升序</div>';
         }
 
-        if (ruleFields[i].isread != null) {// 是否读取
-            htmlStr = htmlStr + '<div class="col-md-2 text-center"><input type="checkbox" id="isread' + i + '" value="' + ruleFields[i].name + '" checked>读取</div>';
+        if (ruleFieldsArray[i].isread != null) {// 是否读取
+            htmlStr = htmlStr + '<div class="col-md-2 text-center"><input type="checkbox" id="isread' + i + '" value="' + ruleFieldsArray[i].name + '" checked>读取</div>';
         } else {
-            htmlStr = htmlStr + '<div class="col-md-2 text-center"><input type="checkbox" id="isread' + i + '" value="' + ruleFields[i].name + '">读取</div>';
+            htmlStr = htmlStr + '<div class="col-md-2 text-center"><input type="checkbox" id="isread' + i + '" value="' + ruleFieldsArray[i].name + '">读取</div>';
         }
-        if (ruleFields[i].rule != null) {// 是否使用规则
+        if (ruleFieldsArray[i].rule != null) {// 是否使用规则
             htmlStr = htmlStr + '<div class="col-md-2 text-center"><input type="checkbox" id="isusedRule' + i + '" checked>使用规则</div>'
                 + '</div>';
         } else {
@@ -926,7 +869,7 @@ function initColFromDB(ruleFields) {
             htmlStr = htmlStr
                 + '<div class="row" style="border-bottom:1px solid #245580;">';
         }
-        if (ruleFields[i].rule == null) {
+        if (ruleFieldsArray[i].rule == null) {
             htmlStr = htmlStr
                 + '<div class="col-md-2 text-center">设置规则</div>'
                 + '<div class="col-md-2 text-center"><input type="radio" name="rule' + i + '" value="EQ" checked>等于 <input type="radio" name="rule' + i + '" value="NE">不等于<br>'
@@ -944,59 +887,59 @@ function initColFromDB(ruleFields) {
             htmlStr = htmlStr + '<div class="col-md-2 text-center">设置规则</div>' + '<div class="col-md-2 text-center">';
             var htmlStrEQ = '', htmlStrNE = '', htmlStrCompareValue = '', htmlStrBB = '', htmlStrLL = '', htmlStrRG = '';
             var isEQorNE = false; // 规则是大于或者小于
-            if (ruleFields[i].rule.indexOf("EQ") == 0) {
+            if (ruleFieldsArray[i].rule.indexOf("EQ") == 0) {
                 isEQorNE = true;
                 htmlStrEQ = '<input type="radio" name="rule' + i + '" value="EQ" checked>等于 ';
             } else {
                 htmlStrEQ = '<input type="radio" name="rule' + i + '" value="EQ">等于 ';
             }
-            if (ruleFields[i].rule.indexOf("NE") == 0) {
+            if (ruleFieldsArray[i].rule.indexOf("NE") == 0) {
                 isEQorNE = true;
                 htmlStrNE = '<input type="radio" name="rule' + i + '" value="NE" checked>不等于<br>';
             } else {
                 htmlStrNE = '<input type="radio" name="rule' + i + '" value="NE">不等于<br>';
             }
             if (isEQorNE) {// 等于或者不等于 的参照值
-                htmlStrCompareValue = '参照值<input class="form-control" id="compareValue' + i + '" placeholder="该字段的合理值" value="' + ruleFields[i].comparevalue + '"></div>';
+                htmlStrCompareValue = '参照值<input class="form-control" id="compareValue' + i + '" placeholder="该字段的合理值" value="' + ruleFieldsArray[i].comparevalue + '"></div>';
             } else {
                 htmlStrCompareValue = '参照值<input class="form-control" id="compareValue' + i + '" placeholder="该字段的合理值"></div>';
             }
 
-            if (ruleFields[i].rule.indexOf("BB") == 0) {
+            if (ruleFieldsArray[i].rule.indexOf("BB") == 0) {
                 htmlStrBB = '<div class="col-md-1 text-center">'
                     + '<input type="radio" name="rule' + i + '" value="BB" checked>大于'
-                    + '<input class="form-control" id="above' + i + '" placeholder="大于" value="' + ruleFields[i].comparevalue + '"></div>';
+                    + '<input class="form-control" id="above' + i + '" placeholder="大于" value="' + ruleFieldsArray[i].comparevalue + '"></div>';
             } else {
                 htmlStrBB = '<div class="col-md-1 text-center">'
                     + '<input type="radio" name="rule' + i + '" value="BB">大于'
                     + '<input class="form-control" id="above' + i + '" placeholder="大于"></div>';
             }
 
-            if (ruleFields[i].rule.indexOf("LL") == 0) {
+            if (ruleFieldsArray[i].rule.indexOf("LL") == 0) {
                 htmlStrLL = '<div class="col-md-1 text-center">'
                     + '<input type="radio" name="rule' + i + '" value="LL" checked>小于'
-                    + '<input class="form-control" id="below' + i + '" placeholder="小于" value="' + ruleFields[i].comparevalue + '"></div>';
+                    + '<input class="form-control" id="below' + i + '" placeholder="小于" value="' + ruleFieldsArray[i].comparevalue + '"></div>';
             } else {
                 htmlStrLL = '<div class="col-md-1 text-center">'
                     + '<input type="radio" name="rule' + i + '" value="LL">小于'
                     + '<input class="form-control" id="below' + i + '" placeholder="小于"></div>';
             }
 
-            if (ruleFields[i].rule.indexOf("RG") == 0) {
+            if (ruleFieldsArray[i].rule.indexOf("RG") == 0) {
                 htmlStrRG = '<div class="col-md-6 text-center" style="border-style: groove">'
                     + '<input type="radio" name="rule' + i + '" value="RG" checked>范围<br>';
                 // 分析RG
                 var rangedown, rangeup;
-                var indexAt = ruleFields[i].rule.indexOf("@");
-                if (ruleFields[i].rule.indexOf("BT") != -1) {// 中间between
-                    var indexBT = ruleFields[i].rule.indexOf("BT");
-                    rangedown = ruleFields[i].rule.substring(indexAt + 1, indexBT);
-                    rangeup = ruleFields[i].rule.substring(indexBT + 2);
+                var indexAt = ruleFieldsArray[i].rule.indexOf("@");
+                if (ruleFieldsArray[i].rule.indexOf("BT") != -1) {// 中间between
+                    var indexBT = ruleFieldsArray[i].rule.indexOf("BT");
+                    rangedown = ruleFieldsArray[i].rule.substring(indexAt + 1, indexBT);
+                    rangeup = ruleFieldsArray[i].rule.substring(indexBT + 2);
                     htmlStrRG = htmlStrRG + '<div class="col-md-4 text-center"><input type="radio" name="range' + i + '" value="BT" checked>在内 <input type="radio" name="range' + i + '" value="OUT">在外 </div>';
                 } else {// 两端 out
-                    var indexOUT = ruleFields[i].rule.indexOf("OUT");
-                    rangedown = ruleFields[i].rule.substring(indexAt + 1, indexOUT);
-                    rangeup = ruleFields[i].rule.substring(indexOUT + 3);
+                    var indexOUT = ruleFieldsArray[i].rule.indexOf("OUT");
+                    rangedown = ruleFieldsArray[i].rule.substring(indexAt + 1, indexOUT);
+                    rangeup = ruleFieldsArray[i].rule.substring(indexOUT + 3);
                     htmlStrRG = htmlStrRG + '<div class="col-md-4 text-center"><input type="radio" name="range' + i + '" value="BT">在内 <input type="radio" name="range' + i + '" value="OUT"  checked>在外 </div>';
                 }
                 htmlStrRG = htmlStrRG + '<div class="col-md-4 text-center">' +

@@ -130,7 +130,7 @@
                 <input class="form-control" id="editTablename" placeholder="读取的表名...">
             </div>
             <div class="col-md-3 text-center">
-                <button type="button" class="btn btn-success btn-sm" onclick="queryTableCols4Edit()">连接测试</button>
+                <button type="button" class="btn btn-success btn-sm" onclick="askServer4Cols2Edit()">连接测试</button>
             </div>
         </div>
 
