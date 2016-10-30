@@ -61,7 +61,7 @@ function initTbodyOfTasks(tasks) {
 }
 
 // 隐藏Modal
-function hideModal(){
+function hideModal() {
     $("#myModal").modal("hide");
 }
 

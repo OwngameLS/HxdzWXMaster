@@ -41,16 +41,16 @@ function cancleWarning(el) {
  * @param limit 长度限制
  * @param description 描述
  */
-function parseToAbbr(source, limit, description){
+function parseToAbbr(source, limit, description) {
     var abbr = '';// 缩略后
-    if(description != null){// 只需要在源上添加说明
+    if (description != null) {// 只需要在源上添加说明
         abbr = source;
-        return '<abbr title="'+description+'">'+abbr+'</abbr>';
+        return '<abbr title="' + description + '">' + abbr + '</abbr>';
     }
-    if(source.length > limit){
+    if (source.length > limit) {
         abbr = source.substring(0, limit) + '...';
-        return '<abbr title="'+source+'">'+abbr+'</abbr>';
-    }else{
+        return '<abbr title="' + source + '">' + abbr + '</abbr>';
+    } else {
         return source;
     }
 
@@ -73,10 +73,10 @@ function hideEditFail() {
     $("#editFailDiv").hide(2000);
 }
 
-function isEmpty(value){
-    if(value == null || value == '' || value == undefined || value== 'null' || value == 'undefined'){
+function isEmpty(value) {
+    if (value == null || value == '' || value == undefined || value == 'null' || value == 'undefined') {
         return true;
-    }else{
+    } else {
         return false;
     }
 }

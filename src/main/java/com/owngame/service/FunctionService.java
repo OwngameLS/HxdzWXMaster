@@ -50,6 +50,7 @@ public interface FunctionService {
 
     /**
      * 通过function得到其对应的结果
+     *
      * @param function
      * @return
      */
@@ -57,6 +58,7 @@ public interface FunctionService {
 
     /**
      * 检查关键词
+     *
      * @param keywords
      * @return
      */
@@ -64,10 +66,11 @@ public interface FunctionService {
 
     /**
      * 检查SQL语句
+     *
      * @param function : 主要用于获取数据库连接
      * @param sql
      * @return
      */
-    FunctionSqlResult checkSql(Function function,String sql);
+    FunctionSqlResult checkSql(Function function, String sql);
 
 }

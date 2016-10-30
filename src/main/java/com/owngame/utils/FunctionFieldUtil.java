@@ -12,15 +12,16 @@ import java.util.ArrayList;
 public class FunctionFieldUtil {
     /**
      * 解析fieldsString
+     *
      * @param fields
      * @return
      */
-    public static ArrayList<FunctionFieldRule> parseFieldsString(String fields){
+    public static ArrayList<FunctionFieldRule> parseFieldsString(String fields) {
         System.out.println("fields:" + fields);
         // a,aName,-1,NN#b,bName,5,BB#c,cName,200,LL#d,dName,abcd,NE@V
         String f[] = fields.split("#");
         ArrayList<FunctionFieldRule> functionFields = new ArrayList<FunctionFieldRule>();
-        for(int i=0;i<f.length;i++){
+        for (int i = 0; i < f.length; i++) {
             FunctionFieldRule functionField = new FunctionFieldRule();
             String ff[] = f[i].split(",");
             functionField.setField(ff[0]);
@@ -35,13 +36,14 @@ public class FunctionFieldUtil {
     /**
      * 解析字段和其自定义名称的字符串
      * a,aName#b,bName#c,cName
+     *
      * @param fieldandSelfaNamesStr
      * @return
      */
-    public static ArrayList<FieldAndSelfName> parseFieldSelfName(String fieldandSelfaNamesStr){
+    public static ArrayList<FieldAndSelfName> parseFieldSelfName(String fieldandSelfaNamesStr) {
         String f[] = fieldandSelfaNamesStr.split("#");
         ArrayList<FieldAndSelfName> fieldAndSelfNames = new ArrayList<FieldAndSelfName>();
-        for(int i=0;i<f.length;i++){
+        for (int i = 0; i < f.length; i++) {
             FieldAndSelfName fieldAndSelfName = new FieldAndSelfName();
             String ff[] = f[i].split(",");
             fieldAndSelfName.setField(ff[0]);

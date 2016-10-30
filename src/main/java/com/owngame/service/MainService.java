@@ -40,11 +40,11 @@ public class MainService implements Serializable {
         String description = "";
         // 查询所要结果
         // 根据所涉及的function来处理
-        for(int i=0;i<functions.length;i++){
+        for (int i = 0; i < functions.length; i++) {
             // 拿到function信息
             Function function = functionDao.queryByName(functions[i]);
-            name = name + function.getName()+"::";
-            description = description + function.getDescription()+"::";
+            name = name + function.getName() + "::";
+            description = description + function.getDescription() + "::";
             contents = function.getDescription() + "的结果::";
             contents = contents + functionService.getFunctionResult(function);
         }

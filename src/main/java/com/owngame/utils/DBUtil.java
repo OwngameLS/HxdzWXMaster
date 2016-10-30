@@ -18,38 +18,38 @@ public class DBUtil {
         String ip = function.getIp();
         String port = function.getPort();
         String dbName = function.getDbname();
-        if(function.getDbtype().contains("MySQL")){
+        if (function.getDbtype().contains("MySQL")) {
             fullName = "com.mysql.jdbc.Driver";
-            url = "jdbc:mysql://"+ip+":"+port+"/"+dbName;
-        }else if(function.getDbtype().contains("Microsoft SQL Server") || function.getDbtype().contains("Sybase") ){
+            url = "jdbc:mysql://" + ip + ":" + port + "/" + dbName;
+        } else if (function.getDbtype().contains("Microsoft SQL Server") || function.getDbtype().contains("Sybase")) {
             fullName = "net.sourceforge.jtds.jdbc.Driver";
-            url = "jdbc:jtds:sqlserver://"+ip+":"+port+"/"+dbName;
-        }else if(function.getDbtype().contains("Oracle")){// thin模式
+            url = "jdbc:jtds:sqlserver://" + ip + ":" + port + "/" + dbName;
+        } else if (function.getDbtype().contains("Oracle")) {// thin模式
             fullName = "oracle.jdbc.driver.OracleDriver";
-            url = "jdbc:oracle:thin:@"+ip+":"+port+":"+dbName;
-        }else if(function.getDbtype().contains("PostgreSQL")){
+            url = "jdbc:oracle:thin:@" + ip + ":" + port + ":" + dbName;
+        } else if (function.getDbtype().contains("PostgreSQL")) {
             fullName = "org.postgresql.Driver";
-            url = "jdbc:postgresql://"+ip+":"+port+"/"+dbName;
-        }else if(function.getDbtype().contains("DB2")){
+            url = "jdbc:postgresql://" + ip + ":" + port + "/" + dbName;
+        } else if (function.getDbtype().contains("DB2")) {
             fullName = "com.ibm.db2.jdbc.app.DB2.Driver";//连接具有DB2客户端的Provider实例
 //            fullName = "com.ibm.db2.jdbc.net.DB2.Driver";//连接不具有DB2客户端的Provider实例
-            url = "jdbc:db2:://"+ip+":"+port+"/"+dbName;
-        }else if(function.getDbtype().contains("Informix")){
+            url = "jdbc:db2:://" + ip + ":" + port + "/" + dbName;
+        } else if (function.getDbtype().contains("Informix")) {
             fullName = "com.informix.jdbc.IfxDriver";
-            url = "jdbc:Informix-sqli://"+ip+":"+port+"/"+dbName+":INFORMIXSER=myserver";
-        }else if(function.getDbtype().contains("JDBC-ODBC")){
+            url = "jdbc:Informix-sqli://" + ip + ":" + port + "/" + dbName + ":INFORMIXSER=myserver";
+        } else if (function.getDbtype().contains("JDBC-ODBC")) {
             fullName = "sun.jdbc.odbc.JdbcOdbcDriver";
             url = "jdbc:odbc:dbsource";
         }
         try {
-            System.out.println("fullName:" + fullName + ";url:" + url + ";username:" + username + ";password:" + password );
+            System.out.println("fullName:" + fullName + ";url:" + url + ";username:" + username + ";password:" + password);
             Class.forName(fullName);
-            conn = DriverManager.getConnection(url,username,password);
+            conn = DriverManager.getConnection(url, username, password);
         } catch (Exception e) {
             conn = null;
             e.printStackTrace();
         }
-         System.out.println("createConn");
+        System.out.println("createConn");
         return conn;
     }
 

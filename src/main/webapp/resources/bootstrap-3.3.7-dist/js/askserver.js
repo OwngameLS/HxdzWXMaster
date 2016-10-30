@@ -4,21 +4,21 @@
  */
 
 // ajaxGET 包装 通过 异步队列 deferred
-function myAjaxGet(url){
+function myAjaxGet(url) {
     console.log("myAjaxGet here...");
     var defer = $.Deferred();
     $.ajax({
         type: 'GET',
         url: url
-    }).done(function(data){
+    }).done(function (data) {
         defer.resolve(data);
-    }).fail(function(data){
+    }).fail(function (data) {
         defer.resolve(data);
     });
     return defer.promise();
 }
 
-function myAjaxPost(url, jsonStr){
+function myAjaxPost(url, jsonStr) {
     console.log("myAjaxPost here...");
     var defer = $.Deferred();
     $.ajax({
@@ -27,9 +27,9 @@ function myAjaxPost(url, jsonStr){
         data: jsonStr,
         dataType: "json",
         contentType: "application/json",
-    }).done(function(data){
+    }).done(function (data) {
         defer.resolve(data);
-    }).fail(function(data){
+    }).fail(function (data) {
         defer.resolve(data);
     });
     return defer.promise();

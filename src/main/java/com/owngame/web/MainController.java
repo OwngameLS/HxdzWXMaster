@@ -419,6 +419,7 @@ public class MainController {
 
     /**
      * 查询数据库设置连接的连通性
+     *
      * @return
      */
     @RequestMapping(value = "/functions/testconnect", method = RequestMethod.POST)
@@ -441,6 +442,7 @@ public class MainController {
 
     /**
      * 查询关键字
+     *
      * @return
      */
     @RequestMapping(value = "/functions/keywords", method = RequestMethod.POST)
@@ -458,6 +460,7 @@ public class MainController {
 
     /**
      * 检查Sql语句
+     *
      * @return
      */
     @RequestMapping(value = "/functions/sql", method = RequestMethod.POST)
@@ -482,6 +485,7 @@ public class MainController {
 
     /**
      * 操作function 增、改、删
+     *
      * @return
      */
     @RequestMapping(value = "/functions/{action}", method = RequestMethod.POST)
@@ -489,7 +493,7 @@ public class MainController {
     public Map<String, Object> handleFunction(@RequestBody Map<String, String> p, @PathVariable("action") String action) {
         System.out.println("handleFunction action:" + action);
         long id = Long.parseLong(p.get("id"));
-        if(action.equals("update")){
+        if (action.equals("update")) {
             Function function = new Function();
             function.setName(p.get("name"));
             function.setDescription(p.get("description"));
@@ -509,13 +513,13 @@ public class MainController {
             function.setSqlstmt(p.get("sqlstmt"));
             function.setSqlfields(p.get("sqlfields"));
             function.setUsable(p.get("usable"));
-            if(id>0){// 更新
+            if (id > 0) {// 更新
                 function.setId(id);
                 functionService.update(function);
-            }else{
+            } else {
                 int ret = functionService.createFunction(function);
             }
-        }else if(action.equals("delete")){
+        } else if (action.equals("delete")) {
             System.out.println("delete....");
             functionService.deleteById(id);
         }

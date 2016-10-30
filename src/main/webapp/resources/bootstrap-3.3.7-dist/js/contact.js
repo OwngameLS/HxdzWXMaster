@@ -25,7 +25,7 @@ function initContactsUIs(displayGroup) {
 
 // 向服务器请求联系人信息 通过分组名称
 function getContactsByGroups(groupname) {
-    $.when(myAjaxGet( bp + 'Smserver/contacts/' + groupname)).done(function (data) {
+    $.when(myAjaxGet(bp + 'Smserver/contacts/' + groupname)).done(function (data) {
         if (data != null) {
             var contacts = data['contacts'];
             initTbodyOfContacts(contacts);
@@ -48,8 +48,8 @@ function initGroupsBody(groups) {
     var html = '';
     for (var i = 0; i < groups.length; i++) {
         html = html + '<tr><td>'
-            +'<button type="button" class="btn btn-danger btn-sm" onclick="getContactsByGroups(\'' + groups[i] + '\')">' + parseToAbbr(groups[i], 5, null) + '</button>  '
-            +'<button type="button" class="btn btn-primary btn-sm" onclick="initEditGroup(\'' + groups[i] + '\')">编辑</button></td></tr>';
+            + '<button type="button" class="btn btn-danger btn-sm" onclick="getContactsByGroups(\'' + groups[i] + '\')">' + parseToAbbr(groups[i], 5, null) + '</button>  '
+            + '<button type="button" class="btn btn-primary btn-sm" onclick="initEditGroup(\'' + groups[i] + '\')">编辑</button></td></tr>';
     }
     $("#groupsBody").html(html);
 }
@@ -359,7 +359,7 @@ function deleteContact() {
 // 提交操作，然后更新页面联系人组件
 function commitEditContact(action, jsonStr, type) {
     var url = bp + 'Smserver/contacts/' + action;
-    $.when(myAjaxPost(url,jsonStr)).done(function (data) {
+    $.when(myAjaxPost(url, jsonStr)).done(function (data) {
         var htmlStr = '';
         if (data != null) {
             showEditDone();

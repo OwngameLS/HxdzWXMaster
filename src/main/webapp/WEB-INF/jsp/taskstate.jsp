@@ -28,7 +28,8 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
-                <div id="mbody" class="modal-body"><img src="../../resources/bootstrap-3.3.7-dist/img/success.png"/>刷新成功</div>
+                <div id="mbody" class="modal-body"><img src="../../resources/bootstrap-3.3.7-dist/img/success.png"/>刷新成功
+                </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
     </div>

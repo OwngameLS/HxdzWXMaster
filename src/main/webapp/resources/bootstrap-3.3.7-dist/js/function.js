@@ -48,6 +48,7 @@ function saveFunction() {
     hideEditFail();
     // 利用新的Deferred来做多个同步操作
     $.when(testConnect()).done(function () {// 先验证与数据库的链接可用
+        console.log("testConnect done, ready to save");
         $.when(testFunctionDescPart(),// 验证功能描述性设置
             testSQLPart(true),// 验证SQL语句
             testRules()// 验证规则
@@ -101,7 +102,7 @@ function checkSQLStmt() {// 检查sql语句，排除非法操作 有内容且合
     var errorinfo = '';
     var canAskServer = true;// 是否能够询问服务器了
     if (isEmpty(sqlstmt)) {// 没有填写sql
-        if(usetype == 'sql'){// 使用sql规则才需要检查
+        if (usetype == 'sql') {// 使用sql规则才需要检查
             errorinfo = errorinfo + "您还没有输入SQL语句呢;<br>"
             showEditFail(errorinfo, $("#editSQL"));
         }
@@ -155,15 +156,24 @@ function askServer4SQL() {// 每次都是保证与数据库连接正常
 
 // 测试SQL语句设置部分
 function testSQLPart(isSaving) {
+    console.log("testSQLPart");
     isSavingSql = isSaving;
     var defer = $.Deferred();
     var canAskServer = false;
     getUseType();
+    if(isSaving == true){// 是保存 且不是选择了sql规则，不判断了
+        if(usetype != 'sql'){
+            defer.resolve();
+            return defer.promise();
+        }
+    }
+    // 不是保存 或者是保存且是使用sql规则
     canAskServer = checkSQLStmt();// 检查sql语句
     if (canAskServer == false) {// 是否可以询问服务器了
         defer.reject();
-    }else{// 可以访问服务器
-        $.when(testConnect(),askServer4SQL()).done(function () {
+    } else {// 可以访问服务器
+        console.log("ask4sql...");
+        $.when(testConnect(), askServer4SQL()).done(function () {
             // 检查SQL UI上的设置
             if (checkSQLFieldsUI()) {
                 defer.resolve();
@@ -180,7 +190,7 @@ function testSQLPart(isSaving) {
 
 // 检查SQL字段设置是否完成
 function checkSQLFieldsUI() {// 检查出所有设置都不为空，且顺序不出错
-    if(isSaving == false){// 当前不是保存Sql规则 设置尚未完成 不做检查
+    if (isSaving == false) {// 当前不是保存Sql规则 设置尚未完成 不做检查
         return true;
     }
     // 获得已经设置的字段集合
@@ -269,6 +279,7 @@ function checkSQLFieldsUI() {// 检查出所有设置都不为空，且顺序不
 
 // 验证功能描述性设置部分
 function testFunctionDescPart() {
+    console.log("testFunctionDescPart");
     var defer = $.Deferred();
     var errorinfo = '';
     // 功能名称
@@ -325,7 +336,7 @@ function testFunctionDescPart() {
 }
 
 // 请求查询表格的所有字段用来编辑
-function askServer4Cols2Edit(){
+function askServer4Cols2Edit() {
     $.when(testConnect()).done(function () {
         isConnectSuccess = true;
         var htmlStr = '<p style="color: #0000FF">连接成功!</p>';
@@ -343,22 +354,22 @@ function askServer4Cols2Edit(){
 }
 
 // 将有规则的字段和无规则的字段整理成ruleField
-function setRuleFieldsArray(){
-    if(ruleFieldsArray == null){
+function setRuleFieldsArray() {
+    if (ruleFieldsArray == null) {
         ruleFieldsArray = new Array();
     }
     // 由于查询的表格可能发生了变化，因此要剔除原来设置的一些字段
     var tArray = new Array();
-    for(var i=0;i<ruleFieldsArray.length;i++){
+    for (var i = 0; i < ruleFieldsArray.length; i++) {
         var index = $.inArray(ruleFieldsArray[i].name, tableDefaultCols);
-        if(index != -1){// 属于这个表中的字段
+        if (index != -1) {// 属于这个表中的字段
             tArray.push(ruleFieldsArray[i]);
         }
     }
     ruleFieldsArray = tArray;
-    for(var i=0;i<tableDefaultCols.length;i++){
+    for (var i = 0; i < tableDefaultCols.length; i++) {
         var index = indexInRuleFields(tableDefaultCols[i], ruleFieldsArray);
-        if(index <0 ){// 未找到
+        if (index < 0) {// 未找到
             var temp = new ruleField();
             temp.name = tableDefaultCols[i];
             ruleFieldsArray.push(temp);
@@ -369,6 +380,7 @@ function setRuleFieldsArray(){
 
 // 检查数据库连通性
 function testConnect() {
+    console.log("testConnect...");
     var defer = $.Deferred();
     var errorinfo = '';
     ip = $("#editIP").val();
@@ -494,10 +506,10 @@ function initTbodyOfSQL(fields, isFromEdit) { // isFromEdit 是不是从“编�
             arr.push(a);
         }
         // 将原有的设置保留
-        if(sqlFieldsArray != null){
-            for(var i=0;i<sqlFieldsArray.length;i++){
+        if (sqlFieldsArray != null) {
+            for (var i = 0; i < sqlFieldsArray.length; i++) {
                 var index = $.inArray(sqlFieldsArray[i].name, fields);
-                if(index != -1){
+                if (index != -1) {
                     arr[index].selfName = sqlFieldsArray[i].selfName;
                 }
             }
@@ -519,7 +531,14 @@ function initTbodyOfSQL(fields, isFromEdit) { // isFromEdit 是不是从“编�
 
 // 检查字段规则
 function testRules() {
+    console.log("testRules");
     var defer = $.Deferred();
+    getUseType();
+    if(usetype != 'rules'){// 不用保存规则
+        defer.resolve();
+        return defer.promise();
+    }
+
     var errorinfo = '';
     // 先获得被选中的要求添加规则的字段
     var sortArray = new Array();// 排序字段
@@ -650,8 +669,13 @@ function testRules() {
 function initTbodyOfFunctions(functions) {
     var htmlStr = '';
     for (var i = 0; i < functions.length; i++) {
-        htmlStr = htmlStr + '<tr><td>' + functions[i].id
-            + '</td><td>' + functions[i].name
+        htmlStr = htmlStr + '<tr><td>' ;
+            if(functions[i].usable == 'not'){
+                htmlStr = htmlStr + '<span class="label label-danger">'+ functions[i].id + '</span>';
+            }else {
+                htmlStr = htmlStr + functions[i].id;
+            }
+        htmlStr = htmlStr + '</td><td>' + functions[i].name
             + '</td><td>' + functions[i].keywords
             + '</td><td>' + parseToAbbr(functions[i].description, 10, null)
             + '</td><td>'
@@ -707,6 +731,11 @@ function edit(tempId) {
             var func = data['function'];
             // tempId = func.id;
             // 依次初始化相关控件
+            if(func.usable == 'not'){
+                $("#isUsable").html('<span class="label label-danger">不可用</span>');
+            }else{
+                $("#isUsable").html('<span class="label label-primary">可 用</span>');
+            }
             $("#editName").val(func.name);
             $("#editKeywords").val(func.keywords);
             $("#editDescription").val(func.description);
@@ -1014,7 +1043,7 @@ function checkIP(value) {
     }
 }
 
-function hideEditDiv(){
+function hideEditDiv() {
     $("#functionEditDiv").hide(2000);
 }
 
