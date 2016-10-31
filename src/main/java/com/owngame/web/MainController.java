@@ -123,7 +123,6 @@ public class MainController {
     @RequestMapping(value = "/askServer/{actionName}", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> handleAsk(@PathVariable("actionName") String actionName) {
-        // TODO 根据actionName来决定查询什么
         return answerService.handleAsk(actionName);
     }
     //
