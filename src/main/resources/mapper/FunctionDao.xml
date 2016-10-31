@@ -20,7 +20,7 @@
     </select>
 
     <select id="checkKeywords" resultType="Function" parameterType="String">
-        select * from function where keywords like #{keywords}
+        select * from function where (keywords like #{keywords}) and (usable = 'yes')
     </select>
 
     <insert id="insert" parameterType="Function">

@@ -44,8 +44,10 @@ function getFunctions() {
 }
 
 // 保存function
-function saveFunction() {
+function saveFunction(action) {
+    isSavingSql = true;
     hideEditFail();
+    if(action > 0){
     // 利用新的Deferred来做多个同步操作
     $.when(testConnect()).done(function () {// 先验证与数据库的链接可用
         console.log("testConnect done, ready to save");
@@ -72,12 +74,55 @@ function saveFunction() {
                 + "\",\"isreturn\":\"" + isreturn
                 + "\",\"sqlstmt\":\"" + sqlstmt
                 + "\",\"sqlfields\":\"" + sqlfields
+                + "\",\"usable\":\"" + "yes"
                 + "\"}";
             doAjaxHandleFunction('update', jsonStr);
         });
     }).fail(function (data2) {
         showEditFail("保存失败！由于未能连接上你设置的数据库，此次保存无法生效。", $("#functionEditDiv"));
     });
+    }else {
+        // 依次读取相关控件的值
+        usable = 'no';
+        name = $("#editName").val();
+        keywords = $("#editKeywords").val();
+        description = $("#editDescription").val();
+        ip = $("#editIP").val();
+        port = $("#editPort").val();
+        dbtype = $("#editDbtype option:selected").val();
+        dbname = $("#editDbname").val();
+        username = $("#editUsername").val();
+        password = $("#editPassword").val();
+        tablename = $("#editTablename").val();
+        usetype = $('input[name="whichType"]:checked ').val();
+        sqlstmt = $("#editSQL").val();
+        // 检查sql字段设置
+        checkSQLFieldsUI();
+        // 检查规则设置
+        testRules();
+        // 提交
+        var jsonStr = "{\"id\":\"" + id
+            + "\",\"name\":\"" + name
+            + "\",\"description\":\"" + description
+            + "\",\"keywords\":\"" + keywords
+            + "\",\"ip\":\"" + ip
+            + "\",\"port\":\"" + port
+            + "\",\"dbtype\":\"" + dbtype
+            + "\",\"dbname\":\"" + dbname
+            + "\",\"username\":\"" + username
+            + "\",\"password\":\"" + password
+            + "\",\"tablename\":\"" + tablename
+            + "\",\"usetype\":\"" + usetype
+            + "\",\"readfields\":\"" + readfields
+            + "\",\"sortfields\":\"" + sortfields
+            + "\",\"fieldrules\":\"" + fieldrules
+            + "\",\"isreturn\":\"" + isreturn
+            + "\",\"sqlstmt\":\"" + sqlstmt
+            + "\",\"sqlfields\":\"" + sqlfields
+            + "\",\"usable\":\"" + "no"
+            + "\"}";
+        doAjaxHandleFunction('update', jsonStr);
+    }
 }
 
 // 处理Functions操作提交给服务器部分
@@ -190,7 +235,7 @@ function testSQLPart(isSaving) {
 
 // 检查SQL字段设置是否完成
 function checkSQLFieldsUI() {// 检查出所有设置都不为空，且顺序不出错
-    if (isSaving == false) {// 当前不是保存Sql规则 设置尚未完成 不做检查
+    if (isSavingSql == false) {// 当前不是保存Sql规则 设置尚未完成 不做检查
         return true;
     }
     // 获得已经设置的字段集合
@@ -387,6 +432,8 @@ function testConnect() {
     if (isEmpty(ip)) {
         errorinfo = errorinfo + "必须输入IP地址；<br>";
         showEditFail(errorinfo, $("#editIP"));
+        defer.reject();
+        return defer.promise();
     }
     var ignoreIp = false;
     if (checkIpisHost(ip)) {
@@ -670,14 +717,14 @@ function initTbodyOfFunctions(functions) {
     var htmlStr = '';
     for (var i = 0; i < functions.length; i++) {
         htmlStr = htmlStr + '<tr><td>' ;
-            if(functions[i].usable == 'not'){
-                htmlStr = htmlStr + '<span class="label label-danger">'+ functions[i].id + '</span>';
+            if(functions[i].usable == 'no'){
+                htmlStr = htmlStr + '<span class="label label-danger">'+ parseToAbbr(functions[i].id,0,'此功能尚不可用') + '</span>';
             }else {
                 htmlStr = htmlStr + functions[i].id;
             }
-        htmlStr = htmlStr + '</td><td>' + functions[i].name
-            + '</td><td>' + functions[i].keywords
-            + '</td><td>' + parseToAbbr(functions[i].description, 10, null)
+        htmlStr = htmlStr + '</td><td>' +  parseToAbbr(functions[i].name, 5, null)
+            + '</td><td>' + parseToAbbr(functions[i].keywords, 10, null)
+            + '</td><td>' + parseToAbbr(functions[i].description, 30, null)
             + '</td><td>'
             + '<button type="button" class="btn btn-warning btn-sm" onclick="detail(\'' + functions[i].id + '\')">详情</button> '
             + '<button type="button" class="btn btn-primary btn-sm" onclick="edit(\'' + functions[i].id + '\')">编辑</button> '
@@ -715,7 +762,11 @@ function detail(id) {
                 + '<b>是否返回: </b>' + func.isreturn + '<br>'// 读取结果是否返回的规则（由于需要涉及到预警功能，所以需要定义规则）
                 + '<b>sql语句: </b>' + func.sqlstmt + '<br>'//sql语句
                 + '<b>sql读取字段: </b>' + func.sqlfields + '<br>';// sql查询的字段属性，按照顺序来a,aName#b,bName
-
+            if(func.usable == 'no'){
+                $("#myModalLabel").html('功能详情'+'<span class="label label-danger">此功能不可用</span>');
+            }else{
+                $("#myModalLabel").html('功能详情');
+            }
         } else {
             htmlStr = '获取失败！<img src="../../resources/bootstrap-3.3.7-dist/img/error.png" />';
         }
@@ -729,9 +780,8 @@ function edit(tempId) {
         var htmlStr = '';
         if (data != null) {
             var func = data['function'];
-            // tempId = func.id;
             // 依次初始化相关控件
-            if(func.usable == 'not'){
+            if(func.usable == 'no'){
                 $("#isUsable").html('<span class="label label-danger">不可用</span>');
             }else{
                 $("#isUsable").html('<span class="label label-primary">可 用</span>');
@@ -764,6 +814,8 @@ function edit(tempId) {
         }
     });
 }
+
+
 
 // 用来初始化每一个规则字段控件的类
 function ruleField() {
@@ -1044,6 +1096,7 @@ function checkIP(value) {
 }
 
 function hideEditDiv() {
+    hideEditFail();
     $("#functionEditDiv").hide(2000);
 }
 
@@ -1052,4 +1105,12 @@ function copyFunction() {
     id = -1;
     $("#infos").html("您已经复制了这个功能的信息，但是需要重新编辑相关信息后才能保存。");
     myAnimate($("#infos"), 8, $("#infos").attr("style"));
+}
+// 保存设置
+function saveFunctionAnyway(){
+    var htmlStr = ' 当前编辑的内容，将不进行正确性、可用性的校验，保存后的功能也无法使用。';
+    htmlStr = htmlStr + '<br><button type="button" class="btn btn-warning btn-sm" data-dismiss="modal" onclick="saveFunction(-1)">确认</button>';
+    $("#myModalLabel").html('<h1 style="color: #FF0000">仅保存？</h1>');
+    $("#mbody").html(htmlStr);
+    $("#myModal").modal("show");
 }

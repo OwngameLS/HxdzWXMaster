@@ -411,7 +411,12 @@ public class MainController {
     @RequestMapping(value = "/functions/get/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> queryFunctionsById(@PathVariable("id") long id) {
-        Function function = functionService.getById(id);
+        Function function = null;
+        if(id == -1){
+            function = new Function();
+        } else {
+            function = functionService.getById(id);
+        }
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("function", function);
         return map;
@@ -517,6 +522,7 @@ public class MainController {
                 function.setId(id);
                 functionService.update(function);
             } else {
+                function.setId(0);
                 int ret = functionService.createFunction(function);
             }
         } else if (action.equals("delete")) {

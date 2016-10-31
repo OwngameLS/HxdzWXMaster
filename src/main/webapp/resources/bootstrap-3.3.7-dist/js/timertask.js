@@ -228,21 +228,23 @@ function editFunctions() {
             // 整理成表格展示
             var htmlStr = '';
             for (var i = 0; i < functions.length; i++) {
-                htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="functionsCheckbox" value="' + functions[i].name + '"';
-                var isInSelected = false;
-                for (var j = 0; j < selectedFunctions.length; j++) {
-                    if (selectedFunctions[j] == functions[i].name) {
-                        isInSelected = true;
-                        break;
+                if(functions[i].usable == "yes"){
+                    htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="functionsCheckbox" value="' + functions[i].name + '"';
+                    var isInSelected = false;
+                    for (var j = 0; j < selectedFunctions.length; j++) {
+                        if (selectedFunctions[j] == functions[i].name) {
+                            isInSelected = true;
+                            break;
+                        }
                     }
+                    if (isInSelected) {
+                        htmlStr = htmlStr + 'checked';
+                    }
+                    htmlStr = htmlStr + '> ' + functions[i].id + '</input>'
+                        + '</td><td>' + parseToAbbr(functions[i].name, 10, null)
+                        + '</td><td>' + parseToAbbr(functions[i].description, 40, null)
+                        + '</td></tr>';
                 }
-                if (isInSelected) {
-                    htmlStr = htmlStr + 'checked';
-                }
-                htmlStr = htmlStr + '> ' + functions[i].id + '</input>'
-                    + '</td><td>' + functions[i].name
-                    + '</td><td>' + functions[i].description
-                    + '</td></tr>';
             }
             $("#functionsBody").html(htmlStr);
             // 取消全选的勾选

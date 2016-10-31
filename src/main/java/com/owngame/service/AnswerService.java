@@ -2,7 +2,9 @@ package com.owngame.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.owngame.dao.FunctionDao;
 import com.owngame.dao.TaskDao;
+import com.owngame.entity.Function;
 import com.owngame.entity.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class AnswerService {
 
     @Autowired
     TaskDao taskDao;
+    @Autowired
+    FunctionDao functionDao;
 
     /**
      * 处理主动询问
@@ -56,6 +60,15 @@ public class AnswerService {
             // keyword1代表查询关键词
             // 13581695827为手机号，用于返回
             // mobile 代表是手机端请求逻辑，因为涉及的到微信公众号请求，用于区分
+//            根据关键字查询功能
+            String keywords[] = strings[0].split(",");
+            ArrayList<String> functions = new ArrayList<String>();
+            for (int i=0; i<keywords.length;i++){
+                Function function = functionDao.queryByKeywords(keywords[i]);
+                functions.add(function.getName());
+            }
+
+
             System.out.println("return AskResult");
         }
         return map;

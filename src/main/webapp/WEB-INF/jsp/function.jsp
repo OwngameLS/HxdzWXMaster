@@ -185,7 +185,7 @@
         </div>
     </div>
 
-    <button type="button" class="btn btn-warning btn-sm" onclick="initEditTimerTask(-1)">新建任务</button>
+    <button type="button" class="btn btn-warning btn-sm" onclick="edit(-1)">新建任务</button>
     <div id="functionsDIV" style="width:100%;float:left;overflow:scroll; height:400px;" class="well">
         <table class="table table-hover table-bordered text-center">
             <thead>

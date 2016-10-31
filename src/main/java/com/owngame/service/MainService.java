@@ -43,10 +43,12 @@ public class MainService implements Serializable {
         for (int i = 0; i < functions.length; i++) {
             // 拿到function信息
             Function function = functionDao.queryByName(functions[i]);
-            name = name + function.getName() + "::";
-            description = description + function.getDescription() + "::";
-            contents = function.getDescription() + "的结果::";
-            contents = contents + functionService.getFunctionResult(function);
+            if(function.getUsable().equals("yes")){
+                name = name + function.getName() + "::";
+                description = description + function.getDescription() + "::";
+                contents = description + "的结果::";
+                contents = contents + functionService.getFunctionResult(function);
+            }
         }
         String receivers = "";// 因为上面得到的是ids，这里就查询成对应的手机号码吧
         String receiversArr[] = receiversIds.split(",");
@@ -57,15 +59,17 @@ public class MainService implements Serializable {
             }
         }
         // 将结果组织成Task
-        Task task = new Task();
-        task.setName(name);
-        task.setDescription(description);
-        task.setContent(contents);
-        task.setReceivers(receivers);
-        task.setState(Task.STATE_WAITING);
-        task.setCreateTime(new Date(System.currentTimeMillis()));
-        // 插入数据库
-        taskDao.insert(task);
+        if(contents.equals("") == false){// 查询结果不为空则组织成任务
+            Task task = new Task();
+            task.setName(name);
+            task.setDescription(description);
+            task.setContent(contents);
+            task.setReceivers(receivers);
+            task.setState(Task.STATE_WAITING);
+            task.setCreateTime(new Date(System.currentTimeMillis()));
+            // 插入数据库
+            taskDao.insert(task);
+        }
     }
 
     public void testMethod2(String triggerName) {
