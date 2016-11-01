@@ -122,7 +122,7 @@
         </table>
     </div>
 
-    <div id="contactsDiv" class="bg-success" style="display: none;text-align:center">
+    <div id="contactsDiv" class="well" style="display: none;text-align:center">
         <div style="width: 20%;float:left;">
             <button type="button" class="btn btn-warning btn-sm" onclick="hideContactsDiv()">取消编辑</button>
         </div>

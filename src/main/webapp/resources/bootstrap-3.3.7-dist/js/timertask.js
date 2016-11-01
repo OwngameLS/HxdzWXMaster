@@ -68,7 +68,7 @@ function showContactsUI() {
     // 显示联系人信息表格div
     showContactsDiv();
     // 初始化分组表格
-    initTbodyOfGroups();
+    initTbodyOfGroups(true);
 }
 
 // 初始化联系人详情UI控件
@@ -88,10 +88,12 @@ function initTbodyOfContacts(contacts) {
 }
 
 // 初始化联系人组UI控件
-function initTbodyOfGroups() {
-    var htmlStr = '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="queryContactsDetailsWithIds()">已选人员</button></td></tr>';
+function initTbodyOfGroups(showSelected) {
     $.when(myAjaxGet(bp + 'Smserver/contacts/groups')).done(function (data) {
-        var htmlStr = '';
+        var htmlStr = "";
+        if(showSelected){// 需要展示已选择的
+            htmlStr = '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="queryContactsDetailsWithIds()">已选人员</button></td></tr>';
+        }
         if (data != null) {
             var groups = data['groups'];
             for (var i = 0; i < groups.length; i++) {
@@ -228,23 +230,27 @@ function editFunctions() {
             // 整理成表格展示
             var htmlStr = '';
             for (var i = 0; i < functions.length; i++) {
-                if(functions[i].usable == "yes"){
-                    htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="functionsCheckbox" value="' + functions[i].name + '"';
-                    var isInSelected = false;
-                    for (var j = 0; j < selectedFunctions.length; j++) {
-                        if (selectedFunctions[j] == functions[i].name) {
-                            isInSelected = true;
-                            break;
-                        }
+                htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="functionsCheckbox" value="' + functions[i].name + '"';
+                var isInSelected = false;
+                for (var j = 0; j < selectedFunctions.length; j++) {
+                    if (selectedFunctions[j] == functions[i].name) {
+                        isInSelected = true;
+                        break;
                     }
-                    if (isInSelected) {
-                        htmlStr = htmlStr + 'checked';
-                    }
-                    htmlStr = htmlStr + '> ' + functions[i].id + '</input>'
-                        + '</td><td>' + parseToAbbr(functions[i].name, 10, null)
-                        + '</td><td>' + parseToAbbr(functions[i].description, 40, null)
-                        + '</td></tr>';
                 }
+                if (isInSelected) {
+                    htmlStr = htmlStr + 'checked';
+                }
+                if (functions[i].usable == "no") {
+                    htmlStr = htmlStr + ' disabled> ' + parseToAbbr(functions[i].id, 10, '此功能暂时不能使用，请联系管理员解决。') + '</input>';
+                } else {
+                    htmlStr = htmlStr + '> ' + functions[i].id + '</input>';
+                }
+                htmlStr = htmlStr
+                    + '</td><td>' + parseToAbbr(functions[i].name, 10, null)
+                    + '</td><td>' + parseToAbbr(functions[i].description, 40, null)
+                    + '</td></tr>';
+
             }
             $("#functionsBody").html(htmlStr);
             // 取消全选的勾选

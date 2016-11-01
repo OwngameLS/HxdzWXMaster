@@ -36,7 +36,7 @@
                     <li><a href="<%=basePath%>Smserver/view/contact" target="display">通讯录</a></li>
                     <li><a href="<%=basePath%>Smserver/view/function" target="display">功 能</a></li>
                     <%--target指的是name--%>
-                    <li><a href="#">关 于</a></li>
+                    <li><a href="<%=basePath%>Smserver/view/sms" target="display">短信群发</a></li>
                 </ul>
                 <%--<form class="navbar-form navbar-left" role="search">
                     <div class="form-group">

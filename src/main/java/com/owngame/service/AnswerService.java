@@ -24,6 +24,8 @@ public class AnswerService {
     TaskDao taskDao;
     @Autowired
     FunctionDao functionDao;
+    @Autowired
+    MainService mainService;
 
     /**
      * 处理主动询问
@@ -56,20 +58,13 @@ public class AnswerService {
                 map.put("tasks", json);
             }
         } else {
-            // 有可能是主动查询的 比如 keyword1##13581695827##mobile
+            // 有可能是主动查询的 比如 keyword1##13581695827##sms
             // keyword1代表查询关键词
             // 13581695827为手机号，用于返回
-            // mobile 代表是手机端请求逻辑，因为涉及的到微信公众号请求，用于区分
+            // sms 代表是手机端请求逻辑，因为涉及的到微信公众号请求，用于区分
 //            根据关键字查询功能
-            String keywords[] = strings[0].split(",");
-            ArrayList<String> functions = new ArrayList<String>();
-            for (int i=0; i<keywords.length;i++){
-                Function function = functionDao.queryByKeywords(keywords[i]);
-                functions.add(function.getName());
-            }
-
-
-            System.out.println("return AskResult");
+            mainService.handleAsk(strings[0], strings[1], strings[2]);
+            map.put("type", "StateOK");
         }
         return map;
     }
