@@ -16,7 +16,7 @@ public interface FunctionDao {
 
     Function queryByName(String name);
 
-    Function queryByKeywords(String keywords);
+    ArrayList<Function> queryByKeywords(String keywords);
 
     Function queryById(long id);
 

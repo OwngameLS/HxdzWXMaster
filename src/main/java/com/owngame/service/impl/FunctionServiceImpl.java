@@ -46,7 +46,28 @@ public class FunctionServiceImpl implements FunctionService {
     }
 
     public Function getByKeywords(String keywords) {
-        return functionDao.queryByKeywords(keywords);
+        // 不会在SQL语句中筛选，先将所有包含关键字的方法都找
+        ArrayList<Function> functions = functionDao.queryByKeywords("%"+keywords+"%");
+        // 由于function 关键字不会重复，找到就返回
+        if(functions == null){
+            return null;
+        }else if(functions.size() == 0){
+            return null;
+        }
+        String similarKeys = "";
+        for(int i=0;i<functions.size();i++){
+            similarKeys += functions.get(i).getKeywords() + ",";
+            String keys[] = functions.get(i).getKeywords().split(",");
+            for(int j=0;j<keys.length;j++){
+                if(keys[j].equals(keywords)){
+                    return functions.get(i);// 找到就返回
+                }
+            }
+        }
+        // 运行到这里都没有找到，说明只有类似的关键字，没有同样的
+        Function function = new Function();// id 为-1，说明不可用
+        function.setDescription(similarKeys);
+        return function;
     }
 
     public Function getById(long id) {

@@ -26,6 +26,7 @@ public class AnswerService {
     FunctionDao functionDao;
     @Autowired
     MainService mainService;
+
     /**
      * 处理主动询问
      *
@@ -57,13 +58,12 @@ public class AnswerService {
                 map.put("tasks", json);
             }
         } else {
-            // 有可能是主动查询的 比如 keyword1##13581695827##mobile
+            // 有可能是主动查询的 比如 keyword1##13581695827##sms
             // keyword1代表查询关键词
             // 13581695827为手机号，用于返回
-            // mobile 代表是手机端请求逻辑，因为涉及的到微信公众号请求，用于区分
+            // sms 代表是手机端请求逻辑，因为涉及的到微信公众号请求，用于区分
 //            根据关键字查询功能
-            mainService.handleAsk(strings[0], strings[1]);
-            System.out.println("return AskResult");
+            mainService.handleAsk(strings[0], strings[1], strings[2]);
             map.put("type", "StateOK");
         }
         return map;
@@ -96,4 +96,12 @@ public class AnswerService {
         return taskDao.queryByState(0);
     }
 
+    /**
+     * 查询定时任务
+     */
+
+    private void queryTimeTask() {
+        //1. 先检查定时规则
+        //2. 根据定时规则生成新任务 TODO 生成新任务的逻辑待编写（通用）
+    }
 }

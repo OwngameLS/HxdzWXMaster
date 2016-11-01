@@ -21,15 +21,13 @@ public class MyQuartzJobBean extends QuartzJobBean {
         MainService mainService = getApplicationContext(jobexecutioncontext).getBean("mainService",
                 MainService.class);
         // 因为我设计的就是一个任务一个trigger，所以相应的数据也放在trigger中
-        mainService.handleMethod(triggerName, trigger.getJobDataMap());
+        mainService.handleTriggerAsk(triggerName, trigger.getJobDataMap());
     }
 
     private ApplicationContext getApplicationContext(final JobExecutionContext jobexecutioncontext) {
         try {
-//            System.out.println("wori nige nidaodi gaobugao 222222!!!");
             return (ApplicationContext) jobexecutioncontext.getScheduler().getContext().get("applicationContextKey");
         } catch (SchedulerException e) {
-// logger.error("jobexecutioncontext.getScheduler().getContext() error!", e);
             throw new RuntimeException(e);
         }
     }
