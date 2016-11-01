@@ -85,50 +85,53 @@
 
     <div class="well">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-2">
                 发送内容：
+            </div>
+            <div class="col-md-6">
+            </div>
+            <div class="col-md-2 text-center">
+                <button type="button" class="btn btn-danger btn-sm" onclick="emptyContents()">清空内容</button>
+            </div>
+            <div class="col-md-2 text-center">
+                <button type="button" class="btn btn-primary btn-sm" onclick="useFunction()">使用功能的结果</button>
             </div>
         </div>
         <div class="row">
             <div style="height: 100px;overflow:scroll;" class="col-md-12 text-center">
-                <textarea id="message" style="height: 100%;width: 100%"></textarea>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-10 text-center"></div>
-            <div class="col-md-2 text-center">
-                <button type="button" class="btn btn-primary btn-sm" onclick="copyFunction()">使用功能的结果</button>
+                <textarea id="message" style="height: 100%;width: 100%" placeholder="自行输入内容或者使用“功能”得到其结果。"></textarea>
             </div>
         </div>
     </div>
 
     <div class="well">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-2">
                 发送人员：
             </div>
-        </div>
-        <div class="row">
-            <div id="receivers" style="height: 150px;overflow:scroll;" class="col-md-12 text-center">
+            <div class="col-md-2">
+                <input class="form-control" id="newphone" placeholder="填写合法的手机号...">
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-10 text-center"></div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-primary btn-sm" onclick="addAnonymous()">添加</button>
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2 text-center">
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeAllContacts()">清空人员</button>
+            </div>
             <div class="col-md-2 text-center">
                 <button type="button" class="btn btn-primary btn-sm" onclick="showContactsUI()">添加人员</button>
             </div>
         </div>
-    </div>
-
-    <div class="well">
         <div class="row">
-            <div class="col-md-4 text-center"></div>
-            <div class="col-md-4 text-center">
-                <button type="button" class="btn btn-primary btn-sm" onclick="copyFunction()">发   送</button>
-            </div>
-            <div class="col-md-4 text-center">
+            <div id="receivers" style="height: 180px;overflow:scroll;" class="col-md-12 text-center">
             </div>
         </div>
+    </div>
+
+    <div class="well text-center">
+        <button type="button" class="btn btn-primary btn-sm" onclick="createTask()">发   送</button>
     </div>
 
 

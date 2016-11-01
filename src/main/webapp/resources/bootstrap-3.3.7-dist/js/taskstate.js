@@ -49,7 +49,7 @@ function initTbodyOfTasks(tasks) {
 
         var time = new Date(tasks[i].createTime).Format("yyyy-MM-dd HH:mm:ss");
         htmlStr = htmlStr + '<td>' + tasks[i].name
-            + '</td><td>' + tasks[i].description
+            + '</td><td>' + parseToAbbr(tasks[i].description, 30, null)
             + '</td><td>' + time + '</td><td>'
             + stateDesc + '</td></tr>';
     }

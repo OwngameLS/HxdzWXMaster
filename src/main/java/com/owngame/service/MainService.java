@@ -130,7 +130,7 @@ public class MainService implements Serializable {
         return result;
     }
 
-    private void createTask(String name, String description, String contents, String receivers){
+    public void createTask(String name, String description, String contents, String receivers){
         Task task = new Task();
         task.setName(name);
         task.setDescription(description);

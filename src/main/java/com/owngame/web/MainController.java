@@ -57,6 +57,8 @@ public class MainController {
     ContactDao contactDao;
     @Autowired
     TaskService taskService;
+    @Autowired
+    MainService mainService;
 
 
     /**
@@ -140,6 +142,26 @@ public class MainController {
     public Map<String, Object> handleCommit(@PathVariable("id") long id, @PathVariable("state") int state) {
         return answerService.handleCommit(id, state);
     }
+
+    /**
+     * 从网页创建人物（群发消息）
+     * @param p
+     * @return
+     */
+    @RequestMapping(value = "/task/create", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> creatTask(@RequestBody Map<String, String> p) {
+        String name = p.get("name");
+        String description = p.get("description");
+        String contents = p.get("contents");
+        String receivers = p.get("receivers");
+        mainService.createTask(name, description, contents, receivers);
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 返回更新后的该组信息
+        map.put("success", "success");
+        return map;
+    }
+
 
     /**
      * 处理上传通讯录文件
