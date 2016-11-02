@@ -219,3 +219,65 @@ function createTask() {
 
 
 }
+// 获取所有方法
+function useFunction(){
+    $("#myModal").modal("show");
+    $("#mbody").html('<img src="/resources/bootstrap-3.3.7-dist/img/loading.gif" style="width: 100px;height: 100px"/> 请稍后...');
+    $.when(myAjaxGet(bp + 'Smserver/functions')).done(function (data) {
+        if (data != null) {
+            var htmlStr = '';
+            var functions = data['functions'];
+            for(var j=0;j<functions.length;j++){
+                if (j == 0 || j % 4 == 0) {
+                    htmlStr = htmlStr + '<div class="row">';
+                }
+                htmlStr = htmlStr + '<div class="col-md-3 text-center" style="width: auto;display:inline">'
+                    + '<input type="checkbox" id="func'+ j +'" value="'+ functions[j].id + '" ';
+                if(functions[j].usable == 'no'){
+                    htmlStr = htmlStr + ' disabled';
+                }
+                htmlStr = htmlStr + '>' + parseToAbbr(functions[j].name, 0, functions[j].keywords + "," + functions[j].description)
+                    +'</div>';
+
+                if (j % 4 == 3) {
+                    htmlStr = htmlStr + '</div><br>';
+                }
+            }
+            $("#mbody").html(htmlStr);
+        }
+    });
+}
+
+// 获得选中方法的结果
+function getResults() {
+    var funcIds = new Array();// 被选中的方法id
+    var funcCheck = $("input[id*='func']");
+    for (var i = 0; i < funcCheck.length; i++) {
+        var isSelected = $("#func" + i).prop("checked");
+        if(isSelected){
+            funcIds.push($("#func" + i).val());
+        }
+    }
+    $("#mbody").html('<img src="/resources/bootstrap-3.3.7-dist/img/loading.gif" style="width: 100px;height: 100px"/> 查询中，请稍后...');
+    if(funcIds.length>0){
+        // 提交给服务器
+        var ids = "";
+        for(var i=0; i<funcIds.length; i++){
+            ids = ids + funcIds[i];
+            if((i+1)< funcIds.length){
+                ids = ids + ",";
+            }
+        }
+        var jsonStr = "{\"ids\":\"" + ids+ "\"}";
+        $.when(myAjaxPost(bp + 'Smserver/functions/getresults/', jsonStr)).done(function (data) {
+            var contents = $("#message").val();
+            contents = ";"+ data['results'];
+            $("#message").val(contents);
+            $("#myModal").modal("hide");
+        }).fail(function () {
+            $("#message").val("刚刚的查询失败了。");
+            $("#myModal").modal("hide");
+        });
+    }
+
+}

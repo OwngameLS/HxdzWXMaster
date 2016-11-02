@@ -1,6 +1,7 @@
 package com.owngame.web;
 
 import com.owngame.dao.ContactDao;
+import com.owngame.dao.FunctionDao;
 import com.owngame.entity.*;
 import com.owngame.service.*;
 import com.owngame.utils.CheckUtil;
@@ -59,6 +60,8 @@ public class MainController {
     TaskService taskService;
     @Autowired
     MainService mainService;
+    @Autowired
+    FunctionDao functionDao;
 
 
     /**
@@ -140,7 +143,6 @@ public class MainController {
     @RequestMapping(value = "/commitTask/{id}/{state}", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> handleCommit(@PathVariable("id") long id, @PathVariable("state") int state) {
-        System.out.println("handleCommit : " + id + ",," + state);
         return answerService.handleCommit(id, state);
     }
 
@@ -554,6 +556,28 @@ public class MainController {
         // 查询所有功能
         return queryFunctions();
     }
+
+
+    /**
+     * 获得多个方法的结果
+     * @return
+     */
+    @RequestMapping(value = "/functions/getresults", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> getFunctionResults(@RequestBody Map<String, String> p) {
+        System.out.println("getFunctionResults...");
+        String ids[] = p.get("ids").split(",");
+
+        String results = "";
+        for(int i=0;i<ids.length;i++){
+            Function function = functionDao.queryById(Long.parseLong(ids[i]));
+            results = results + functionService.getFunctionResult(function) + ";";
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("results", results);
+        return map;
+    }
+
 
     /**
      * 查询所有与手机端交互的任务
