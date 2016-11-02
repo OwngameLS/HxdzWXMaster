@@ -85,7 +85,7 @@
 
     <div class="well">
         <div class="row">
-            <div class="col-md-2">
+            <div id="titleOfcontents" class="col-md-2">
                 发送内容：
             </div>
             <div class="col-md-6">
@@ -106,7 +106,7 @@
 
     <div class="well">
         <div class="row">
-            <div class="col-md-2">
+            <div id="titleOfReceivers" class="col-md-2">
                 发送人员：
             </div>
             <div class="col-md-2">

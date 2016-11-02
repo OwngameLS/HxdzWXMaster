@@ -48,5 +48,5 @@ public interface TaskDao {
 
     int update(Task task);
 
-    void updateState(long id, int state);
+    int updateState(Task task);
 }

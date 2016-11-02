@@ -36,7 +36,7 @@
         where id=#{id}
     </update>
 
-    <update id="updateState">
+    <update id="updateState" parameterType="Task">
         update task set
         state=#{state}
         where id=#{id}

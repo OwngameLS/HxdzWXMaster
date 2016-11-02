@@ -140,6 +140,7 @@ public class MainController {
     @RequestMapping(value = "/commitTask/{id}/{state}", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> handleCommit(@PathVariable("id") long id, @PathVariable("state") int state) {
+        System.out.println("handleCommit : " + id + ",," + state);
         return answerService.handleCommit(id, state);
     }
 

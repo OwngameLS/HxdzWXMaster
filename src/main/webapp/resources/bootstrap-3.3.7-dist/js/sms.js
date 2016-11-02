@@ -197,11 +197,11 @@ function createTask() {
     var receivers = uniqueContactPhone();
     // 判断不发空消息；发送人员不为空
     if(isEmpty(contents)){
-        showEditFail("你必须要输入消息内容哦。",$("#message"));
+        showEditFail("你必须要输入消息内容哦。",$("#titleOfcontents"));
         return;
     }
     if(isEmpty(receivers)){
-        showEditFail("你必须要添加发送的对象啊。",$("#receivers"));
+        showEditFail("你必须要添加发送的对象啊。",$("#titleOfReceivers"));
         return;
     }
     description = description + '(消息内容:'+contents+')';

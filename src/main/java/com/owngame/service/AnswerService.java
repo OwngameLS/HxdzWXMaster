@@ -82,7 +82,10 @@ public class AnswerService {
         if (state == 0) {// 客户端发来没找到该任务，说明该任务已经正在处理了
             state = 1;
         }
-        taskDao.updateState(id, state);
+        Task task = new Task();
+        task.setId(id);
+        task.setState(state);
+        taskDao.updateState(task);
         map.put("type", "GOON");
         return map;
     }
