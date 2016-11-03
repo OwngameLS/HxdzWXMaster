@@ -171,7 +171,7 @@
             </div>
             <br>
             <div class="row bg-success">
-                <input type="radio" name="whichType" value="rule" checked>使用规则（读取字段的设置，注意：所有的规则都满足才能查询到结果）
+                <input type="radio" name="whichType" value="rules" checked>使用规则（读取字段的设置，注意：所有的规则都满足才能查询到结果）
             </div>
             <div class="row bg-success">
                 <div class="col-md-2 text-center">数据库字段名</div>

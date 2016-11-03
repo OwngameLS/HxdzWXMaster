@@ -44,12 +44,18 @@ function initTbodyOfTasks(tasks) {
         } else if (tasks[i].state == 2) {
             htmlStr = htmlStr + '<tr class="success">';
             stateDesc = '已完成';
+        } else if (tasks[i].state == -1){
+            htmlStr = htmlStr + '<tr">';
+            stateDesc = '已取消';
         }
         // 转换时间
 
         var time = new Date(tasks[i].createTime).Format("yyyy-MM-dd HH:mm:ss");
-        htmlStr = htmlStr + '<td>' + tasks[i].name
-            + '</td><td>' + parseToAbbr(tasks[i].description, 30, null)
+        htmlStr = htmlStr + '<td>' + tasks[i].name;
+        if(tasks[i].state == 0){// 尚未发送成功，可以停止
+            htmlStr = htmlStr + '<img src="../../resources/bootstrap-3.3.7-dist/img/stop.png" onclick="cancelSend('+tasks[i].id+')" alt="取消发送"/>';
+        }
+        htmlStr = htmlStr + '</td><td>' + parseToAbbr(tasks[i].description, 30, null)
             + '</td><td>' + time + '</td><td>'
             + stateDesc + '</td></tr>';
     }
@@ -83,4 +89,19 @@ Date.prototype.Format = function (fmt) { //author: meizz
         if (new RegExp("(" + k + ")").test(fmt))
             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
+}
+
+// 取消发送，修改状态即可
+function cancelSend(id) {
+    // 访问服务器
+    $.when(myAjaxGet(bp + 'Smserver/commitTask/'+id+'/-1')).done(function (data) {
+        if (data != null) {
+            var colsNames = data['type'];
+            if (colsNames == "GOON") {//修改成功
+                queryTasks();
+            }
+        }
+    }).fail(function () {// 连接失败
+        queryTasks();
+    });
 }

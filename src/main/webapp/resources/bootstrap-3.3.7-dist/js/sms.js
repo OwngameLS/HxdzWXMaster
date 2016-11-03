@@ -271,7 +271,12 @@ function getResults() {
         var jsonStr = "{\"ids\":\"" + ids+ "\"}";
         $.when(myAjaxPost(bp + 'Smserver/functions/getresults/', jsonStr)).done(function (data) {
             var contents = $("#message").val();
-            contents = ";"+ data['results'];
+            if(isEmpty(contents)){
+                contents = data['results'];
+            }else{
+                contents = ";"+ data['results'];
+            }
+            contents = contents + getTimeNow();
             $("#message").val(contents);
             $("#myModal").modal("hide");
         }).fail(function () {

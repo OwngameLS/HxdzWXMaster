@@ -123,16 +123,28 @@ public class FunctionServiceImpl implements FunctionService {
      * @return
      */
     public String getFunctionResult(Function function) {
+        String usable = function.getUsable();
+        if(usable.equals("no")){
+            return "功能（" + function.getName() +"） 不可用，查询不到结果。";
+        }
+        String usetype = function.getUsetype();// 使用规则
+        String sql = "";
+        ArrayList<FieldAndSelfName> readFields;
+        if(usetype.equals("sql")){
+            sql = function.getSqlstmt();
+            readFields = FunctionFieldUtil.parseFieldSelfName(function.getSqlfields());
+        }else{
+            readFields = FunctionFieldUtil.parseFieldSelfName(function.getReadfields());// 所需获取的字段
+            ArrayList<FunctionFieldRule> fieldRules = FunctionFieldUtil.parseFieldsString(function.getFieldrules());// 判断规则的字段
+            // 根据要获取的表和字段名，构造查询语句
+            sql = getQueryStatement(function.getTablename(), function.getSortfields(), readFields, fieldRules);
+        }
+        // 查询并得到结果
         // 1.现根据function获得服务组件
         // 获得数据库链接
         Connection connection = DBUtil.createConn(function);
-        ArrayList<FieldAndSelfName> readFields = FunctionFieldUtil.parseFieldSelfName(function.getReadfields());// 所需获取的字段
-        ArrayList<FunctionFieldRule> fieldRules = FunctionFieldUtil.parseFieldsString(function.getFieldrules());// 判断规则的字段
-        // 根据要获取的表和字段名，构造查询语句
-        String sql = getQueryStatement(function.getTablename(), function.getSortfields(), readFields, fieldRules);
-        // 查询并得到结果
-        return doQuery(connection, sql, readFields);
-//        return doQuery(connection, sql, readFields, fieldRules, function.getIsreturn());
+        // 2.查询
+        return "‘"+function.getName() +"’的查询结果：" + doQuery(connection, sql, readFields);
     }
 
 
@@ -371,7 +383,7 @@ public class FunctionServiceImpl implements FunctionService {
                     FieldAndSelfName fieldAndSelfName = readFields.get(i);
                     result = result + fieldAndSelfName.getSelfName() + ":" + rs.getObject(fieldAndSelfName.getField());
                     if ((i + 1) < readFields.size()) {
-                        result = result + ";";
+                        result = result + ",";
                     }
                 }
             }
