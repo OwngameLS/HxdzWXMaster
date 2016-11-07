@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.owngame.dao.FunctionDao;
 import com.owngame.dao.TaskDao;
-import com.owngame.entity.Function;
 import com.owngame.entity.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

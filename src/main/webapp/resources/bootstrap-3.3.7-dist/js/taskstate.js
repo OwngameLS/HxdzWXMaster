@@ -44,7 +44,7 @@ function initTbodyOfTasks(tasks) {
         } else if (tasks[i].state == 2) {
             htmlStr = htmlStr + '<tr class="success">';
             stateDesc = '已完成';
-        } else if (tasks[i].state == -1){
+        } else if (tasks[i].state == -1) {
             htmlStr = htmlStr + '<tr">';
             stateDesc = '已取消';
         }
@@ -52,8 +52,8 @@ function initTbodyOfTasks(tasks) {
 
         var time = new Date(tasks[i].createTime).Format("yyyy-MM-dd HH:mm:ss");
         htmlStr = htmlStr + '<td>' + tasks[i].name;
-        if(tasks[i].state == 0){// 尚未发送成功，可以停止
-            htmlStr = htmlStr + '<img src="../../resources/bootstrap-3.3.7-dist/img/stop.png" onclick="cancelSend('+tasks[i].id+')" alt="取消发送"/>';
+        if (tasks[i].state == 0) {// 尚未发送成功，可以停止
+            htmlStr = htmlStr + '<img src="../../resources/bootstrap-3.3.7-dist/img/stop.png" onclick="cancelSend(' + tasks[i].id + ')" alt="取消发送"/>';
         }
         htmlStr = htmlStr + '</td><td>' + parseToAbbr(tasks[i].description, 30, null)
             + '</td><td>' + time + '</td><td>'
@@ -94,7 +94,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
 // 取消发送，修改状态即可
 function cancelSend(id) {
     // 访问服务器
-    $.when(myAjaxGet(bp + 'Smserver/commitTask/'+id+'/-1')).done(function (data) {
+    $.when(myAjaxGet(bp + 'Smserver/commitTask/' + id + '/-1')).done(function (data) {
         if (data != null) {
             var colsNames = data['type'];
             if (colsNames == "GOON") {//修改成功

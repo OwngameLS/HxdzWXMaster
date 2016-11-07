@@ -152,7 +152,7 @@ function hideContactsDiv() {
 }
 
 // 清空内容
-function emptyContents(){
+function emptyContents() {
     if (confirm("确认清空内容？")) {
         $("#message").val("");
     } else {
@@ -162,18 +162,18 @@ function emptyContents(){
 
 
 // contacts数组查找
-function contactsFind(array, obj){
-    for(var i=0;i<array.length; i++){
-        if(obj.id == array[i].id){
+function contactsFind(array, obj) {
+    for (var i = 0; i < array.length; i++) {
+        if (obj.id == array[i].id) {
             return i;
         }
     }
     return -1;
 }
 // 将添加的联系人的手机号唯一化，因为不同组里可能有同一个人
-function uniqueContactPhone(){
+function uniqueContactPhone() {
     var phoneNumbers = new Array();
-    for(var i=0; i<selectedIContacts.length;i++){
+    for (var i = 0; i < selectedIContacts.length; i++) {
         phoneNumbers.push(selectedIContacts[i].phonenumber);
     }
     console.log("length before:" + phoneNumbers.length);
@@ -181,9 +181,9 @@ function uniqueContactPhone(){
     console.log("length after:" + phoneNumbers.length);
     // 整理成字符串
     var phoneStr = "";
-    for(var i=0; i<phoneNumbers.length;i++){
+    for (var i = 0; i < phoneNumbers.length; i++) {
         phoneStr = phoneStr + phoneNumbers[i];
-        if( (i+1) < phoneNumbers.length){
+        if ((i + 1) < phoneNumbers.length) {
             phoneStr = phoneStr + ',';
         }
     }
@@ -196,21 +196,21 @@ function createTask() {
     var description = "主动发送消息给一部分人...";
     var receivers = uniqueContactPhone();
     // 判断不发空消息；发送人员不为空
-    if(isEmpty(contents)){
-        showEditFail("你必须要输入消息内容哦。",$("#titleOfcontents"));
+    if (isEmpty(contents)) {
+        showEditFail("你必须要输入消息内容哦。", $("#titleOfcontents"));
         return;
     }
-    if(isEmpty(receivers)){
-        showEditFail("你必须要添加发送的对象啊。",$("#titleOfReceivers"));
+    if (isEmpty(receivers)) {
+        showEditFail("你必须要添加发送的对象啊。", $("#titleOfReceivers"));
         return;
     }
-    description = description + '(消息内容:'+contents+')';
+    description = description + '(消息内容:' + contents + ')';
     if (confirm("确认发送吗？")) {
         var jsonStr = "{\"name\":\"" + name
             + "\",\"description\":\"" + description
             + "\",\"contents\":\"" + contents
             + "\",\"receivers\":\"" + receivers + "\"}";
-        $.when(myAjaxPost(bp + 'Smserver/task/create/', jsonStr)).done(function (data) {
+        $.when(myAjaxPost(bp + 'Smserver/tasks/create/', jsonStr)).done(function (data) {
             showEditDone();
         });
     } else {
@@ -220,24 +220,24 @@ function createTask() {
 
 }
 // 获取所有方法
-function useFunction(){
+function useFunction() {
     $("#myModal").modal("show");
     $("#mbody").html('<img src="/resources/bootstrap-3.3.7-dist/img/loading.gif" style="width: 100px;height: 100px"/> 请稍后...');
-    $.when(myAjaxGet(bp + 'Smserver/functions')).done(function (data) {
+    $.when(myAjaxGet(bp + 'Smserver/functions/getall')).done(function (data) {
         if (data != null) {
             var htmlStr = '';
             var functions = data['functions'];
-            for(var j=0;j<functions.length;j++){
+            for (var j = 0; j < functions.length; j++) {
                 if (j == 0 || j % 4 == 0) {
                     htmlStr = htmlStr + '<div class="row">';
                 }
                 htmlStr = htmlStr + '<div class="col-md-3 text-center" style="width: auto;display:inline">'
-                    + '<input type="checkbox" id="func'+ j +'" value="'+ functions[j].id + '" ';
-                if(functions[j].usable == 'no'){
+                    + '<input type="checkbox" id="func' + j + '" value="' + functions[j].id + '" ';
+                if (functions[j].usable == 'no') {
                     htmlStr = htmlStr + ' disabled';
                 }
                 htmlStr = htmlStr + '>' + parseToAbbr(functions[j].name, 0, functions[j].keywords + "," + functions[j].description)
-                    +'</div>';
+                    + '</div>';
 
                 if (j % 4 == 3) {
                     htmlStr = htmlStr + '</div><br>';
@@ -254,27 +254,27 @@ function getResults() {
     var funcCheck = $("input[id*='func']");
     for (var i = 0; i < funcCheck.length; i++) {
         var isSelected = $("#func" + i).prop("checked");
-        if(isSelected){
+        if (isSelected) {
             funcIds.push($("#func" + i).val());
         }
     }
     $("#mbody").html('<img src="/resources/bootstrap-3.3.7-dist/img/loading.gif" style="width: 100px;height: 100px"/> 查询中，请稍后...');
-    if(funcIds.length>0){
+    if (funcIds.length > 0) {
         // 提交给服务器
         var ids = "";
-        for(var i=0; i<funcIds.length; i++){
+        for (var i = 0; i < funcIds.length; i++) {
             ids = ids + funcIds[i];
-            if((i+1)< funcIds.length){
+            if ((i + 1) < funcIds.length) {
                 ids = ids + ",";
             }
         }
-        var jsonStr = "{\"ids\":\"" + ids+ "\"}";
+        var jsonStr = "{\"ids\":\"" + ids + "\"}";
         $.when(myAjaxPost(bp + 'Smserver/functions/getresults/', jsonStr)).done(function (data) {
             var contents = $("#message").val();
-            if(isEmpty(contents)){
+            if (isEmpty(contents)) {
                 contents = data['results'];
-            }else{
-                contents = ";"+ data['results'];
+            } else {
+                contents = ";" + data['results'];
             }
             contents = contents + getTimeNow();
             $("#message").val(contents);

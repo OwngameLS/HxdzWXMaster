@@ -91,7 +91,7 @@ function initTbodyOfContacts(contacts) {
 function initTbodyOfGroups(showSelected) {
     $.when(myAjaxGet(bp + 'Smserver/contacts/groups')).done(function (data) {
         var htmlStr = "";
-        if(showSelected){// 需要展示已选择的
+        if (showSelected) {// 需要展示已选择的
             htmlStr = '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="queryContactsDetailsWithIds()">已选人员</button></td></tr>';
         }
         if (data != null) {
@@ -223,7 +223,7 @@ function editFunctions() {
     // 读取当前已经选择的功能
     var selectedFunctions = ($("#ttfunctionsEdit").html() + '').split(",");
     // 从服务器端获取可用的功能
-    $.when(myAjaxGet(bp + 'Smserver/functions')).done(function (data) {
+    $.when(myAjaxGet(bp + 'Smserver/functions/getall')).done(function (data) {
         var htmlStr = '';
         if (data != null) {
             var functions = (data['functions']);

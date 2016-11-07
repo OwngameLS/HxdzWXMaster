@@ -36,7 +36,7 @@ var isSavingSql = false;//当前是否在保存Sql规则
 
 // 向服务器请求所有方法的信息
 function getFunctions() {
-    $.when(myAjaxGet(bp + 'Smserver/functions')).done(function (data) {
+    $.when(myAjaxGet(bp + 'Smserver/functions/getall')).done(function (data) {
         if (data != null) {
             initTbodyOfFunctions(data['functions']);
         }
@@ -47,41 +47,41 @@ function getFunctions() {
 function saveFunction(action) {
     isSavingSql = true;
     hideEditFail();
-    if(action > 0){
-    // 利用新的Deferred来做多个同步操作
-    $.when(testConnect()).done(function () {// 先验证与数据库的链接可用
-        console.log("testConnect done, ready to save");
-        $.when(testFunctionDescPart(),// 验证功能描述性设置
-            testSQLPart(true),// 验证SQL语句
-            testRules()// 验证规则
-        ).done(function (data) {
-            // 提交
-            var jsonStr = "{\"id\":\"" + id
-                + "\",\"name\":\"" + name
-                + "\",\"description\":\"" + description
-                + "\",\"keywords\":\"" + keywords
-                + "\",\"ip\":\"" + ip
-                + "\",\"port\":\"" + port
-                + "\",\"dbtype\":\"" + dbtype
-                + "\",\"dbname\":\"" + dbname
-                + "\",\"username\":\"" + username
-                + "\",\"password\":\"" + password
-                + "\",\"tablename\":\"" + tablename
-                + "\",\"usetype\":\"" + usetype
-                + "\",\"readfields\":\"" + readfields
-                + "\",\"sortfields\":\"" + sortfields
-                + "\",\"fieldrules\":\"" + fieldrules
-                + "\",\"isreturn\":\"" + isreturn
-                + "\",\"sqlstmt\":\"" + sqlstmt
-                + "\",\"sqlfields\":\"" + sqlfields
-                + "\",\"usable\":\"" + "yes"
-                + "\"}";
-            doAjaxHandleFunction('update', jsonStr);
+    if (action > 0) {
+        // 利用新的Deferred来做多个同步操作
+        $.when(testConnect()).done(function () {// 先验证与数据库的链接可用
+            console.log("testConnect done, ready to save");
+            $.when(testFunctionDescPart(),// 验证功能描述性设置
+                testSQLPart(true),// 验证SQL语句
+                testRules()// 验证规则
+            ).done(function (data) {
+                // 提交
+                var jsonStr = "{\"id\":\"" + id
+                    + "\",\"name\":\"" + name
+                    + "\",\"description\":\"" + description
+                    + "\",\"keywords\":\"" + keywords
+                    + "\",\"ip\":\"" + ip
+                    + "\",\"port\":\"" + port
+                    + "\",\"dbtype\":\"" + dbtype
+                    + "\",\"dbname\":\"" + dbname
+                    + "\",\"username\":\"" + username
+                    + "\",\"password\":\"" + password
+                    + "\",\"tablename\":\"" + tablename
+                    + "\",\"usetype\":\"" + usetype
+                    + "\",\"readfields\":\"" + readfields
+                    + "\",\"sortfields\":\"" + sortfields
+                    + "\",\"fieldrules\":\"" + fieldrules
+                    + "\",\"isreturn\":\"" + isreturn
+                    + "\",\"sqlstmt\":\"" + sqlstmt
+                    + "\",\"sqlfields\":\"" + sqlfields
+                    + "\",\"usable\":\"" + "yes"
+                    + "\"}";
+                doAjaxHandleFunction('update', jsonStr);
+            });
+        }).fail(function (data2) {
+            showEditFail("保存失败！由于未能连接上你设置的数据库，此次保存无法生效。", $("#functionEditDiv"));
         });
-    }).fail(function (data2) {
-        showEditFail("保存失败！由于未能连接上你设置的数据库，此次保存无法生效。", $("#functionEditDiv"));
-    });
-    }else {
+    } else {
         // 依次读取相关控件的值
         usable = 'no';
         name = $("#editName").val();
@@ -206,8 +206,8 @@ function testSQLPart(isSaving) {
     var defer = $.Deferred();
     var canAskServer = false;
     getUseType();
-    if(isSaving == true){// 是保存 且不是选择了sql规则，不判断了
-        if(usetype != 'sql'){
+    if (isSaving == true) {// 是保存 且不是选择了sql规则，不判断了
+        if (usetype != 'sql') {
             defer.resolve();
             return defer.promise();
         }
@@ -581,7 +581,7 @@ function testRules() {
     console.log("testRules");
     var defer = $.Deferred();
     getUseType();
-    if(usetype != 'rules'){// 不用保存规则
+    if (usetype != 'rules') {// 不用保存规则
         defer.resolve();
         return defer.promise();
     }
@@ -716,13 +716,13 @@ function testRules() {
 function initTbodyOfFunctions(functions) {
     var htmlStr = '';
     for (var i = 0; i < functions.length; i++) {
-        htmlStr = htmlStr + '<tr><td>' ;
-            if(functions[i].usable == 'no'){
-                htmlStr = htmlStr + '<span class="label label-danger">'+ parseToAbbr(functions[i].id,0,'此功能尚不可用') + '</span>';
-            }else {
-                htmlStr = htmlStr + functions[i].id;
-            }
-        htmlStr = htmlStr + '</td><td>' +  parseToAbbr(functions[i].name, 5, null)
+        htmlStr = htmlStr + '<tr><td>';
+        if (functions[i].usable == 'no') {
+            htmlStr = htmlStr + '<span class="label label-danger">' + parseToAbbr(functions[i].id, 0, '此功能尚不可用') + '</span>';
+        } else {
+            htmlStr = htmlStr + functions[i].id;
+        }
+        htmlStr = htmlStr + '</td><td>' + parseToAbbr(functions[i].name, 5, null)
             + '</td><td>' + parseToAbbr(functions[i].keywords, 10, null)
             + '</td><td>' + parseToAbbr(functions[i].description, 30, null)
             + '</td><td>'
@@ -762,9 +762,9 @@ function detail(id) {
                 + '<b>是否返回: </b>' + func.isreturn + '<br>'// 读取结果是否返回的规则（由于需要涉及到预警功能，所以需要定义规则）
                 + '<b>sql语句: </b>' + func.sqlstmt + '<br>'//sql语句
                 + '<b>sql读取字段: </b>' + func.sqlfields + '<br>';// sql查询的字段属性，按照顺序来a,aName#b,bName
-            if(func.usable == 'no'){
-                $("#myModalLabel").html('功能详情'+'<span class="label label-danger">此功能不可用</span>');
-            }else{
+            if (func.usable == 'no') {
+                $("#myModalLabel").html('功能详情' + '<span class="label label-danger">此功能不可用</span>');
+            } else {
                 $("#myModalLabel").html('功能详情');
             }
         } else {
@@ -781,9 +781,9 @@ function edit(tempId) {
         if (data != null) {
             var func = data['function'];
             // 依次初始化相关控件
-            if(func.usable == 'no'){
+            if (func.usable == 'no') {
                 $("#isUsable").html('<span class="label label-danger">不可用</span>');
-            }else{
+            } else {
                 $("#isUsable").html('<span class="label label-primary">可 用</span>');
             }
             $("#editName").val(func.name);
@@ -814,7 +814,6 @@ function edit(tempId) {
         }
     });
 }
-
 
 
 // 用来初始化每一个规则字段控件的类
@@ -1107,7 +1106,7 @@ function copyFunction() {
     myAnimate($("#infos"), 8, $("#infos").attr("style"));
 }
 // 保存设置
-function saveFunctionAnyway(){
+function saveFunctionAnyway() {
     var htmlStr = ' 当前编辑的内容，将不进行正确性、可用性的校验，保存后的功能也无法使用。';
     htmlStr = htmlStr + '<br><button type="button" class="btn btn-warning btn-sm" data-dismiss="modal" onclick="saveFunction(-1)">确认</button>';
     $("#myModalLabel").html('<h1 style="color: #FF0000">仅保存？</h1>');

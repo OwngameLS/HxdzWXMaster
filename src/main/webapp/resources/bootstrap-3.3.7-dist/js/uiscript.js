@@ -94,7 +94,7 @@ function getTimeNow() {
     // mydate.getSeconds(); //获取当前秒数(0-59)
     // mydate.getMilliseconds(); //获取当前毫秒数(0-999)
     // mydate.toLocaleDateString(); //获取当前日期
-    var mytime= mydate.toLocaleDateString() + ' ' + mydate.toLocaleTimeString(); //获取当前时间
+    var mytime = mydate.toLocaleDateString() + ' ' + mydate.toLocaleTimeString(); //获取当前时间
     return mytime;
     // mydate.toLocaleString( ); //获取日期与时间
 }

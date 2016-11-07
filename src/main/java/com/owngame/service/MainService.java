@@ -1,7 +1,9 @@
 package com.owngame.service;
 
 
-import com.owngame.dao.*;
+import com.owngame.dao.ContactDao;
+import com.owngame.dao.FunctionDao;
+import com.owngame.dao.TaskDao;
 import com.owngame.entity.Function;
 import com.owngame.entity.Task;
 import org.quartz.JobDataMap;
@@ -19,16 +21,17 @@ import java.util.Date;
 @Service("mainService")
 public class MainService implements Serializable {
     @Autowired
+    FunctionService functionService;
+    @Autowired
     private TaskDao taskDao;
     @Autowired
     private ContactDao contactDao;
     @Autowired
     private FunctionDao functionDao;
-    @Autowired
-    FunctionService functionService;
 
     /**
      * 处理定时任务的查询
+     *
      * @param triggerName
      * @param jobDataMap
      */
@@ -69,24 +72,25 @@ public class MainService implements Serializable {
 
     /**
      * 处理主动询问
-     * @param keywords 关键字
+     *
+     * @param keywords  关键字
      * @param receivers 查询者
-     * @param askType 主动询问的方式（sms 短信, wx 微信）
+     * @param askType   主动询问的方式（sms 短信, wx 微信）
      */
-    public void handleAsk(String keywords, String receivers, String askType){
+    public void handleAsk(String keywords, String receivers, String askType) {
         String contents = "";
         String name = "主动查询";
-        String description = "用户"+receivers+"主动查询，相关功能为：";
+        String description = "用户" + receivers + "主动查询，相关功能为：";
         String keys[] = keywords.split(",");
         ArrayList<String> functions = new ArrayList<String>();
-        for (int i=0; i<keys.length;i++){
+        for (int i = 0; i < keys.length; i++) {
             // 通过关键字查询到对应的功能
             Function function = functionService.getByKeywords(keys[i]);
-            if(function == null){
+            if (function == null) {
                 contents = contents + "关键字（" + keys[i] + "）错误，没有查询到相关功能。";
                 continue;
             }
-            if(function.getId() == -1){
+            if (function.getId() == -1) {
                 contents = contents + "关键字（" + keys[i] + "）错误，您可能要查询的关键字为：" + function.getDescription();
                 continue;
             }
@@ -95,9 +99,9 @@ public class MainService implements Serializable {
             contents = contents + getFunctionResult(function);
         }
         System.out.println("handleAsk contents:" + contents);
-        if(askType.equals("sms")){
+        if (askType.equals("sms")) {
             createTask(name, description, contents, receivers);
-        }else{
+        } else {
             // 微信查询
         }
 
@@ -105,32 +109,33 @@ public class MainService implements Serializable {
 
     /**
      * 整理查询Function 结果
+     *
      * @param function
      * @return
      */
-    private String getFunctionResult(Function function){
+    private String getFunctionResult(Function function) {
         String result = "";
-        if(function == null){
+        if (function == null) {
             return "该功能不存在";
         }
-        if(function.getUsable().equals("no")){
-            return "功能"+function.getName() +"暂时不能使用。";
+        if (function.getUsable().equals("no")) {
+            return "功能" + function.getName() + "暂时不能使用。";
         }
-        result = function.getName() + "(" + function.getDescription() + ")"+"的结果:";
+        result = function.getName() + "(" + function.getDescription() + ")" + "的结果:";
         String temp = functionService.getFunctionResult(function);
-        if(temp != null){
-            if(temp.equals("") == false){
+        if (temp != null) {
+            if (temp.equals("") == false) {
                 result = result + temp;
-            }else{
+            } else {
                 result = result + "未查询到。";
             }
-        }else{
+        } else {
             result = result + "未查询到。";
         }
         return result;
     }
 
-    public void createTask(String name, String description, String contents, String receivers){
+    public void createTask(String name, String description, String contents, String receivers) {
         Task task = new Task();
         task.setName(name);
         task.setDescription(description);

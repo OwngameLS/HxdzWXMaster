@@ -148,9 +148,8 @@
     </div>
 
     <div class="well text-center">
-        <button type="button" class="btn btn-primary btn-sm" onclick="createTask()">发   送</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="createTask()">发 送</button>
     </div>
-
 
 
 </div>

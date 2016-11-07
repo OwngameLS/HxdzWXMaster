@@ -67,7 +67,7 @@
             <div class="col-md-4 text-center">
                 <button type="button" class="btn btn-primary btn-sm" onclick="copyFunction()">复 制</button>
                 <button type="button" class="btn btn-danger btn-sm" onclick="saveFunctionAnyway()">仅保存</button>
-                <button type="button" class="btn btn-success btn-sm" onclick="saveFunction()">验证并保存</button>
+                <button type="button" class="btn btn-success btn-sm" onclick="saveFunction(1)">验证并保存</button>
                 <button type="button" class="btn btn-warning btn-sm" onclick="hideEditDiv()">取 消</button>
             </div>
         </div>

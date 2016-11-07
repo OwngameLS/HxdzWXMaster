@@ -261,7 +261,7 @@ function deleteGroup() {
 
 // 提交操作，然后更新页面组组件
 function commitEditGroup(action, jsonStr, groupname) {
-    $.when(myAjaxPost(bp + 'Smserver/group/' + action, jsonStr)).done(function (data) {
+    $.when(myAjaxPost(bp + 'Smserver/contacts/group/' + action, jsonStr)).done(function (data) {
         var htmlStr = '';
         if (data != null) {
             showEditDone();

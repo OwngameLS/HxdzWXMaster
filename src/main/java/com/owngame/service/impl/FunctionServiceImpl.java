@@ -25,6 +25,11 @@ public class FunctionServiceImpl implements FunctionService {
     @Autowired
     FunctionDao functionDao;
 
+    // 判断字符串是不是数字
+    public static boolean isNum(String str) {
+        return str.matches("^[-+]?(([0-9]+)([.]([0-9]+))?|([.]([0-9]+))?)$");
+    }
+
     public int createFunction(Function function) {
         return functionDao.insert(function);
     }
@@ -47,19 +52,19 @@ public class FunctionServiceImpl implements FunctionService {
 
     public Function getByKeywords(String keywords) {
         // 不会在SQL语句中筛选，先将所有包含关键字的方法都找
-        ArrayList<Function> functions = functionDao.queryByKeywords("%"+keywords+"%");
+        ArrayList<Function> functions = functionDao.queryByKeywords("%" + keywords + "%");
         // 由于function 关键字不会重复，找到就返回
-        if(functions == null){
+        if (functions == null) {
             return null;
-        }else if(functions.size() == 0){
+        } else if (functions.size() == 0) {
             return null;
         }
         String similarKeys = "";
-        for(int i=0;i<functions.size();i++){
+        for (int i = 0; i < functions.size(); i++) {
             similarKeys += functions.get(i).getKeywords() + ",";
             String keys[] = functions.get(i).getKeywords().split(",");
-            for(int j=0;j<keys.length;j++){
-                if(keys[j].equals(keywords)){
+            for (int j = 0; j < keys.length; j++) {
+                if (keys[j].equals(keywords)) {
                     return functions.get(i);// 找到就返回
                 }
             }
@@ -115,7 +120,6 @@ public class FunctionServiceImpl implements FunctionService {
         return colNames;
     }
 
-
     /**
      * 查询得到该功能的结果（最复杂的方法）
      *
@@ -124,16 +128,16 @@ public class FunctionServiceImpl implements FunctionService {
      */
     public String getFunctionResult(Function function) {
         String usable = function.getUsable();
-        if(usable.equals("no")){
-            return "功能（" + function.getName() +"） 不可用，查询不到结果。";
+        if (usable.equals("no")) {
+            return "功能（" + function.getName() + "） 不可用，查询不到结果。";
         }
         String usetype = function.getUsetype();// 使用规则
         String sql = "";
         ArrayList<FieldAndSelfName> readFields;
-        if(usetype.equals("sql")){
+        if (usetype.equals("sql")) {
             sql = function.getSqlstmt();
             readFields = FunctionFieldUtil.parseFieldSelfName(function.getSqlfields());
-        }else{
+        } else {
             readFields = FunctionFieldUtil.parseFieldSelfName(function.getReadfields());// 所需获取的字段
             ArrayList<FunctionFieldRule> fieldRules = FunctionFieldUtil.parseFieldsString(function.getFieldrules());// 判断规则的字段
             // 根据要获取的表和字段名，构造查询语句
@@ -144,9 +148,8 @@ public class FunctionServiceImpl implements FunctionService {
         // 获得数据库链接
         Connection connection = DBUtil.createConn(function);
         // 2.查询
-        return "‘"+function.getName() +"’的查询结果：" + doQuery(connection, sql, readFields);
+        return "‘" + function.getName() + "’的查询结果：" + doQuery(connection, sql, readFields);
     }
-
 
     /**
      * 检查Sql语句
@@ -271,7 +274,6 @@ public class FunctionServiceImpl implements FunctionService {
         return similarKeys;
     }
 
-
     /**
      * 构造查询语句
      *
@@ -300,7 +302,6 @@ public class FunctionServiceImpl implements FunctionService {
         sql = sql + parseFieldRulesToWhereStmt(fieldRules) + ";";
         return sql;
     }
-
 
     /**
      * 将字段规则转换为where子句
@@ -362,7 +363,6 @@ public class FunctionServiceImpl implements FunctionService {
         return whereStmt;
     }
 
-
     /**
      * 根据sql语句查询
      *
@@ -396,7 +396,6 @@ public class FunctionServiceImpl implements FunctionService {
         DBUtil.close(conn);
         return result;
     }
-
 
     /**
      * 做查询
@@ -593,12 +592,6 @@ public class FunctionServiceImpl implements FunctionService {
         DBUtil.close(ps);
         DBUtil.close(conn);
         return result;
-    }
-
-
-    // 判断字符串是不是数字
-    public static boolean isNum(String str) {
-        return str.matches("^[-+]?(([0-9]+)([.]([0-9]+))?|([.]([0-9]+))?)$");
     }
 
 }
