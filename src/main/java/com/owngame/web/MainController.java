@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -41,6 +42,9 @@ public class MainController {
         //创建一个可重用固定线程数的线程池
         pool = Executors.newFixedThreadPool(3);
     }
+
+    @Autowired
+    ServletContext context;// 获得环境变量的入口！
 
     @Autowired
     PcontactService pcontactService;
@@ -113,7 +117,7 @@ public class MainController {
     @ResponseBody
     public Object doUpload(@RequestParam("file") MultipartFile file) {
         System.out.println("file:" + file.getSize());
-        if (file.getSize() <= 20) {
+        if (file.getSize() <= 20) {// 文件过小 怀疑正确性
             return "<script>window.parent.uploadFailed('" + ExcelUtil.myEncode("请确认你是否上传了正确的文件。^_^") + "');</script>";
         }
 
@@ -124,6 +128,7 @@ public class MainController {
             e.printStackTrace();
         }
         String ss = o.toString();
+        System.out.println("ss:" + ss);
         if (ss.startsWith("ERR")) {
             //上传失败，返回到前台，调用uploadFailed()这个方法
             return "<script>window.parent.uploadFailed('" + ss + "');</script>";
@@ -133,7 +138,7 @@ public class MainController {
             if (result.equals("OK")) {
                 return "<script>window.parent.uploadSuccess();</script>";
             } else {
-                return "<script>window.parent.uploadFailed('" + "再插入数据时出错。" + "');</script>";
+                return "<script>window.parent.uploadFailed('" + "在插入数据时出错。" + "');</script>";
             }
         }
     }
@@ -147,13 +152,17 @@ public class MainController {
      */
     @RequestMapping(value = "/download", method = RequestMethod.GET)
     public ResponseEntity<byte[]> download() throws IOException {
-//        String dfileName = new String(fileName.getBytes("gb2312"), "iso8859-1");
-        String dfileName = "d:/contacts.xls";// 写死了这里
-        File file = new File(dfileName);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData("attachment", dfileName);
-        return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
+        String dfileName = context.getRealPath("/") +"contacts/contacts.xls";// 获得文件路径的方法
+        if(pcontactService.initContactsFile(dfileName)) {
+            // 调用联系人方法，获得返回的联系人文件
+            File file = new File(dfileName);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", dfileName);
+            return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
+        }else{
+            return null;
+        }
     }
 
     /**

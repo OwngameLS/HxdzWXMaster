@@ -27,8 +27,7 @@ function initContactsUIs(displayGroup) {
 function getContactsByGroups(groupname) {
     $.when(myAjaxGet(bp + 'Smserver/contacts/' + groupname)).done(function (data) {
         if (data != null) {
-            var contacts = data['contacts'];
-            initTbodyOfContacts(contacts);
+            initTbodyOfContacts(data['contacts']);
         }
     });
 
@@ -58,6 +57,8 @@ function initGroupsBody(groups) {
 function uploadSuccess() {
     $("#uploadResult").attr("style", "");
     $("#uploadResult").text("上传的通讯录已经处理完成。");
+    // 刷新显示
+    initContactsUIs(null);
 }
 // 当上传通讯录出现错误时调用
 function uploadFailed(msg) {
@@ -319,11 +320,11 @@ function doEditContact() {
     var phone = $("#editContactPhone").val();
     var description = $("#editContactDescription").val();
     // 判断不为空
-    if (name == '' || name == undefined) {
+    if (isEmpty(name)) {
         showEditFail("必须输入姓名！", $("#editContactName"));
         return;
     }
-    if (phone == '' || phone == undefined) {
+    if (isEmpty(phone)) {
         showEditFail("必须输入手机号！", $("#editContactPhone"));
         return;
     }

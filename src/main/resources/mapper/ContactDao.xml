@@ -62,6 +62,6 @@
     </delete>
 
     <delete id="deleteAll">
-        delete from contact
+        truncate table contact
     </delete>
 </mapper>

@@ -52,7 +52,6 @@ public class WaterLog {
                             continue;
                         }
                     }
-
                 }
                 if(isWLineReaded && isTimeReaded){
                     String s = getStorage(wLine);

@@ -3,9 +3,11 @@ package com.owngame.service;
 import com.owngame.dao.ContactDao;
 import com.owngame.entity.Contact;
 import com.owngame.entity.GroupName;
+import com.owngame.utils.ExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -143,4 +145,13 @@ public class PcontactService {
         System.out.println("contacts.size:" + contacts.size());
         return contacts;
     }
+
+
+    // 将已经编辑好的联系人信息存储成Excel文件，并返回给调用者（MainController）用于下载
+    public boolean initContactsFile(String filePath){
+        // 1.拿到所有联系人信息
+        ArrayList<Contact> contacts = contactDao.queryAll();
+        return ExcelUtil.initContactsFile(filePath, contacts);
+    }
+
 }
