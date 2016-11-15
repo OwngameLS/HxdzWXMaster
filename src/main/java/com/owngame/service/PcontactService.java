@@ -151,6 +151,10 @@ public class PcontactService {
     public boolean initContactsFile(String filePath){
         // 1.拿到所有联系人信息
         ArrayList<Contact> contacts = contactDao.queryAll();
+        if(contacts == null || contacts.size()==0){
+            Contact contact = new Contact();
+            contacts.add(contact);
+        }
         return ExcelUtil.initContactsFile(filePath, contacts);
     }
 

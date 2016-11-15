@@ -22,7 +22,6 @@
 <h3>短信群发</h3>
 
 <div class="danger" style="padding: 5px;"><%--通讯录操作部分--%>
-
     <div id="editDoneDiv" class="alert alert-success" role="alert"
          style="display: none;width: 30%;margin:0 auto;text-align:center"><%--操作完成--%>
         操作完成！
@@ -53,7 +52,7 @@
 
     <div id="contactsDiv" class="bg-success" style="display: none;text-align:center">
         <div style="width: 20%;float:left;">
-            <button type="button" class="btn btn-warning btn-sm" onclick="hideContactsDiv()">取消编辑</button>
+            <button type="button" class="btn btn-warning btn-sm" onclick="hideContactsDiv()">收起</button>
         </div>
         <div style="width:80%;float:left;">
             <button type="button" class="btn btn-success btn-sm" onclick="editContacts('add')">添加选择的人员</button>

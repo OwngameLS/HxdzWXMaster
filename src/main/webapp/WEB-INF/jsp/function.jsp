@@ -18,7 +18,7 @@
     <script src="../../resources/bootstrap-3.3.7-dist/js/function.js"></script>
 </head>
 <body>
-<h3>定时任务操作</h3>
+<h3>功能设置</h3>
 
 <div class="danger" style="padding: 5px;"><%--通讯录操作部分--%>
     <dl>

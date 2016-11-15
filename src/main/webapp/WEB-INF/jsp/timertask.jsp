@@ -18,17 +18,9 @@
     <script src="../../resources/bootstrap-3.3.7-dist/js/timertask.js"></script>
 </head>
 <body>
-<h3>定时任务操作</h3>
+<h3>定时任务设置</h3>
 
 <div class="danger" style="padding: 5px;"><%--通讯录操作部分--%>
-    <dl>
-        <dt>编辑通讯录信息</dt>
-        <dd>
-            <p class="text-warning">
-                1.每次上传的文件将会覆盖原有数据，请仔细操作！
-            </p>
-        </dd>
-    </dl>
     <div id="editDoneDiv" class="alert alert-success" role="alert"
          style="display: none;width: 30%;margin:0 auto;text-align:center"><%--操作完成--%>
         操作完成！

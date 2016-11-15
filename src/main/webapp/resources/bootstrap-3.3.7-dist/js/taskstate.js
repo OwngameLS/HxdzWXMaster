@@ -94,7 +94,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
 // 取消发送，修改状态即可
 function cancelSend(id) {
     // 访问服务器
-    $.when(myAjaxGet(bp + 'Smserver/commitTask/' + id + '/-1')).done(function (data) {
+    $.when(myAjaxGet(bp + 'Smserver/tasks/commitTask/' + id + '/-1')).done(function (data) {
         if (data != null) {
             var colsNames = data['type'];
             if (colsNames == "GOON") {//修改成功

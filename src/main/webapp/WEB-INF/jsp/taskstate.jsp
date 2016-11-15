@@ -9,7 +9,7 @@
 
 <html>
 <head>
-    <title>定时任务</title>
+    <title>任务状态</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
     <script src="../../resources/bootstrap-3.3.7-dist/js/taskstate.js"></script>
 </head>
 <body>
-<h2>当前任务</h2>
+<h3>任务状态</h3>
 
 <div class="danger" style="padding: 5px;">
     <!-- 模态框（Modal） -->

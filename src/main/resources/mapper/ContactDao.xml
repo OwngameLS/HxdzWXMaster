@@ -20,7 +20,7 @@
     </select>
 
     <select id="queryAll" resultType="Contact">
-        select * from contact
+        select * from contact order by groupname asc
     </select>
 
     <insert id="insert" parameterType="Contact">

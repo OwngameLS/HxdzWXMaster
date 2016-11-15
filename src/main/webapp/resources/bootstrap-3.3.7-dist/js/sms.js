@@ -87,6 +87,7 @@ function editContacts(action) {
     updateSelectedContacts(action);
     // 刷新显示
     showSelectedContactsHtml();
+
 }
 
 // 清空已选
@@ -141,6 +142,7 @@ function showSelectedContactsHtml() {
 
     }
     $("#receivers").html(htmlStr);
+    showEditDone();
 }
 
 function showContactsDiv() {
@@ -212,6 +214,10 @@ function createTask() {
             + "\",\"receivers\":\"" + receivers + "\"}";
         $.when(myAjaxPost(bp + 'Smserver/tasks/create/', jsonStr)).done(function (data) {
             showEditDone();
+            hideEditFail();
+            setTimeout(function(){
+                location.reload();
+            },2500);
         });
     } else {
         return;

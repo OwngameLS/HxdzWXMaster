@@ -18,15 +18,16 @@
     <script src="../../resources/bootstrap-3.3.7-dist/js/contact.js"></script>
 </head>
 <body>
-<h3>通讯录操作</h3>
-<button type="button" class="btn btn-primary btn-sm" onclick="showOrHideUpload()">上传通讯录</button>
+<h3>通讯录操作</h3><h5 style="color: red">请仔细操作，操作结果无法撤销！</h5>
+<button type="button" class="btn btn-primary btn-sm" onclick="showOrHideUpload()">通过上传文件编辑通讯录</button>
 <div id="uploadDiv" class="bg-success well" style="padding: 5px;display: none"><%--文件上传部分--%>
     <dl>
         <dd>
             <p class="text-warning">
                 注意：<br>
-                1.每次上传的文件将会覆盖原有数据，请仔细操作！
-                2.如果你不知道上传什么文件，请下载模板文件进行修改后再上传。
+                1.每次上传的文件将会覆盖原有数据，请仔细操作。
+                <br> ------如果你只编辑文件中的某一部分，其他需要的信息也一定要保留。即，如果原内容包含A、B、C，你仅需要编辑更新A，请将B、C保留，更新后为a、B、C。
+                <br>2.如果你不知道上传什么文件，请下载模板文件进行修改后再上传。
                 <a href="<%=basePath%>Smserver/download">点击下载《通讯录模板文件》</a>
             </p>
         </dd>
@@ -49,7 +50,6 @@
         <dt>编辑通讯录信息</dt>
         <dd>
             <p class="text-warning">
-                1.每次上传的文件将会覆盖原有数据，请仔细操作！
             </p>
         </dd>
     </dl>
