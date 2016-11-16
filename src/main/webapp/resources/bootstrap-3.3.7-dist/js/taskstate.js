@@ -31,7 +31,6 @@ function changeRefreshTime() {
 
 // 初始化表格内容
 function initTbodyOfTasks(tasks) {
-//        console.log("at here : " + new Date().Format("yyyy-MM-dd HH:mm:ss"));
     var htmlStr = '';
     var stateDesc = '';
     for (var i = 0; i < tasks.length; i++) {
@@ -48,12 +47,14 @@ function initTbodyOfTasks(tasks) {
             htmlStr = htmlStr + '<tr">';
             stateDesc = '已取消';
         }
-        // 转换时间
 
+        // 转换时间
         var time = new Date(tasks[i].createTime).Format("yyyy-MM-dd HH:mm:ss");
         htmlStr = htmlStr + '<td>' + tasks[i].name;
-        if (tasks[i].state == 0) {// 尚未发送成功，可以停止
-            htmlStr = htmlStr + '<img src="../../resources/bootstrap-3.3.7-dist/img/stop.png" onclick="cancelSend(' + tasks[i].id + ')" alt="取消发送"/>';
+        if (tasks[i].state == 0 || tasks[i].state == 1) {// 尚未发送成功，可以停止
+            htmlStr = htmlStr + parseToAbbr('<img src="../../resources/bootstrap-3.3.7-dist/img/stop.png" onclick="changeState(' + tasks[i].id + ', -1)"/>', null, "取消发送");
+        }else if(tasks[i].state == -1 || tasks[i].state == 2){// 取消发送或者发送完成 需要重发
+            htmlStr = htmlStr + parseToAbbr('<img src="../../resources/bootstrap-3.3.7-dist/img/redo.png" onclick="changeState(' + tasks[i].id + ', -2)"/>', null, "再次发送");
         }
         htmlStr = htmlStr + '</td><td>' + parseToAbbr(tasks[i].description, 30, null)
             + '</td><td>' + time + '</td><td>'
@@ -92,16 +93,26 @@ Date.prototype.Format = function (fmt) { //author: meizz
 }
 
 // 取消发送，修改状态即可
-function cancelSend(id) {
-    // 访问服务器
-    $.when(myAjaxGet(bp + 'Smserver/tasks/commitTask/' + id + '/-1')).done(function (data) {
-        if (data != null) {
-            var colsNames = data['type'];
-            if (colsNames == "GOON") {//修改成功
-                queryTasks();
+function changeState(id, state) {
+    var actionName = "";
+    if(state == -1){
+        actionName = "取消发送";
+    }else if(state == -2){
+        actionName = "再次发送"
+    }
+    if (confirm("确认‘"+actionName+"’吗？")) {
+        // 访问服务器
+        $.when(myAjaxGet(bp + 'Smserver/tasks/commitTask/' + id + '/' + state)).done(function (data) {
+            if (data != null) {
+                var colsNames = data['type'];
+                if (colsNames == "GOON") {//修改成功
+                    queryTasks();
+                }
             }
-        }
-    }).fail(function () {// 连接失败
-        queryTasks();
-    });
+        }).fail(function () {// 连接失败
+            queryTasks();
+        });
+    } else {
+        return;
+    }
 }

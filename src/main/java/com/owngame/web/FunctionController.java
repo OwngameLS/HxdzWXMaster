@@ -46,6 +46,77 @@ public class FunctionController {
         return map;
     }
 
+    /**
+     * 通过关键字获得方法的查询结果
+     * @param p
+     * @return
+     */
+    @RequestMapping(value = "/getresults/keywords", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> getFunctionResultsByKeywords(@RequestBody Map<String, String> p){
+        String keywords = p.get("keywords");
+        String results = "";
+        if(keywords != null){
+            if(keywords.equals("") == false){
+                // 1.先将关键字分组
+                keywords.replaceAll("，", ",");// 将中文逗号替换为英文
+                String[] keyStr = keywords.split(",");
+                Map<String, String> idsMap = new HashMap<String, String>();
+                ArrayList<String> ids = new ArrayList<String>();
+                // 2.根据关键字查询方法
+                for(int i=0;i<keyStr.length;i++){
+                    Function function = functionService.getByKeywords(keyStr[i]);
+                    if(function != null){
+                        if(function.getId() != -1){// 找到了这个方法
+                            ids = addIdsUnique(ids, function.getId()+"");// 去重添加
+                        }else{// 找到了类似关键字的方法
+                            results = results + "关键字" + keyStr[i] + " 没有找到对应的功能，因此没有获得查询结果，与它类似的关键字有 "
+                                    + function.getDescription() +",请与管理员确认后再次尝试查询。";
+                        }
+                    }
+                }
+                // 3.根据获得的方法查询其对应的结果
+                if(ids.size() != 0){
+                    // 确实查询到了方法
+                    String s = "";
+                    for(int i=0;i<ids.size();i++){
+                        s = s + ids.get(i);
+                        if((i+1)<ids.size()){
+                            s = s + ",";
+                        }
+                    }
+                    idsMap.put("ids", s);
+                    Map<String, Object> res = getFunctionResults(idsMap);
+                    results = results + (String) res.get("results");
+                }else{
+                    results = results + "您所查询的所有关键字均未找到对应的功能，请使用正确的关键字查询，如果你不清楚请联系系统管理员。";
+                }
+            }else{
+                results = "请使用正确的关键字查询，如果你不清楚请联系系统管理员。";
+            }
+        }else{
+            results = "请使用正确的关键字查询，如果你不清楚请联系系统管理员。";
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("results", results);
+        return map;
+    }
+
+    // 保证每次添加的方法都是唯一的
+    private ArrayList<String> addIdsUnique(ArrayList<String> ids, String id) {
+        boolean isFound = false;
+        for(int i=0;i<ids.size();i++){
+            if(id.equals(ids.get(i))){
+                isFound = true;
+                break;
+            }
+        }
+        if(isFound == false){
+            ids.add(id);
+        }
+        return ids;
+    }
+
 
     /**
      * 查询所有功能

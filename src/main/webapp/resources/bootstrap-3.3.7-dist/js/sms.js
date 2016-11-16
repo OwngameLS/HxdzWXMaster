@@ -195,7 +195,7 @@ function uniqueContactPhone() {
 function createTask() {
     var contents = $("#message").val();
     var name = "群发消息";
-    var description = "主动发送消息给一部分人...";
+    var description = "群发消息...";
     var receivers = uniqueContactPhone();
     // 判断不发空消息；发送人员不为空
     if (isEmpty(contents)) {

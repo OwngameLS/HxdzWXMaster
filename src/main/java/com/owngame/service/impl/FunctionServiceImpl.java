@@ -53,12 +53,13 @@ public class FunctionServiceImpl implements FunctionService {
     public Function getByKeywords(String keywords) {
         // 不会在SQL语句中筛选，先将所有包含关键字的方法都找
         ArrayList<Function> functions = functionDao.queryByKeywords("%" + keywords + "%");
-        // 由于function 关键字不会重复，找到就返回
+
         if (functions == null) {
             return null;
         } else if (functions.size() == 0) {
             return null;
         }
+        // 由于function 关键字不会重复，找到就返回
         String similarKeys = "";
         for (int i = 0; i < functions.size(); i++) {
             similarKeys += functions.get(i).getKeywords() + ",";
