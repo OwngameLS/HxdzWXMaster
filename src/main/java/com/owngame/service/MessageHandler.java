@@ -2,6 +2,8 @@ package com.owngame.service;
 
 import com.owngame.dao.MYUser;
 import com.owngame.menu.ManageMenu;
+import com.owngame.service.impl.FunctionServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import weixin.popular.bean.message.message.NewsMessage;
 import weixin.popular.bean.message.message.NewsMessage.Article;
 import weixin.popular.bean.message.message.TextMessage;
@@ -44,6 +46,8 @@ public class MessageHandler {
     static final String BATHURL = "http://owngame.ngrok.cc/WeiMaster/";
     static final String SEND_PACKAGE_URL = "sendPackage.jsp?openid=OPENID";
 
+    static FunctionService functionService = new FunctionServiceImpl();
+
     public static String handleMessage(Map<String, String> map) {
         String message = null;
         // 将传递来的请求数据整理后分析
@@ -82,6 +86,9 @@ public class MessageHandler {
         } else {
             // 调用图灵机器人
 //            returnContent = TuringUtil.getTuringAnswer(content);
+            // 关键字查询
+            returnContent = functionService.getFunctionResultsByKeywords(content);
+
         }
         // 组装成文本消息，返回json格式字符串 （因为是用客服接口发送消息，其要求就是json格式）
         return initTextOfJsonString(fromUserName, returnContent);

@@ -81,6 +81,86 @@ public class FunctionServiceImpl implements FunctionService {
     }
 
     /**
+     * 通过功能的id集合字符串，获取他们对应的查询结果
+     * @param idStr
+     * @return
+     */
+    public String getFunctionResultByIds(String idStr){
+        String results = "";
+        String ids[] = idStr.split(",");
+        for (int i = 0; i < ids.length; i++) {
+            Function function = functionDao.queryById(Long.parseLong(ids[i]));
+            results = results + getFunctionResult(function) + ";";
+        }
+        return results;
+    }
+
+    /**
+     * 通过功能的关键字集合字符串，获取他们对应的查询结果
+     * @param keysStr
+     * @return
+     */
+    public String getFunctionResultsByKeywords(String keysStr) {
+        String results = "";
+        if(keysStr != null){
+            if(keysStr.equals("") == false){
+                // 1.先将关键字分组
+                keysStr.replaceAll("，", ",");// 将中文逗号替换为英文
+                String[] keyStr = keysStr.split(",");
+                Map<String, String> idsMap = new HashMap<String, String>();
+                ArrayList<String> ids = new ArrayList<String>();
+                // 2.根据关键字查询方法
+                for(int i=0;i<keyStr.length;i++){
+                    Function function = getByKeywords(keyStr[i]);
+                    if(function != null){
+                        if(function.getId() != -1){// 找到了这个方法
+                            ids = addIdsUnique(ids, function.getId()+"");// 去重添加
+                        }else{// 找到了类似关键字的方法
+                            results = results + "关键字" + keyStr[i] + " 没有找到对应的功能，因此没有获得查询结果，与它类似的关键字有 "
+                                    + function.getDescription() +",请与管理员确认后再次尝试查询。";
+                        }
+                    }
+                }
+                // 3.根据获得的方法查询其对应的结果
+                if(ids.size() != 0){
+                    // 确实查询到了方法
+                    String s = "";
+                    for(int i=0;i<ids.size();i++){
+                        s = s + ids.get(i);
+                        if((i+1)<ids.size()){
+                            s = s + ",";
+                        }
+                    }
+                    results = results + getFunctionResultByIds(s);
+                }else{
+                    results = results + "您所查询的所有关键字均未找到对应的功能，请使用正确的关键字查询，如果你不清楚请联系系统管理员。";
+                }
+            }else{
+                results = "请使用正确的关键字查询，如果你不清楚请联系系统管理员。";
+            }
+        }else{
+            results = "请使用正确的关键字查询，如果你不清楚请联系系统管理员。";
+        }
+        return results;
+    }
+
+    // 保证每次添加的方法都是唯一的
+    private ArrayList<String> addIdsUnique(ArrayList<String> ids, String id) {
+        boolean isFound = false;
+        for(int i=0;i<ids.size();i++){
+            if(id.equals(ids.get(i))){
+                isFound = true;
+                break;
+            }
+        }
+        if(isFound == false){
+            ids.add(id);
+        }
+        return ids;
+    }
+
+
+    /**
      * 查询是否连接的上指定数据库
      * 如果查询到了就返回该表包含的字段
      *
@@ -594,5 +674,6 @@ public class FunctionServiceImpl implements FunctionService {
         DBUtil.close(conn);
         return result;
     }
+
 
 }
