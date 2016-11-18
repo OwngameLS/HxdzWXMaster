@@ -46,7 +46,7 @@ public class MessageHandler {
     static final String BATHURL = "http://owngame.ngrok.cc/WeiMaster/";
     static final String SEND_PACKAGE_URL = "sendPackage.jsp?openid=OPENID";
 
-    static FunctionService functionService = new FunctionServiceImpl();
+    static FunctionServiceImpl functionService = new FunctionServiceImpl();
 
     public static String handleMessage(Map<String, String> map) {
         String message = null;
@@ -87,6 +87,7 @@ public class MessageHandler {
             // 调用图灵机器人
 //            returnContent = TuringUtil.getTuringAnswer(content);
             // 关键字查询
+            // 均包装成一个post请求吗？
             returnContent = functionService.getFunctionResultsByKeywords(content);
 
         }
