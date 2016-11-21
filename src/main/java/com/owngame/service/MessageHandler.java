@@ -4,6 +4,7 @@ import com.owngame.dao.MYUser;
 import com.owngame.menu.ManageMenu;
 import com.owngame.service.impl.FunctionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import weixin.popular.bean.message.message.NewsMessage;
 import weixin.popular.bean.message.message.NewsMessage.Article;
 import weixin.popular.bean.message.message.TextMessage;
@@ -18,6 +19,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Administrator on 2016-8-18.
  */
+@Service
 public class MessageHandler {
     // 消息类型
     public static final String MESSAGE_TYPE_TEXT = "text";
@@ -46,9 +48,10 @@ public class MessageHandler {
     static final String BATHURL = "http://owngame.ngrok.cc/WeiMaster/";
     static final String SEND_PACKAGE_URL = "sendPackage.jsp?openid=OPENID";
 
-    static FunctionServiceImpl functionService = new FunctionServiceImpl();
+    @Autowired
+    FunctionService functionService;
 
-    public static String handleMessage(Map<String, String> map) {
+    public String handleMessage(Map<String, String> map) {
         String message = null;
         // 将传递来的请求数据整理后分析
         System.out.println("map toString :" + map.toString());
@@ -64,7 +67,7 @@ public class MessageHandler {
     /**
      * 处理文本信息，分析文本内容，给出合理应答
      */
-    private static String handleTextMessage(Map<String, String> map) {
+    private String handleTextMessage(Map<String, String> map) {
         System.out.println("handleTextMessage is called.");
         String returnContent = null;
         String content = map.get("Content");
@@ -101,7 +104,7 @@ public class MessageHandler {
      * @param map
      * @return
      */
-    private static String handleEventMessage(Map<String, String> map) {
+    private String handleEventMessage(Map<String, String> map) {
         String eventType = map.get("Event");// 获得事件类型
         String fromUserName = map.get("FromUserName");
         String message = null;
@@ -155,7 +158,7 @@ public class MessageHandler {
      * @param fromUserName
      * @param map
      */
-    private static String handleClickMessage(String fromUserName,
+    private String handleClickMessage(String fromUserName,
                                              Map<String, String> map) {
         String eventKey = map.get("EventKey");
         System.out.println("eventKey:" + eventKey);
@@ -183,7 +186,7 @@ public class MessageHandler {
      * @param content
      * @return
      */
-    private static int phoneNumberLogic(String fromUserName, String content) {
+    private int phoneNumberLogic(String fromUserName, String content) {
         System.out.println("handle phoneNumberLogic");
         // 提前处理好空白
         String word = content.replaceAll(" ", "");
@@ -240,7 +243,7 @@ public class MessageHandler {
      * @param content
      * @return jsonString
      */
-    public static String initTextOfJsonString(String toUserName, String content) {
+    public String initTextOfJsonString(String toUserName, String content) {
         System.out.println("initTextOfJsonString is called");
         content = content + "\n回复 “帮助”，可以查看更多文本命令提示哟！/::)";
         TextMessage tm = new TextMessage(toUserName, content);
@@ -254,7 +257,7 @@ public class MessageHandler {
      * @param urlInfo
      * @return jsonString
      */
-    public static String initNewsOfJsonString(String toUserName, String urlInfo) {
+    public String initNewsOfJsonString(String toUserName, String urlInfo) {
         System.out.println("initNewsOfJsonString is called");
         // 生成article
         String title = "发货！";

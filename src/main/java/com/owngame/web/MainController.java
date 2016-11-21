@@ -1,8 +1,8 @@
 package com.owngame.web;
 
-import com.owngame.dao.ContactDao;
 import com.owngame.service.PcontactService;
-import com.owngame.service.WeiXinCoreRoute;
+import com.owngame.service.WeiXinCoreService;
+import com.owngame.utils.AccessTokenUtil;
 import com.owngame.utils.CheckUtil;
 import com.owngame.utils.ExcelUtil;
 import com.owngame.utils.InfoFormatUtil;
@@ -23,8 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * 从微信服务器转发过来的请求消息都从这里归总处理
@@ -34,15 +32,6 @@ import java.util.concurrent.Executors;
 @Controller
 @RequestMapping("Smserver")
 public class MainController {
-
-    static ExecutorService pool;// 待处理的线程池
-
-    // 线程池
-    static {
-        //创建一个可重用固定线程数的线程池
-        pool = Executors.newFixedThreadPool(3);
-    }
-
     @Autowired
     ServletContext context;// 获得环境变量的入口！
 
@@ -50,7 +39,7 @@ public class MainController {
     PcontactService pcontactService;
 
     @Autowired
-    ContactDao contactDao;
+    WeiXinCoreService weiXinCoreService;
 
 
     /**
@@ -82,7 +71,6 @@ public class MainController {
 
     /**
      * 处理来自微信服务器转发的微信消息事件
-     *
      * @param request
      * @param response
      * @throws IOException
@@ -90,9 +78,10 @@ public class MainController {
     @RequestMapping(method = {RequestMethod.POST}, produces = "application/xml;charset=UTF-8")
     public void post(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+        // 初始化token文件
+        initMyTokenFile();
         System.out.println("handle post...");
         /* 消息的接收、处理、响应 */
-
         // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
         request.setCharacterEncoding("UTF-8");
         String s = InfoFormatUtil.inputStream2String(request.getInputStream());//在这里就要转换成String了，不知道为什么要这样
@@ -101,9 +90,19 @@ public class MainController {
         PrintWriter out = response.getWriter();
         out.print("");// 先回应空消息 然后再用客服消息接口回复具体内容，避免等待
         out.close();
-        // 交由线程池中的线程去处理具体逻辑
-        WeiXinCoreRoute weiXinCoreRoute = new WeiXinCoreRoute(s);
-        pool.execute(weiXinCoreRoute);
+        // 交由微信服务去处理具体逻辑
+        weiXinCoreService.handleMessage(s);
+    }
+
+    // 初始化token文件
+    private boolean initMyTokenFile(){
+        AccessTokenUtil.tokenFilePath = context.getRealPath("/") +"token/myToken";// 获得文件路径的方法
+        // 如果文件不存在 就创建
+        AccessTokenUtil.tokenFile = new File(AccessTokenUtil.tokenFilePath);
+        if(AccessTokenUtil.tokenFile.exists() == false){
+            AccessTokenUtil.getSavedToken();
+        }
+        return true;
     }
 
 

@@ -1,4 +1,4 @@
-微信公众号项目 161118 12:32
+微信公众号项目 161121 17:32
 1.使用ngrok笔记
     由于ngrok被墙，采用国内代理实现。
     去http://www.ngrok.cc/login  登录 10039**@qq.com 851**74
@@ -6,6 +6,12 @@
     得到客户端id后，就可以在本地使用其客户端来打开隧道了。具体方法：
     下载对应的版本，运行其批处理程序，提供对应的id即可。
     在办公室的id为：233fefd301c29248 给出的域名地址为：http://vgogoing.ngrok.cc/
+
+    // 另外一个ngrok服务的启动
+    C:\Users\Administrator\Desktop\windows_amd64>ngrok -config=ngrok.cfg -subdomain vgogoing 8080
+
+
+
 2.微信popular项目使用
     https://github.com/liyiorg/weixin-popular
 3.功能设计：
@@ -92,6 +98,7 @@
 需要在任务状态页面对任务进行状态的操作。TODO 161115 DONE
 准备实现通过关键字查询功能结果的逻辑，现在内部逻辑已经实现，等待手机端、微信端的对接。161116
 TODO 现在发现的问题是：微信所编写的方法多为static，似乎没有办法与SpringMVC进行融合，可能需要改一下。161118
+正在改造上述问题。161121
 
 
 TODO 下一步计划

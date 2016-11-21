@@ -1,47 +1,45 @@
-package com.owngame.service;
+package com.owngame.service.impl;
 
+import com.owngame.service.MessageHandler;
+import com.owngame.service.WeiXinCoreService;
 import com.owngame.utils.AccessTokenUtil;
 import com.owngame.utils.InfoFormatUtil;
 import org.dom4j.DocumentException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import weixin.popular.api.MessageAPI;
 import weixin.popular.bean.BaseResult;
 
 import java.io.IOException;
 import java.util.Map;
 
-
 /**
- * Created by Administrator on 2016-8-18.
- * 微信公众号逻辑路由
+ * Created by Administrator on 2016-11-21.
  */
-public class WeiXinCoreRoute extends Thread {
 
-    String s;
-    private Map<String, String> map = null;
+@Service
+public class WeiXinCoreServiceImpl implements WeiXinCoreService{
+    @Autowired
+    MessageHandler messageHandler;
 
-    public WeiXinCoreRoute(String message) {
-        this.s = message;
-    }
-
-    public void run() {
-        System.out.println(Thread.currentThread().getName() + "正在执行。。。");
+    public void handleMessage(String message) {
+        System.out.println("处理消息中......");
         // 立即将xml处理成Map
+        Map<String, String> map = null;
         try {
-            map = InfoFormatUtil.xmlToMap(s);
+            map = InfoFormatUtil.xmlToMap(message);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (DocumentException e) {
             e.printStackTrace();
         }
-
-        String messageJson = MessageHandler.handleMessage(map);
+        String messageJson = messageHandler.handleMessage(map);
         if (messageJson.equals("notNeed") == false) {// 需要回复
             // 调用客服消息借口回复消息
             String token = AccessTokenUtil.getSavedToken();
             BaseResult br = MessageAPI.messageCustomSend(token, messageJson);
             System.out.println("br:" + br.getErrcode() + "; " + br.getErrmsg());
         }
-        System.out.println("执行结束。。。");
+        System.out.println("执行结束.");
     }
 }
-

@@ -9,16 +9,15 @@ import java.io.IOException;
 // 用来读取和保存AccessToken的工具类
 public class AccessTokenUtil {
     // 文件路径
-    static String tokenFilePath = "myToken.txt";
-    static String saperator = "#expireIn#"; // 文件内容分隔符
-    static File tokenFile = new File(tokenFilePath);
+    public static String tokenFilePath = "";
+    public static String saperator = "#expireIn#"; // 文件内容分隔符
+    public static File tokenFile = null;
 
     // 从微信服务器获得Token信息
     public static void getTokenFromWeixin() {
         Token accessToken = WeixinUtil.getACCESSTOKEN();
         if (accessToken != null) {
             String token = accessToken.getAccess_token();
-//			System.out.println("getTokenFromWeixin:" + token);
             String expireTime = setExpireTime(accessToken.getExpires_in());
             // 写入文件
             if (tokenFile.exists()) {
@@ -72,8 +71,8 @@ public class AccessTokenUtil {
         String content = null;
         try {
             content = FileUtils.readFileToString(tokenFile, "UTF-8");
-//			System.out.println("path:" + tokenFile.getAbsolutePath());
-//			System.out.println("cur:" + System.currentTimeMillis()+"\n token :" + content);
+			System.out.println("path:" + tokenFile.getAbsolutePath());
+			System.out.println("cur:" + System.currentTimeMillis()+"\n token :" + content);
         } catch (IOException e) {
             getTokenFromWeixin();
             return getSavedToken();
@@ -94,12 +93,14 @@ public class AccessTokenUtil {
                     getTokenFromWeixin();
                     return getSavedToken();
                 }
+            }else{
+                getTokenFromWeixin();
+                return getSavedToken();
             }
         } else {
             getTokenFromWeixin();
             return getSavedToken();
         }
-        return null;
     }
 
     // public static void main(String agrs[]){

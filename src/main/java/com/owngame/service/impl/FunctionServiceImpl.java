@@ -101,17 +101,22 @@ public class FunctionServiceImpl implements FunctionService {
      * @return
      */
     public String getFunctionResultsByKeywords(String keysStr) {
+        System.out.println("getFunctionResultsByKeywords : " + keysStr);
         String results = "";
         if(keysStr != null){
             if(keysStr.equals("") == false){
                 // 1.先将关键字分组
                 keysStr.replaceAll("，", ",");// 将中文逗号替换为英文
                 String[] keyStr = keysStr.split(",");
-                Map<String, String> idsMap = new HashMap<String, String>();
                 ArrayList<String> ids = new ArrayList<String>();
                 // 2.根据关键字查询方法
                 for(int i=0;i<keyStr.length;i++){
-                    Function function = getByKeywords(keyStr[i]);
+                    Function function = null;
+                    try {
+                        function = getByKeywords(keyStr[i]);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     if(function != null){
                         if(function.getId() != -1){// 找到了这个方法
                             ids = addIdsUnique(ids, function.getId()+"");// 去重添加
