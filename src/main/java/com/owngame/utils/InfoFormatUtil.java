@@ -2,6 +2,7 @@ package com.owngame.utils;
 
 import org.apache.commons.io.IOUtils;
 import org.dom4j.DocumentException;
+import weixin.popular.util.XMLConverUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,8 +16,9 @@ import java.util.Map;
 public class InfoFormatUtil {
 
     /**
-     * xml转为map集合 所有从微信服务器Post过来的消息都封装成了xml格式，需要将其转换为Map格式，用于分析或者组建其他格式的消息用于返回
-     *
+     * xml转为map集合
+     * 所有从微信服务器Post过来的消息都封装成了xml格式，
+     * 需要将其转换为Map格式，用于分析或者组建其他格式的消息用于返回
      * @param s
      * @return
      * @throws IOException
@@ -25,7 +27,8 @@ public class InfoFormatUtil {
     public static Map<String, String> xmlToMap(String s)
             throws IOException, DocumentException {
         Map<String, String> map;
-        map = MyXMLConverUtil.convertToMap(s);
+        map = XMLConverUtil.convertToMap(s);
+//        map = MyXMLConverUtil.convertToMap(s);
         return map;
     }
 

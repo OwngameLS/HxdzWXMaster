@@ -1,8 +1,9 @@
-package com.owngame.service;
+package com.owngame.service.impl;
 
 import com.owngame.dao.MYUser;
 import com.owngame.menu.ManageMenu;
-import com.owngame.service.impl.FunctionServiceImpl;
+import com.owngame.service.*;
+import com.owngame.utils.PhoneUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import weixin.popular.bean.message.message.NewsMessage;
@@ -20,7 +21,7 @@ import java.util.regex.Pattern;
  * Created by Administrator on 2016-8-18.
  */
 @Service
-public class MessageHandler {
+public class WeixinMessageServiceImpl implements WeixinMessageService{
     // 消息类型
     public static final String MESSAGE_TYPE_TEXT = "text";
     public static final String MESSAGE_TYPE_NEWS = "news";
@@ -56,9 +57,9 @@ public class MessageHandler {
         // 将传递来的请求数据整理后分析
         System.out.println("map toString :" + map.toString());
         String msgType = map.get("MsgType");
-        if (MessageHandler.MESSAGE_TYPE_TEXT.equals(msgType)) {// 传递来了文本信息
+        if (WeixinMessageServiceImpl.MESSAGE_TYPE_TEXT.equals(msgType)) {// 传递来了文本信息
             message = handleTextMessage(map);
-        } else if (MessageHandler.MESSAGE_TYPE_EVENT.equals(msgType)) {// 事件类型消息
+        } else if (WeixinMessageServiceImpl.MESSAGE_TYPE_EVENT.equals(msgType)) {// 事件类型消息
             message = handleEventMessage(map);
         }
         return message;
@@ -90,7 +91,6 @@ public class MessageHandler {
             // 调用图灵机器人
 //            returnContent = TuringUtil.getTuringAnswer(content);
             // 关键字查询
-            // 均包装成一个post请求吗？
             returnContent = functionService.getFunctionResultsByKeywords(content);
 
         }
@@ -108,7 +108,7 @@ public class MessageHandler {
         String eventType = map.get("Event");// 获得事件类型
         String fromUserName = map.get("FromUserName");
         String message = null;
-        if (MessageHandler.MESSAGE_EVENT_SUBSCRIBE.equals(eventType)) {
+        if (WeixinMessageServiceImpl.MESSAGE_EVENT_SUBSCRIBE.equals(eventType)) {
             // 当用户关注的时候，就要先存下用户的基本信息了啊
             // 获得用户信息并存起来
             MYUser mu = UserHandler.queryUserFromWeixin(fromUserName);
@@ -116,13 +116,13 @@ public class MessageHandler {
             message = mu.getNickname()
                     + "！\n终于等到你，还好我没放弃~\n 请回复“101=手机号”（如101=1398888888）的方式发送你的手机号码给我，方便你收发包裹时我给你发短息啊！";
             return initTextOfJsonString(fromUserName, message);
-        } else if (MessageHandler.MESSAGE_EVENT_CLICK.equals(eventType)) {
+        } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_CLICK.equals(eventType)) {
             // 根据发送的事件代码返回特定的图文消息，用户通过点击图文消息走向我们的网页吧
             message = handleClickMessage(fromUserName, map);
-        } else if (MessageHandler.MESSAGE_EVENT_SCANCODE.equals(eventType)) {// 扫码事件
+        } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_SCANCODE.equals(eventType)) {// 扫码事件
             System.out.println("scan...");
 //            message = handleScanMessage(map);
-        } else if (MessageHandler.MESSAGE_EVENT_VIEW.equals(eventType)) {
+        } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_VIEW.equals(eventType)) {
             System.out.println("view !");
             message = "vvvv";
         }
@@ -198,7 +198,7 @@ public class MessageHandler {
                     "").trim();
         }
         // 检查手机号码的合理性
-        if (isMobile(word)) {
+        if (PhoneUtil.isMobile(word)) {
             // 更新操作
             MYUser mu = UserHandler.queryUserById(fromUserName,
                     UserHandler.IDTYPE_OPEN);
@@ -219,21 +219,7 @@ public class MessageHandler {
         }
     }
 
-    /**
-     * 验证手机号码的合理性
-     *
-     * @param str
-     * @return
-     */
-    public static boolean isMobile(String str) {
-        Pattern p = null;
-        Matcher m = null;
-        boolean b = false;
-        p = Pattern.compile("^[1][3,4,5,7,8][0-9]{9}$"); // 验证手机号
-        m = p.matcher(str);
-        b = m.matches();
-        return b;
-    }
+
 
 
     /**

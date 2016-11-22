@@ -8,9 +8,9 @@ import java.util.List;
 
 /**
  * Created by Administrator on 2016-11-7.
+ * 读取文件内容工具类
  */
 public class ReadFile {
-
 
     /**
      * 读取文件最后N行

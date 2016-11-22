@@ -1,7 +1,7 @@
 package com.owngame.service.impl;
 
-import com.owngame.service.MessageHandler;
 import com.owngame.service.WeiXinCoreService;
+import com.owngame.service.WeixinMessageService;
 import com.owngame.utils.AccessTokenUtil;
 import com.owngame.utils.InfoFormatUtil;
 import org.dom4j.DocumentException;
@@ -20,7 +20,7 @@ import java.util.Map;
 @Service
 public class WeiXinCoreServiceImpl implements WeiXinCoreService{
     @Autowired
-    MessageHandler messageHandler;
+    WeixinMessageService messageHandler;
 
     public void handleMessage(String message) {
         System.out.println("处理消息中......");

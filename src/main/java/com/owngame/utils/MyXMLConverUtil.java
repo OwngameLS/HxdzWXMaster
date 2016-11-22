@@ -16,6 +16,8 @@ import java.util.Map;
 /**
  * 继承自Weixin popular 主要是增加了其对有嵌套XML的消息解析
  *
+ * 由于其修复了Bug 此处暂时废弃 20161122
+ *
  * @author Administrator
  */
 public class MyXMLConverUtil extends XMLConverUtil {
@@ -71,7 +73,6 @@ public class MyXMLConverUtil extends XMLConverUtil {
      */
     private static Map<String, String> parseNode(Node node,
                                                  Map<String, String> map) {
-//		System.out.println("node name:" + node.getNodeName());
         NodeList childNodes = node.getChildNodes();
         if (childNodes.getLength() == 1 || childNodes.getLength() == 0) {
             map.put(node.getNodeName(), node.getTextContent());

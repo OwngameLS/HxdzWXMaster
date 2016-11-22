@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 专门针对河溪电站水位文件读取的类
+ * 专门针对河溪电站水位文件读取的类 ##已废弃
  * Created by Administrator on 2016-11-7.
  */
 public class WaterLog {

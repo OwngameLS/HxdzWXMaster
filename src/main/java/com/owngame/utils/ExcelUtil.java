@@ -1,7 +1,7 @@
 package com.owngame.utils;
 
 import com.owngame.entity.Contact;
-import com.owngame.service.MessageHandler;
+import com.owngame.service.impl.WeixinMessageServiceImpl;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
@@ -26,15 +26,11 @@ public class ExcelUtil {
     public static Object parseContent(InputStream fileStream) {
         ArrayList<Contact> contacts = null;
 //        DecimalFormat df = new DecimalFormat("#");// 用来转换手机号码数字类型为文本类型
-
         DecimalFormat df = new DecimalFormat("0");// 将数字转换成文本
-
-
         String errorInfo = "ERR错误信息提示如下:";
         boolean somethingWrong = false;
         try {
             HSSFWorkbook workbook = new HSSFWorkbook(fileStream);
-//            Workbook workbook = WorkbookFactory.create(fileStream);
             HSSFSheet sheet = workbook.getSheetAt(0);
             // 拿到行数
             int rowNumbers = sheet.getLastRowNum();
@@ -105,7 +101,7 @@ public class ExcelUtil {
                         tempS = row.getCell(4).toString().trim();
                     }
 
-                    if (MessageHandler.isMobile(tempS)) {
+                    if (PhoneUtil.isMobile(tempS)) {
                         contact.setPhone(tempS);
                     } else {
                         isSomethingWrong = true;
@@ -161,7 +157,6 @@ public class ExcelUtil {
             HSSFPatriarch patriarch = sheet.createDrawingPatriarch();
             // 定义注释的大小和位置,详见文档
             HSSFComment comment;
-
 
             //产生表格标题行
             HSSFRow row = sheet.createRow(0);
