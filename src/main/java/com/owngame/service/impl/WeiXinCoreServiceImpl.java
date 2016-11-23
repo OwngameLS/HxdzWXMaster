@@ -20,7 +20,7 @@ import java.util.Map;
 @Service
 public class WeiXinCoreServiceImpl implements WeiXinCoreService{
     @Autowired
-    WeixinMessageService messageHandler;
+    WeixinMessageService weixinMessageService;
 
     public void handleMessage(String message) {
         System.out.println("处理消息中......");
@@ -33,7 +33,7 @@ public class WeiXinCoreServiceImpl implements WeiXinCoreService{
         } catch (DocumentException e) {
             e.printStackTrace();
         }
-        String messageJson = messageHandler.handleMessage(map);
+        String messageJson = weixinMessageService.handleMessage(map);
         if (messageJson.equals("notNeed") == false) {// 需要回复
             // 调用客服消息借口回复消息
             String token = AccessTokenUtil.getSavedToken();

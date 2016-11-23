@@ -29,6 +29,7 @@ public class MainService implements Serializable {
     @Autowired
     private FunctionDao functionDao;
 
+
     /**
      * 处理定时任务的查询
      *
@@ -78,33 +79,36 @@ public class MainService implements Serializable {
      * @param askType   主动询问的方式（sms 短信, wx 微信）
      */
     public void handleAsk(String keywords, String receivers, String askType) {
+        // 先判断手机号对应的用户是否能获得对应的权限
+
+
         String contents = "";
         String name = "主动查询";
         String description = "用户" + receivers + "主动查询，相关功能为：";
         String keys[] = keywords.split(",");
-        ArrayList<String> functions = new ArrayList<String>();
-        for (int i = 0; i < keys.length; i++) {
-            // 通过关键字查询到对应的功能
-            Function function = functionService.getByKeywords(keys[i]);
-            if (function == null) {
-                contents = contents + "关键字（" + keys[i] + "）错误，没有查询到相关功能。";
-                continue;
-            }
-            if (function.getId() == -1) {
-                contents = contents + "关键字（" + keys[i] + "）错误，您可能要查询的关键字为：" + function.getDescription();
-                continue;
-            }
-            // 查询到了合理的功能，获取功能的结果
-            description = description + function.getName();
-            contents = contents + getFunctionResult(function);
-        }
+        contents = functionService.getFunctionResultsByKeywords(keywords);
+//        ArrayList<String> functions = new ArrayList<String>();
+//        for (int i = 0; i < keys.length; i++) {
+//            // 通过关键字查询到对应的功能
+//            Function function = functionService.getByKeywords(keys[i]);
+//            if (function == null) {
+//                contents = contents + "关键字（" + keys[i] + "）错误，没有查询到相关功能。";
+//                continue;
+//            }
+//            if (function.getId() == -1) {
+//                contents = contents + "关键字（" + keys[i] + "）错误，您可能要查询的关键字为：" + function.getDescription();
+//                continue;
+//            }
+//            // 查询到了合理的功能，获取功能的结果
+//            description = description + function.getName();
+//            contents = contents + getFunctionResult(function);
+//        }
         System.out.println("handleAsk contents:" + contents);
         if (askType.equals("sms")) {
             createTask(name, description, contents, receivers);
         } else {
             // 微信查询
         }
-
     }
 
     /**

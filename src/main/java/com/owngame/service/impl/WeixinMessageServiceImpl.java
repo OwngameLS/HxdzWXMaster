@@ -6,6 +6,7 @@ import com.owngame.service.*;
 import com.owngame.utils.PhoneUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import weixin.popular.bean.message.message.Message;
 import weixin.popular.bean.message.message.NewsMessage;
 import weixin.popular.bean.message.message.NewsMessage.Article;
 import weixin.popular.bean.message.message.TextMessage;
@@ -52,50 +53,36 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
     @Autowired
     FunctionService functionService;
 
+    String fromUserName; // 消息的发来者，也是返回消息的接收者
+    String rtMsgType;// 返回的消息类型
+
     public String handleMessage(Map<String, String> map) {
-        String message = null;
         // 将传递来的请求数据整理后分析
         System.out.println("map toString :" + map.toString());
         String msgType = map.get("MsgType");
+        fromUserName = map.get("FromUserName");
         if (WeixinMessageServiceImpl.MESSAGE_TYPE_TEXT.equals(msgType)) {// 传递来了文本信息
-            message = handleTextMessage(map);
+            String content = map.get("Content");
+            return handleTextMessage(content);
         } else if (WeixinMessageServiceImpl.MESSAGE_TYPE_EVENT.equals(msgType)) {// 事件类型消息
-            message = handleEventMessage(map);
+            return handleEventMessage(map);
         }
-        return message;
+        return null;
     }
 
     /**
      * 处理文本信息，分析文本内容，给出合理应答
      */
-    private String handleTextMessage(Map<String, String> map) {
+    private String handleTextMessage(String content) {
         System.out.println("handleTextMessage is called.");
-        String returnContent = null;
-        String content = map.get("Content");
-        String fromUserName = map.get("FromUserName");
-        if (content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)) {// 手机号逻辑
-            int rcode = phoneNumberLogic(fromUserName, content);
-            if (rcode == RETURN_CODE_SUCCESS) {
-                returnContent = "操作成功！";
-            } else {
-                returnContent = "操作失败咯，再试试？多次失败，请稍后再试吧~";
-            }
-        } else if (content.startsWith("天气")) {
-            String word = content.replaceAll("^天气", "").trim();
-            if ("".equals(word)) {
-                returnContent = "您输入的查询格式不正确，正确示例：\n   天气吉首";
-            } else {
-//                returnContent = WeatherUtil.getByCityName(word);
-            }
-        } else {
-            // 调用图灵机器人
-//            returnContent = TuringUtil.getTuringAnswer(content);
-            // 关键字查询
-            returnContent = functionService.getFunctionResultsByKeywords(content);
-
+        rtMsgType = MESSAGE_TYPE_TEXT;
+// TODO 先排查一遍是否有微信公众号特殊定义的关键字，方便决定是否需要返回特殊消息
+//        if(content.startsWith())
+        content = functionService.getFunctionResultsByKeywords(content);
+        if(rtMsgType.equals(MESSAGE_TYPE_TEXT)){// 回复文本消息
+            return initTextMessageOfJsonString(content);
         }
-        // 组装成文本消息，返回json格式字符串 （因为是用客服接口发送消息，其要求就是json格式）
-        return initTextOfJsonString(fromUserName, returnContent);
+        return null;
     }
 
     /**
@@ -115,7 +102,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
 //            UserController.saveUser(mu);
             message = mu.getNickname()
                     + "！\n终于等到你，还好我没放弃~\n 请回复“101=手机号”（如101=1398888888）的方式发送你的手机号码给我，方便你收发包裹时我给你发短息啊！";
-            return initTextOfJsonString(fromUserName, message);
+            return initTextMessageOfJsonString(message);
         } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_CLICK.equals(eventType)) {
             // 根据发送的事件代码返回特定的图文消息，用户通过点击图文消息走向我们的网页吧
             message = handleClickMessage(fromUserName, map);
@@ -166,7 +153,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
         if (eventKey.startsWith(ManageMenu.EVENTKEY_QUERY_PREFIX)) {
             result = QueryService.handleQuery(eventKey);
         }
-        return initTextOfJsonString(fromUserName, result);
+        return initTextMessageOfJsonString(result);
 
 
 //
@@ -220,30 +207,26 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
     }
 
 
-
-
     /**
-     * 组装成textmessage jsonString
-     *
-     * @param toUserName
+     * 组装成TextMessage jsonString
      * @param content
      * @return jsonString
      */
-    public String initTextOfJsonString(String toUserName, String content) {
-        System.out.println("initTextOfJsonString is called");
-        content = content + "\n回复 “帮助”，可以查看更多文本命令提示哟！/::)";
-        TextMessage tm = new TextMessage(toUserName, content);
+    private String initTextMessageOfJsonString(String content){
+        System.out.println("initTextMessageOfJsonString is called");
+        content = content + "\n\n回复 “帮助”，可以查看更多文本命令提示哟！/::)";
+        TextMessage tm = new TextMessage(fromUserName, content);
         return JsonUtil.toJSONString(tm);
     }
 
+
+
     /**
      * 组装成NewsMessage jsonString
-     *
-     * @param toUserName
      * @param urlInfo
      * @return jsonString
      */
-    public String initNewsOfJsonString(String toUserName, String urlInfo) {
+    public String initNewsMessageOfJsonString(String urlInfo) {
         System.out.println("initNewsOfJsonString is called");
         // 生成article
         String title = "发货！";
@@ -253,7 +236,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
         Article a = new Article(title, description, url, picurl);
         List<Article> articles = new ArrayList<Article>();
         articles.add(a);
-        NewsMessage nm = new NewsMessage(toUserName, articles);
+        NewsMessage nm = new NewsMessage(fromUserName, articles);
         return JsonUtil.toJSONString(nm);
     }
 

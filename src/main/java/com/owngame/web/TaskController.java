@@ -92,6 +92,7 @@ public class TaskController {
     @RequestMapping(value = "/askServer/{actionName}", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> handleAsk(@PathVariable("actionName") String actionName) {
+        System.out.println("actionName:" + actionName);
         return answerService.handleAsk(actionName);
     }
 }
