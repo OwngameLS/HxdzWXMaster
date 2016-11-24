@@ -73,15 +73,28 @@
         </div>
         ---功能描述性设置-------------------------
         <div class="row bg-success">
-            <div class="col-md-3 text-center">名称</div>
-            <div class="col-md-4 text-center">关键字</div>
+            <div class="col-md-2 text-center">名称</div>
+            <div class="col-md-3 text-center">关键字</div>
+            <div class="col-md-2 text-center">等级</div>
             <div class="col-md-5 text-center">描述</div>
         </div>
         <div class="row">
-            <div class="col-md-3 text-center">
+            <div class="col-md-2 text-center">
                 <input class="form-control" id="editName" placeholder="给功能起一个名字..."></div>
-            <div class="col-md-4 text-center">
-                <input class="form-control" id="editKeywords" placeholder="关键字，区别于其他功能的关键字..." onchange=""></div>
+            <div class="col-md-3 text-center">
+                <input class="form-control" id="editKeywords" placeholder="关键字，区别于其他功能的关键字..."></div>
+            <div class="col-md-2 text-center">
+                <select class="form-control" id="editGrade" >
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                </select>
+            </div>
             <div class="col-md-5 text-center">
                 <input class="form-control" id="editDescription" placeholder="描述这个功能，它将作为返回信息的起始部分..."></div>
         </div>
@@ -193,7 +206,8 @@
                 <th width="10%" class="text-center">序号</th>
                 <th width="14%" class="text-center">名称</th>
                 <th width="12%" class="text-center">关键字</th>
-                <th width="40%" class="text-center">描述</th>
+                <th width="30%" class="text-center">描述</th>
+                <th width="10%" class="text-center">等级</th>
                 <th width="24%" class="text-center">操作</th>
             </tr>
             </thead>

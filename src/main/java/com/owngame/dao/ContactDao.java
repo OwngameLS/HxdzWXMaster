@@ -12,6 +12,10 @@ public interface ContactDao {
 
     Contact queryById(long id);
 
+    Contact queryByOpenId(String openid);
+
+    Contact queryByPhone(String phone);
+
     // 通过姓名查询（模糊查询）
     ArrayList<Contact> queryLikeName(String name);
 

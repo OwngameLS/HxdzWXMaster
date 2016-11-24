@@ -172,6 +172,14 @@ public class Function {
         this.sqlfields = sqlfields;
     }
 
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
     public String getUsable() {
         return usable;
     }
@@ -179,5 +187,7 @@ public class Function {
     public void setUsable(String usable) {
         this.usable = usable;
     }
+
+
 
 }

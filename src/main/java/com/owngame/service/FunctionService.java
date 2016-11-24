@@ -86,6 +86,6 @@ public interface FunctionService {
      * @param keysStr
      * @return
      */
-    String getFunctionResultsByKeywords(String keysStr);
+    String getFunctionResultsByKeywords(String grade, String keysStr);
 
 }

@@ -8,6 +8,7 @@ var id = -1;// 新建
 var name;
 var description;
 var keywords;// 关键字，当用户自主查询时，通过关键字匹配
+var grade;
 var ip;
 var port;
 var dbtype;
@@ -59,6 +60,7 @@ function saveFunction(action) {
                 var jsonStr = "{\"id\":\"" + id
                     + "\",\"name\":\"" + name
                     + "\",\"description\":\"" + description
+                    + "\",\"grade\":\"" + grade
                     + "\",\"keywords\":\"" + keywords
                     + "\",\"ip\":\"" + ip
                     + "\",\"port\":\"" + port
@@ -86,6 +88,7 @@ function saveFunction(action) {
         usable = 'no';
         name = $("#editName").val();
         keywords = $("#editKeywords").val();
+        grade = $("#editGrade option:selected").val();
         description = $("#editDescription").val();
         ip = $("#editIP").val();
         port = $("#editPort").val();
@@ -105,6 +108,7 @@ function saveFunction(action) {
             + "\",\"name\":\"" + name
             + "\",\"description\":\"" + description
             + "\",\"keywords\":\"" + keywords
+            + "\",\"grade\":\"" + grade
             + "\",\"ip\":\"" + ip
             + "\",\"port\":\"" + port
             + "\",\"dbtype\":\"" + dbtype
@@ -712,7 +716,7 @@ function testRules() {
 }
 
 
-// 使用联系人json数据组合成联系人表格内容
+// 使用功能json数据组合成功能表格内容
 function initTbodyOfFunctions(functions) {
     var htmlStr = '';
     for (var i = 0; i < functions.length; i++) {
@@ -725,6 +729,7 @@ function initTbodyOfFunctions(functions) {
         htmlStr = htmlStr + '</td><td>' + parseToAbbr(functions[i].name, 5, null)
             + '</td><td>' + parseToAbbr(functions[i].keywords, 10, null)
             + '</td><td>' + parseToAbbr(functions[i].description, 30, null)
+            + '</td><td>' + functions[i].grade
             + '</td><td>'
             + '<button type="button" class="btn btn-warning btn-sm" onclick="detail(\'' + functions[i].id + '\')">详情</button> '
             + '<button type="button" class="btn btn-primary btn-sm" onclick="edit(\'' + functions[i].id + '\')">编辑</button> '
@@ -748,6 +753,7 @@ function detail(id) {
                 + '<b>名称: </b>' + func.name + '<br>'
                 + '<b>描述: </b>' + parseToAbbr(func.description, 20, null) + '<br>'
                 + '<b>关键词: </b>' + func.keywords + '<br>'// 关键字，当用户自主查询时，通过关键字匹配
+                + '<b>等级: </b>' + func.grade + '<br>'
                 + '<b>IP: </b>' + func.ip + '<br>'
                 + '<b>端口: </b>' + func.port + '<br>'
                 + '<b>数据库类型: </b>' + func.dbtype + '<br>'
@@ -788,6 +794,7 @@ function edit(tempId) {
             }
             $("#editName").val(func.name);
             $("#editKeywords").val(func.keywords);
+            $("#editGrade").val(func.grade);
             $("#editDescription").val(func.description);
             $("#editIP").val(func.ip);
             $("#editPort").val(func.port);
@@ -880,10 +887,6 @@ function initRuleFieldArrayFromDB(readfields, sortfields, fieldrules) {
             ruleFieldsArray[index].rule = rule;
         }
     }
-
-    // for (var i = 0; i < ruleFieldsArray.length; i++) {
-    //     console.log(i + ":" + ruleFieldsArray[i].name + "," + ruleFieldsArray[i].selfname + "," + ruleFieldsArray[i].issort + "," + ruleFieldsArray[i].isread + "," + ruleFieldsArray[i].comparevalue + "," + ruleFieldsArray[i].rule);
-    // }
 }
 
 // 检查某个字段是否在规则对象数组中
@@ -1036,7 +1039,6 @@ function initTbodyOfCols() {
                     + '</div>'
                     + '</div><br>';
             }
-
             htmlStr = htmlStr + htmlStrEQ + htmlStrNE + htmlStrCompareValue + htmlStrBB + htmlStrLL + htmlStrRG;
         }
 

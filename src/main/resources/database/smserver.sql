@@ -2,21 +2,21 @@
 Navicat MySQL Data Transfer
 
 Source Server         : mysql
-Source Server Version : 50709
+Source Server Version : 50711
 Source Host           : localhost:3306
 Source Database       : smserver
 
 Target Server Type    : MYSQL
-Target Server Version : 50709
+Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2016-11-24 12:19:26
+Date: 2016-11-24 17:19:01
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for contact
+-- Table structure for `contact`
 -- ----------------------------
 DROP TABLE IF EXISTS `contact`;
 CREATE TABLE `contact` (
@@ -27,62 +27,63 @@ CREATE TABLE `contact` (
   `phone` text,
   `description` text,
   `grade` varchar(3) DEFAULT NULL,
+  `openid` text,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=79 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of contact
 -- ----------------------------
-INSERT INTO `contact` VALUES ('1', 'A', '张三', 'asd', '13945671987', 'adsfasd', '5');
-INSERT INTO `contact` VALUES ('3', 'A', 'Owngamesd', 'asd', '13945677891', 'adsfasd', '7');
-INSERT INTO `contact` VALUES ('4', 'A', '邵文泉', '老师', '15874358616', '老婆大人', '7');
-INSERT INTO `contact` VALUES ('5', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('6', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('7', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('8', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('9', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('10', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('11', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('12', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('17', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('18', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('19', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('20', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('21', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('22', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('23', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('24', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('25', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('26', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('27', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('28', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('33', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('34', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('35', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('36', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('37', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('38', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('39', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('40', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('41', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('42', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('43', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('44', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('49', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('50', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('51', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('52', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('53', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('54', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('55', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('56', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('57', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('58', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('59', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0');
-INSERT INTO `contact` VALUES ('60', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('1', 'A', '张三', 'asd', '13945671987', 'adsfasd', '5', null);
+INSERT INTO `contact` VALUES ('3', 'A', 'Owngamesd', 'asd', '13945677891', 'adsfasd', '7', null);
+INSERT INTO `contact` VALUES ('4', 'A', '邵文泉', '老师', '15874358616', '老婆大人', '7', null);
+INSERT INTO `contact` VALUES ('5', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('6', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('7', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('8', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('9', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('10', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('11', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('12', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('17', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('18', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('19', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('20', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('21', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('22', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('23', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('24', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('25', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('26', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('27', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('28', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('33', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('34', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('35', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('36', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('37', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('38', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('39', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('40', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('41', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('42', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('43', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('44', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('49', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('50', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('51', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('52', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('53', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('54', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('55', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('56', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('57', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('58', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('59', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('60', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0', null);
 
 -- ----------------------------
--- Table structure for function
+-- Table structure for `function`
 -- ----------------------------
 DROP TABLE IF EXISTS `function`;
 CREATE TABLE `function` (
@@ -112,16 +113,16 @@ CREATE TABLE `function` (
 -- ----------------------------
 -- Records of function
 -- ----------------------------
-INSERT INTO `function` VALUES ('1', 'abc', 'Test1Test1Test1Test1Test', 'abc', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'sql', 'undefined', 'undefined', 'undefined', 'undefined', 'select count_type from gameinfos;', 'count_type,统计类型', '0', 'yes');
+INSERT INTO `function` VALUES ('1', 'abc', 'Test1Test1Test1Test1Test', 'abc', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'sql', 'undefined', 'undefined', 'undefined', 'undefined', 'select count_type from gameinfos;', 'count_type,统计类型', '4', 'yes');
 INSERT INTO `function` VALUES ('2', 'cde', 'Test2', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '0', 'no');
 INSERT INTO `function` VALUES ('3', 'efg', 'Test3Test3Test3Test3', '', '', '', 'MySQL', '', '', '', '', 'sql', 'undefined', 'undefined', 'undefined', 'undefined', '', 'id,序号#count_type,统计类型', '1', 'no');
 INSERT INTO `function` VALUES ('4', 'ghi', 'Test4', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '1', 'no');
 INSERT INTO `function` VALUES ('5', 'te22', '23442', '222', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'sql', 'undefined', 'undefined', 'undefined', 'undefined', 'select id, count_type from gameinfos', 'id,序号#count_type,统计类型', '1', 'no');
 INSERT INTO `function` VALUES ('6', '23234', '23442', '32', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'rule', 'id,序号#count_type,统计类型', 'id desc', 'count_type,统计类型,5,NE', 'oncase', 'undefined', 'undefined', '5', 'no');
-INSERT INTO `function` VALUES ('7', '23234', '23442', '32', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'rule', '', '', '', 'anyway', 'undefined', 'undefined', '7', 'yes');
+INSERT INTO `function` VALUES ('7', '23234', '23442', '32', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'rules', '', '', '', 'anyway', '', '', '0', 'no');
 
 -- ----------------------------
--- Table structure for qrtz_blob_triggers
+-- Table structure for `qrtz_blob_triggers`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_blob_triggers`;
 CREATE TABLE `qrtz_blob_triggers` (
@@ -139,7 +140,7 @@ CREATE TABLE `qrtz_blob_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for qrtz_calendars
+-- Table structure for `qrtz_calendars`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_calendars`;
 CREATE TABLE `qrtz_calendars` (
@@ -154,7 +155,7 @@ CREATE TABLE `qrtz_calendars` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for qrtz_cron_triggers
+-- Table structure for `qrtz_cron_triggers`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_cron_triggers`;
 CREATE TABLE `qrtz_cron_triggers` (
@@ -173,7 +174,7 @@ CREATE TABLE `qrtz_cron_triggers` (
 INSERT INTO `qrtz_cron_triggers` VALUES ('quartzScheduler', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'DEFAULT', '0 * * * * ? *', 'GMT+08:00');
 
 -- ----------------------------
--- Table structure for qrtz_fired_triggers
+-- Table structure for `qrtz_fired_triggers`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_fired_triggers`;
 CREATE TABLE `qrtz_fired_triggers` (
@@ -204,7 +205,7 @@ CREATE TABLE `qrtz_fired_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for qrtz_job_details
+-- Table structure for `qrtz_job_details`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_job_details`;
 CREATE TABLE `qrtz_job_details` (
@@ -229,7 +230,7 @@ CREATE TABLE `qrtz_job_details` (
 INSERT INTO `qrtz_job_details` VALUES ('quartzScheduler', 'jobDetail', 'DEFAULT', null, 'com.owngame.utils.MyQuartzJobBean', '1', '1', '1', '0', 0xACED0005737200156F72672E71756172747A2E4A6F62446174614D61709FB083E8BFA9B0CB020000787200266F72672E71756172747A2E7574696C732E537472696E674B65794469727479466C61674D61708208E8C3FBC55D280200015A0013616C6C6F77735472616E7369656E74446174617872001D6F72672E71756172747A2E7574696C732E4469727479466C61674D617013E62EAD28760ACE0200025A000564697274794C00036D617074000F4C6A6176612F7574696C2F4D61703B787000737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F40000000000010770800000010000000007800);
 
 -- ----------------------------
--- Table structure for qrtz_locks
+-- Table structure for `qrtz_locks`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_locks`;
 CREATE TABLE `qrtz_locks` (
@@ -244,7 +245,7 @@ CREATE TABLE `qrtz_locks` (
 INSERT INTO `qrtz_locks` VALUES ('quartzScheduler', 'TRIGGER_ACCESS');
 
 -- ----------------------------
--- Table structure for qrtz_paused_trigger_grps
+-- Table structure for `qrtz_paused_trigger_grps`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_paused_trigger_grps`;
 CREATE TABLE `qrtz_paused_trigger_grps` (
@@ -258,7 +259,7 @@ CREATE TABLE `qrtz_paused_trigger_grps` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for qrtz_scheduler_state
+-- Table structure for `qrtz_scheduler_state`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_scheduler_state`;
 CREATE TABLE `qrtz_scheduler_state` (
@@ -274,7 +275,7 @@ CREATE TABLE `qrtz_scheduler_state` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for qrtz_simple_triggers
+-- Table structure for `qrtz_simple_triggers`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_simple_triggers`;
 CREATE TABLE `qrtz_simple_triggers` (
@@ -293,7 +294,7 @@ CREATE TABLE `qrtz_simple_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for qrtz_simprop_triggers
+-- Table structure for `qrtz_simprop_triggers`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_simprop_triggers`;
 CREATE TABLE `qrtz_simprop_triggers` (
@@ -320,7 +321,7 @@ CREATE TABLE `qrtz_simprop_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for qrtz_triggers
+-- Table structure for `qrtz_triggers`
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_triggers`;
 CREATE TABLE `qrtz_triggers` (
@@ -362,7 +363,7 @@ CREATE TABLE `qrtz_triggers` (
 INSERT INTO `qrtz_triggers` VALUES ('quartzScheduler', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'DEFAULT', 'jobDetail', 'DEFAULT', null, '1476928680000', '1476928648239', '5', 'PAUSED', 'CRON', '1476928060000', '0', null, '0', 0xACED0005737200156F72672E71756172747A2E4A6F62446174614D61709FB083E8BFA9B0CB020000787200266F72672E71756172747A2E7574696C732E537472696E674B65794469727479466C61674D61708208E8C3FBC55D280200015A0013616C6C6F77735472616E7369656E74446174617872001D6F72672E71756172747A2E7574696C732E4469727479466C61674D617013E62EAD28760ACE0200025A000564697274794C00036D617074000F4C6A6176612F7574696C2F4D61703B787001737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F4000000000000C7708000000100000000274000966756E6374696F6E73740003616263740009726563656976657273740007312C332C342C357800);
 
 -- ----------------------------
--- Table structure for task
+-- Table structure for `task`
 -- ----------------------------
 DROP TABLE IF EXISTS `task`;
 CREATE TABLE `task` (
@@ -384,7 +385,7 @@ INSERT INTO `task` VALUES ('380', '群发消息', '主动发送消息给一部�
 INSERT INTO `task` VALUES ('381', '群发消息', '主动发送消息给一部分人...(消息内容:test contents...)', '2', 'test contents...', '13945671987,13945677891,18107436127', '2016-11-24 11:31:48');
 
 -- ----------------------------
--- Table structure for timertask
+-- Table structure for `timertask`
 -- ----------------------------
 DROP TABLE IF EXISTS `timertask`;
 CREATE TABLE `timertask` (

@@ -161,6 +161,7 @@ public class FunctionController {
             function.setName(p.get("name"));
             function.setDescription(p.get("description"));
             function.setKeywords(p.get("keywords"));
+            function.setGrade(p.get("grade"));
             function.setIp(p.get("ip"));
             function.setPort(p.get("port"));
             function.setDbtype(p.get("dbtype"));

@@ -1,6 +1,8 @@
 package com.owngame.service.impl;
 
+import com.owngame.dao.ContactDao;
 import com.owngame.dao.MYUser;
+import com.owngame.entity.Contact;
 import com.owngame.menu.ManageMenu;
 import com.owngame.service.*;
 import com.owngame.utils.PhoneUtil;
@@ -44,23 +46,29 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
     public static final int RETURN_CODE_DATABASE_FAILED = -2;// 数据库操作错误
     public static final int RETURN_CODE_SUCCESS = 0;// OK
     public static final int RETURN_CODE_INVALID_PHONENUMBER = 1;// 手机号码不合法
-    static final String TEXTMSG_PREFIX_PHONENUMBER = "10";// 文本消息，手机号逻辑
-    static final String TEXTMSG_PREFIX_ADD_PHONENUMBER = "101=";// 文本消息，添加手机号
-    static final String TEXTMSG_PREFIX_CHANGE_PHONENUMBER = "102=";// 文本消息，更新手机号
+    static final String TEXTMSG_PREFIX_PHONENUMBER = "SJ";// 文本消息，手机号逻辑
+    static final String TEXTMSG_PREFIX_ADD_PHONENUMBER = "SJA=";// 文本消息，添加手机号
+    static final String TEXTMSG_PREFIX_CHANGE_PHONENUMBER = "SJU=";// 文本消息，更新手机号
     static final String BATHURL = "http://owngame.ngrok.cc/WeiMaster/";
     static final String SEND_PACKAGE_URL = "sendPackage.jsp?openid=OPENID";
 
     @Autowired
     FunctionService functionService;
 
+    ContactDao contactDao;
+
     String fromUserName; // 消息的发来者，也是返回消息的接收者
     String rtMsgType;// 返回的消息类型
+
+    Contact contact;// 用户详情
 
     public String handleMessage(Map<String, String> map) {
         // 将传递来的请求数据整理后分析
         System.out.println("map toString :" + map.toString());
         String msgType = map.get("MsgType");
         fromUserName = map.get("FromUserName");
+        // 检查用户权限
+        contact = contactDao.queryByOpenId(fromUserName);
         if (WeixinMessageServiceImpl.MESSAGE_TYPE_TEXT.equals(msgType)) {// 传递来了文本信息
             String content = map.get("Content");
             return handleTextMessage(content);
@@ -78,11 +86,28 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
         rtMsgType = MESSAGE_TYPE_TEXT;
 // TODO 先排查一遍是否有微信公众号特殊定义的关键字，方便决定是否需要返回特殊消息
 //        if(content.startsWith())
-        content = functionService.getFunctionResultsByKeywords(content);
+        if (content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)) {// 手机号逻辑
+            int rcode = phoneNumberLogic(fromUserName, content);
+            if (rcode == RETURN_CODE_SUCCESS) {
+                content = "操作成功！";
+            } else {
+                content = "操作失败咯，再试试？多次失败，请稍后再试吧~";
+            }
+        }
+        if(contact != null) {
+            content = functionService.getFunctionResultsByKeywords(contact.getGrade(), content);
+        }else{// 没有查询到用户绑定情况
+            content = returnAskBindPhone();
+        }
         if(rtMsgType.equals(MESSAGE_TYPE_TEXT)){// 回复文本消息
             return initTextMessageOfJsonString(content);
         }
         return null;
+    }
+
+    // 提醒绑定手机号
+    private String returnAskBindPhone(){
+        return "由于你尚未绑定手机号，我们无法确定你的身份，所以无法提供服务。请先绑定手机号，发送“SJA手机号”(例如SJA13988888888)即可。";
     }
 
     /**

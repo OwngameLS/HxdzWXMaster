@@ -13,6 +13,7 @@ public class Contact {
     String phone = "13988888888";
     String description = "无意义";
     String grade = "0";// 用户级别
+    String openid = "xxx";// 微信OPENID
 
     public Contact() {
     }
@@ -73,6 +74,14 @@ public class Contact {
         this.grade = grade;
     }
 
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
+
     @Override
     public String toString() {
         return "Contact{" +
@@ -83,6 +92,7 @@ public class Contact {
                 ", phone='" + phone + '\'' +
                 ", description='" + description + '\'' +
                 ", grade='" + grade + '\'' +
+                ", openid='" + openid + '\'' +
                 '}';
     }
 }

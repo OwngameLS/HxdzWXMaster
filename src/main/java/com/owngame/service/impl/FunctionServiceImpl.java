@@ -100,7 +100,7 @@ public class FunctionServiceImpl implements FunctionService {
      * @param keysStr
      * @return
      */
-    public String getFunctionResultsByKeywords(String keysStr) {
+    public String getFunctionResultsByKeywords(String grade, String keysStr) {
         System.out.println("getFunctionResultsByKeywords : " + keysStr);
         String results = "";
         if(keysStr != null){
