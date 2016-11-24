@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2016-10-26 22:59:21
+Date: 2016-11-24 12:19:26
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -26,59 +26,60 @@ CREATE TABLE `contact` (
   `title` text,
   `phone` text,
   `description` text,
+  `grade` varchar(3) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=65 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=79 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of contact
 -- ----------------------------
-INSERT INTO `contact` VALUES ('1', 'A', '张三', 'asd', '13945671987', 'adsfasd');
-INSERT INTO `contact` VALUES ('3', 'A', 'Owngamesd', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('4', 'A', 'aad', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('5', 'A', 'fgh', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('6', 'A', 'ghi', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('7', 'B', 'hij', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('8', 'B', 'ijk', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('9', 'B', 'abc', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('10', 'B', 'cde', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('11', 'B', 'def', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('12', 'B', 'efg', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('17', 'A', 'abc', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('18', 'A', 'cde', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('19', 'A', 'def', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('20', 'A', 'aad', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('21', 'A', 'fgh', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('22', 'A', 'ghi', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('23', 'B', 'hij', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('24', 'B', 'ijk', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('25', 'B', 'abc', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('26', 'B', 'cde', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('27', 'B', 'def', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('28', 'B', 'efg', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('33', 'A', 'abc', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('34', 'A', 'cde', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('35', 'A', 'def', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('36', 'A', 'aad', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('37', 'A', 'fgh', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('38', 'A', 'ghi', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('39', 'B', 'hij', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('40', 'B', 'ijk', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('41', 'B', 'abc', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('42', 'B', 'cde', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('43', 'B', 'def', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('44', 'B', 'efg', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('49', 'A', 'abc', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('50', 'A', 'cde', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('51', 'A', 'def', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('52', 'A', 'aad', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('53', 'A', 'fgh', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('54', 'A', 'ghi', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('55', 'B', 'hij', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('56', 'B', 'ijk', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('57', 'B', 'abc', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('58', 'B', 'cde', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('59', 'B', 'def', 'asd', '13945677891', 'adsfasd');
-INSERT INTO `contact` VALUES ('60', 'B', 'efg', 'asd', '13945677891', 'adsfasd');
+INSERT INTO `contact` VALUES ('1', 'A', '张三', 'asd', '13945671987', 'adsfasd', '5');
+INSERT INTO `contact` VALUES ('3', 'A', 'Owngamesd', 'asd', '13945677891', 'adsfasd', '7');
+INSERT INTO `contact` VALUES ('4', 'A', '邵文泉', '老师', '15874358616', '老婆大人', '7');
+INSERT INTO `contact` VALUES ('5', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('6', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('7', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('8', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('9', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('10', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('11', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('12', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('17', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('18', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('19', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('20', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('21', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('22', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('23', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('24', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('25', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('26', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('27', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('28', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('33', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('34', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('35', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('36', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('37', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('38', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('39', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('40', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('41', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('42', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('43', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('44', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('49', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('50', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('51', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('52', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('53', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('54', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('55', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('56', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('57', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('58', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('59', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0');
+INSERT INTO `contact` VALUES ('60', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0');
 
 -- ----------------------------
 -- Table structure for function
@@ -103,6 +104,7 @@ CREATE TABLE `function` (
   `isreturn` varchar(10) DEFAULT NULL,
   `sqlstmt` text,
   `sqlfields` text,
+  `grade` varchar(3) DEFAULT NULL,
   `usable` text,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
@@ -110,13 +112,13 @@ CREATE TABLE `function` (
 -- ----------------------------
 -- Records of function
 -- ----------------------------
-INSERT INTO `function` VALUES ('1', 'abc', 'Test1Test1Test1Test1Test1', 'abc', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', null, 'id,序号#count_type,计时类型', 'gametime desc', 'player_statids_home,home,88,EQ#player_statids_guest,guest,-1,RG@12BT34', 'anyway', null, null, null);
-INSERT INTO `function` VALUES ('2', 'cde', 'Test2', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `function` VALUES ('3', 'efg', 'Test3Test3Test3Test3', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `function` VALUES ('4', 'ghi', 'Test4', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `function` VALUES ('5', 'te22', '23442', '222', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'sql', 'undefined', 'undefined', 'undefined', 'undefined', 'select id, count_type from gameinfos', 'id,序号#count_type,统计类型', null);
-INSERT INTO `function` VALUES ('6', '23234', '23442', '32', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'rule', 'id,序号#count_type,统计类型', 'id desc', 'count_type,统计类型,5,NE', 'oncase', 'undefined', 'undefined', null);
-INSERT INTO `function` VALUES ('7', '23234', '23442', '32', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'rule', '', '', '', 'anyway', 'undefined', 'undefined', null);
+INSERT INTO `function` VALUES ('1', 'abc', 'Test1Test1Test1Test1Test', 'abc', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'sql', 'undefined', 'undefined', 'undefined', 'undefined', 'select count_type from gameinfos;', 'count_type,统计类型', '0', 'yes');
+INSERT INTO `function` VALUES ('2', 'cde', 'Test2', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '0', 'no');
+INSERT INTO `function` VALUES ('3', 'efg', 'Test3Test3Test3Test3', '', '', '', 'MySQL', '', '', '', '', 'sql', 'undefined', 'undefined', 'undefined', 'undefined', '', 'id,序号#count_type,统计类型', '1', 'no');
+INSERT INTO `function` VALUES ('4', 'ghi', 'Test4', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '1', 'no');
+INSERT INTO `function` VALUES ('5', 'te22', '23442', '222', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'sql', 'undefined', 'undefined', 'undefined', 'undefined', 'select id, count_type from gameinfos', 'id,序号#count_type,统计类型', '1', 'no');
+INSERT INTO `function` VALUES ('6', '23234', '23442', '32', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'rule', 'id,序号#count_type,统计类型', 'id desc', 'count_type,统计类型,5,NE', 'oncase', 'undefined', 'undefined', '5', 'no');
+INSERT INTO `function` VALUES ('7', '23234', '23442', '32', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'rule', '', '', '', 'anyway', 'undefined', 'undefined', '7', 'yes');
 
 -- ----------------------------
 -- Table structure for qrtz_blob_triggers
@@ -372,11 +374,14 @@ CREATE TABLE `task` (
   `receivers` text,
   `createTime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=379 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=382 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of task
 -- ----------------------------
+INSERT INTO `task` VALUES ('379', '群发消息', '主动发送消息给一部分人...', '2', 'asdfasdf', '18107436127', '2016-11-24 11:31:48');
+INSERT INTO `task` VALUES ('380', '群发消息', '主动发送消息给一部分人...(消息内容:asdfklsa;jfl;sadfu8iorkenfl;daksjflkadsjfoijsadlfksadlk;fj)', '2', 'asdfklsa;jfl;sadfu8iorkenfl;daksjflkadsjfoijsadlfksadlk;fj', '18107436127', '2016-11-24 11:31:48');
+INSERT INTO `task` VALUES ('381', '群发消息', '主动发送消息给一部分人...(消息内容:test contents...)', '2', 'test contents...', '13945671987,13945677891,18107436127', '2016-11-24 11:31:48');
 
 -- ----------------------------
 -- Table structure for timertask

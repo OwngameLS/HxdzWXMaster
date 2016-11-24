@@ -112,9 +112,10 @@ function initTbodyOfContacts(contacts) {
             + '</td><td>' + contacts[i].name
             + '</td><td>' + parseToAbbr(contacts[i].title, 5, null)
             + '</td><td>' + contacts[i].phone
+            + '</td><td>' + contacts[i].grade
             + '</td><td>' + parseToAbbr(contacts[i].description, 10, null)
             + '</td><td>' + '<button type="button" class="btn btn-primary btn-sm" onclick="initEditContact(\'' + contacts[i].id
-            + '\',\'' + contacts[i].groupname + '\',\'' + contacts[i].name + '\',\'' + contacts[i].title + '\',\'' + contacts[i].phone + '\',\'' + contacts[i].description + '\')">编辑</button>'
+            + '\',\'' + contacts[i].groupname + '\',\'' + contacts[i].name + '\',\'' + contacts[i].title + '\',\'' + contacts[i].phone + '\',\'' + contacts[i].grade + '\',\'' + contacts[i].description + '\')">编辑</button>'
             + '</td></tr>';
     }
     $("#contactsBody").html(htmlStr);
@@ -284,7 +285,7 @@ function cancleEditGroup() {
 }
 
 // 准备好编辑联系人的控件
-function initEditContact(id, groupname, name, title, phone, description) {
+function initEditContact(id, groupname, name, title, phone, grade, description) {
     // 标记编辑的id
     updateContactId = id;
     // 显示编辑部分
@@ -301,6 +302,7 @@ function initEditContact(id, groupname, name, title, phone, description) {
     $("#editContactName").val(name);
     $("#editContactTitle").val(title);
     $("#editContactPhone").val(phone);
+    $("#editContactGrade").val(grade);
     $("#editContactDescription").val(description);
 }
 
@@ -318,6 +320,7 @@ function doEditContact() {
     var name = $("#editContactName").val();
     var title = $("#editContactTitle").val();
     var phone = $("#editContactPhone").val();
+    var grade = $("#editContactGrade  option:selected").val();
     var description = $("#editContactDescription").val();
     // 判断不为空
     if (isEmpty(name)) {
@@ -340,8 +343,8 @@ function doEditContact() {
         + "\",\"name\":\"" + name
         + "\",\"title\":\"" + title
         + "\",\"phone\":\"" + phone
+        + "\",\"grade\":\"" + grade
         + "\",\"description\":\"" + description + "\"}";
-    console.log("jsonStr:" + jsonStr);
     commitEditContact('update', jsonStr);
 }
 

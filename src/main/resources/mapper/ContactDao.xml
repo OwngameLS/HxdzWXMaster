@@ -25,9 +25,9 @@
 
     <insert id="insert" parameterType="Contact">
         insert into contact
-        (id, groupname,name, title,phone,description)
+        (id, groupname,name, title,phone,description,grade)
         values
-        (#{id}, #{groupname},#{name},#{title},#{phone},#{description})
+        (#{id}, #{groupname},#{name},#{title},#{phone},#{description}, #{grade})
     </insert>
 
     <update id="update" parameterType="Contact">
@@ -36,7 +36,8 @@
         name=#{name},
         title=#{title},
         phone=#{phone},
-        description=#{description}
+        description=#{description},
+        grade=#{grade}
         where id=#{id}
     </update>
 

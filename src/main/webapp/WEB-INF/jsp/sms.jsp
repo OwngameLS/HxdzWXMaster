@@ -83,8 +83,8 @@
             <table class="table table-hover table-bordered text-center">
                 <thead>
                 <tr class="info">
-                    <th width="15%" class="text-center">序号（<input type="checkbox" id="selectAllContacts"
-                                                                  onclick="changeSelectAllContacts()">全选）
+                    <th width="15%" class="text-center">ID(<input type="checkbox" id="selectAllContacts"
+                                                                  onclick="changeSelectAllContacts()">全选)
                     </th>
                     <th width="15%" class="text-center">所在分组</th>
                     <th width="15%" class="text-center">姓名</th>

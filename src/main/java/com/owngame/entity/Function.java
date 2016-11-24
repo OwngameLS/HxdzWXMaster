@@ -26,6 +26,7 @@ public class Function {
     String sqlstmt = "";//sql语句
     String sqlfields = "";// sql查询的字段属性，按照顺序来a,aName#b,bName
     String usable = "no";// 是否可用
+    String grade = "0";// 使用级别（0-7）
 
     public long getId() {
         return id;
@@ -178,4 +179,5 @@ public class Function {
     public void setUsable(String usable) {
         this.usable = usable;
     }
+
 }

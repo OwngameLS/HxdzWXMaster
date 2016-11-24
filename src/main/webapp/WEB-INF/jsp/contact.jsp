@@ -68,11 +68,12 @@
         <table class="text-center">
             <thead>
             <tr class="warning">
-                <th width="10%" class="text-center">所在分组</th>
-                <th width="10%" class="text-center">姓名</th>
+                <th width="12%" class="text-center">所在分组</th>
+                <th width="13%" class="text-center">姓名</th>
                 <th width="15%" class="text-center">职务</th>
-                <th width="20%" class="text-center">手机号</th>
-                <th width="20%" class="text-center">备注</th>
+                <th width="15%" class="text-center">手机号</th>
+                <th width="15%" class="text-center">等级</th>
+                <th width="15%" class="text-center">备注</th>
                 <th width="15%" class="text-center">操作</th>
             </tr>
             </thead>
@@ -84,6 +85,16 @@
                 <td><input class="form-control" id="editContactName" placeholder="姓名"></td>
                 <td><input class="form-control" id="editContactTitle" placeholder="职务"></td>
                 <td><input class="form-control" id="editContactPhone" placeholder="手机号"></td>
+                <td><select class="form-control" id="editContactGrade" >
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                </select></td>
                 <td><input class="form-control" id="editContactDescription" placeholder="备注"></td>
                 <td>
                     <button type="button" class="btn btn-primary btn-sm" onclick="doEditContact()">完成</button>
@@ -178,13 +189,14 @@
         <table class="table table-hover table-bordered text-center">
             <thead>
             <tr class="info">
-                <th width="15%" class="text-center">序号（<input type="checkbox" id="selectAll"
-                                                              onclick="changeSelectAll()">全选）
+                <th width="15%" class="text-center">ID(<input type="checkbox" id="selectAll"
+                                                              onclick="changeSelectAll()">全选)
                 </th>
-                <th width="15%" class="text-center">所在分组</th>
-                <th width="15%" class="text-center">姓名</th>
+                <th width="10%" class="text-center">所在分组</th>
+                <th width="10%" class="text-center">姓名</th>
                 <th width="10%" class="text-center">职务</th>
                 <th width="15%" class="text-center">手机号</th>
+                <th width="10%" class="text-center">等级</th>
                 <th width="15%" class="text-center">备注</th>
                 <th width="15%" class="text-center">操作</th>
             </tr>

@@ -12,6 +12,7 @@ public class Contact {
     String title = "abc";
     String phone = "13988888888";
     String description = "无意义";
+    String grade = "0";// 用户级别
 
     public Contact() {
     }
@@ -64,6 +65,14 @@ public class Contact {
         this.description = description;
     }
 
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
     @Override
     public String toString() {
         return "Contact{" +
@@ -73,6 +82,7 @@ public class Contact {
                 ", title='" + title + '\'' +
                 ", phone='" + phone + '\'' +
                 ", description='" + description + '\'' +
+                ", grade='" + grade + '\'' +
                 '}';
     }
 }

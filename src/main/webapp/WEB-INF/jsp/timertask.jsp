@@ -98,8 +98,8 @@
         <table class="table table-hover table-bordered text-center">
             <thead>
             <tr class="info">
-                <th width="15%" class="text-center">序号（<input type="checkbox" id="selectAllFunctions"
-                                                              onclick="changeSelectAllFunctions()">全选）
+                <th width="15%" class="text-center">ID(<input type="checkbox" id="selectAllFunctions"
+                                                              onclick="changeSelectAllFunctions()">全选)
                 </th>
                 <th width="25%" class="text-center">
                     功能名称
