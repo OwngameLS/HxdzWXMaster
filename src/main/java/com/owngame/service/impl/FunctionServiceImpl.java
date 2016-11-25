@@ -119,7 +119,12 @@ public class FunctionServiceImpl implements FunctionService {
                     }
                     if(function != null){
                         if(function.getId() != -1){// 找到了这个方法
-                            ids = addIdsUnique(ids, function.getId()+"");// 去重添加
+                            // 判断级别 是否有权限查询
+                            if(Integer.parseInt(grade) < Integer.parseInt(function.getGrade())){
+                                results = results + "关键字" + keyStr[i] + " 由于您为获得与该功能匹配的级别，无法进行查询，请与管理员申请后再次尝试查询。";
+                            }else{
+                                ids = addIdsUnique(ids, function.getId()+"");// 去重添加
+                            }
                         }else{// 找到了类似关键字的方法
                             results = results + "关键字" + keyStr[i] + " 没有找到对应的功能，因此没有获得查询结果，与它类似的关键字有 "
                                     + function.getDescription() +",请与管理员确认后再次尝试查询。";
