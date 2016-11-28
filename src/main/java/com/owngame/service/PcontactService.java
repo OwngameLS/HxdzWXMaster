@@ -19,7 +19,7 @@ import java.util.Map;
 @Service
 public class PcontactService {
     @Autowired
-    ContactDao contactDao;
+    ContactService contactService;
 
     /**
      * 处理批量导入联系人
@@ -31,10 +31,10 @@ public class PcontactService {
         // 从上传文件导入得到的通讯录信息
         ArrayList<Contact> contactsNew = (ArrayList<Contact>) o;
         // 将原数据库中的通讯录信息删除
-        contactDao.deleteAll();
+        contactService.deleteAll();
         // 插入新数据
         for (Contact contact : contactsNew) {
-            contactDao.insert(contact);
+            contactService.insert(contact);
         }
         return "OK";
     }
@@ -45,7 +45,7 @@ public class PcontactService {
      * @return
      */
     public ArrayList<Contact> getContacts() {
-        ArrayList<Contact> contacts = contactDao.queryAll();
+        ArrayList<Contact> contacts = contactService.queryAll();
         return contacts;
     }
 
@@ -55,7 +55,7 @@ public class PcontactService {
      * @return
      */
     public ArrayList<String> getGroups() {
-        ArrayList<String> groups = contactDao.getGroups();
+        ArrayList<String> groups = contactService.getGroups();
         return groups;
     }
 
@@ -66,7 +66,7 @@ public class PcontactService {
      * @return
      */
     public ArrayList<Contact> getContactByGroup(String groupnames) {
-        ArrayList<Contact> contacts = contactDao.queryByGroup(groupnames);
+        ArrayList<Contact> contacts = contactService.queryByGroup(groupnames);
         return contacts;
     }
 
@@ -79,7 +79,7 @@ public class PcontactService {
     public Map<String, Object> insertGroup(Map<String, String> p) {
         Map<String, Object> map = new HashMap<String, Object>();
         String groupname = p.get("groupname");
-        ArrayList<String> groups = contactDao.getGroups();
+        ArrayList<String> groups = contactService.getGroups();
         boolean isFound = false;
         for (String s : groups) {
             if (s.equals(groupname)) {
@@ -97,7 +97,7 @@ public class PcontactService {
             } else {// 有ids，对应更新
                 String[] ids = idsString.split(",");
                 for (String id : ids) {
-                    contactDao.updateGroupWithId(new GroupName(Long.parseLong(id), null, groupname));
+                    contactService.updateGroupWithId(new GroupName(Long.parseLong(id), null, groupname));
                 }
             }
         } else {// 新的分组
@@ -106,19 +106,19 @@ public class PcontactService {
                 // 没有ids 创建一条空数据
                 Contact contact = new Contact();
                 contact.setGroupname(groupname);
-                contactDao.insert(contact);
+                contactService.insert(contact);
             } else {// 有ids，对应更新
                 String[] ids = idsString.split(",");
                 for (String id : ids) {
-                    Contact contact = contactDao.queryById(Long.parseLong(id));
+                    Contact contact = contactService.queryById(Long.parseLong(id));
                     contact.setGroupname(groupname);
                     // 拿到操作模式
                     String addContactsType = p.get("addContactsType");
                     if (addContactsType.equals("copy")) {
                         contact.setId(0);//改id为0，就是等着新增
-                        contactDao.insert(contact);
+                        contactService.insert(contact);
                     } else if (addContactsType.equals("move")) {
-                        contactDao.update(contact);
+                        contactService.update(contact);
                     }
                 }
             }
@@ -137,7 +137,7 @@ public class PcontactService {
         ArrayList<Contact> contacts = new ArrayList<Contact>();
         String[] idArray = ids.split(",");
         for (String s : idArray) {
-            Contact contact = contactDao.queryById(Long.parseLong(s));
+            Contact contact = contactService.queryById(Long.parseLong(s));
             if (contact != null) {
                 contacts.add(contact);
             }
@@ -150,7 +150,7 @@ public class PcontactService {
     // 将已经编辑好的联系人信息存储成Excel文件，并返回给调用者（MainController）用于下载
     public boolean initContactsFile(String filePath){
         // 1.拿到所有联系人信息
-        ArrayList<Contact> contacts = contactDao.queryAll();
+        ArrayList<Contact> contacts = contactService.queryAll();
         if(contacts == null || contacts.size()==0){
             Contact contact = new Contact();
             contacts.add(contact);

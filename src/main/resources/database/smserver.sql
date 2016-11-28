@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2016-11-24 17:19:01
+Date: 2016-11-28 17:03:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -28,59 +28,60 @@ CREATE TABLE `contact` (
   `description` text,
   `grade` varchar(3) DEFAULT NULL,
   `openid` text,
+  `backup` text,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=79 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of contact
 -- ----------------------------
-INSERT INTO `contact` VALUES ('1', 'A', '张三', 'asd', '13945671987', 'adsfasd', '5', null);
-INSERT INTO `contact` VALUES ('3', 'A', 'Owngamesd', 'asd', '13945677891', 'adsfasd', '7', null);
-INSERT INTO `contact` VALUES ('4', 'A', '邵文泉', '老师', '15874358616', '老婆大人', '7', null);
-INSERT INTO `contact` VALUES ('5', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('6', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('7', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('8', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('9', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('10', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('11', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('12', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('17', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('18', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('19', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('20', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('21', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('22', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('23', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('24', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('25', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('26', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('27', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('28', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('33', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('34', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('35', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('36', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('37', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('38', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('39', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('40', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('41', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('42', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('43', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('44', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('49', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('50', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('51', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('52', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('53', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('54', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('55', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('56', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('57', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('58', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('59', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0', null);
-INSERT INTO `contact` VALUES ('60', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0', null);
+INSERT INTO `contact` VALUES ('1', 'A', '张三', 'asd', '13945671987', 'adsfasd', '5', null, null);
+INSERT INTO `contact` VALUES ('3', 'A', 'Owngamesd', 'asd', '13945677891', 'adsfasd', '7', null, null);
+INSERT INTO `contact` VALUES ('4', 'A', '邵文泉', '老师', '15874358616', '老婆大人', '7', null, null);
+INSERT INTO `contact` VALUES ('5', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('6', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('7', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('8', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('9', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('10', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('11', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('12', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('17', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('18', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('19', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('20', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('21', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('22', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('23', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('24', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('25', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('26', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('27', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('28', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('33', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('34', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('35', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('36', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('37', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('38', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('39', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('40', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('41', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('42', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('43', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('44', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('49', 'A', 'abc', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('50', 'A', 'cde', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('51', 'A', 'def', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('52', 'A', 'aad', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('53', 'A', 'fgh', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('54', 'A', 'ghi', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('55', 'B', 'hij', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('56', 'B', 'ijk', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('57', 'B', 'abc', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('58', 'B', 'cde', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('59', 'B', 'def', 'asd', '13945677891', 'adsfasd', '0', null, null);
+INSERT INTO `contact` VALUES ('60', 'B', 'efg', 'asd', '13945677891', 'adsfasd', '0', null, null);
 
 -- ----------------------------
 -- Table structure for `function`

@@ -154,6 +154,26 @@ public class FunctionServiceImpl implements FunctionService {
         return results;
     }
 
+    public int insert(Function function) {
+        return functionDao.insert(function);
+    }
+
+    public Function queryByName(String name) {
+        return functionDao.queryByName(name);
+    }
+
+    public ArrayList<Function> queryByKeywords(String keywords) {
+        return functionDao.queryByKeywords(keywords);
+    }
+
+    public Function queryById(long id) {
+        return functionDao.queryById(id);
+    }
+
+    public ArrayList<Function> checkKeywords(String keywords) {
+        return functionDao.checkKeywords(keywords);
+    }
+
     // 保证每次添加的方法都是唯一的
     private ArrayList<String> addIdsUnique(ArrayList<String> ids, String id) {
         boolean isFound = false;

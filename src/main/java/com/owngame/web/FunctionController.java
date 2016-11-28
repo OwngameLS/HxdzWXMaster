@@ -46,7 +46,7 @@ public class FunctionController {
     @ResponseBody
     public Map<String, Object> getFunctionResultsByKeywords(@RequestBody Map<String, String> p){
         Map<String, Object> map = new HashMap<String, Object>();
-        String results = functionService.getFunctionResultsByKeywords(p.get("keywords"));
+        String results = functionService.getFunctionResultsByKeywords("7", p.get("keywords"));// 从网页上询问结果，最高级别
         map.put("results", results);
         return map;
     }

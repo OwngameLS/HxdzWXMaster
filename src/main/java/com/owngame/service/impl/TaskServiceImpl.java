@@ -3,6 +3,7 @@ package com.owngame.service.impl;
 import com.owngame.dao.TaskDao;
 import com.owngame.entity.Task;
 import com.owngame.service.TaskService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +32,37 @@ public class TaskServiceImpl implements TaskService {
         java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = format.format(cal.getTime());
         return taskDao.queryTasksBeforeTime(time);
+    }
+
+    public Task queryById(long id) {
+        return taskDao.queryById(id);
+    }
+
+    public ArrayList<Task> queryByState(int state) {
+        return taskDao.queryByState(state);
+    }
+
+    public ArrayList<Task> queryAllTasks(@Param("offset") int offet, @Param("limit") int limit) {
+        return taskDao.queryAllTasks(offet,limit);
+    }
+
+    public ArrayList<Task> queryTasksBeforeTime(String time) {
+        return taskDao.queryTasksBeforeTime(time);
+    }
+
+    public int insert(Task task) {
+        return taskDao.insert(task);
+    }
+
+    public int delete(long id) {
+        return taskDao.delete(id);
+    }
+
+    public int update(Task task) {
+        return taskDao.update(task);
+    }
+
+    public int updateState(Task task) {
+        return taskDao.updateState(task);
     }
 }

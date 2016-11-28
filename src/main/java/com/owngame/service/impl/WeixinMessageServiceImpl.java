@@ -47,19 +47,18 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
     public static final int RETURN_CODE_SUCCESS = 0;// OK
     public static final int RETURN_CODE_INVALID_PHONENUMBER = 1;// 手机号码不合法
     static final String TEXTMSG_PREFIX_PHONENUMBER = "SJ";// 文本消息，手机号逻辑
-    static final String TEXTMSG_PREFIX_ADD_PHONENUMBER = "SJA=";// 文本消息，添加手机号
-    static final String TEXTMSG_PREFIX_CHANGE_PHONENUMBER = "SJU=";// 文本消息，更新手机号
+    static final String TEXTMSG_PREFIX_ADD_PHONENUMBER = "SJA#";// 文本消息，添加手机号
+    static final String TEXTMSG_PREFIX_CHANGE_PHONENUMBER = "SJU#";// 文本消息，更新手机号
     static final String BATHURL = "http://owngame.ngrok.cc/WeiMaster/";
     static final String SEND_PACKAGE_URL = "sendPackage.jsp?openid=OPENID";
 
     @Autowired
     FunctionService functionService;
-
-    ContactDao contactDao;
+    @Autowired
+    ContactService contactService;
 
     String fromUserName; // 消息的发来者，也是返回消息的接收者
     String rtMsgType;// 返回的消息类型
-
     Contact contact;// 用户详情
 
     public String handleMessage(Map<String, String> map) {
@@ -68,11 +67,11 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
         String msgType = map.get("MsgType");
         fromUserName = map.get("FromUserName");
         // 检查用户权限
-        contact = contactDao.queryByOpenId(fromUserName);
-        if (WeixinMessageServiceImpl.MESSAGE_TYPE_TEXT.equals(msgType)) {// 传递来了文本信息
+        contact = contactService.queryByOpenId(fromUserName);
+        if (MESSAGE_TYPE_TEXT.equals(msgType)) {// 传递来了文本信息
             String content = map.get("Content");
             return handleTextMessage(content);
-        } else if (WeixinMessageServiceImpl.MESSAGE_TYPE_EVENT.equals(msgType)) {// 事件类型消息
+        } else if (MESSAGE_TYPE_EVENT.equals(msgType)) {// 事件类型消息
             return handleEventMessage(map);
         }
         return null;
@@ -85,9 +84,10 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
         System.out.println("handleTextMessage is called.");
         rtMsgType = MESSAGE_TYPE_TEXT;
 // TODO 先排查一遍是否有微信公众号特殊定义的关键字，方便决定是否需要返回特殊消息
-//        if(content.startsWith())
+//        if(content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)){
+//        }else
         if (content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)) {// 手机号逻辑
-            int rcode = phoneNumberLogic(fromUserName, content);
+            int rcode = phoneNumberLogic(content);
             if (rcode == RETURN_CODE_SUCCESS) {
                 content = "操作成功！";
             } else {
@@ -194,34 +194,23 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
 
     /**
      * 处理手机号相关逻辑
-     *
      * @param content
      * @return
      */
-    private int phoneNumberLogic(String fromUserName, String content) {
+    private int phoneNumberLogic(String content) {
         System.out.println("handle phoneNumberLogic");
         // 提前处理好空白
-        String word = content.replaceAll(" ", "");
-        if (word.startsWith(TEXTMSG_PREFIX_ADD_PHONENUMBER)) {// 新增关联手机号
-            word = content.replaceAll("^" + TEXTMSG_PREFIX_ADD_PHONENUMBER, "")
-                    .trim();
-        } else if (word.startsWith(TEXTMSG_PREFIX_CHANGE_PHONENUMBER)) {// 修改关联手机号
-            word = content.replaceAll("^" + TEXTMSG_PREFIX_CHANGE_PHONENUMBER,
-                    "").trim();
+        String phoneNumber = content.trim();
+        if (phoneNumber.startsWith(TEXTMSG_PREFIX_ADD_PHONENUMBER)) {// 新增关联手机号
+            phoneNumber = content.replaceAll("^" + TEXTMSG_PREFIX_ADD_PHONENUMBER, "");
+        } else if (phoneNumber.startsWith(TEXTMSG_PREFIX_CHANGE_PHONENUMBER)) {// 修改关联手机号
+            phoneNumber = content.replaceAll("^" + TEXTMSG_PREFIX_CHANGE_PHONENUMBER,"");
         }
         // 检查手机号码的合理性
-        if (PhoneUtil.isMobile(word)) {
+        if (PhoneUtil.isMobile(phoneNumber)) {
             // 更新操作
-            MYUser mu = UserHandler.queryUserById(fromUserName,
-                    UserHandler.IDTYPE_OPEN);
-            if (mu != null) {// 查询到了就更新一个字段
-                mu.setPhonenumber(word);
-            } else {
-                mu = UserHandler.queryUserFromWeixin(fromUserName);
-                mu.setPhonenumber(word);
-            }
-            boolean r = UserHandler.saveUser(mu);
-            if (r) {
+            int r = contactService.updateFromWeixin(phoneNumber, fromUserName);
+            if (r > 0) {
                 return RETURN_CODE_SUCCESS;
             } else {
                 return RETURN_CODE_DATABASE_FAILED;

@@ -2,8 +2,6 @@ package com.owngame.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.owngame.dao.FunctionDao;
-import com.owngame.dao.TaskDao;
 import com.owngame.entity.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,9 +18,9 @@ import java.util.Map;
 public class AnswerService {
 
     @Autowired
-    TaskDao taskDao;
+    TaskService taskService;
     @Autowired
-    FunctionDao functionDao;
+    FunctionService functionService;
     @Autowired
     MainService mainService;
 
@@ -86,7 +84,7 @@ public class AnswerService {
         Task task = new Task();
         task.setId(id);
         task.setState(state);
-        taskDao.updateState(task);
+        taskService.updateState(task);
         map.put("type", "GOON");
         return map;
     }
@@ -97,7 +95,7 @@ public class AnswerService {
      */
     private ArrayList<Task> queryUnhandleTask() {
         // 读取数据库 查询是否有新任务
-        return taskDao.queryByState(0);
+        return taskService.queryByState(0);
     }
 
     /**

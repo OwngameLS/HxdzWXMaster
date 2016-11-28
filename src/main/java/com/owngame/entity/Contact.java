@@ -15,6 +15,10 @@ public class Contact {
     String grade = "0";// 用户级别
     String openid = "xxx";// 微信OPENID
 
+
+
+    String backup = null;// 备用字段
+
     public Contact() {
     }
 
@@ -81,6 +85,13 @@ public class Contact {
     public void setOpenid(String openid) {
         this.openid = openid;
     }
+    public String getBackup() {
+        return backup;
+    }
+
+    public void setBackup(String backup) {
+        this.backup = backup;
+    }
 
     @Override
     public String toString() {
@@ -93,6 +104,7 @@ public class Contact {
                 ", description='" + description + '\'' +
                 ", grade='" + grade + '\'' +
                 ", openid='" + openid + '\'' +
+                ", backup='" + backup + '\'' +
                 '}';
     }
 }

@@ -88,4 +88,14 @@ public interface FunctionService {
      */
     String getFunctionResultsByKeywords(String grade, String keysStr);
 
+    int insert(Function function);
+
+    Function queryByName(String name);
+
+    ArrayList<Function> queryByKeywords(String keywords);
+
+    Function queryById(long id);
+
+    ArrayList<Function> checkKeywords(String keywords);
+
 }

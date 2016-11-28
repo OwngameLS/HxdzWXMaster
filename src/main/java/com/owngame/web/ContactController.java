@@ -1,8 +1,8 @@
 package com.owngame.web;
 
-import com.owngame.dao.ContactDao;
 import com.owngame.entity.Contact;
 import com.owngame.entity.GroupName;
+import com.owngame.service.ContactService;
 import com.owngame.service.PcontactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +21,7 @@ public class ContactController {
     @Autowired
     PcontactService pcontactService;
     @Autowired
-    ContactDao contactDao;
+    ContactService contactService;
 
     /**
      * 根据组名返回该组的联系人信息
@@ -60,11 +60,11 @@ public class ContactController {
     @ResponseBody
     public Map<String, Object> updateContact(@RequestBody Contact contact) {
         if (contact.getId() > 0) {//是更新
-            contactDao.update(contact);
+            contactService.update(contact);
         } else {
             System.out.println("insert contact!");
             contact.setId(0);
-            contactDao.insert(contact);
+            contactService.insert(contact);
         }
         Map<String, Object> map = new HashMap<String, Object>();
         // 返回更新后的该组信息
@@ -82,9 +82,9 @@ public class ContactController {
     @ResponseBody
     public Map<String, Object> deleteContact(@RequestBody Map<String, Long> p) {
         // 先查询这个id属于那个组
-        String groupname = contactDao.queryById(p.get("id")).getGroupname();
+        String groupname = contactService.queryById(p.get("id")).getGroupname();
         // 删除操作
-        contactDao.delete(p.get("id"));
+        contactService.delete(p.get("id"));
         Map<String, Object> map = new HashMap<String, Object>();
         // 返回更新后的该组信息
         map.put("contacts", pcontactService.getContactByGroup(groupname));
@@ -103,7 +103,7 @@ public class ContactController {
     public Map<String, Object> searchContactsByName(@RequestBody Map<String, String> p) {
         String name = p.get("name");
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("contacts", contactDao.queryLikeName("%" + name + "%"));
+        map.put("contacts", contactService.queryLikeName("%" + name + "%"));
         return map;
     }
 
@@ -137,9 +137,9 @@ public class ContactController {
         if (action.equals("update")) {
             String ori = p.get("originalGroupName");
             String newName = p.get("groupname");
-            contactDao.updateGroup(new GroupName(0, ori, newName));
+            contactService.updateGroup(new GroupName(0, ori, newName));
         } else if (action.equals("delete")) {
-            contactDao.deleteGroup(p.get("originalGroupName"));
+            contactService.deleteGroup(p.get("originalGroupName"));
         } else if (action.equals("insert")) {
             return pcontactService.insertGroup(p);
         }

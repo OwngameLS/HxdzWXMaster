@@ -23,11 +23,10 @@ public class MainService implements Serializable {
     @Autowired
     FunctionService functionService;
     @Autowired
-    private TaskDao taskDao;
+    ContactService contactService;
     @Autowired
-    private ContactDao contactDao;
-    @Autowired
-    private FunctionDao functionDao;
+    TaskService taskService;
+
 
 
     /**
@@ -53,7 +52,7 @@ public class MainService implements Serializable {
         // 根据所涉及的function来处理
         for (int i = 0; i < functions.length; i++) {
             // 拿到function信息
-            Function function = functionDao.queryByName(functions[i]);
+            Function function = functionService.queryByName(functions[i]);
             name = name + functions[i];
             contents = contents + getFunctionResult(function);
         }
@@ -61,7 +60,7 @@ public class MainService implements Serializable {
         String receivers = "";// 因为上面得到的是ids，这里就查询成对应的手机号码吧
         String receiversArr[] = receiversIds.split(",");
         for (int i = 0; i < receiversArr.length; i++) {
-            receivers = receivers + contactDao.queryById(Long.parseLong(receiversArr[i])).getPhone();
+            receivers = receivers + contactService.queryById(Long.parseLong(receiversArr[i])).getPhone();
             if (i + 1 < receiversArr.length) {
                 receivers = receivers + ",";
             }
@@ -148,6 +147,6 @@ public class MainService implements Serializable {
         task.setState(Task.STATE_WAITING);
         task.setCreateTime(new Date(System.currentTimeMillis()));
         // 插入数据库
-        taskDao.insert(task);
+        taskService.insert(task);
     }
 }
