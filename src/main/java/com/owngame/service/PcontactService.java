@@ -1,13 +1,11 @@
 package com.owngame.service;
 
-import com.owngame.dao.ContactDao;
-import com.owngame.entity.Contact;
+import com.owngame.entity.ContactDisplay;
 import com.owngame.entity.GroupName;
 import com.owngame.utils.ExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,12 +27,12 @@ public class PcontactService {
      */
     public String doPContacts(Object o) {
         // 从上传文件导入得到的通讯录信息
-        ArrayList<Contact> contactsNew = (ArrayList<Contact>) o;
+        ArrayList<ContactDisplay> contactsNew = (ArrayList<ContactDisplay>) o;
         // 将原数据库中的通讯录信息删除
         contactService.deleteAll();
         // 插入新数据
-        for (Contact contact : contactsNew) {
-            contactService.insert(contact);
+        for (ContactDisplay contactDisplay : contactsNew) {
+            contactService.insert(contactDisplay);
         }
         return "OK";
     }
@@ -44,9 +42,9 @@ public class PcontactService {
      *
      * @return
      */
-    public ArrayList<Contact> getContacts() {
-        ArrayList<Contact> contacts = contactService.queryAll();
-        return contacts;
+    public ArrayList<ContactDisplay> getContacts() {
+        ArrayList<ContactDisplay> contactDisplays = contactService.queryAll();
+        return contactDisplays;
     }
 
     /**
@@ -65,9 +63,9 @@ public class PcontactService {
      * @param groupnames
      * @return
      */
-    public ArrayList<Contact> getContactByGroup(String groupnames) {
-        ArrayList<Contact> contacts = contactService.queryByGroup(groupnames);
-        return contacts;
+    public ArrayList<ContactDisplay> getContactByGroup(String groupnames) {
+        ArrayList<ContactDisplay> contactDisplays = contactService.queryByGroup(groupnames);
+        return contactDisplays;
     }
 
     /**
@@ -104,21 +102,21 @@ public class PcontactService {
             String idsString = p.get("ids");
             if (idsString.equals("empty")) {
                 // 没有ids 创建一条空数据
-                Contact contact = new Contact();
-                contact.setGroupname(groupname);
-                contactService.insert(contact);
+                ContactDisplay contactDisplay = new ContactDisplay();
+                contactDisplay.setGroupname(groupname);
+                contactService.insert(contactDisplay);
             } else {// 有ids，对应更新
                 String[] ids = idsString.split(",");
                 for (String id : ids) {
-                    Contact contact = contactService.queryById(Long.parseLong(id));
-                    contact.setGroupname(groupname);
+                    ContactDisplay contactDisplay = contactService.queryById(Long.parseLong(id));
+                    contactDisplay.setGroupname(groupname);
                     // 拿到操作模式
                     String addContactsType = p.get("addContactsType");
                     if (addContactsType.equals("copy")) {
-                        contact.setId(0);//改id为0，就是等着新增
-                        contactService.insert(contact);
+                        contactDisplay.setId(0);//改id为0，就是等着新增
+                        contactService.insert(contactDisplay);
                     } else if (addContactsType.equals("move")) {
-                        contactService.update(contact);
+                        contactService.update(contactDisplay);
                     }
                 }
             }
@@ -133,29 +131,29 @@ public class PcontactService {
      * @param ids
      * @return
      */
-    public ArrayList<Contact> getContactByIds(String ids) {
-        ArrayList<Contact> contacts = new ArrayList<Contact>();
+    public ArrayList<ContactDisplay> getContactByIds(String ids) {
+        ArrayList<ContactDisplay> contactDisplays = new ArrayList<ContactDisplay>();
         String[] idArray = ids.split(",");
         for (String s : idArray) {
-            Contact contact = contactService.queryById(Long.parseLong(s));
-            if (contact != null) {
-                contacts.add(contact);
+            ContactDisplay contactDisplay = contactService.queryById(Long.parseLong(s));
+            if (contactDisplay != null) {
+                contactDisplays.add(contactDisplay);
             }
         }
-        System.out.println("contacts.size:" + contacts.size());
-        return contacts;
+        System.out.println("contactDisplays.size:" + contactDisplays.size());
+        return contactDisplays;
     }
 
 
     // 将已经编辑好的联系人信息存储成Excel文件，并返回给调用者（MainController）用于下载
     public boolean initContactsFile(String filePath){
         // 1.拿到所有联系人信息
-        ArrayList<Contact> contacts = contactService.queryAll();
-        if(contacts == null || contacts.size()==0){
-            Contact contact = new Contact();
-            contacts.add(contact);
+        ArrayList<ContactDisplay> contactDisplays = contactService.queryAll();
+        if(contactDisplays == null || contactDisplays.size()==0){
+            ContactDisplay contactDisplay = new ContactDisplay();
+            contactDisplays.add(contactDisplay);
         }
-        return ExcelUtil.initContactsFile(filePath, contacts);
+        return ExcelUtil.initContactsFile(filePath, contactDisplays);
     }
 
 }

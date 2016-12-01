@@ -1,14 +1,12 @@
 package com.owngame.service.impl;
 
-import com.owngame.dao.ContactDao;
 import com.owngame.dao.MYUser;
-import com.owngame.entity.Contact;
+import com.owngame.entity.ContactDisplay;
 import com.owngame.menu.ManageMenu;
 import com.owngame.service.*;
 import com.owngame.utils.PhoneUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import weixin.popular.bean.message.message.Message;
 import weixin.popular.bean.message.message.NewsMessage;
 import weixin.popular.bean.message.message.NewsMessage.Article;
 import weixin.popular.bean.message.message.TextMessage;
@@ -17,14 +15,12 @@ import weixin.popular.util.JsonUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2016-8-18.
  */
 @Service
-public class WeixinMessageServiceImpl implements WeixinMessageService{
+public class WeixinMessageServiceImpl implements WeixinMessageService {
     // 消息类型
     public static final String MESSAGE_TYPE_TEXT = "text";
     public static final String MESSAGE_TYPE_NEWS = "news";
@@ -45,10 +41,16 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
     public static final int RETURN_CODE_UNKNOWN = -1;// 未知结果
     public static final int RETURN_CODE_DATABASE_FAILED = -2;// 数据库操作错误
     public static final int RETURN_CODE_SUCCESS = 0;// OK
-    public static final int RETURN_CODE_INVALID_PHONENUMBER = 1;// 手机号码不合法
+    public static final int RETURN_CODE_INVALID_AUTHORIZECODE = -996;// 验证码正确
+    public static final int RETURN_CODE_NOT_AUTHORIZE_PHONE = -997;// 手机号未授权
+    public static final int RETURN_CODE_INVALID_PHONENUMBER = -998;// 手机号码不合法
+    public static final int RETURN_CODE_CHANGE_OPENID = -999;// 绑定的微信号发生变化
+
     static final String TEXTMSG_PREFIX_PHONENUMBER = "SJ";// 文本消息，手机号逻辑
     static final String TEXTMSG_PREFIX_ADD_PHONENUMBER = "SJA#";// 文本消息，添加手机号
     static final String TEXTMSG_PREFIX_CHANGE_PHONENUMBER = "SJU#";// 文本消息，更新手机号
+    static final String TEXTMSG_PREFIX_CHANGE_WXOPENID = "SJO#";// 文本信息，更新绑定微信号
+
     static final String BATHURL = "http://owngame.ngrok.cc/WeiMaster/";
     static final String SEND_PACKAGE_URL = "sendPackage.jsp?openid=OPENID";
 
@@ -59,7 +61,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
 
     String fromUserName; // 消息的发来者，也是返回消息的接收者
     String rtMsgType;// 返回的消息类型
-    Contact contact;// 用户详情
+    ContactDisplay contactDisplay;// 用户详情
 
     public String handleMessage(Map<String, String> map) {
         // 将传递来的请求数据整理后分析
@@ -67,7 +69,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
         String msgType = map.get("MsgType");
         fromUserName = map.get("FromUserName");
         // 检查用户权限
-        contact = contactService.queryByOpenId(fromUserName);
+        contactDisplay = contactService.queryByOpenId(fromUserName);
         if (MESSAGE_TYPE_TEXT.equals(msgType)) {// 传递来了文本信息
             String content = map.get("Content");
             return handleTextMessage(content);
@@ -87,27 +89,23 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
 //        if(content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)){
 //        }else
         if (content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)) {// 手机号逻辑
-            int rcode = phoneNumberLogic(content);
-            if (rcode == RETURN_CODE_SUCCESS) {
-                content = "操作成功！";
-            } else {
-                content = "操作失败咯，再试试？多次失败，请稍后再试吧~";
+            content = phoneNumberLogic(content);
+        } else { // 查询逻辑
+            if (contactDisplay != null) {
+                content = functionService.getFunctionResultsByKeywords(contactDisplay.getGrade(), content);
+            } else {// 没有查询到用户绑定情况
+                content = returnAskBindPhone();
             }
         }
-        if(contact != null) {
-            content = functionService.getFunctionResultsByKeywords(contact.getGrade(), content);
-        }else{// 没有查询到用户绑定情况
-            content = returnAskBindPhone();
-        }
-        if(rtMsgType.equals(MESSAGE_TYPE_TEXT)){// 回复文本消息
+        if (rtMsgType.equals(MESSAGE_TYPE_TEXT)) {// 回复文本消息
             return initTextMessageOfJsonString(content);
         }
         return null;
     }
 
     // 提醒绑定手机号
-    private String returnAskBindPhone(){
-        return "由于你尚未绑定手机号，我们无法确定你的身份，所以无法提供服务。请先绑定手机号，发送“SJA手机号”(例如SJA13988888888)即可。";
+    private String returnAskBindPhone() {
+        return "由于你尚未绑定手机号，我们无法确定你的身份，所以无法提供服务。请先绑定手机号，发送“SJA手机号”(例如SJA#13988888888)即可。";
     }
 
     /**
@@ -171,7 +169,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
      * @param map
      */
     private String handleClickMessage(String fromUserName,
-                                             Map<String, String> map) {
+                                      Map<String, String> map) {
         String eventKey = map.get("EventKey");
         System.out.println("eventKey:" + eventKey);
         String result = null;
@@ -194,39 +192,70 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
 
     /**
      * 处理手机号相关逻辑
+     *
      * @param content
      * @return
      */
-    private int phoneNumberLogic(String content) {
+    private String phoneNumberLogic(String content) {
         System.out.println("handle phoneNumberLogic");
         // 提前处理好空白
-        String phoneNumber = content.trim();
-        if (phoneNumber.startsWith(TEXTMSG_PREFIX_ADD_PHONENUMBER)) {// 新增关联手机号
-            phoneNumber = content.replaceAll("^" + TEXTMSG_PREFIX_ADD_PHONENUMBER, "");
-        } else if (phoneNumber.startsWith(TEXTMSG_PREFIX_CHANGE_PHONENUMBER)) {// 修改关联手机号
-            phoneNumber = content.replaceAll("^" + TEXTMSG_PREFIX_CHANGE_PHONENUMBER,"");
-        }
-        // 检查手机号码的合理性
-        if (PhoneUtil.isMobile(phoneNumber)) {
-            // 更新操作
-            int r = contactService.updateFromWeixin(phoneNumber, fromUserName);
-            if (r > 0) {
-                return RETURN_CODE_SUCCESS;
+        content = content.trim();
+        // 截取信息 可能是手机号，也可能是验证码
+        String info = content.substring(4);
+        int r = 0;
+        if (content.startsWith(TEXTMSG_PREFIX_ADD_PHONENUMBER)) {// 新增关联手机号
+            if (PhoneUtil.isMobile(info) == false) {// 检查手机号码的合理性
+                r = RETURN_CODE_INVALID_PHONENUMBER;
             } else {
-                return RETURN_CODE_DATABASE_FAILED;
+                r = contactService.updateFromWeixin(info, fromUserName, null);
             }
-        } else {
-            return RETURN_CODE_INVALID_PHONENUMBER;
+        } else if (content.startsWith(TEXTMSG_PREFIX_CHANGE_PHONENUMBER)) {// 修改关联手机号
+            if (PhoneUtil.isMobile(info) == false) {// 检查手机号码的合理性
+                r = RETURN_CODE_INVALID_PHONENUMBER;
+            } else {
+                r = contactService.updateFromWeixin(info, fromUserName, null);
+            }
+        } else if (content.startsWith(TEXTMSG_PREFIX_CHANGE_WXOPENID)) {// 修改绑定微信号
+            r = contactService.updateFromWeixin(null, fromUserName, info);
         }
+
+        String result = "";
+        switch (r) {
+            case RETURN_CODE_UNKNOWN:
+                result = "非常抱歉，出现了预期外的错误结果，请您再次尝试或告知管理员。";
+                break;
+            case RETURN_CODE_DATABASE_FAILED:
+                result = "非常抱歉，数据库错误，请您再次尝试或告知管理员。";
+                break;
+            case RETURN_CODE_SUCCESS:
+                result = "NICE！操作成功！";
+                break;
+            case RETURN_CODE_INVALID_AUTHORIZECODE:
+                result = "您输入的验证码有误，请您再次尝试或告知管理员。";
+                break;
+            case RETURN_CODE_NOT_AUTHORIZE_PHONE:
+                result = "您输入的手机号码尚未经过管理员审核，请您尝试与管理员联系，让他帮助您解决。";
+                break;
+            case RETURN_CODE_INVALID_PHONENUMBER:
+                result = "您发送的手机号码格式不符合要求，请您检查后再次发送！";
+                break;
+            case RETURN_CODE_CHANGE_OPENID:
+                result = "与这个手机号关联的不是您现在使用的微信号，这个手机号将收到一条短信，里面有验证码，如果你确定要更改绑定的微信号，请将短信中的验证码以‘SJO#123456’的方式发送请求。";
+                break;
+        }
+        return result;
+
+
     }
 
 
     /**
      * 组装成TextMessage jsonString
+     *
      * @param content
      * @return jsonString
      */
-    private String initTextMessageOfJsonString(String content){
+    private String initTextMessageOfJsonString(String content) {
         System.out.println("initTextMessageOfJsonString is called");
         content = content + "\n\n回复 “帮助”，可以查看更多文本命令提示哟！/::)";
         TextMessage tm = new TextMessage(fromUserName, content);
@@ -234,9 +263,9 @@ public class WeixinMessageServiceImpl implements WeixinMessageService{
     }
 
 
-
     /**
      * 组装成NewsMessage jsonString
+     *
      * @param urlInfo
      * @return jsonString
      */

@@ -1,6 +1,6 @@
 package com.owngame.web;
 
-import com.owngame.entity.Contact;
+import com.owngame.entity.ContactDisplay;
 import com.owngame.entity.GroupName;
 import com.owngame.service.ContactService;
 import com.owngame.service.PcontactService;
@@ -53,22 +53,22 @@ public class ContactController {
     /**
      * 更新某个联系人的信息
      *
-     * @param contact
+     * @param contactDisplay
      * @return
      */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> updateContact(@RequestBody Contact contact) {
-        if (contact.getId() > 0) {//是更新
-            contactService.update(contact);
+    public Map<String, Object> updateContact(@RequestBody ContactDisplay contactDisplay) {
+        if (contactDisplay.getId() > 0) {//是更新
+            contactService.update(contactDisplay);
         } else {
-            System.out.println("insert contact!");
-            contact.setId(0);
-            contactService.insert(contact);
+            System.out.println("insert contactDisplay!");
+            contactDisplay.setId(0);
+            contactService.insert(contactDisplay);
         }
         Map<String, Object> map = new HashMap<String, Object>();
         // 返回更新后的该组信息
-        map.put("contacts", pcontactService.getContactByGroup(contact.getGroupname()));
+        map.put("contacts", pcontactService.getContactByGroup(contactDisplay.getGroupname()));
         return map;
     }
 

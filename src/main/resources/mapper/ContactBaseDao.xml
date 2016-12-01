@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 为Dao接口方法提供SQL语句配置 -->
+<mapper namespace="com.owngame.dao.ContactBaseDao">
+    <select id="queryById" resultType="ContactBase" parameterType="long">
+        select * from contactbase where id=#{id}
+    </select>
+
+    <select id="queryByHighId" resultType="ContactBase" parameterType="long">
+        select * from contactbase where highid=#{highid}
+    </select>
+
+    <select id="queryLikeName" resultType="ContactBase" parameterType="String">
+        select * from contactbase where name like #{name}
+    </select>
+
+    <select id="queryByGroup" resultType="ContactBase" parameterType="String">
+        select * from contactbase where groupname=#{groupname}
+    </select>
+
+    <select id="getGroups" resultType="String">
+        select groupname from contactbase group by groupname
+    </select>
+
+    <select id="queryAll" resultType="ContactBase">
+        select * from contactbase order by groupname asc
+    </select>
+
+    <insert id="insert" parameterType="ContactBase">
+        insert into contactbase
+        (id, groupname,name, title, highid,description)
+        values
+        (#{id}, #{groupname},#{name},#{title}, #{highid}, #{description})
+    </insert>
+
+    <update id="update" parameterType="ContactBase">
+        update contactbase set
+        groupname=#{groupname},
+        name=#{name},
+        title=#{title},
+        highid=#{highid},
+        description=#{description},
+        where id=#{id}
+    </update>
+
+    <update id="updateGroup" parameterType="com.owngame.entity.GroupName">
+        update contactbase set
+        groupname=#{newName}
+        where groupname=#{originalName}
+    </update>
+
+    <update id="updateGroupWithId" parameterType="com.owngame.entity.GroupName">
+        update contactbase set
+        groupname=#{newName}
+        where id=#{id}
+    </update>
+
+
+    <delete id="delete" parameterType="long">
+        delete from contactbase where id=#{id}
+    </delete>
+
+    <delete id="deleteGroup" parameterType="String">
+        delete from contactbase where groupname=#{groupname}
+    </delete>
+
+    <delete id="deleteAll">
+        truncate table contactbase
+    </delete>
+</mapper>

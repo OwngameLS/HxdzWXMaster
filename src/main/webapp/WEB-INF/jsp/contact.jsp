@@ -15,7 +15,7 @@
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
-    <script src="../../resources/bootstrap-3.3.7-dist/js/contact.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/contactDisplay.js"></script>
 </head>
 <body>
 <h3>通讯录操作</h3><h5 style="color: red">请仔细操作，操作结果无法撤销！</h5>

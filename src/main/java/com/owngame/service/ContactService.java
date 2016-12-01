@@ -1,6 +1,7 @@
 package com.owngame.service;
 
-import com.owngame.entity.Contact;
+import com.owngame.entity.ContactDisplay;
+import com.owngame.entity.ContactHigh;
 import com.owngame.entity.GroupName;
 
 import java.util.ArrayList;
@@ -9,28 +10,35 @@ import java.util.ArrayList;
  * Created by Administrator on 2016-11-28.
  */
 public interface ContactService {
-    int deleteById(long id);
 
-    int updateFromWeixin(String phone, String openid);
+    int updateFromWeixin(String phone, String openid, String identifyingCode);
 
-    Contact queryById(long id);
+    ContactDisplay queryById(long id);
 
-    Contact queryByOpenId(String openid);
+    ArrayList<ContactDisplay> queryDisplayByOpenId(String openid);
 
-    Contact queryByPhone(String phone);
+    ContactHigh queryHighByOpenId(String openid);
+
+    ArrayList<ContactDisplay> queryDisplayByPhone(String phone);
+
+    ContactHigh queryHighByPhone(String phone);
+
+    ArrayList<ContactDisplay> queryDisplayByBackup(String backup);
+
+    ContactHigh queryHighByBackup(String backup);
 
     // 通过姓名查询（模糊查询）
-    ArrayList<Contact> queryLikeName(String name);
+    ArrayList<ContactDisplay> queryLikeName(String name);
 
-    ArrayList<Contact> queryByGroup(String groupname);
+    ArrayList<ContactDisplay> queryByGroup(String groupname);
 
-    ArrayList<Contact> queryAll();
+    ArrayList<ContactDisplay> queryAll();
 
     ArrayList<String> getGroups();
 
-    int insert(Contact contact);
+    int insert(ContactDisplay contactDisplay);
 
-    int update(Contact contact);
+    int update(ContactDisplay contactDisplay);
 
     int updateGroup(GroupName groupName);
 

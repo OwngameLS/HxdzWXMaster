@@ -1,9 +1,7 @@
 package com.owngame.service;
 
 
-import com.owngame.dao.ContactDao;
-import com.owngame.dao.FunctionDao;
-import com.owngame.dao.TaskDao;
+import com.owngame.entity.ContactDisplay;
 import com.owngame.entity.Function;
 import com.owngame.entity.Task;
 import org.quartz.JobDataMap;
@@ -11,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -79,13 +76,16 @@ public class MainService implements Serializable {
      */
     public void handleAsk(String keywords, String receivers, String askType) {
         // 先判断手机号对应的用户是否能获得对应的权限
-
-
+        ContactDisplay contactDisplay = contactService.queryByPhone(receivers);
+        String grade = "-1";
+        if(contactDisplay != null){
+            grade = contactDisplay.getGrade();
+        }
         String contents = "";
         String name = "主动查询";
         String description = "用户" + receivers + "主动查询，相关功能为：";
         String keys[] = keywords.split(",");
-        contents = functionService.getFunctionResultsByKeywords(keywords);
+        contents = functionService.getFunctionResultsByKeywords(grade, keywords);
 //        ArrayList<String> functions = new ArrayList<String>();
 //        for (int i = 0; i < keys.length; i++) {
 //            // 通过关键字查询到对应的功能

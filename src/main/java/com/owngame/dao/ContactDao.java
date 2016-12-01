@@ -1,6 +1,6 @@
 package com.owngame.dao;
 
-import com.owngame.entity.Contact;
+import com.owngame.entity.ContactDisplay;
 import com.owngame.entity.GroupName;
 
 import java.util.ArrayList;
@@ -10,24 +10,26 @@ import java.util.ArrayList;
  */
 public interface ContactDao {
 
-    Contact queryById(long id);
+    ContactDisplay queryById(long id);
 
-    Contact queryByOpenId(String openid);
+    ContactDisplay queryByOpenId(String openid);
 
-    Contact queryByPhone(String phone);
+    ContactDisplay queryByPhone(String phone);
+
+    ContactDisplay queryByBackup(String backup);
 
     // 通过姓名查询（模糊查询）
-    ArrayList<Contact> queryLikeName(String name);
+    ArrayList<ContactDisplay> queryLikeName(String name);
 
-    ArrayList<Contact> queryByGroup(String groupname);
+    ArrayList<ContactDisplay> queryByGroup(String groupname);
 
-    ArrayList<Contact> queryAll();
+    ArrayList<ContactDisplay> queryAll();
 
     ArrayList<String> getGroups();
 
-    int insert(Contact contact);
+    int insert(ContactDisplay contactDisplay);
 
-    int update(Contact contact);
+    int update(ContactDisplay contactDisplay);
 
     int updateGroup(GroupName groupName);
 

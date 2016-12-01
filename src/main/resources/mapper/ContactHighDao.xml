@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 为Dao接口方法提供SQL语句配置 -->
+<mapper namespace="com.owngame.dao.ContactHighDao">
+    <select id="queryById" resultType="ContactHigh" parameterType="long">
+        select * from contacthigh where id=#{id}
+    </select>
+
+    <select id="queryByOpenId" resultType="ContactHigh" parameterType="String">
+        select * from contacthigh where openid=#{openid}
+    </select>
+
+    <select id="queryByPhone" resultType="ContactHigh" parameterType="String">
+        select * from contacthigh where phone=#{phone}
+    </select>
+
+    <select id="queryByBackup" resultType="ContactHigh" parameterType="String">
+        select * from contacthigh where backup like #{backup}
+    </select>
+
+
+    <select id="queryAll" resultType="ContactHigh">
+        select * from contacthigh order by grade asc
+    </select>
+
+    <insert id="insert" parameterType="ContactHigh">
+        insert into contacthigh
+        (id,phone,grade,openid,backup)
+        values
+        (#{id}, #{phone},#{grade},#{openid},#{backup})
+    </insert>
+
+    <update id="update" parameterType="ContactHigh">
+        update contacthigh set
+        phone=#{phone},
+        grade=#{grade},
+        openid=#{openid},
+        backup=#{backup}
+        where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        delete from contacthigh where id=#{id}
+    </delete>
+
+    <delete id="deleteAll">
+        truncate table contacthigh
+    </delete>
+</mapper>

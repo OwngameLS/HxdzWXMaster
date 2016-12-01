@@ -38,6 +38,6 @@
     </delete>
 
     <delete id="deleteAll">
-        delete from contact
+        delete from contactDisplay
     </delete>
 </mapper>

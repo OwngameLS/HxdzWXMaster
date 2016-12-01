@@ -7,7 +7,7 @@
         select * from contact where id=#{id}
     </select>
 
-    <select id="queryByOpenId" resultType="Contact" parameterType="String">
+    <select id="queryByOpenId" resultType="ContactDisplay" parameterType="String">
         select * from contact where openid=#{openid} group by phone /*group by 将多个相同号码导致的多个结果合并*/
     </select>
 
@@ -15,6 +15,9 @@
         select * from contact where phone=#{phone} group by phone /*group by 将多个相同号码导致的多个结果合并*/
     </select>
 
+    <select id="queryByBackup" resultType="Contact" parameterType="String">
+        select * from contact where backup like #{backup}
+    </select>
 
     <select id="queryLikeName" resultType="Contact" parameterType="String">
         select * from contact where name like #{name}
@@ -34,9 +37,9 @@
 
     <insert id="insert" parameterType="Contact">
         insert into contact
-        (id, groupname,name, title,phone,description,grade,openid, backup)
+        (id, groupname,name, title,phone,description)
         values
-        (#{id}, #{groupname},#{name},#{title},#{phone},#{description}, #{grade}, #{openid}, #{backup})
+        (#{id}, #{groupname},#{name},#{title},#{phone},#{description})
     </insert>
 
     <update id="update" parameterType="Contact">
@@ -46,9 +49,6 @@
         title=#{title},
         phone=#{phone},
         description=#{description},
-        grade=#{grade},
-        openid=#{openid},
-        backup=#{backup}
         where id=#{id}
     </update>
 
