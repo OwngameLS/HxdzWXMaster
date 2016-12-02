@@ -74,11 +74,11 @@ public class AnswerService {
      * @return
      */
     public Map<String, Object> handleCommit(long id, int state) {
-        System.out.println("id:"+id+",state:" + state);
+        System.out.println("id:" + id + ",state:" + state);
         Map<String, Object> map = new HashMap<String, Object>();
         if (state == 0) {// 客户端发来没找到该任务，说明该任务已经正在处理了
             state = 1;
-        }else if(state == -2){// 网页发过来重新发送一次 的请求
+        } else if (state == -2) {// 网页发过来重新发送一次 的请求
             state = 0;
         }
         Task task = new Task();

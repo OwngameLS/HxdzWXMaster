@@ -2,6 +2,7 @@ package com.owngame.service.impl;
 
 import com.owngame.dao.MYUser;
 import com.owngame.entity.ContactDisplay;
+import com.owngame.entity.ContactHigh;
 import com.owngame.menu.ManageMenu;
 import com.owngame.service.*;
 import com.owngame.utils.PhoneUtil;
@@ -61,7 +62,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
 
     String fromUserName; // 消息的发来者，也是返回消息的接收者
     String rtMsgType;// 返回的消息类型
-    ContactDisplay contactDisplay;// 用户详情
+    ContactHigh contactHigh;// 用户详情
 
     public String handleMessage(Map<String, String> map) {
         // 将传递来的请求数据整理后分析
@@ -69,7 +70,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
         String msgType = map.get("MsgType");
         fromUserName = map.get("FromUserName");
         // 检查用户权限
-        contactDisplay = contactService.queryByOpenId(fromUserName);
+        contactHigh = contactService.queryHighByOpenId(fromUserName);
         if (MESSAGE_TYPE_TEXT.equals(msgType)) {// 传递来了文本信息
             String content = map.get("Content");
             return handleTextMessage(content);
@@ -91,8 +92,8 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
         if (content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)) {// 手机号逻辑
             content = phoneNumberLogic(content);
         } else { // 查询逻辑
-            if (contactDisplay != null) {
-                content = functionService.getFunctionResultsByKeywords(contactDisplay.getGrade(), content);
+            if (contactHigh != null) {
+                content = functionService.getFunctionResultsByKeywords(contactHigh.getGrade(), content);
             } else {// 没有查询到用户绑定情况
                 content = returnAskBindPhone();
             }

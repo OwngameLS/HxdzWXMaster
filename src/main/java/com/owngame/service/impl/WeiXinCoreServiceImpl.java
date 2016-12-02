@@ -18,7 +18,7 @@ import java.util.Map;
  */
 
 @Service
-public class WeiXinCoreServiceImpl implements WeiXinCoreService{
+public class WeiXinCoreServiceImpl implements WeiXinCoreService {
     @Autowired
     WeixinMessageService weixinMessageService;
 

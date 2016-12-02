@@ -5,127 +5,154 @@
 var updateContactId;
 var originalGroupName;//被编辑的原来的组名
 
-// 初始化联系人控件
-function initContactsUIs(displayGroup) {
+// ---START---展示通讯录信息的逻辑
+
+/**
+ * 初始化联系人控件
+ * @param displayGroup 初始化后立即展示的组
+ * @param selectedIds 初始化后立即展示的已选人员
+ * @param isEdit 是否需要编辑功能
+ */
+function initContactsUIs(displayGroup, selectedIds, isEdit) {
     $.when(myAjaxGet(bp + 'Smserver/contacts/groups')).done(function (data) {
         if (data != null) {
             var groups = data['groups'];
             // 初始化groups相关的控件
-            initSelect(groups);// 选择控件
-            initGroupsBody(groups);// 分组链接
-            if (displayGroup == null) {
-                getContactsByGroups(groups[0]);
-            } else {
-                getContactsByGroups(displayGroup);
+            if (isEdit) {// 需要编辑 才需要初始化这个控件
+                initSelect(groups);// 选择控件
+            }
+            initGroupsBody(groups, selectedIds, isEdit);// 人员分组部分的UI初始化
+            // 立即展示哪一组
+            if (selectedIds == null) {// 不需要展示已选人员
+                if (displayGroup == null) {
+                    showGroupContacts(groups[0], isEdit);
+                } else {
+                    showGroupContacts(displayGroup, isEdit);
+                }
+            } else {// 需要展示已选人员
+                showSelectedContacts(selectedIds, isEdit);
             }
         }
     });
 }
 
-
-// 向服务器请求联系人信息 通过分组名称
-function getContactsByGroups(groupname) {
-    $.when(myAjaxGet(bp + 'Smserver/contacts/' + groupname)).done(function (data) {
-        if (data != null) {
-            initTbodyOfContacts(data['contacts']);
-        }
-    });
-
-}
-
-// 初始化单独编辑联系人信息的分组选项
-function initSelect(groups) {
+/**
+ * 初始化groups选择链接
+ * @param groups 所有的组名
+ * @param selectedIds 选择的联系人ids
+ * @param isEdit 是否可以编辑
+ */
+function initGroupsBody(groups, selectedIds, isEdit) {
     var html = '';
-    for (var i = 0; i < groups.length; i++) {
-        html = html + '<option value ="' + groups[i] + '">' + groups[i] + '</option>';
+    if (selectedIds != null) {// 需要添加已选人员
+        html = html + '<tr><td>'
+            + '<button type="button" class="btn btn-danger btn-sm" onclick="showSelectedContacts(\'' + selectedIds + '\',' + isEdit + ')">' + parseToAbbr('已选人员', 5, null) + '</button>  '
+            + '</td></tr>';
     }
-    $("#editContactGroup").html(html);
-}
-
-// 初始化groups选择链接
-function initGroupsBody(groups) {
-    var html = '';
     for (var i = 0; i < groups.length; i++) {
         html = html + '<tr><td>'
-            + '<button type="button" class="btn btn-danger btn-sm" onclick="getContactsByGroups(\'' + groups[i] + '\')">' + parseToAbbr(groups[i], 5, null) + '</button>  '
+            + '<button type="button" class="btn btn-danger btn-sm" onclick="showGroupContacts(\'' + groups[i] + '\',' + isEdit + ')">' + parseToAbbr(groups[i], 5, null) + '</button>  '
             + '<button type="button" class="btn btn-primary btn-sm" onclick="initEditGroup(\'' + groups[i] + '\')">编辑</button></td></tr>';
     }
     $("#groupsBody").html(html);
 }
 
-// 当上传通讯录成功时调用
-function uploadSuccess() {
-    $("#uploadResult").attr("style", "");
-    $("#uploadResult").text("上传的通讯录已经处理完成。");
-    // 刷新显示
-    initContactsUIs(null);
-}
-// 当上传通讯录出现错误时调用
-function uploadFailed(msg) {
-    var a = UrlDecode(msg);
-    $("#uploadResult").attr("style", "background:#F55");
-    $("#uploadResult").html(a);
-}
 
-// 将utf-8形式编码的内容进行解码
-function UrlDecode(zipStr) {
-    var uzipStr = "";
-    for (var i = 0; i < zipStr.length; i++) {
-        var chr = zipStr.charAt(i);
-        if (chr == "+") {
-            uzipStr += " ";
-        } else if (chr == "%") {
-            var asc = zipStr.substring(i + 1, i + 3);
-            if (parseInt("0x" + asc) > 0x7f) {
-                uzipStr += decodeURI("%" + asc.toString() + zipStr.substring(i + 3, i + 9).toString());
-                i += 8;
-            } else {
-                uzipStr += AsciiToString(parseInt("0x" + asc));
-                i += 2;
-            }
-        } else {
-            uzipStr += chr;
+/**
+ * 展示某一组联系人的信息
+ * @param groupname 展示的组的名称
+ * @param isEdit 是否可以编辑
+ */
+function showGroupContacts(groupname, isEdit) {
+    $.when(getContactsByGroupname(groupname)).done(function (data) {
+        if (data != null) {
+            initTbodyOfContacts(data['contacts'], isEdit);
         }
-    }
-    return uzipStr;
+    }).fail(function (error) {
+        showEditFail("获取" + groupname + "这一组的联系人信息失败。");
+    });
 }
 
-function StringToAscii(str) {
-    return str.charCodeAt(0).toString(16);
-}
-function AsciiToString(asccode) {
-    return String.fromCharCode(asccode);
+/**
+ * 展示已选人员的信息
+ * @param selectedIds 选中人员的ids
+ * @param isEdit 是否可以编辑
+ */
+function showSelectedContacts(selectedIds, isEdit) {
+    $.when(getContactsByIds(selectedIds)).done(function (data) {
+        if (data != null) {
+            initTbodyOfContacts(data['contacts'], isEdit);
+        }
+    }).fail(function (error) {
+        showEditFail("获取已选人员信息失败。");
+    });
 }
 
-// 显示或隐藏上传通讯录div
-function showOrHideUpload() {
-    $("#uploadDiv").toggle(2000);
-}
-
-
-// 使用联系人json数据组合成联系人表格内容
-function initTbodyOfContacts(contacts) {
+/**
+ * 使用联系人json数据组合成联系人表格内容
+ * @param contacts 联系人信息队列
+ * @param isEdit 是否可以编辑
+ */
+function initTbodyOfContacts(contacts, isEdit) {
     var htmlStr = '';
     for (var i = 0; i < contacts.length; i++) {
-        htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" value="' + contacts[i].id + '"> ' + contacts[i].id
+        htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" value="' + contacts[i].base_id + '"> ' + contacts[i].base_id
             + '</td><td>' + contacts[i].groupname
             + '</td><td>' + contacts[i].name
             + '</td><td>' + parseToAbbr(contacts[i].title, 5, null)
             + '</td><td>' + contacts[i].phone
             + '</td><td>' + contacts[i].grade
-            + '</td><td>' + parseToAbbr(contacts[i].description, 10, null)
-            + '</td><td>' + '<button type="button" class="btn btn-primary btn-sm" onclick="initEditContact(\'' + contacts[i].id
-            + '\',\'' + contacts[i].groupname + '\',\'' + contacts[i].name + '\',\'' + contacts[i].title + '\',\'' + contacts[i].phone + '\',\'' + contacts[i].grade + '\',\'' + contacts[i].description + '\')">编辑</button>'
-            + '</td></tr>';
+            + '</td><td>' + parseToAbbr(contacts[i].description, 10, null);
+        if (isEdit) {
+            htmlStr = htmlStr + '</td><td>' + '<button type="button" class="btn btn-primary btn-sm" onclick="initEditContact(\'' + contacts[i].base_id
+                + '\',\'' + contacts[i].groupname + '\',\'' + contacts[i].name + '\',\'' + contacts[i].title + '\',\'' + contacts[i].phone + '\',\'' + contacts[i].grade + '\',\'' + contacts[i].description + '\')">编辑</button>'
+                + '</td></tr>';
+        } else {
+            htmlStr = htmlStr + '</td></tr>';
+        }
     }
     $("#contactsBody").html(htmlStr);
     // 取消全选的勾选
     $("#selectAll").prop("checked", false);
 }
 
+/**
+ * 向服务器请求联系人信息 通过分组名称
+ * @param groupname 分组名称
+ * @returns {*}
+ */
+function getContactsByGroupname(groupname) {
+    var defer = $.Deferred();
+    $.when(myAjaxGet(bp + 'Smserver/contacts/' + groupname)).done(function (data) {
+        if (data != null) {
+            defer.resolve(data);
+        }
+    }).fail(function (error) {
+        defer.reject(error);
+    });
+    return defer.promise();
+}
+/**
+ * 向服务器请求联系人信息 通过联系人ids
+ * @param ids 联系人ids
+ * @returns {*}
+ */
+function getContactsByIds(ids) {
+    var defer = $.Deferred();
+    var jsonStr = "{\"ids\":\"" + ids + "\"}";
+    $.when(myAjaxPost(bp + 'Smserver/contacts/searchbyids', jsonStr)).done(function (data) {
+        if (data != null) {
+            defer.resolve(data);
+        }
+    }).fail(function (error) {
+        defer.reject(error);
+    });
+    return defer.promise();
+}
+
+
 //全选或者反选
-function changeSelectAll() {
-//        console.log("changeSelectAll....." + $("#selectAll").is(':checked'));
+function changeSelectAllContacts() {
     if ($("#selectAll").is(':checked')) {
         $("input[name='contactsCheckbox']").prop("checked", true);// 放弃了attr
     } else {
@@ -273,7 +300,7 @@ function commitEditGroup(action, jsonStr, groupname) {
             } else {
                 $("#editGroupDiv").hide(2000);
             }
-            initContactsUIs(groupname);
+            initContactsUIs(groupname, null, true);
         }
     });
 }
@@ -338,7 +365,7 @@ function doEditContact() {
         return;
     }
     // 将上述数据整理成json对象
-    var jsonStr = "{\"id\":" + id
+    var jsonStr = "{\"base_id\":" + id
         + ",\"groupname\":\"" + groupname
         + "\",\"name\":\"" + name
         + "\",\"title\":\"" + title
@@ -370,7 +397,7 @@ function commitEditContact(action, jsonStr, type) {
             hideEditFail();
             $("#editContactDiv").hide(2000);
             var contacts = data['contacts'];
-            initTbodyOfContacts(contacts);
+            initTbodyOfContacts(contacts, true);
         }
     });
 }
@@ -392,3 +419,64 @@ function cancleCreateGroup() {
     hideEditFail();
 }
 
+// 初始化单独编辑联系人信息的分组选项
+function initSelect(groups) {
+    var html = '';
+    for (var i = 0; i < groups.length; i++) {
+        html = html + '<option value ="' + groups[i] + '">' + groups[i] + '</option>';
+    }
+    $("#editContactGroup").html(html);
+}
+
+// ---START---上传通讯录的逻辑
+
+// 当上传通讯录成功时调用
+function uploadSuccess() {
+    $("#uploadResult").attr("style", "");
+    $("#uploadResult").text("上传的通讯录已经处理完成。");
+    // 刷新显示
+    initContactsUIs(null, null, true);
+}
+// 当上传通讯录出现错误时调用
+function uploadFailed(msg) {
+    var a = UrlDecode(msg);
+    $("#uploadResult").attr("style", "background:#F55");
+    $("#uploadResult").html(a);
+}
+
+// 将utf-8形式编码的内容进行解码
+function UrlDecode(zipStr) {
+    var uzipStr = "";
+    for (var i = 0; i < zipStr.length; i++) {
+        var chr = zipStr.charAt(i);
+        if (chr == "+") {
+            uzipStr += " ";
+        } else if (chr == "%") {
+            var asc = zipStr.substring(i + 1, i + 3);
+            if (parseInt("0x" + asc) > 0x7f) {
+                uzipStr += decodeURI("%" + asc.toString() + zipStr.substring(i + 3, i + 9).toString());
+                i += 8;
+            } else {
+                uzipStr += AsciiToString(parseInt("0x" + asc));
+                i += 2;
+            }
+        } else {
+            uzipStr += chr;
+        }
+    }
+    return uzipStr;
+}
+
+function StringToAscii(str) {
+    return str.charCodeAt(0).toString(16);
+}
+function AsciiToString(asccode) {
+    return String.fromCharCode(asccode);
+}
+
+// 显示或隐藏上传通讯录div
+function showOrHideUpload() {
+    $("#uploadDiv").toggle(2000);
+}
+
+// ---END---上传通讯录的逻辑

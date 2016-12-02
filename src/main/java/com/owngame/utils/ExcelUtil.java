@@ -17,7 +17,6 @@ import java.util.ArrayList;
  */
 public class ExcelUtil {
     /**
-     *
      * 解析Excel文件内容 返回Contacts
      *
      * @param fileStream
@@ -41,21 +40,21 @@ public class ExcelUtil {
                 // 处理一行
                 HSSFRow row = sheet.getRow(i);
                 ContactDisplay contactDisplay = new ContactDisplay();
-                if(null == row){
+                if (null == row) {
                     somethingWrong = true;
                     errorInfo += "<br>" + wrongInfo + "这一行为空；";
                 }
-                if(null != row.getCell(0)){// id
+                if (null != row.getCell(0)) {// id
                     int cellType = row.getCell(0).getCellType();
-                    if(cellType == Cell.CELL_TYPE_NUMERIC){
+                    if (cellType == Cell.CELL_TYPE_NUMERIC) {
                         //CELL_TYPE_NUMERIC 数值型 0
                         tempS = df.format(row.getCell(0).getNumericCellValue());
-                    }else if(cellType == Cell.CELL_TYPE_STRING){ // CELL_TYPE_STRING 字符串型 1
+                    } else if (cellType == Cell.CELL_TYPE_STRING) { // CELL_TYPE_STRING 字符串型 1
                         tempS = row.getCell(0).toString().trim();
-                    }else{ // 不填写或者填写错误 都给它弄成0
+                    } else { // 不填写或者填写错误 都给它弄成0
                         tempS = "0";
                     }
-                    contactDisplay.setId(Long.parseLong(tempS));
+                    contactDisplay.setBase_id(Long.parseLong(tempS));
                 }
 
                 if (null != row.getCell(1)) {// 组名
@@ -71,7 +70,7 @@ public class ExcelUtil {
                     wrongInfo += "分组名称必须要填写哦；";
                 }
 
-                if (null != row.getCell(2)) {
+                if (null != row.getCell(2)) {// 姓名
                     tempS = row.getCell(2).toString().trim();
                     if (tempS.equals("")) {
                         isSomethingWrong = true;
@@ -84,19 +83,19 @@ public class ExcelUtil {
                     wrongInfo += "人员姓名必须要填写哦；";
                 }
 
-                if (null == row.getCell(3)) {
+                if (null == row.getCell(3)) {// 职务
                     contactDisplay.setTitle("");
                 } else {
                     contactDisplay.setTitle(row.getCell(3).toString().trim());
                 }
 
                 // 判断手机号码的正确性
-                if (null != row.getCell(4)) {
+                if (null != row.getCell(4)) {// 手机号
                     int cellType = row.getCell(4).getCellType();
-                    if(cellType == Cell.CELL_TYPE_NUMERIC){
+                    if (cellType == Cell.CELL_TYPE_NUMERIC) {
                         //CELL_TYPE_NUMERIC 数值型 0
                         tempS = df.format(row.getCell(4).getNumericCellValue());
-                    }else if(cellType == Cell.CELL_TYPE_STRING){ // CELL_TYPE_STRING 字符串型 1
+                    } else if (cellType == Cell.CELL_TYPE_STRING) { // CELL_TYPE_STRING 字符串型 1
                         tempS = row.getCell(4).toString().trim();
                     }
 
@@ -111,13 +110,13 @@ public class ExcelUtil {
                     wrongInfo += "手机号必须填写；";
                 }
 
-                if (null == row.getCell(5)) {
+                if (null == row.getCell(5)) {// 等级
                     contactDisplay.setGrade("");
                 } else {
                     contactDisplay.setGrade(row.getCell(5).toString().trim());
                 }
 
-                if (null == row.getCell(6)) {
+                if (null == row.getCell(6)) {// 备注
                     contactDisplay.setDescription("");
                 } else {
                     contactDisplay.setDescription(row.getCell(6).toString().trim());
@@ -140,10 +139,11 @@ public class ExcelUtil {
 
     /**
      * 将联系人信息转换成Excel文件
+     *
      * @param contactDisplays
      * @return
      */
-    public static boolean initContactsFile(String filePath, ArrayList<ContactDisplay> contactDisplays){
+    public static boolean initContactsFile(String filePath, ArrayList<ContactDisplay> contactDisplays) {
         // 不管原来的文件是否存在，均新建文件
         File f = new File(filePath);
         try {
@@ -208,35 +208,39 @@ public class ExcelUtil {
             // 处理联系人信息
             int rowIndex = 1;// 行号
             int colIndex = 0;// 列号
-            int colLength = 6;// 列长
+//            int colLength = 7;// 列长
 
-            while((rowIndex-1) < contactDisplays.size()){
+            while ((rowIndex - 1) < contactDisplays.size()) {
                 row = sheet.createRow(rowIndex);// 设置一行
-                ContactDisplay contactDisplay = contactDisplays.get(rowIndex-1);
+                ContactDisplay contactDisplay = contactDisplays.get(rowIndex - 1);
                 cell = row.createCell(colIndex);
                 // 定义单元格为字符串类型
                 cell.setCellType(HSSFCell.ENCODING_UTF_16);// 中文处理
-                cell.setCellValue(new HSSFRichTextString(contactDisplay.getId()+""));
+                cell.setCellValue(new HSSFRichTextString(contactDisplay.getBase_id() + ""));
                 cell = row.createCell(++colIndex);
                 // 定义单元格为字符串类型
                 cell.setCellType(HSSFCell.ENCODING_UTF_16);// 中文处理
-                cell.setCellValue(new HSSFRichTextString(contactDisplay.getGroupname()+""));
+                cell.setCellValue(new HSSFRichTextString(contactDisplay.getGroupname() + ""));
                 cell = row.createCell(++colIndex);
                 // 定义单元格为字符串类型
                 cell.setCellType(HSSFCell.ENCODING_UTF_16);// 中文处理
-                cell.setCellValue(new HSSFRichTextString(contactDisplay.getName()+""));
+                cell.setCellValue(new HSSFRichTextString(contactDisplay.getName() + ""));
                 cell = row.createCell(++colIndex);
                 // 定义单元格为字符串类型
                 cell.setCellType(HSSFCell.ENCODING_UTF_16);// 中文处理
-                cell.setCellValue(new HSSFRichTextString(contactDisplay.getTitle()+""));
+                cell.setCellValue(new HSSFRichTextString(contactDisplay.getTitle() + ""));
                 cell = row.createCell(++colIndex);
                 // 定义单元格为字符串类型
                 cell.setCellType(HSSFCell.ENCODING_UTF_16);// 中文处理
-                cell.setCellValue(new HSSFRichTextString(contactDisplay.getPhone()+""));
+                cell.setCellValue(new HSSFRichTextString(contactDisplay.getPhone() + ""));
                 cell = row.createCell(++colIndex);
                 // 定义单元格为字符串类型
                 cell.setCellType(HSSFCell.ENCODING_UTF_16);// 中文处理
-                cell.setCellValue(new HSSFRichTextString(contactDisplay.getDescription()+""));
+                cell.setCellValue(new HSSFRichTextString(contactDisplay.getGrade() + ""));
+                cell = row.createCell(++colIndex);
+                // 定义单元格为字符串类型
+                cell.setCellType(HSSFCell.ENCODING_UTF_16);// 中文处理
+                cell.setCellValue(new HSSFRichTextString(contactDisplay.getDescription() + ""));
 
                 // 回归设置
                 colIndex = 0;

@@ -84,7 +84,7 @@
             <div class="col-md-3 text-center">
                 <input class="form-control" id="editKeywords" placeholder="关键字，区别于其他功能的关键字..."></div>
             <div class="col-md-2 text-center">
-                <select class="form-control" id="editGrade" >
+                <select class="form-control" id="editGrade">
                     <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>

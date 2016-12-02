@@ -20,13 +20,13 @@ public class ContactDisplay {
     public ContactDisplay() {
     }
 
-    public ContactDisplay(ContactBase contactBase, ContactHigh contactHigh){
+    public ContactDisplay(ContactBase contactBase, ContactHigh contactHigh) {
         setBase_id(contactBase.getId());
         setGroupname(contactBase.getGroupname());
         setName(contactBase.getName());
         setTitle(contactBase.getTitle());
         setDescription(contactBase.getDescription());
-        if (contactHigh != null){
+        if (contactHigh != null) {
             setHigh_id(contactHigh.getId());
             setPhone(contactHigh.getPhone());
             setGrade(contactHigh.getGrade());

@@ -1,6 +1,6 @@
 package com.owngame.web;
 
-import com.owngame.service.PcontactService;
+import com.owngame.service.ContactService;
 import com.owngame.service.WeiXinCoreService;
 import com.owngame.utils.AccessTokenUtil;
 import com.owngame.utils.CheckUtil;
@@ -36,7 +36,7 @@ public class MainController {
     ServletContext context;// 获得环境变量的入口！
 
     @Autowired
-    PcontactService pcontactService;
+    ContactService contactService;
 
     @Autowired
     WeiXinCoreService weiXinCoreService;
@@ -71,6 +71,7 @@ public class MainController {
 
     /**
      * 处理来自微信服务器转发的微信消息事件
+     *
      * @param request
      * @param response
      * @throws IOException
@@ -95,11 +96,11 @@ public class MainController {
     }
 
     // 初始化token文件
-    private boolean initMyTokenFile(){
-        AccessTokenUtil.tokenFilePath = context.getRealPath("/") +"token/myToken";// 获得文件路径的方法
+    private boolean initMyTokenFile() {
+        AccessTokenUtil.tokenFilePath = context.getRealPath("/") + "token/myToken";// 获得文件路径的方法
         // 如果文件不存在 就创建
         AccessTokenUtil.tokenFile = new File(AccessTokenUtil.tokenFilePath);
-        if(AccessTokenUtil.tokenFile.exists() == false){
+        if (AccessTokenUtil.tokenFile.exists() == false) {
             AccessTokenUtil.getSavedToken();
         }
         return true;
@@ -133,7 +134,7 @@ public class MainController {
             return "<script>window.parent.uploadFailed('" + ss + "');</script>";
         } else {
             // 去存储Contacts
-            String result = pcontactService.doPContacts(o);
+            String result = contactService.batchUpdateContacts(o);
             if (result.equals("OK")) {
                 return "<script>window.parent.uploadSuccess();</script>";
             } else {
@@ -151,15 +152,15 @@ public class MainController {
      */
     @RequestMapping(value = "/download", method = RequestMethod.GET)
     public ResponseEntity<byte[]> download() throws IOException {
-        String dfileName = context.getRealPath("/") +"contacts/contacts.xls";// 获得文件路径的方法
-        if(pcontactService.initContactsFile(dfileName)) {
+        String dfileName = context.getRealPath("/") + "contacts/contacts.xls";// 获得文件路径的方法
+        if (contactService.initContactsFile(dfileName)) {
             // 调用联系人方法，获得返回的联系人文件
             File file = new File(dfileName);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             headers.setContentDispositionFormData("attachment", dfileName);
             return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
-        }else{
+        } else {
             return null;
         }
     }

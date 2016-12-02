@@ -15,7 +15,7 @@
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
-    <script src="../../resources/bootstrap-3.3.7-dist/js/contactDisplay.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/contact.js"></script>
 </head>
 <body>
 <h3>通讯录操作</h3><h5 style="color: red">请仔细操作，操作结果无法撤销！</h5>
@@ -85,7 +85,7 @@
                 <td><input class="form-control" id="editContactName" placeholder="姓名"></td>
                 <td><input class="form-control" id="editContactTitle" placeholder="职务"></td>
                 <td><input class="form-control" id="editContactPhone" placeholder="手机号"></td>
-                <td><select class="form-control" id="editContactGrade" >
+                <td><select class="form-control" id="editContactGrade">
                     <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -163,10 +163,10 @@
             </tbody>
         </table>
     </div>
-    <div id="groups" style="width: 20%;float:left;">
+    <div style="width: 20%;float:left;">
         <button type="button" class="btn btn-warning btn-sm" onclick="initCreateGroup(null)">新建分组</button>
     </div>
-    <div id="persons" style="width:80%;float:left;">
+    <div style="width:80%;float:left;">
         <button type="button" class="btn btn-warning btn-sm" onclick="initEditContact(-1,'','','','','')">新建联系人</button>
         <button type="button" class="btn btn-success btn-sm" onclick="initCreateGroup('abc')">集体编辑</button>
         <input id="searchContact" placeholder="输入人员名字">
@@ -190,7 +190,7 @@
             <thead>
             <tr class="info">
                 <th width="15%" class="text-center">ID(<input type="checkbox" id="selectAll"
-                                                              onclick="changeSelectAll()">全选)
+                                                              onclick="changeSelectAllContacts()">全选)
                 </th>
                 <th width="10%" class="text-center">所在分组</th>
                 <th width="10%" class="text-center">姓名</th>
@@ -216,11 +216,9 @@
 
 <script type="application/javascript">
     var bp = '<%=basePath%>';
-
-
     // 文档被加载完成时
     $(document).ready(function () {
-        initContactsUIs(null);
+        initContactsUIs(null, null, true);
     });
 
 </script>

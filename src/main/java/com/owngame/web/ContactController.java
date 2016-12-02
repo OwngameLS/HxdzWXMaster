@@ -3,7 +3,6 @@ package com.owngame.web;
 import com.owngame.entity.ContactDisplay;
 import com.owngame.entity.GroupName;
 import com.owngame.service.ContactService;
-import com.owngame.service.PcontactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +18,6 @@ import java.util.Map;
 @RequestMapping("Smserver/contacts")
 public class ContactController {
     @Autowired
-    PcontactService pcontactService;
-    @Autowired
     ContactService contactService;
 
     /**
@@ -33,7 +30,7 @@ public class ContactController {
     @ResponseBody
     public Map<String, Object> getContactByGroup(@PathVariable("groupname") String groupname) {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("contacts", pcontactService.getContactByGroup(groupname));
+        map.put("contacts", contactService.queryByGroup(groupname));
         return map;
     }
 
@@ -46,7 +43,7 @@ public class ContactController {
     @ResponseBody
     public Map<String, Object> getGroups() {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("groups", pcontactService.getGroups());
+        map.put("groups", contactService.getGroups());
         return map;
     }
 
@@ -59,16 +56,16 @@ public class ContactController {
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> updateContact(@RequestBody ContactDisplay contactDisplay) {
-        if (contactDisplay.getId() > 0) {//是更新
+        if (contactDisplay.getBase_id() > 0) {//是更新
             contactService.update(contactDisplay);
         } else {
             System.out.println("insert contactDisplay!");
-            contactDisplay.setId(0);
+            contactDisplay.setBase_id(0);
             contactService.insert(contactDisplay);
         }
         Map<String, Object> map = new HashMap<String, Object>();
         // 返回更新后的该组信息
-        map.put("contacts", pcontactService.getContactByGroup(contactDisplay.getGroupname()));
+        map.put("contacts", contactService.queryByGroup(contactDisplay.getGroupname()));
         return map;
     }
 
@@ -87,7 +84,7 @@ public class ContactController {
         contactService.delete(p.get("id"));
         Map<String, Object> map = new HashMap<String, Object>();
         // 返回更新后的该组信息
-        map.put("contacts", pcontactService.getContactByGroup(groupname));
+        map.put("contacts", contactService.queryByGroup(groupname));
         return map;
     }
 
@@ -118,7 +115,7 @@ public class ContactController {
     public Map<String, Object> searchContactsByIds(@RequestBody Map<String, String> p) {
         String ids = p.get("ids");
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("contacts", pcontactService.getContactByIds(ids));
+        map.put("contacts", contactService.getContactByIds(ids));
         return map;
     }
 
@@ -141,14 +138,11 @@ public class ContactController {
         } else if (action.equals("delete")) {
             contactService.deleteGroup(p.get("originalGroupName"));
         } else if (action.equals("insert")) {
-            return pcontactService.insertGroup(p);
+            return contactService.insertGroup(p);
         }
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("success", "success");
         return map;
     }
-
-
-
 
 }

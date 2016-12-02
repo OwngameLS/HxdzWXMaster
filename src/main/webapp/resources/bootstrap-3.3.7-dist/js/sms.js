@@ -215,9 +215,9 @@ function createTask() {
         $.when(myAjaxPost(bp + 'Smserver/tasks/create/', jsonStr)).done(function (data) {
             showEditDone();
             hideEditFail();
-            setTimeout(function(){
+            setTimeout(function () {
                 location.reload();
-            },2500);
+            }, 2500);
         });
     } else {
         return;

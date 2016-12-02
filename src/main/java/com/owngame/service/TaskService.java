@@ -10,7 +10,9 @@ import java.util.ArrayList;
  */
 public interface TaskService {
     ArrayList<Task> queryTasksBeforeTime(int hours);
+
     Task queryById(long id);
+
     ArrayList<Task> queryByState(int state);
 
     ArrayList<Task> queryAllTasks(@Param("offset") int offet, @Param("limit") int limit);

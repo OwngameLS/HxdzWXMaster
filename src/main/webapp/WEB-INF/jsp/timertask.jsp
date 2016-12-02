@@ -16,6 +16,7 @@
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/timertask.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/contact.js"></script>
 </head>
 <body>
 <h3>定时任务设置</h3>
@@ -65,9 +66,9 @@
                 </td>
                 <td width="30%">
                     <textarea id="ttcontactsEdit" placeholder="这里将展示选中人员的id"></textarea><br>
-                    <button type="button" class="btn btn-success btn-sm" onclick="queryContactsDetailsWithIds()">查看已选
+                    <button type="button" class="btn btn-success btn-sm" onclick="showContactsUI(true)">查看已选
                     </button>
-                    <button type="button" class="btn btn-success btn-sm" onclick="showContactsUI()">新增人员</button>
+                    <button type="button" class="btn btn-success btn-sm" onclick="showContactsUI(false)">新增人员</button>
                 </td>
                 <td width="5%">
                     <select id="ttstateEdit">
@@ -132,13 +133,6 @@
                 </tr>
                 </thead>
                 <tbody id="groupsBody">
-                <tr>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="queryContactsDetailsWithIds()">
-                            已选人员
-                        </button>
-                    </td>
-                </tr>
                 </tbody>
             </table>
         </div>
@@ -147,13 +141,15 @@
             <table class="table table-hover table-bordered text-center">
                 <thead>
                 <tr class="info">
-                    <th width="15%" class="text-center">序号（<input type="checkbox" id="selectAllContacts"
-                                                                  onclick="changeSelectAllContacts()">全选）
+                    <th width="15%" class="text-center">ID(<input type="checkbox" id="selectAllContacts"
+                                                                  onclick="changeSelectAllContacts()">全选)
                     </th>
-                    <th width="15%" class="text-center">所在分组</th>
-                    <th width="15%" class="text-center">姓名</th>
-                    <th width="25%" class="text-center">职务</th>
-                    <th width="30%" class="text-center">手机号</th>
+                    <th width="10%" class="text-center">所在分组</th>
+                    <th width="10%" class="text-center">姓名</th>
+                    <th width="15%" class="text-center">职务</th>
+                    <th width="20%" class="text-center">手机号</th>
+                    <th width="10%" class="text-center">等级</th>
+                    <th width="20%" class="text-center">备注</th>
                 </tr>
                 </thead>
                 <tbody id="contactsBody">

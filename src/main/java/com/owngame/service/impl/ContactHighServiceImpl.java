@@ -1,6 +1,5 @@
 package com.owngame.service.impl;
 
-import com.owngame.dao.ContactDao;
 import com.owngame.dao.ContactHighDao;
 import com.owngame.entity.ContactHigh;
 import com.owngame.service.ContactHighService;
@@ -42,6 +41,10 @@ public class ContactHighServiceImpl implements ContactHighService {
     }
 
     public int update(ContactHigh contactHigh) {
+        // 判断是否需要变成插入
+        if (contactHigh.getId() <= 0) {
+            return contactHighDao.insert(contactHigh);
+        }
         return contactHighDao.update(contactHigh);
     }
 

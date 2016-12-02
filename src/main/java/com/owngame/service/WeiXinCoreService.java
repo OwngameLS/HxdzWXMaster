@@ -1,16 +1,5 @@
 package com.owngame.service;
 
-import com.owngame.utils.AccessTokenUtil;
-import com.owngame.utils.InfoFormatUtil;
-import org.dom4j.DocumentException;
-import org.springframework.stereotype.Service;
-import weixin.popular.api.MessageAPI;
-import weixin.popular.bean.BaseResult;
-
-import java.io.IOException;
-import java.util.Map;
-
-
 /**
  * Created by Administrator on 2016-8-18.
  * 微信公众号逻辑路由

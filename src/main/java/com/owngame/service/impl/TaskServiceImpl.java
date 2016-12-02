@@ -43,7 +43,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     public ArrayList<Task> queryAllTasks(@Param("offset") int offet, @Param("limit") int limit) {
-        return taskDao.queryAllTasks(offet,limit);
+        return taskDao.queryAllTasks(offet, limit);
     }
 
     public ArrayList<Task> queryTasksBeforeTime(String time) {

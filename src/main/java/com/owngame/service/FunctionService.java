@@ -76,6 +76,7 @@ public interface FunctionService {
 
     /**
      * 通过功能的id集合字符串，获取他们对应的查询结果
+     *
      * @param idStr
      * @return
      */
@@ -83,6 +84,7 @@ public interface FunctionService {
 
     /**
      * 通过关键字集合字符串，获得方法的查询结果
+     *
      * @param keysStr
      * @return
      */

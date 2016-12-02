@@ -1,7 +1,6 @@
 package com.owngame.dao;
 
 import com.owngame.entity.ContactBase;
-import com.owngame.entity.ContactDisplay;
 import com.owngame.entity.GroupName;
 
 import java.util.ArrayList;

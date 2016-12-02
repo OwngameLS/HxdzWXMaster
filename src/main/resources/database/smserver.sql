@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2016-11-30 14:51:56
+Date: 2016-12-02 17:14:20
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -24,62 +24,30 @@ CREATE TABLE `contactbase` (
   `groupname` text,
   `name` text,
   `title` text,
-  `phoneid` int(11) DEFAULT NULL,
+  `highid` int(11) DEFAULT NULL,
   `description` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=80 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of contactbase
 -- ----------------------------
-INSERT INTO `contactbase` VALUES ('1', 'A', '张三', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('3', 'A', 'Owngamesd', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('4', 'A', '邵文泉', '老师', null, '老婆大人');
-INSERT INTO `contactbase` VALUES ('5', 'A', 'fgh', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('6', 'A', 'ghi', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('7', 'B', 'hij', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('8', 'B', 'ijk', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('9', 'B', 'abc', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('10', 'B', 'cde', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('11', 'B', 'def', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('12', 'B', 'efg', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('17', 'A', 'abc', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('18', 'A', 'cde', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('19', 'A', 'def', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('20', 'A', 'aad', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('21', 'A', 'fgh', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('22', 'A', 'ghi', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('23', 'B', 'hij', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('24', 'B', 'ijk', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('25', 'B', 'abc', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('26', 'B', 'cde', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('27', 'B', 'def', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('28', 'B', 'efg', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('33', 'A', 'abc', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('34', 'A', 'cde', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('35', 'A', 'def', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('36', 'A', 'aad', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('37', 'A', 'fgh', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('38', 'A', 'ghi', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('39', 'B', 'hij', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('40', 'B', 'ijk', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('41', 'B', 'abc', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('42', 'B', 'cde', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('43', 'B', 'def', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('44', 'B', 'efg', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('49', 'A', 'abc', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('50', 'A', 'cde', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('51', 'A', 'def', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('52', 'A', 'aad', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('53', 'A', 'fgh', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('54', 'A', 'ghi', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('55', 'B', 'hij', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('56', 'B', 'ijk', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('57', 'B', 'abc', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('58', 'B', 'cde', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('59', 'B', 'def', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('60', 'B', 'efg', 'asd', null, 'adsfasd');
-INSERT INTO `contactbase` VALUES ('79', null, null, null, null, null);
+INSERT INTO `contactbase` VALUES ('1', 'AA', 'Owngame', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('2', 'AA', '张三', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('3', 'AA', '李四', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('4', 'AA', '王五', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('5', 'AA', '赵六', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('6', 'AA', '孙七', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('7', 'AA', '龙八', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('8', 'B', 'Owngame', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('9', 'B', '张三', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('10', 'B', '李四', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('11', 'B', '王五', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('12', 'B', '赵六', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('13', 'B', '孙七', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('14', 'C', '龙八', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('15', 'C', 'Owngame', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('16', 'C', '张三', '123.0', '1', 'waerfa');
 
 -- ----------------------------
 -- Table structure for `contacthigh`
@@ -92,11 +60,30 @@ CREATE TABLE `contacthigh` (
   `openid` text,
   `backup` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of contacthigh
 -- ----------------------------
+INSERT INTO `contacthigh` VALUES ('1', '18107436127', '5.0', null, null);
+INSERT INTO `contacthigh` VALUES ('2', '18107436127', '5.0', null, null);
+INSERT INTO `contacthigh` VALUES ('3', '18107436127', '5.0', null, null);
+INSERT INTO `contacthigh` VALUES ('4', '18107436127', '5.0', null, null);
+INSERT INTO `contacthigh` VALUES ('5', '18107436126', '3.0', null, null);
+INSERT INTO `contacthigh` VALUES ('6', '18107436125', '5.0', null, null);
+INSERT INTO `contacthigh` VALUES ('7', '18107436124', '4.0', null, null);
+INSERT INTO `contacthigh` VALUES ('8', '18107436123', '2.0', null, null);
+INSERT INTO `contacthigh` VALUES ('9', '18107436122', '0.0', null, null);
+INSERT INTO `contacthigh` VALUES ('10', '18107436121', '0.0', null, null);
+INSERT INTO `contacthigh` VALUES ('11', '18107436120', '0.0', null, null);
+INSERT INTO `contacthigh` VALUES ('12', '18107436119', '0.0', null, null);
+INSERT INTO `contacthigh` VALUES ('13', '18107436118', '0.0', null, null);
+INSERT INTO `contacthigh` VALUES ('14', '18107436117', '0.0', null, null);
+INSERT INTO `contacthigh` VALUES ('15', '18107436116', '0.0', null, null);
+INSERT INTO `contacthigh` VALUES ('16', '18107436115', '0.0', null, null);
+INSERT INTO `contacthigh` VALUES ('17', '18107436114', '0.0', null, null);
+INSERT INTO `contacthigh` VALUES ('18', '18107436113', '0.0', null, null);
+INSERT INTO `contacthigh` VALUES ('19', '18107436112', '0.0', null, null);
 
 -- ----------------------------
 -- Table structure for `function`

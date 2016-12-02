@@ -2,6 +2,7 @@ package com.owngame.service;
 
 
 import com.owngame.entity.ContactDisplay;
+import com.owngame.entity.ContactHigh;
 import com.owngame.entity.Function;
 import com.owngame.entity.Task;
 import org.quartz.JobDataMap;
@@ -23,7 +24,6 @@ public class MainService implements Serializable {
     ContactService contactService;
     @Autowired
     TaskService taskService;
-
 
 
     /**
@@ -76,10 +76,10 @@ public class MainService implements Serializable {
      */
     public void handleAsk(String keywords, String receivers, String askType) {
         // 先判断手机号对应的用户是否能获得对应的权限
-        ContactDisplay contactDisplay = contactService.queryByPhone(receivers);
+        ContactHigh contactHigh = contactService.queryHighByPhone(receivers);
         String grade = "-1";
-        if(contactDisplay != null){
-            grade = contactDisplay.getGrade();
+        if (contactHigh != null) {
+            grade = contactHigh.getGrade();
         }
         String contents = "";
         String name = "主动查询";

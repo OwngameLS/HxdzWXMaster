@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
  * 继承自Weixin popular 主要是增加了其对有嵌套XML的消息解析
- *
+ * <p>
  * 由于其修复了Bug 此处暂时废弃 20161122
  *
  * @author Administrator

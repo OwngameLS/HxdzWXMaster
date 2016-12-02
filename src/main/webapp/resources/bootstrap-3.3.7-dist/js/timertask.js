@@ -38,93 +38,26 @@ function initTbodyOfTasks(timertasks) {
     $("#selectAllTimerTasks").prop("checked", false);
 }
 
-// 通过ids查询联系人详情
-function queryContactsDetailsWithIds() {
-    var ids = $("#ttcontactsEdit").val();
-    // 判断不为空
-    if (isEmpty(ids)) {
-        showEditFail("当前还没有选择联系人！", $("#ttcontactsEdit"));
-        hideEditFail();
-        return;
-    }
-    var jsonStr = "{\"ids\":\"" + ids + "\"}";
-    $.when(myAjaxPost(bp + 'Smserver/contacts/searchbyids', jsonStr)).done(function (data) {
-        var htmlStr = '';
-        if (data != null) {
-            showEditDone();
-            hideEditFail();
-            // 显示联系人信息表格div
-            showContactsDiv();
-            // 分组信息
-            initTbodyOfContacts(data['contacts']);
-        }
-    });
-}
-
 // 展示联系人选择
-function showContactsUI() {
+function showContactsUI(needIds) {
+    var ids = $("#ttcontactsEdit").val();
+    if(needIds){
+        // 判断不为空
+        if (isEmpty(ids)) {
+            showEditFail("当前还没有选择联系人！", $("#ttcontactsEdit"));
+            return;
+        }
+    }else{
+        ids = null;
+    }
     showEditDone();
     hideEditFail();
+    // 初始化分组表格
+    initContactsUIs(null, ids, false);
     // 显示联系人信息表格div
     showContactsDiv();
-    // 初始化分组表格
-    initTbodyOfGroups(true);
 }
 
-// 初始化联系人详情UI控件
-function initTbodyOfContacts(contacts) {
-    var htmlStr = '';
-    for (var i = 0; i < contacts.length; i++) {
-        htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" value="' + contacts[i].id + '"> ' + contacts[i].id
-            + '</td><td>' + contacts[i].groupname
-            + '</td><td>' + contacts[i].name
-            + '</td><td>' + parseToAbbr(contacts[i].title, 10, null)
-            + '</td><td>' + contacts[i].phone
-            + '</td></tr>';
-    }
-    $("#contactsBody").html(htmlStr);
-    // 取消全选的勾选
-    $("#selectAllContacts").prop("checked", false);
-}
-
-// 初始化联系人组UI控件
-function initTbodyOfGroups(showSelected) {
-    $.when(myAjaxGet(bp + 'Smserver/contacts/groups')).done(function (data) {
-        var htmlStr = "";
-        if (showSelected) {// 需要展示已选择的
-            htmlStr = '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="queryContactsDetailsWithIds()">已选人员</button></td></tr>';
-        }
-        if (data != null) {
-            var groups = data['groups'];
-            for (var i = 0; i < groups.length; i++) {
-                htmlStr = htmlStr + '<tr><td><button type="button" class="btn btn-danger btn-sm" onclick="getContactsByGroups(\'' + groups[i] + '\')">' + groups[i] + '</button>';
-            }
-            $("#groupsBody").html(htmlStr);
-            // 展示第一组
-            getContactsByGroups(groups[0]);
-        }
-    });
-}
-
-// 向服务器请求联系人信息 通过分组名称
-function getContactsByGroups(groupname) {
-    $.when(myAjaxGet(bp + 'Smserver/contacts/' + groupname)).done(function (data) {
-        var htmlStr = '';
-        if (data != null) {
-            initTbodyOfContacts(data['contacts']);
-        }
-    });
-}
-
-
-//全选或者反选 联系人
-function changeSelectAllContacts() {
-    if ($("#selectAllContacts").is(':checked')) {
-        $("input[name='contactsCheckbox']").prop("checked", true);// 放弃了attr
-    } else {
-        $("input[name='contactsCheckbox']").prop("checked", false);
-    }
-}
 
 //全选或者反选 定时任务
 function changeSelectAllTimerTasks() {

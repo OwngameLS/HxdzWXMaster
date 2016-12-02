@@ -13,7 +13,6 @@ public class ContactBase {
     String description = "备注";
 
 
-
     public long getId() {
         return id;
     }

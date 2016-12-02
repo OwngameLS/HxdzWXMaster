@@ -71,8 +71,8 @@ public class AccessTokenUtil {
         String content = null;
         try {
             content = FileUtils.readFileToString(tokenFile, "UTF-8");
-			System.out.println("path:" + tokenFile.getAbsolutePath());
-			System.out.println("cur:" + System.currentTimeMillis()+"\n token :" + content);
+            System.out.println("path:" + tokenFile.getAbsolutePath());
+            System.out.println("cur:" + System.currentTimeMillis() + "\n token :" + content);
         } catch (IOException e) {
             getTokenFromWeixin();
             return getSavedToken();
@@ -93,7 +93,7 @@ public class AccessTokenUtil {
                     getTokenFromWeixin();
                     return getSavedToken();
                 }
-            }else{
+            } else {
                 getTokenFromWeixin();
                 return getSavedToken();
             }

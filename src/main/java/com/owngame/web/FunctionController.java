@@ -39,12 +39,13 @@ public class FunctionController {
 
     /**
      * 通过关键字获得方法的查询结果
+     *
      * @param p
      * @return
      */
     @RequestMapping(value = "/getresults/keywords", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> getFunctionResultsByKeywords(@RequestBody Map<String, String> p){
+    public Map<String, Object> getFunctionResultsByKeywords(@RequestBody Map<String, String> p) {
         Map<String, Object> map = new HashMap<String, Object>();
         String results = functionService.getFunctionResultsByKeywords("7", p.get("keywords"));// 从网页上询问结果，最高级别
         map.put("results", results);
@@ -67,6 +68,7 @@ public class FunctionController {
 
     /**
      * 通过id查询功能
+     *
      * @return
      */
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
@@ -85,6 +87,7 @@ public class FunctionController {
 
     /**
      * 查询数据库设置连接的连通性
+     *
      * @return
      */
     @RequestMapping(value = "/testconnect", method = RequestMethod.POST)

@@ -82,10 +82,11 @@ public class FunctionServiceImpl implements FunctionService {
 
     /**
      * 通过功能的id集合字符串，获取他们对应的查询结果
+     *
      * @param idStr
      * @return
      */
-    public String getFunctionResultByIds(String idStr){
+    public String getFunctionResultByIds(String idStr) {
         String results = "";
         String ids[] = idStr.split(",");
         for (int i = 0; i < ids.length; i++) {
@@ -97,58 +98,59 @@ public class FunctionServiceImpl implements FunctionService {
 
     /**
      * 通过功能的关键字集合字符串，获取他们对应的查询结果
+     *
      * @param keysStr
      * @return
      */
     public String getFunctionResultsByKeywords(String grade, String keysStr) {
         System.out.println("getFunctionResultsByKeywords : " + keysStr);
         String results = "";
-        if(keysStr != null){
-            if(keysStr.equals("") == false){
+        if (keysStr != null) {
+            if (keysStr.equals("") == false) {
                 // 1.先将关键字分组
                 keysStr.replaceAll("，", ",");// 将中文逗号替换为英文
                 String[] keyStr = keysStr.split(",");
                 ArrayList<String> ids = new ArrayList<String>();
                 // 2.根据关键字查询方法
-                for(int i=0;i<keyStr.length;i++){
+                for (int i = 0; i < keyStr.length; i++) {
                     Function function = null;
                     try {
                         function = getByKeywords(keyStr[i]);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if(function != null){
-                        if(function.getId() != -1){// 找到了这个方法
+                    if (function != null) {
+                        if (function.getId() != -1) {// 找到了这个方法
                             // 判断级别 是否有权限查询
-                            if(Integer.parseInt(grade) < Integer.parseInt(function.getGrade())){
+                            if (Integer.parseInt(grade) < Integer.parseInt(function.getGrade())) {
                                 results = results + "关键字" + keyStr[i] + " 由于您为获得与该功能匹配的级别，无法进行查询，请与管理员申请后再次尝试查询。";
-                            }else{
-                                ids = addIdsUnique(ids, function.getId()+"");// 去重添加
+                            } else {
+                                ids = addIdsUnique(ids, function.getId() + "");// 去重添加
                             }
-                        }else{// 找到了类似关键字的方法
+                        } else {// 找到了类似关键字的方法
                             results = results + "关键字" + keyStr[i] + " 没有找到对应的功能，因此没有获得查询结果，与它类似的关键字有 "
-                                    + function.getDescription() +",请与管理员确认后再次尝试查询。";
+                                    + function.getDescription() + ",请与管理员确认后再次尝试查询。";
                         }
                     }
                 }
                 // 3.根据获得的方法查询其对应的结果
-                if(ids.size() != 0){
+                if (ids.size() != 0) {
                     // 确实查询到了方法
                     String s = "";
-                    for(int i=0;i<ids.size();i++){
+                    for (int i = 0; i < ids.size(); i++) {
                         s = s + ids.get(i);
-                        if((i+1)<ids.size()){
+                        if ((i + 1) < ids.size()) {
                             s = s + ",";
                         }
                     }
                     results = results + getFunctionResultByIds(s);
-                }else{
+                } else {
                     results = results + "您所查询的所有关键字均未找到对应的功能，请使用正确的关键字查询，如果你不清楚请联系系统管理员。";
                 }
-            }else{
+            } else {
                 results = "请使用正确的关键字查询，如果你不清楚请联系系统管理员。";
             }
-        }else{
+        } else {
             results = "请使用正确的关键字查询，如果你不清楚请联系系统管理员。";
         }
         return results;
@@ -177,13 +179,13 @@ public class FunctionServiceImpl implements FunctionService {
     // 保证每次添加的方法都是唯一的
     private ArrayList<String> addIdsUnique(ArrayList<String> ids, String id) {
         boolean isFound = false;
-        for(int i=0;i<ids.size();i++){
-            if(id.equals(ids.get(i))){
+        for (int i = 0; i < ids.size(); i++) {
+            if (id.equals(ids.get(i))) {
                 isFound = true;
                 break;
             }
         }
-        if(isFound == false){
+        if (isFound == false) {
             ids.add(id);
         }
         return ids;

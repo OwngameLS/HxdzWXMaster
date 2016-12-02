@@ -19,6 +19,7 @@ public class InfoFormatUtil {
      * xml转为map集合
      * 所有从微信服务器Post过来的消息都封装成了xml格式，
      * 需要将其转换为Map格式，用于分析或者组建其他格式的消息用于返回
+     *
      * @param s
      * @return
      * @throws IOException

@@ -17,6 +17,7 @@
     <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/timertask.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/sms.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/contact.js"></script>
 </head>
 <body>
 <h3>短信群发</h3>
