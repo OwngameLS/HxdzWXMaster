@@ -1,5 +1,6 @@
 package com.owngame.service;
 
+import com.owngame.entity.ContactHigh;
 import com.owngame.entity.Function;
 import com.owngame.entity.FunctionKeywordsResult;
 import com.owngame.entity.FunctionSqlResult;
@@ -23,6 +24,14 @@ public interface FunctionService {
      * 查询所有任务
      */
     ArrayList<Function> queryAll();
+
+    /**
+     * 根据权限查询所有的功能
+     * @param contactHigh
+     * @param type
+     * @return
+     */
+    String queryAllWithGrade(ContactHigh contactHigh, int type);
 
     /**
      * 删除
@@ -84,11 +93,12 @@ public interface FunctionService {
 
     /**
      * 通过关键字集合字符串，获得方法的查询结果
-     *
+     * @param contactHigh
+     * @param type
      * @param keysStr
      * @return
      */
-    String getFunctionResultsByKeywords(String grade, String keysStr);
+    String getFunctionResultsByKeywords(ContactHigh contactHigh, int type, String keysStr);
 
     int insert(Function function);
 

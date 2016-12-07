@@ -65,10 +65,8 @@
                     </div>
                 </td>
                 <td width="30%">
-                    <textarea id="ttcontactsEdit" placeholder="这里将展示选中人员的id"></textarea><br>
-                    <button type="button" class="btn btn-success btn-sm" onclick="showContactsUI(true)">查看已选
-                    </button>
-                    <button type="button" class="btn btn-success btn-sm" onclick="showContactsUI(false)">新增人员</button>
+                    <textarea id="selectedContactsIds" placeholder="这里将展示选中人员的id"></textarea><br>
+                    <button type="button" class="btn btn-success btn-sm" onclick="showContactsUI()">编辑人员</button>
                 </td>
                 <td width="5%">
                     <select id="ttstateEdit">
@@ -163,7 +161,7 @@
         <table class="table table-hover table-bordered text-center">
             <thead>
             <tr class="info">
-                <th width="12%" class="text-center">序号(<input type="checkbox" id="selectAllTimerTasks"
+                <th width="12%" class="text-center">ID(<input type="checkbox" id="selectAllTimerTasks"
                                                               onclick="changeSelectAllTimerTasks()">全选)
                 </th>
                 <th width="12%" class="text-center">功能</th>

@@ -113,7 +113,8 @@ public class ExcelUtil {
                 if (null == row.getCell(5)) {// 等级
                     contactDisplay.setGrade("");
                 } else {
-                    contactDisplay.setGrade(row.getCell(5).toString().trim());
+                    int gr = Integer.parseInt(row.getCell(5).toString());
+                    contactDisplay.setGrade(gr+"");
                 }
 
                 if (null == row.getCell(6)) {// 备注

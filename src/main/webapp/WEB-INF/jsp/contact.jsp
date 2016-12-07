@@ -163,47 +163,50 @@
             </tbody>
         </table>
     </div>
-    <div style="width: 20%;float:left;">
-        <button type="button" class="btn btn-warning btn-sm" onclick="initCreateGroup(null)">新建分组</button>
-    </div>
-    <div style="width:80%;float:left;">
-        <button type="button" class="btn btn-warning btn-sm" onclick="initEditContact(-1,'','','','','')">新建联系人</button>
-        <button type="button" class="btn btn-success btn-sm" onclick="initCreateGroup('abc')">集体编辑</button>
-        <input id="searchContact" placeholder="输入人员名字">
-        <button type="button" class="btn btn-primary btn-sm" onclick="searchContact()">搜索</button>
-    </div>
-    <div id="groups" style="width: 20%;float:left;">
-        <table class="table table-striped text-center table-bordered">
-            <thead>
-            <tr class="warning">
-                <th class="text-center">
-                    点击下列分组查看组员
-                </th>
-            </tr>
-            </thead>
-            <tbody id="groupsBody">
-            </tbody>
-        </table>
-    </div>
-    <div id="persons" style="width:80%;float:left;overflow:scroll; height:400px;">
-        <table class="table table-hover table-bordered text-center">
-            <thead>
-            <tr class="info">
-                <th width="15%" class="text-center">ID(<input type="checkbox" id="selectAll"
-                                                              onclick="changeSelectAllContacts()">全选)
-                </th>
-                <th width="10%" class="text-center">所在分组</th>
-                <th width="10%" class="text-center">姓名</th>
-                <th width="10%" class="text-center">职务</th>
-                <th width="15%" class="text-center">手机号</th>
-                <th width="10%" class="text-center">等级</th>
-                <th width="15%" class="text-center">备注</th>
-                <th width="15%" class="text-center">操作</th>
-            </tr>
-            </thead>
-            <tbody id="contactsBody">
-            </tbody>
-        </table>
+    <div id="contactsDiv">
+        <div style="width: 20%;float:left;">
+            <button type="button" class="btn btn-warning btn-sm" onclick="initCreateGroup(null)">新建分组</button>
+        </div>
+        <div style="width:80%;float:left;">
+            <button type="button" class="btn btn-warning btn-sm" onclick="initEditContact(-1,'','','','','')">新建联系人
+            </button>
+            <button type="button" class="btn btn-success btn-sm" onclick="initCreateGroup('abc')">集体编辑</button>
+            <input id="searchContact" placeholder="输入人员名字">
+            <button type="button" class="btn btn-primary btn-sm" onclick="searchContact()">搜索</button>
+        </div>
+        <div id="groups" style="width: 20%;float:left;">
+            <table class="table table-striped text-center table-bordered">
+                <thead>
+                <tr class="warning">
+                    <th class="text-center">
+                        点击下列分组查看组员
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="groupsBody">
+                </tbody>
+            </table>
+        </div>
+        <div id="persons" style="width:80%;float:left;overflow:scroll; height:400px;">
+            <table class="table table-hover table-bordered text-center">
+                <thead>
+                <tr class="info">
+                    <th width="15%" class="text-center">ID(<input type="checkbox" id="selectAllContacts"
+                                                                  onclick="changeSelectAllContacts()">全选)
+                    </th>
+                    <th width="10%" class="text-center">所在分组</th>
+                    <th width="10%" class="text-center">姓名</th>
+                    <th width="10%" class="text-center">职务</th>
+                    <th width="15%" class="text-center">手机号</th>
+                    <th width="10%" class="text-center">等级</th>
+                    <th width="15%" class="text-center">备注</th>
+                    <th width="15%" class="text-center">操作</th>
+                </tr>
+                </thead>
+                <tbody id="contactsBody">
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

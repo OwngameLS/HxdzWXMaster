@@ -7,15 +7,15 @@
         select * from function
     </select>
 
-    <select id="queryByName" resultType="Function">
+    <select id="queryByName" resultType="Function" parameterType="String">
         select * from function where name=#{name}
     </select>
 
-    <select id="queryByKeywords" resultType="Function">
+    <select id="queryByKeywords" resultType="Function" parameterType="String">
         select * from function where keywords like #{keywords}
     </select>
 
-    <select id="queryById" resultType="Function">
+    <select id="queryById" resultType="Function"  parameterType="long">
         select * from function where id=#{id}
     </select>
 

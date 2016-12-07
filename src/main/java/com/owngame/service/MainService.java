@@ -72,20 +72,16 @@ public class MainService implements Serializable {
      *
      * @param keywords  关键字
      * @param receivers 查询者
-     * @param askType   主动询问的方式（sms 短信, wx 微信）
+     * @param askType   主动询问的方式（0 短信, 1 微信）
      */
-    public void handleAsk(String keywords, String receivers, String askType) {
+    public void handleAsk(String keywords, String receivers, int askType) {
         // 先判断手机号对应的用户是否能获得对应的权限
         ContactHigh contactHigh = contactService.queryHighByPhone(receivers);
-        String grade = "-1";
-        if (contactHigh != null) {
-            grade = contactHigh.getGrade();
-        }
         String contents = "";
         String name = "主动查询";
         String description = "用户" + receivers + "主动查询，相关功能为：";
         String keys[] = keywords.split(",");
-        contents = functionService.getFunctionResultsByKeywords(grade, keywords);
+        contents = functionService.getFunctionResultsByKeywords(contactHigh, askType, keywords);
 //        ArrayList<String> functions = new ArrayList<String>();
 //        for (int i = 0; i < keys.length; i++) {
 //            // 通过关键字查询到对应的功能
@@ -103,7 +99,7 @@ public class MainService implements Serializable {
 //            contents = contents + getFunctionResult(function);
 //        }
         System.out.println("handleAsk contents:" + contents);
-        if (askType.equals("sms")) {
+        if (askType == 0) {
             createTask(name, description, contents, receivers);
         } else {
             // 微信查询

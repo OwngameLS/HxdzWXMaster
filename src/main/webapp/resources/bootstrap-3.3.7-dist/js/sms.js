@@ -6,17 +6,6 @@ var selectedIContacts = new Array();// 已经确认选中的人员
 var newSelectIContacts = null;// 新操作时选中的人员
 var anonymousId = -1;// 匿名者的id
 
-
-// 展示联系人选择
-function showContactsUI() {
-    showEditDone();
-    hideEditFail();
-    // 显示联系人信息表格div
-    showContactsDiv();
-    // 初始化分组表格
-    initTbodyOfGroups(false);
-}
-
 // 联系人类
 function selectedContact() {
     this.id;
@@ -145,13 +134,6 @@ function showSelectedContactsHtml() {
     showEditDone();
 }
 
-function showContactsDiv() {
-    $("#contactsDiv").show(2000);
-}
-
-function hideContactsDiv() {
-    $("#contactsDiv").hide(2000);
-}
 
 // 清空内容
 function emptyContents() {
@@ -258,11 +240,16 @@ function useFunction() {
 function getResults() {
     var funcIds = new Array();// 被选中的方法id
     var funcCheck = $("input[id*='func']");
+
     for (var i = 0; i < funcCheck.length; i++) {
         var isSelected = $("#func" + i).prop("checked");
         if (isSelected) {
             funcIds.push($("#func" + i).val());
         }
+    }
+    if(funcIds.length == 0){
+        $("#myModal").modal("hide");
+        return;
     }
     $("#mbody").html('<img src="/resources/bootstrap-3.3.7-dist/img/loading.gif" style="width: 100px;height: 100px"/> 查询中，请稍后...');
     if (funcIds.length > 0) {

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 为Dao接口方法提供SQL语句配置 -->
+<mapper namespace="com.owngame.dao.AskrecordDao">
+
+    <select id="queryAll" resultType="Askrecord">
+        select * from askrecord order by time desc
+    </select>
+
+    <select id="queryAllLimit" resultType="Askrecord">
+        select * from askrecord order by time desc limit #{offset},#{limit}
+    </select>
+
+    <select id="queryBySuccess" resultType="Askrecord" parameterType="int">
+        select * from askrecord where issuccess=#{issuccess} order by time asc
+    </select>
+
+    <select id="queryRecordssBeforeTime" resultType="Askrecord" parameterType="String">
+        select * from askrecord where time > #{time} order by issuccess asc
+    </select>
+
+    <insert id="insert" parameterType="Askrecord">
+        insert ignore askrecord task
+        (id, phone, type, time,functions,issuccess,errormsg)
+        values
+        (#{id}, #{phone}, #{type}, #{time},#{functions},#{issuccess},#{errormsg})
+    </insert>
+
+    <update id="update" parameterType="Askrecord">
+        update askrecord set
+        phone=#{phone},
+        type=#{type},
+        time=#{time},
+        functions=#{functions},
+        issuccess=#{issuccess},
+        errormsg=#{errormsg}
+        where id=#{id}
+    </update>
+
+    <select id="queryByPhone" resultType="Askrecord" parameterType="String">
+        select * from askrecord where phone=#{phone}
+    </select>
+
+    <select id="queryById" resultType="Askrecord" parameterType="long">
+        select * from askrecord where id=#{id}
+    </select>
+
+    <delete id="delete" parameterType="long">
+        delete from askrecord where id=#{id}
+    </delete>
+</mapper>

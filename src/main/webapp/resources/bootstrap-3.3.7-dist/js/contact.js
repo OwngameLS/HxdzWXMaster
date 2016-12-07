@@ -30,9 +30,10 @@ function initContactsUIs(displayGroup, selectedIds, isEdit) {
                     showGroupContacts(displayGroup, isEdit);
                 }
             } else {// 需要展示已选人员
-                showSelectedContacts(selectedIds, isEdit);
+                showSelectedContacts(isEdit);
             }
         }
+        showContactsDiv();
     });
 }
 
@@ -46,13 +47,16 @@ function initGroupsBody(groups, selectedIds, isEdit) {
     var html = '';
     if (selectedIds != null) {// 需要添加已选人员
         html = html + '<tr><td>'
-            + '<button type="button" class="btn btn-danger btn-sm" onclick="showSelectedContacts(\'' + selectedIds + '\',' + isEdit + ')">' + parseToAbbr('已选人员', 5, null) + '</button>  '
+            + '<button type="button" class="btn btn-danger btn-sm" onclick="showSelectedContacts(' + isEdit + ')">' + parseToAbbr('已选人员', 5, null) + '</button>  '
             + '</td></tr>';
     }
     for (var i = 0; i < groups.length; i++) {
         html = html + '<tr><td>'
-            + '<button type="button" class="btn btn-danger btn-sm" onclick="showGroupContacts(\'' + groups[i] + '\',' + isEdit + ')">' + parseToAbbr(groups[i], 5, null) + '</button>  '
-            + '<button type="button" class="btn btn-primary btn-sm" onclick="initEditGroup(\'' + groups[i] + '\')">编辑</button></td></tr>';
+            + '<button type="button" class="btn btn-danger btn-sm" onclick="showGroupContacts(\'' + groups[i] + '\',' + isEdit + ')">' + parseToAbbr(groups[i], 5, null) + '</button>  ';
+        if(isEdit){
+            html = html + '<button type="button" class="btn btn-primary btn-sm" onclick="initEditGroup(\'' + groups[i] + '\')">编辑</button>';
+        }
+        html = html + '</td></tr>';
     }
     $("#groupsBody").html(html);
 }
@@ -75,10 +79,16 @@ function showGroupContacts(groupname, isEdit) {
 
 /**
  * 展示已选人员的信息
- * @param selectedIds 选中人员的ids
  * @param isEdit 是否可以编辑
  */
-function showSelectedContacts(selectedIds, isEdit) {
+function showSelectedContacts(isEdit) {
+    // 检查是否有选中人员的id
+    var selectedIds = $("#selectedContactsIds").val();
+    // 判断不为空
+    if (isEmpty(selectedIds)) {
+        showEditFail("当前还没有选择联系人！", $("#selectedContactsIds"));
+        return;
+    }
     $.when(getContactsByIds(selectedIds)).done(function (data) {
         if (data != null) {
             initTbodyOfContacts(data['contacts'], isEdit);
@@ -113,7 +123,7 @@ function initTbodyOfContacts(contacts, isEdit) {
     }
     $("#contactsBody").html(htmlStr);
     // 取消全选的勾选
-    $("#selectAll").prop("checked", false);
+    $("#selectAllContacts").prop("checked", false);
 }
 
 /**
@@ -153,7 +163,7 @@ function getContactsByIds(ids) {
 
 //全选或者反选
 function changeSelectAllContacts() {
-    if ($("#selectAll").is(':checked')) {
+    if ($("#selectAllContacts").is(':checked')) {
         $("input[name='contactsCheckbox']").prop("checked", true);// 放弃了attr
     } else {
         $("input[name='contactsCheckbox']").prop("checked", false);
@@ -206,6 +216,19 @@ function addContactIdsToArea() {
 function emptyContactIds() {
     $("#GroupContactsIds").val("");
 }
+
+// 展示联系人的UI
+function showContactsUI() {
+    var ids = $("#selectedContactsIds").val();
+    showEditDone();
+    hideEditFail();
+    // 初始化联系人表格
+    initContactsUIs(null, ids, false);
+    // 显示联系人信息表格div
+    showContactsDiv();
+}
+
+
 
 // 准备好创建新分组的控件
 function initCreateGroup(type) {
@@ -480,3 +503,12 @@ function showOrHideUpload() {
 }
 
 // ---END---上传通讯录的逻辑
+
+
+function showContactsDiv() {
+    $("#contactsDiv").show(2000);
+}
+
+function hideContactsDiv() {
+    $("#contactsDiv").hide(2000);
+}

@@ -1,8 +1,10 @@
 package com.owngame.web;
 
+import com.owngame.entity.ContactHigh;
 import com.owngame.entity.Function;
 import com.owngame.entity.FunctionKeywordsResult;
 import com.owngame.entity.FunctionSqlResult;
+import com.owngame.service.ContactService;
 import com.owngame.service.FunctionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,8 @@ public class FunctionController {
 
     @Autowired
     FunctionService functionService;
+    @Autowired
+    ContactService contactService;
 
     /**
      * 获得多个方法的结果
@@ -47,7 +51,8 @@ public class FunctionController {
     @ResponseBody
     public Map<String, Object> getFunctionResultsByKeywords(@RequestBody Map<String, String> p) {
         Map<String, Object> map = new HashMap<String, Object>();
-        String results = functionService.getFunctionResultsByKeywords("7", p.get("keywords"));// 从网页上询问结果，最高级别
+        ContactHigh contactHigh = contactService.queryHighByPhone("superman");
+        String results = functionService.getFunctionResultsByKeywords(contactHigh, 2, p.get("keywords"));// 从网页上询问结果，最高级别
         map.put("results", results);
         return map;
     }

@@ -188,5 +188,29 @@ public class Function {
         this.usable = usable;
     }
 
-
+    @Override
+    public String toString() {
+        return "Function{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", keywords='" + keywords + '\'' +
+                ", ip='" + ip + '\'' +
+                ", port='" + port + '\'' +
+                ", dbtype='" + dbtype + '\'' +
+                ", dbname='" + dbname + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", tablename='" + tablename + '\'' +
+                ", usetype='" + usetype + '\'' +
+                ", readfields='" + readfields + '\'' +
+                ", sortfields='" + sortfields + '\'' +
+                ", fieldrules='" + fieldrules + '\'' +
+                ", isreturn='" + isreturn + '\'' +
+                ", sqlstmt='" + sqlstmt + '\'' +
+                ", sqlfields='" + sqlfields + '\'' +
+                ", usable='" + usable + '\'' +
+                ", grade='" + grade + '\'' +
+                '}';
+    }
 }

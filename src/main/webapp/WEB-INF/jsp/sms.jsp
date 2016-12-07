@@ -15,7 +15,6 @@
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
-    <script src="../../resources/bootstrap-3.3.7-dist/js/timertask.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/sms.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/contact.js"></script>
 </head>
@@ -80,7 +79,6 @@
             </table>
         </div>
         <div id="persons" style="width:80%;float:left;overflow:scroll; height:400px;">
-
             <table class="table table-hover table-bordered text-center">
                 <thead>
                 <tr class="info">
@@ -89,8 +87,10 @@
                     </th>
                     <th width="15%" class="text-center">所在分组</th>
                     <th width="15%" class="text-center">姓名</th>
-                    <th width="25%" class="text-center">职务</th>
-                    <th width="30%" class="text-center">手机号</th>
+                    <th width="10%" class="text-center">职务</th>
+                    <th width="20%" class="text-center">手机号</th>
+                    <th width="10%" class="text-center">等级</th>
+                    <th width="15%" class="text-center">备注</th>
                 </tr>
                 </thead>
                 <tbody id="contactsBody">

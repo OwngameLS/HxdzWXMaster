@@ -48,9 +48,9 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
     public static final int RETURN_CODE_CHANGE_OPENID = -999;// 绑定的微信号发生变化
 
     static final String TEXTMSG_PREFIX_PHONENUMBER = "SJ";// 文本消息，手机号逻辑
-    static final String TEXTMSG_PREFIX_ADD_PHONENUMBER = "SJA#";// 文本消息，添加手机号
-    static final String TEXTMSG_PREFIX_CHANGE_PHONENUMBER = "SJU#";// 文本消息，更新手机号
-    static final String TEXTMSG_PREFIX_CHANGE_WXOPENID = "SJO#";// 文本信息，更新绑定微信号
+    static final String TEXTMSG_PREFIX_ADD_PHONENUMBER = "SJA。";// 文本消息，添加手机号
+    static final String TEXTMSG_PREFIX_CHANGE_PHONENUMBER = "SJU。";// 文本消息，更新手机号
+    static final String TEXTMSG_PREFIX_CHANGE_WXOPENID = "SJO。";// 文本信息，更新绑定微信号
 
     static final String BATHURL = "http://owngame.ngrok.cc/WeiMaster/";
     static final String SEND_PACKAGE_URL = "sendPackage.jsp?openid=OPENID";
@@ -72,7 +72,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
         // 检查用户权限
         contactHigh = contactService.queryHighByOpenId(fromUserName);
         if (MESSAGE_TYPE_TEXT.equals(msgType)) {// 传递来了文本信息
-            String content = map.get("Content");
+            String content = map.get("Content").trim();
             return handleTextMessage(content);
         } else if (MESSAGE_TYPE_EVENT.equals(msgType)) {// 事件类型消息
             return handleEventMessage(map);
@@ -91,9 +91,13 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
 //        }else
         if (content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)) {// 手机号逻辑
             content = phoneNumberLogic(content);
+        }else if(content.contains("帮助")){// 返回帮助信息
+            content = returnHelpMessage();
+        } else if(content.contains("关键字")){// 返回功能和关键字信息
+            content = functionService.queryAllWithGrade(contactHigh, 1);
         } else { // 查询逻辑
             if (contactHigh != null) {
-                content = functionService.getFunctionResultsByKeywords(contactHigh.getGrade(), content);
+                content = functionService.getFunctionResultsByKeywords(contactHigh, 1, content);
             } else {// 没有查询到用户绑定情况
                 content = returnAskBindPhone();
             }
@@ -104,9 +108,20 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
         return null;
     }
 
+    // 返回帮助信息
+    private String returnHelpMessage() {
+        // 读取帮助信息，从resource中读取 TODO
+        String s = "1.绑定手机号，请回复：SJA。13988888888；\n";
+        s += "2.更改绑定的手机号，请回复：SJU。13988888888；\n";
+        s += "3.更改绑定的微信号，请回复：SJO。您收到的验证码；\n";
+        s += "4.信息查询，请回复：相关的关键字，如 abc；\n";
+        s += "5.查询功能对应的关键字，请回复：关键字。\n";
+        return s;
+    }
+
     // 提醒绑定手机号
     private String returnAskBindPhone() {
-        return "由于你尚未绑定手机号，我们无法确定你的身份，所以无法提供服务。请先绑定手机号，发送“SJA手机号”(例如SJA#13988888888)即可。";
+        return "你尚未绑定手机号，我们无法确定你的身份，所以无法提供服务。请先绑定手机号，发送“SJA。（中文句号）手机号”(例如SJA。13988888888)即可。";
     }
 
     /**
@@ -125,7 +140,14 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
             MYUser mu = UserHandler.queryUserFromWeixin(fromUserName);
 //            UserController.saveUser(mu);
             message = mu.getNickname()
-                    + "！\n终于等到你，还好我没放弃~\n 请回复“101=手机号”（如101=1398888888）的方式发送你的手机号码给我，方便你收发包裹时我给你发短息啊！";
+                    + "！\n终于等到你，还好我没放弃~\n ";
+            // 检查是否绑定了
+            if(contactHigh != null){// 绑定过手机号
+                message +="我发现你以前就关注过我了，这次不要再走丢了哦！\n" +
+                        "您的手机号码还是"+contactHigh.getPhone()+"吗？如果不是，请发送【SJU。13988888888】重新告诉我您的号码吧~";
+            }else{
+                message += returnAskBindPhone();
+            }
             return initTextMessageOfJsonString(message);
         } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_CLICK.equals(eventType)) {
             // 根据发送的事件代码返回特定的图文消息，用户通过点击图文消息走向我们的网页吧
@@ -136,6 +158,9 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
         } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_VIEW.equals(eventType)) {
             System.out.println("view !");
             message = "vvvv";
+        } else if(WeixinMessageServiceImpl.MESSAGE_EVENT_UNSUBSCRIBE.equals(eventType)){
+            // 用户取消关注，暂时不删除其信息吧
+            return null;
         }
         return message;
     }
@@ -241,7 +266,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
                 result = "您发送的手机号码格式不符合要求，请您检查后再次发送！";
                 break;
             case RETURN_CODE_CHANGE_OPENID:
-                result = "与这个手机号关联的不是您现在使用的微信号，这个手机号将收到一条短信，里面有验证码，如果你确定要更改绑定的微信号，请将短信中的验证码以‘SJO#123456’的方式发送请求。";
+                result = "与这个手机号关联的不是您现在使用的微信号，这个手机号将收到一条短信，里面有验证码，如果你确定要更改绑定的微信号，请将短信中的验证码以‘SJO。123456’的方式发送请求。";
                 break;
         }
         return result;

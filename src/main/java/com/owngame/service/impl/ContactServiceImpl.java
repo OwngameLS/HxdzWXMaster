@@ -1,10 +1,7 @@
 package com.owngame.service.impl;
 
 import com.owngame.entity.*;
-import com.owngame.service.ContactBaseService;
-import com.owngame.service.ContactHighService;
-import com.owngame.service.ContactService;
-import com.owngame.service.TaskService;
+import com.owngame.service.*;
 import com.owngame.utils.ExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,6 +58,14 @@ public class ContactServiceImpl implements ContactService {
                     contactHighService.update(contactHigh);
                     sendMsgOfRandom(randomCode, phone);
                     return WeixinMessageServiceImpl.RETURN_CODE_CHANGE_OPENID;// 绑定的微信号发生变化
+                }
+            }else{// 第一次绑定微信号和手机号
+                contactHigh.setOpenid(openid);
+                int r = contactHighService.update(contactHigh);
+                if(r>=0){
+                    return WeixinMessageServiceImpl.RETURN_CODE_SUCCESS;// 告知成功
+                }else{
+                    return WeixinMessageServiceImpl.RETURN_CODE_DATABASE_FAILED;// 数据库操作失败
                 }
             }
         } else {

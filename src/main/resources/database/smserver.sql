@@ -10,10 +10,29 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2016-12-02 17:14:20
+Date: 2016-12-07 17:25:10
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `askrecord`
+-- ----------------------------
+DROP TABLE IF EXISTS `askrecord`;
+CREATE TABLE `askrecord` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `phone` varchar(11) DEFAULT NULL,
+  `type` tinyint(1) DEFAULT NULL,
+  `issuccess` tinyint(1) DEFAULT NULL,
+  `functions` text,
+  `errormsg` text,
+  `time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=385 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of askrecord
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `contactbase`
@@ -32,22 +51,22 @@ CREATE TABLE `contactbase` (
 -- ----------------------------
 -- Records of contactbase
 -- ----------------------------
-INSERT INTO `contactbase` VALUES ('1', 'AA', 'Owngame', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('2', 'AA', '张三', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('3', 'AA', '李四', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('4', 'AA', '王五', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('5', 'AA', '赵六', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('6', 'AA', '孙七', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('7', 'AA', '龙八', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('8', 'B', 'Owngame', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('9', 'B', '张三', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('10', 'B', '李四', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('11', 'B', '王五', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('12', 'B', '赵六', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('13', 'B', '孙七', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('14', 'C', '龙八', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('15', 'C', 'Owngame', '123.0', '1', 'waerfa');
-INSERT INTO `contactbase` VALUES ('16', 'C', '张三', '123.0', '1', 'waerfa');
+INSERT INTO `contactbase` VALUES ('1', 'A', 'Owngame', '123.0', '20', 'waerfa');
+INSERT INTO `contactbase` VALUES ('2', 'A', '张三', '123.0', '21', 'waerfa');
+INSERT INTO `contactbase` VALUES ('3', 'A', '李四', '123.0', '22', 'waerfa');
+INSERT INTO `contactbase` VALUES ('4', 'A', '王五', '123.0', '23', 'waerfa');
+INSERT INTO `contactbase` VALUES ('5', 'A', '赵六', '123.0', '24', 'waerfa');
+INSERT INTO `contactbase` VALUES ('6', 'A', '孙七', '123.0', '25', 'waerfa');
+INSERT INTO `contactbase` VALUES ('7', 'A', '龙八', '123.0', '26', 'waerfa');
+INSERT INTO `contactbase` VALUES ('8', 'B', 'Owngame', '123.0', '27', 'waerfa');
+INSERT INTO `contactbase` VALUES ('9', 'B', '张三', '123.0', '21', 'waerfa');
+INSERT INTO `contactbase` VALUES ('10', 'B', '李四', '123.0', '28', 'waerfa');
+INSERT INTO `contactbase` VALUES ('11', 'B', '王五', '123.0', '29', 'waerfa');
+INSERT INTO `contactbase` VALUES ('12', 'B', '赵六', '123.0', '30', 'waerfa');
+INSERT INTO `contactbase` VALUES ('13', 'B', '孙七', '123.0', '31', 'waerfa');
+INSERT INTO `contactbase` VALUES ('14', 'C', '龙八', '123.0', '32', 'waerfa');
+INSERT INTO `contactbase` VALUES ('15', 'C', 'Owngame', '123.0', '33', 'waerfa');
+INSERT INTO `contactbase` VALUES ('16', 'C', '张三', '123.0', '34', 'waerfa');
 
 -- ----------------------------
 -- Table structure for `contacthigh`
@@ -60,30 +79,27 @@ CREATE TABLE `contacthigh` (
   `openid` text,
   `backup` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of contacthigh
 -- ----------------------------
-INSERT INTO `contacthigh` VALUES ('1', '18107436127', '5.0', null, null);
-INSERT INTO `contacthigh` VALUES ('2', '18107436127', '5.0', null, null);
-INSERT INTO `contacthigh` VALUES ('3', '18107436127', '5.0', null, null);
-INSERT INTO `contacthigh` VALUES ('4', '18107436127', '5.0', null, null);
-INSERT INTO `contacthigh` VALUES ('5', '18107436126', '3.0', null, null);
-INSERT INTO `contacthigh` VALUES ('6', '18107436125', '5.0', null, null);
-INSERT INTO `contacthigh` VALUES ('7', '18107436124', '4.0', null, null);
-INSERT INTO `contacthigh` VALUES ('8', '18107436123', '2.0', null, null);
-INSERT INTO `contacthigh` VALUES ('9', '18107436122', '0.0', null, null);
-INSERT INTO `contacthigh` VALUES ('10', '18107436121', '0.0', null, null);
-INSERT INTO `contacthigh` VALUES ('11', '18107436120', '0.0', null, null);
-INSERT INTO `contacthigh` VALUES ('12', '18107436119', '0.0', null, null);
-INSERT INTO `contacthigh` VALUES ('13', '18107436118', '0.0', null, null);
-INSERT INTO `contacthigh` VALUES ('14', '18107436117', '0.0', null, null);
-INSERT INTO `contacthigh` VALUES ('15', '18107436116', '0.0', null, null);
-INSERT INTO `contacthigh` VALUES ('16', '18107436115', '0.0', null, null);
-INSERT INTO `contacthigh` VALUES ('17', '18107436114', '0.0', null, null);
-INSERT INTO `contacthigh` VALUES ('18', '18107436113', '0.0', null, null);
-INSERT INTO `contacthigh` VALUES ('19', '18107436112', '0.0', null, null);
+INSERT INTO `contacthigh` VALUES ('20', '18107436127', '5', 'oZDbcsmRjwkLHJd-gGEq83cuIjXk', null);
+INSERT INTO `contacthigh` VALUES ('21', '18107436126', '0', null, null);
+INSERT INTO `contacthigh` VALUES ('22', '18107436125', '0', null, null);
+INSERT INTO `contacthigh` VALUES ('23', '18107436124', '4', null, null);
+INSERT INTO `contacthigh` VALUES ('24', '18107436123', '2', null, null);
+INSERT INTO `contacthigh` VALUES ('25', '18107436122', '0', null, null);
+INSERT INTO `contacthigh` VALUES ('26', '18107436121', '0', null, null);
+INSERT INTO `contacthigh` VALUES ('27', '18107436120', '0', null, null);
+INSERT INTO `contacthigh` VALUES ('28', '18107436118', '0', null, null);
+INSERT INTO `contacthigh` VALUES ('29', '18107436117', '0', null, null);
+INSERT INTO `contacthigh` VALUES ('30', '18107436116', '0', null, null);
+INSERT INTO `contacthigh` VALUES ('31', '18107436115', '0', null, null);
+INSERT INTO `contacthigh` VALUES ('32', '18107436114', '0', null, null);
+INSERT INTO `contacthigh` VALUES ('33', '18107436113', '0', null, null);
+INSERT INTO `contacthigh` VALUES ('34', '18107436112', '0', null, null);
+INSERT INTO `contacthigh` VALUES ('35', 'superman', '7', null, 'superman');
 
 -- ----------------------------
 -- Table structure for `function`
@@ -117,11 +133,11 @@ CREATE TABLE `function` (
 -- Records of function
 -- ----------------------------
 INSERT INTO `function` VALUES ('1', 'abc', 'Test1Test1Test1Test1Test', 'abc', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'sql', 'undefined', 'undefined', 'undefined', 'undefined', 'select count_type from gameinfos;', 'count_type,统计类型', '4', 'yes');
-INSERT INTO `function` VALUES ('2', 'cde', 'Test2', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '0', 'no');
-INSERT INTO `function` VALUES ('3', 'efg', 'Test3Test3Test3Test3', '', '', '', 'MySQL', '', '', '', '', 'sql', 'undefined', 'undefined', 'undefined', 'undefined', '', 'id,序号#count_type,统计类型', '1', 'no');
-INSERT INTO `function` VALUES ('4', 'ghi', 'Test4', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, '1', 'no');
+INSERT INTO `function` VALUES ('2', 'cde', 'Test2', 'cde', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '0', 'no');
+INSERT INTO `function` VALUES ('3', 'efg', 'Test3Test3Test3Test3', 'tt', '', '', 'MySQL', '', '', '', '', 'sql', 'undefined', 'undefined', 'undefined', 'undefined', '', 'id,序号#count_type,统计类型', '1', 'no');
+INSERT INTO `function` VALUES ('4', 'ghi', 'Test4', 'ad', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '7', 'no');
 INSERT INTO `function` VALUES ('5', 'te22', '23442', '222', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'sql', 'undefined', 'undefined', 'undefined', 'undefined', 'select id, count_type from gameinfos', 'id,序号#count_type,统计类型', '1', 'no');
-INSERT INTO `function` VALUES ('6', '23234', '23442', '32', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'rule', 'id,序号#count_type,统计类型', 'id desc', 'count_type,统计类型,5,NE', 'oncase', 'undefined', 'undefined', '5', 'no');
+INSERT INTO `function` VALUES ('6', '23234', '23442', '3', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'rule', 'id,序号#count_type,统计类型', 'id desc', 'count_type,统计类型,5,NE', 'oncase', 'undefined', 'undefined', '5', 'no');
 INSERT INTO `function` VALUES ('7', '23234', '23442', '32', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'rules', '', '', '', 'anyway', '', '', '0', 'no');
 
 -- ----------------------------
@@ -378,7 +394,7 @@ CREATE TABLE `task` (
   `receivers` text,
   `createTime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=384 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=385 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of task
@@ -386,6 +402,7 @@ CREATE TABLE `task` (
 INSERT INTO `task` VALUES ('379', '群发消息', '主动发送消息给一部分人...', '2', 'asdfasdf', '18107436127', '2016-11-24 11:31:48');
 INSERT INTO `task` VALUES ('380', '群发消息', '主动发送消息给一部分人...(消息内容:asdfklsa;jfl;sadfu8iorkenfl;daksjflkadsjfoijsadlfksadlk;fj)', '2', 'asdfklsa;jfl;sadfu8iorkenfl;daksjflkadsjfoijsadlfksadlk;fj', '18107436127', '2016-11-24 11:31:48');
 INSERT INTO `task` VALUES ('381', '群发消息', '主动发送消息给一部分人...(消息内容:test contents...)', '2', 'test contents...', '13945671987,13945677891,18107436127', '2016-11-24 11:31:48');
+INSERT INTO `task` VALUES ('384', '变更绑定微信号', '手机号18107436127变更绑定其微信号，用户验证信息发送。', '-1', '288594', '18107436127', '2016-12-07 10:46:34');
 
 -- ----------------------------
 -- Table structure for `timertask`
@@ -405,4 +422,4 @@ CREATE TABLE `timertask` (
 -- ----------------------------
 -- Records of timertask
 -- ----------------------------
-INSERT INTO `timertask` VALUES ('3', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'abc', '关于ABC的故事', '0 * * * * ? *', '1,3,4,5', 'pause');
+INSERT INTO `timertask` VALUES ('3', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'abc', '关于ABC的故事', '0 * * * * ? *', '', 'pause');

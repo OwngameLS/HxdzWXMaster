@@ -20,8 +20,6 @@ public class AnswerService {
     @Autowired
     TaskService taskService;
     @Autowired
-    FunctionService functionService;
-    @Autowired
     MainService mainService;
 
     /**
@@ -60,7 +58,7 @@ public class AnswerService {
             // 13581695827为手机号，用于返回
             // sms 代表是手机端请求逻辑，因为涉及的到微信公众号请求，用于区分
 //            根据关键字查询功能
-            mainService.handleAsk(strings[0], strings[1], strings[2]);
+            mainService.handleAsk(strings[0], strings[1], 0);
             map.put("type", "StateOK");
         }
         return map;

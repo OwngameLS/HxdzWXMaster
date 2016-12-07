@@ -16,7 +16,7 @@ function queryTimerTasks() {
 function initTbodyOfTasks(timertasks) {
     var htmlStr = '';
     for (var i = 0; i < timertasks.length; i++) {
-        htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" value="' + timertasks[i].id + '"> ' + timertasks[i].id
+        htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="taskCheckbox" value="' + timertasks[i].id + '"> ' + timertasks[i].id
             + '</td><td>' + timertasks[i].functions
             + '</td><td>' + parseToAbbr(timertasks[i].description, 10, null)
             + '</td><td>' + timertasks[i].firerules
@@ -36,26 +36,6 @@ function initTbodyOfTasks(timertasks) {
     $("#tasksBody").html(htmlStr);
     // 取消全选的勾选
     $("#selectAllTimerTasks").prop("checked", false);
-}
-
-// 展示联系人选择
-function showContactsUI(needIds) {
-    var ids = $("#ttcontactsEdit").val();
-    if(needIds){
-        // 判断不为空
-        if (isEmpty(ids)) {
-            showEditFail("当前还没有选择联系人！", $("#ttcontactsEdit"));
-            return;
-        }
-    }else{
-        ids = null;
-    }
-    showEditDone();
-    hideEditFail();
-    // 初始化分组表格
-    initContactsUIs(null, ids, false);
-    // 显示联系人信息表格div
-    showContactsDiv();
 }
 
 
@@ -87,12 +67,15 @@ function editContacts(action) {
             currentSelectIds.push($(this).val());
         }
     });
+    for(var i=0;i<currentSelectIds.length;i++){
+        console.log("abc:" + currentSelectIds[i]);
+    }
     if (currentSelectIds.length == 0) {// 没有选择任何联系人
         return;
     }
     // 原有的ids
     var formerIds = null;
-    var a = ('' + $("#ttcontactsEdit").val()).trim();
+    var a = ('' + $("#selectedContactsIds").val()).trim();
     if (a != '') {
         formerIds = a.split(",");
     } else {
@@ -126,7 +109,8 @@ function editContacts(action) {
             tempStr = tempStr + ',' + formerIds[j];
         }
     }
-    $("#ttcontactsEdit").val(tempStr);
+    console.log("tempStr:" + tempStr);
+    $("#selectedContactsIds").val(tempStr);
 }
 
 function initEditTimerTask(id, functions, description, firerules, receivers, state) {
@@ -137,14 +121,14 @@ function initEditTimerTask(id, functions, description, firerules, receivers, sta
         $("#ttfunctionsEdit").html(functions);
         $("#ttdescriptionEdit").val(description);
         $("#ttcronEdit").html(firerules);
-        $("#ttcontactsEdit").val(receivers);
+        $("#selectedContactsIds").val(receivers);
         $("#ttstateEdit").val(state);
     } else {
         $("#ttIdEdit").html('新建');
         $("#ttfunctionsEdit").html('未指定');
         $("#ttdescriptionEdit").val('');
         $("#ttcronEdit").html('未指定');
-        $("#ttcontactsEdit").val('');
+        $("#selectedContactsIds").val('');
         $("#ttstateEdit").val('run');
     }
 }
@@ -281,7 +265,7 @@ function handleTimerTask(action) {
         var functions = $("#ttfunctionsEdit").html();
         var description = $("#ttdescriptionEdit").val();
         var cron = $("#ttcronEdit").html();
-        var contacts = $("#ttcontactsEdit").val();
+        var contacts = $("#selectedContactsIds").val();
         var state = $("#ttstateEdit  option:selected").val();
         // 判断合理值
         // 整理成JsonStr
@@ -311,12 +295,4 @@ function doAjaxHandleTimerTask(action, jsonStr) {
             hideEditFail();
         }
     });
-}
-
-function showContactsDiv() {
-    $("#contactsDiv").show(2000);
-}
-
-function hideContactsDiv() {
-    $("#contactsDiv").hide(2000);
 }
