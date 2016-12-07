@@ -91,9 +91,9 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
 //        }else
         if (content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)) {// 手机号逻辑
             content = phoneNumberLogic(content);
-        }else if(content.contains("帮助")){// 返回帮助信息
+        } else if (content.contains("帮助")) {// 返回帮助信息
             content = returnHelpMessage();
-        } else if(content.contains("关键字")){// 返回功能和关键字信息
+        } else if (content.contains("关键字")) {// 返回功能和关键字信息
             content = functionService.queryAllWithGrade(contactHigh, 1);
         } else { // 查询逻辑
             if (contactHigh != null) {
@@ -142,10 +142,10 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
             message = mu.getNickname()
                     + "！\n终于等到你，还好我没放弃~\n ";
             // 检查是否绑定了
-            if(contactHigh != null){// 绑定过手机号
-                message +="我发现你以前就关注过我了，这次不要再走丢了哦！\n" +
-                        "您的手机号码还是"+contactHigh.getPhone()+"吗？如果不是，请发送【SJU。13988888888】重新告诉我您的号码吧~";
-            }else{
+            if (contactHigh != null) {// 绑定过手机号
+                message += "我发现你以前就关注过我了，这次不要再走丢了哦！\n" +
+                        "您的手机号码还是" + contactHigh.getPhone() + "吗？如果不是，请发送【SJU。13988888888】重新告诉我您的号码吧~";
+            } else {
                 message += returnAskBindPhone();
             }
             return initTextMessageOfJsonString(message);
@@ -158,7 +158,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
         } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_VIEW.equals(eventType)) {
             System.out.println("view !");
             message = "vvvv";
-        } else if(WeixinMessageServiceImpl.MESSAGE_EVENT_UNSUBSCRIBE.equals(eventType)){
+        } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_UNSUBSCRIBE.equals(eventType)) {
             // 用户取消关注，暂时不删除其信息吧
             return null;
         }

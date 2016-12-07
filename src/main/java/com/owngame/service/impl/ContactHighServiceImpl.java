@@ -39,12 +39,12 @@ public class ContactHighServiceImpl implements ContactHighService {
     public int insert(ContactHigh contactHigh) {
         // 1.现根据phone查找
         ContactHigh contactHigh1 = queryByPhone(contactHigh.getPhone());
-        if(contactHigh1 != null){
+        if (contactHigh1 != null) {
             // 说明找到了，只需要更新
             contactHigh1.setGrade(contactHigh.getGrade());
             int r = update(contactHigh1);
-            if(r>=0){
-                return (int)contactHigh1.getId();
+            if (r >= 0) {
+                return (int) contactHigh1.getId();
             }
         }
         return contactHighDao.insert(contactHigh);

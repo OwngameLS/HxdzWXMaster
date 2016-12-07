@@ -35,7 +35,7 @@ public interface AskrecordDao {
      * @param time
      * @return
      */
-    ArrayList<Askrecord> queryRecordssBeforeTime(String time);
+    ArrayList<Askrecord> queryRecordsBeforeTime(String time);
 
     int insert(Askrecord askrecord);
 

@@ -16,25 +16,26 @@
         select * from askrecord where issuccess=#{issuccess} order by time asc
     </select>
 
-    <select id="queryRecordssBeforeTime" resultType="Askrecord" parameterType="String">
+    <select id="queryRecordsBeforeTime" resultType="Askrecord" parameterType="String">
         select * from askrecord where time > #{time} order by issuccess asc
     </select>
 
     <insert id="insert" parameterType="Askrecord">
-        insert ignore askrecord task
-        (id, phone, type, time,functions,issuccess,errormsg)
+        insert ignore askrecord
+        (id, name, phone, type, time,functions,issuccess,description)
         values
-        (#{id}, #{phone}, #{type}, #{time},#{functions},#{issuccess},#{errormsg})
+        (#{id},#{name}, #{phone}, #{type}, #{time},#{functions},#{issuccess},#{description})
     </insert>
 
     <update id="update" parameterType="Askrecord">
         update askrecord set
+        name=#{name},
         phone=#{phone},
         type=#{type},
         time=#{time},
         functions=#{functions},
         issuccess=#{issuccess},
-        errormsg=#{errormsg}
+        description=#{description}
         where id=#{id}
     </update>
 

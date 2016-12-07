@@ -114,7 +114,7 @@ public class ExcelUtil {
                     contactDisplay.setGrade("");
                 } else {
                     int gr = Integer.parseInt(row.getCell(5).toString());
-                    contactDisplay.setGrade(gr+"");
+                    contactDisplay.setGrade(gr + "");
                 }
 
                 if (null == row.getCell(6)) {// 备注

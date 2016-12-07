@@ -8,12 +8,13 @@ import java.util.Date;
  */
 public class Askrecord {
     long id;
+    String name;// 请求人姓名
     String phone;// 请求人的手机号
     int type;//0:手机查询,1: 微信查询
     Date time;// 查询时间
     String functions;// 查询的功能
+    String description;// 描述
     int issuccess;// 是否成功
-    String errormsg;// 失败原因
 
     public long getId() {
         return id;
@@ -21,6 +22,14 @@ public class Askrecord {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPhone() {
@@ -64,24 +73,25 @@ public class Askrecord {
         this.issuccess = issuccess;
     }
 
-    public String getErrormsg() {
-        return errormsg;
+    public String getDescription() {
+        return description;
     }
 
-    public void setErrormsg(String errormsg) {
-        this.errormsg = errormsg;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
     public String toString() {
         return "Askrecord{" +
                 "id=" + id +
+                ", name='" + name + '\'' +
                 ", phone='" + phone + '\'' +
                 ", type=" + type +
                 ", time=" + time +
                 ", functions='" + functions + '\'' +
                 ", issuccess=" + issuccess +
-                ", errormsg='" + errormsg + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

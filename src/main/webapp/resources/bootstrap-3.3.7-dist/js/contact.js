@@ -53,7 +53,7 @@ function initGroupsBody(groups, selectedIds, isEdit) {
     for (var i = 0; i < groups.length; i++) {
         html = html + '<tr><td>'
             + '<button type="button" class="btn btn-danger btn-sm" onclick="showGroupContacts(\'' + groups[i] + '\',' + isEdit + ')">' + parseToAbbr(groups[i], 5, null) + '</button>  ';
-        if(isEdit){
+        if (isEdit) {
             html = html + '<button type="button" class="btn btn-primary btn-sm" onclick="initEditGroup(\'' + groups[i] + '\')">编辑</button>';
         }
         html = html + '</td></tr>';
@@ -227,7 +227,6 @@ function showContactsUI() {
     // 显示联系人信息表格div
     showContactsDiv();
 }
-
 
 
 // 准备好创建新分组的控件

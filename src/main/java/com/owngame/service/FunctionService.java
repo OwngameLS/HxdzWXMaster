@@ -27,6 +27,7 @@ public interface FunctionService {
 
     /**
      * 根据权限查询所有的功能
+     *
      * @param contactHigh
      * @param type
      * @return
@@ -93,6 +94,7 @@ public interface FunctionService {
 
     /**
      * 通过关键字集合字符串，获得方法的查询结果
+     *
      * @param contactHigh
      * @param type
      * @param keysStr

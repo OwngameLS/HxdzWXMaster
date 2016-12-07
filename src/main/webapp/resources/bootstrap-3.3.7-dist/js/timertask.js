@@ -67,7 +67,7 @@ function editContacts(action) {
             currentSelectIds.push($(this).val());
         }
     });
-    for(var i=0;i<currentSelectIds.length;i++){
+    for (var i = 0; i < currentSelectIds.length; i++) {
         console.log("abc:" + currentSelectIds[i]);
     }
     if (currentSelectIds.length == 0) {// 没有选择任何联系人

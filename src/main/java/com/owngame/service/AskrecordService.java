@@ -10,6 +10,8 @@ import java.util.ArrayList;
  */
 public interface AskrecordService {
 
+    ArrayList<Askrecord> handleQuery(int lasthours, int type, String askers, String functions, int issuccess);
+
     ArrayList<Askrecord> queryAll();
 
     /**
@@ -33,10 +35,10 @@ public interface AskrecordService {
     /**
      * 查询时间点以前的任务
      *
-     * @param time
+     * @param lasthours
      * @return
      */
-    ArrayList<Askrecord> queryRecordssBeforeTime(String time);
+    ArrayList<Askrecord> queryRecordsBeforeTime(int lasthours);
 
     int insert(Askrecord askrecord);
 

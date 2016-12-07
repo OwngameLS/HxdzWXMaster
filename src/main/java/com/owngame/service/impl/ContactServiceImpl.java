@@ -59,12 +59,12 @@ public class ContactServiceImpl implements ContactService {
                     sendMsgOfRandom(randomCode, phone);
                     return WeixinMessageServiceImpl.RETURN_CODE_CHANGE_OPENID;// 绑定的微信号发生变化
                 }
-            }else{// 第一次绑定微信号和手机号
+            } else {// 第一次绑定微信号和手机号
                 contactHigh.setOpenid(openid);
                 int r = contactHighService.update(contactHigh);
-                if(r>=0){
+                if (r >= 0) {
                     return WeixinMessageServiceImpl.RETURN_CODE_SUCCESS;// 告知成功
-                }else{
+                } else {
                     return WeixinMessageServiceImpl.RETURN_CODE_DATABASE_FAILED;// 数据库操作失败
                 }
             }

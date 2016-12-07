@@ -247,7 +247,7 @@ function getResults() {
             funcIds.push($("#func" + i).val());
         }
     }
-    if(funcIds.length == 0){
+    if (funcIds.length == 0) {
         $("#myModal").modal("hide");
         return;
     }

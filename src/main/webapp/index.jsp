@@ -32,6 +32,7 @@
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav nav-pills">
                     <li><a href="<%=basePath%>Smserver/view/taskstate" target="display">首 页</a></li>
+                    <li><a href="<%=basePath%>Smserver/view/askrecords" target="display">查询状态</a></li>
                     <li><a href="<%=basePath%>Smserver/view/timertask" target="display">定时任务</a></li>
                     <li><a href="<%=basePath%>Smserver/view/contact" target="display">通讯录</a></li>
                     <li><a href="<%=basePath%>Smserver/view/function" target="display">功 能</a></li>

@@ -15,7 +15,7 @@
         select * from function where keywords like #{keywords}
     </select>
 
-    <select id="queryById" resultType="Function"  parameterType="long">
+    <select id="queryById" resultType="Function" parameterType="long">
         select * from function where id=#{id}
     </select>
 
