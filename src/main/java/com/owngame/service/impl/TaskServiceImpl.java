@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Administrator on 2016/10/7.
@@ -32,6 +33,18 @@ public class TaskServiceImpl implements TaskService {
         java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = format.format(cal.getTime());
         return taskDao.queryTasksBeforeTime(time);
+    }
+
+    public void createTask(String name, String description, String contents, String receivers) {
+        Task task = new Task();
+        task.setName(name);
+        task.setDescription(description);
+        task.setContent(contents);
+        task.setReceivers(receivers);
+        task.setState(Task.STATE_WAITING);
+        task.setCreateTime(new Date(System.currentTimeMillis()));
+        // 插入数据库
+        insert(task);
     }
 
     public Task queryById(long id) {

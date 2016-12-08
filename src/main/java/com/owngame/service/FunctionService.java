@@ -20,6 +20,8 @@ public interface FunctionService {
      */
     int createFunction(Function function);
 
+    ArrayList<Function> getFunctionsByType(String functionInfos, int type);
+
     /**
      * 查询所有任务
      */
@@ -65,6 +67,13 @@ public interface FunctionService {
      * @return
      */
     String getFunctionResult(Function function);
+
+    /**
+     * 得到功能集合的结果
+     * @param functions
+     * @return
+     */
+    String getFunctionResultsByFunctions(ArrayList<Function> functions);
 
     /**
      * 检查关键词

@@ -1,11 +1,14 @@
 package com.owngame.web;
 
-import com.owngame.entity.ContactHigh;
 import com.owngame.entity.Function;
 import com.owngame.entity.FunctionKeywordsResult;
 import com.owngame.entity.FunctionSqlResult;
+import com.owngame.service.AnswerService;
 import com.owngame.service.ContactService;
 import com.owngame.service.FunctionService;
+import com.owngame.service.impl.AnswerServiceImpl;
+import com.owngame.service.impl.ContactServiceImpl;
+import com.owngame.service.impl.FunctionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +29,9 @@ public class FunctionController {
     FunctionService functionService;
     @Autowired
     ContactService contactService;
+    @Autowired
+    AnswerService answerService;
+
 
     /**
      * 获得多个方法的结果
@@ -36,26 +42,31 @@ public class FunctionController {
     @ResponseBody
     public Map<String, Object> getFunctionResults(@RequestBody Map<String, String> p) {
         Map<String, Object> map = new HashMap<String, Object>();
-        String results = functionService.getFunctionResultByIds(p.get("ids"));
+        String results = answerService.handleAsk(p.get("ids"),
+                FunctionServiceImpl.QUESTIONTYPE_FUNCTION_ID,
+                "superman",
+                ContactServiceImpl.CONTACT_TYPE_SUPERMAN,
+                AnswerServiceImpl.ASK_TYPE_WEB,
+                "");
+//      functionService.getFunctionResultByIds(p.get("ids"));
         map.put("results", results);
         return map;
     }
 
-    /**
-     * 通过关键字获得方法的查询结果
-     *
-     * @param p
-     * @return
-     */
-    @RequestMapping(value = "/getresults/keywords", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> getFunctionResultsByKeywords(@RequestBody Map<String, String> p) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        ContactHigh contactHigh = contactService.queryHighByPhone("superman");
-        String results = functionService.getFunctionResultsByKeywords(contactHigh, 2, p.get("keywords"));// 从网页上询问结果，最高级别
-        map.put("results", results);
-        return map;
-    }
+//    /**
+//     * 通过关键字获得方法的查询结果
+//     * @param p
+//     * @return
+//     */
+//    @RequestMapping(value = "/getresults/keywords", method = RequestMethod.POST)
+//    @ResponseBody
+//    public Map<String, Object> getFunctionResultsByKeywords(@RequestBody Map<String, String> p) {
+//        Map<String, Object> map = new HashMap<String, Object>();
+//        ContactHigh contactHigh = contactService.queryHighByPhone("superman");
+//        String results = functionService.getFunctionResultsByKeywords(contactHigh, 2, p.get("keywords"));// 从网页上询问结果，最高级别
+//        map.put("results", results);
+//        return map;
+//    }
 
     /**
      * 查询所有功能

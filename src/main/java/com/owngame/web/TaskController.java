@@ -2,7 +2,6 @@ package com.owngame.web;
 
 import com.owngame.entity.Task;
 import com.owngame.service.AnswerService;
-import com.owngame.service.MainService;
 import com.owngame.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,11 +20,7 @@ import java.util.Map;
 public class TaskController {
 
     @Autowired
-    MainService mainService;
-
-    @Autowired
     TaskService taskService;
-
     @Autowired
     AnswerService answerService;
 
@@ -42,7 +37,7 @@ public class TaskController {
         String description = p.get("description");
         String contents = p.get("contents");
         String receivers = p.get("receivers");
-        mainService.createTask(name, description, contents, receivers);
+        taskService.createTask(name, description, contents, receivers);
         Map<String, Object> map = new HashMap<String, Object>();
         // 返回更新后的该组信息
         map.put("success", "success");
@@ -68,7 +63,6 @@ public class TaskController {
 
     /**
      * 处理客户端提交任务处理信息，更新服务器端的数据
-     * <p>
      * 返回json数据格式的方法
      * 因为开启了相应的配置，所以只要用上特定的@ResponseBody，它就能把返回的对象做成Json对象返回了。
      *
@@ -83,16 +77,13 @@ public class TaskController {
 
     /**
      * 从手机端发送来询问服务器状态、是否有待处理任务，已经客户端发来的询问信息（想要获取某种信息）
-     * <p>
      * 返回json数据格式的方法
-     * 因为开启了相应的配置，所以只要用上特定的@ResponseBody，它就能把返回的对象做成Json对象返回了。
-     *
      * @return
      */
     @RequestMapping(value = "/askServer/{actionName}", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> handleAsk(@PathVariable("actionName") String actionName) {
         System.out.println("actionName:" + actionName);
-        return answerService.handleAsk(actionName);
+        return answerService.handleAskFromPhone(actionName);
     }
 }

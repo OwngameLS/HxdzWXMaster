@@ -149,6 +149,37 @@ public class ContactServiceImpl implements ContactService {
         return contactHighService.queryByBackup(backup);
     }
 
+    public static final int CONTACT_TYPE_SMS = 0, CONTACT_TYPE_WX = 1,CONTACT_TYPE_SUPERMAN = 2;
+
+    public ArrayList<ContactDisplay> queryDisplayByInfos(String contactInfos, int infoType) {
+        ArrayList<ContactDisplay> contactDisplays = null;
+        ArrayList<ContactDisplay> contactDisplays2 = null;
+        switch (infoType){
+            case CONTACT_TYPE_SMS: //短信查询，为手机号
+                contactDisplays2 = queryDisplayByPhone(contactInfos);
+                if(contactDisplays2.size()!=0){// 查询到了添加第一个即可
+                    contactDisplays.add(contactDisplays2.get(0));
+                }else{// 没有查询到，添加一个默认的
+                    contactDisplays.add(new ContactDisplay());
+                }
+                break;
+            case CONTACT_TYPE_WX: //微信查询，为openid
+                contactDisplays2 = queryDisplayByOpenId(contactInfos);
+                if(contactDisplays2.size()!=0){// 查询到了添加第一个即可
+                    contactDisplays.add(contactDisplays2.get(0));
+                }else{// 没有查询到，添加一个默认的
+                    contactDisplays.add(new ContactDisplay());
+                }
+                break;
+            case CONTACT_TYPE_SUPERMAN:// 管理员查询 为ids
+                if(contactInfos.equals("superman") == false){
+                    contactDisplays = getContactByIds(contactInfos);
+                }
+                break;
+        }
+        return contactDisplays;
+    }
+
 
     public ArrayList<ContactDisplay> queryLikeName(String name) {
         ArrayList<ContactBase> contactBases = contactBaseService.queryLikeName(name);
@@ -323,6 +354,9 @@ public class ContactServiceImpl implements ContactService {
      * @return
      */
     public ArrayList<ContactDisplay> getContactByIds(String ids) {
+        if(ids == null){
+            return null;
+        }
         ArrayList<ContactDisplay> contactDisplays = new ArrayList<ContactDisplay>();
         String[] idArray = ids.split(",");
         for (String s : idArray) {

@@ -21,6 +21,8 @@ import java.util.*;
  */
 @Service
 public class FunctionServiceImpl implements FunctionService {
+    public static final int QUESTIONTYPE_FUNCTION_ID =0, QUESTIONTYPE_FUNCTION_NAME=1,QUESTIONTYPE_FUNCTION_KEYWORDS=2;
+
     @Autowired
     FunctionDao functionDao;
     @Autowired
@@ -144,6 +146,39 @@ public class FunctionServiceImpl implements FunctionService {
     }
 
     /**
+     * 通过function的信息和其信息类型来查询function集合
+     * @param functionInfos
+     * @param type
+     * @return
+     */
+    public ArrayList<Function> getFunctionsByType(String functionInfos, int type){
+        functionInfos = functionInfos.trim().replaceAll("，", ",");
+        String infos[] = functionInfos.split(",");
+        if(infos.length == 0){
+            return null;
+        }
+        ArrayList<Function> functions = new ArrayList<Function>();
+        for (int i=0;i<infos.length;i++) {
+            Function function = null;
+            switch (type) {
+                case QUESTIONTYPE_FUNCTION_ID:
+                    function = getById(Long.parseLong(infos[i]));
+                    break;
+                case QUESTIONTYPE_FUNCTION_KEYWORDS:
+                    function = getByKeywords(infos[i]);
+                    break;
+                case QUESTIONTYPE_FUNCTION_NAME:
+                    function = getByName(infos[i]);
+                    break;
+            }
+            if (function != null){
+                functions.add(function);
+            }
+        }
+        return functions;
+    }
+
+    /**
      * 通过功能的关键字集合字符串，获取他们对应的查询结果
      *
      * @param contactHigh
@@ -228,7 +263,7 @@ public class FunctionServiceImpl implements FunctionService {
      * @param functions
      * @return
      */
-    private String getFunctionResultsByFunctions(ArrayList<Function> functions) {
+    public String getFunctionResultsByFunctions(ArrayList<Function> functions) {
         String results = "";
         for (int i = 0; i < functions.size(); i++) {
             results = results + getFunctionResult(functions.get(i)) + ";\n";
@@ -365,7 +400,7 @@ public class FunctionServiceImpl implements FunctionService {
         // 获得数据库链接
         Connection connection = DBUtil.createConn(function);
         // 2.查询
-        return "‘" + function.getName() + "’的查询结果：" + doQuery(connection, sql, readFields);
+        return "功能（" + function.getName() + "）的查询结果：" + doQuery(connection, sql, readFields);
     }
 
     /**

@@ -9,7 +9,11 @@ import java.util.ArrayList;
  * Created by Administrator on 2016/10/7.
  */
 public interface TaskService {
+
+
     ArrayList<Task> queryTasksBeforeTime(int hours);
+
+    void createTask(String name, String description, String contents, String receivers);
 
     Task queryById(long id);
 

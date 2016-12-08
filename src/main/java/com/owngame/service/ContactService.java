@@ -26,6 +26,8 @@ public interface ContactService {
 
     ContactHigh queryHighByBackup(String backup);
 
+    ArrayList<ContactDisplay> queryDisplayByInfos(String contactInfos, int infoType);
+
     ArrayList<ContactDisplay> queryDisplayByPhone(String phone);
 
     ArrayList<ContactDisplay> queryDisplayByOpenId(String openid);

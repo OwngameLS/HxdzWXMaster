@@ -1,7 +1,8 @@
 package com.owngame.utils;
 
-import com.owngame.service.MainService;
+import com.owngame.service.QuartzJobService;
 import org.quartz.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
@@ -14,14 +15,15 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 @PersistJobDataAfterExecution
 @DisallowConcurrentExecution// 不允许并发执行
 public class MyQuartzJobBean extends QuartzJobBean {
+
     @Override
     protected void executeInternal(JobExecutionContext jobexecutioncontext) throws JobExecutionException {
         Trigger trigger = jobexecutioncontext.getTrigger();
         String triggerName = trigger.getKey().getName();
-        MainService mainService = getApplicationContext(jobexecutioncontext).getBean("mainService",
-                MainService.class);
+        QuartzJobService quartzJobService = getApplicationContext(jobexecutioncontext).getBean("quartzJobService",
+                QuartzJobService.class);
         // 因为我设计的就是一个任务一个trigger，所以相应的数据也放在trigger中
-        mainService.handleTriggerAsk(triggerName, trigger.getJobDataMap());
+        quartzJobService.handleTriggerAsk(triggerName, trigger.getJobDataMap());
     }
 
     private ApplicationContext getApplicationContext(final JobExecutionContext jobexecutioncontext) {
