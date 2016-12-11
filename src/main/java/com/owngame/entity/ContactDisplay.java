@@ -130,4 +130,25 @@ public class ContactDisplay {
                 ", backup='" + backup + '\'' +
                 '}';
     }
+
+    public ContactHigh initHighObject() {
+        ContactHigh contactHigh = new ContactHigh();
+        contactHigh.setId(this.getHigh_id());
+        contactHigh.setPhone(this.getPhone());
+        contactHigh.setGrade(this.getGrade());
+        contactHigh.setOpenid(this.getOpenid());
+        contactHigh.setBackup(this.getBackup());
+        return contactHigh;
+    }
+
+    public ContactBase initBaseObject() {
+        ContactBase contactBase = new ContactBase();
+        contactBase.setId(this.getBase_id());
+        contactBase.setHighid(this.getHigh_id());
+        contactBase.setGroupname(this.getGroupname());
+        contactBase.setName(this.getName());
+        contactBase.setTitle(this.getTitle());
+        contactBase.setDescription(this.getDescription());
+        return contactBase;
+    }
 }

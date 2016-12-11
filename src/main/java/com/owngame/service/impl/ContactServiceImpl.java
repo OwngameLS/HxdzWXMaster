@@ -1,7 +1,10 @@
 package com.owngame.service.impl;
 
 import com.owngame.entity.*;
-import com.owngame.service.*;
+import com.owngame.service.ContactBaseService;
+import com.owngame.service.ContactHighService;
+import com.owngame.service.ContactService;
+import com.owngame.service.TaskService;
 import com.owngame.utils.ExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,16 +20,15 @@ import java.util.Map;
 @Service
 public class ContactServiceImpl implements ContactService {
 
+    public static final int CONTACT_TYPE_SMS = 0, CONTACT_TYPE_WX = 1, CONTACT_TYPE_SUPERMAN = 2;
     @Autowired
     ContactBaseService contactBaseService;
     @Autowired
     ContactHighService contactHighService;
     @Autowired
     TaskService taskService;
-
     ContactBase contactBase;
     ContactHigh contactHigh;
-
 
     /**
      * 微信有关的用户绑定
@@ -101,7 +103,6 @@ public class ContactServiceImpl implements ContactService {
         return taskService.insert(task);
     }
 
-
     public ContactDisplay queryById(long id) {
         // 1.先查询到ContactBase
         ContactBase contactBase = contactBaseService.queryById(id);
@@ -149,30 +150,23 @@ public class ContactServiceImpl implements ContactService {
         return contactHighService.queryByBackup(backup);
     }
 
-    public static final int CONTACT_TYPE_SMS = 0, CONTACT_TYPE_WX = 1,CONTACT_TYPE_SUPERMAN = 2;
-
+    /**
+     * 根据用户的类型信息查询用户信息
+     * @param contactInfos 用户提供的信息
+     * @param infoType 用户类型
+     * @return
+     */
     public ArrayList<ContactDisplay> queryDisplayByInfos(String contactInfos, int infoType) {
-        ArrayList<ContactDisplay> contactDisplays = null;
-        ArrayList<ContactDisplay> contactDisplays2 = null;
-        switch (infoType){
+        ArrayList<ContactDisplay> contactDisplays = new ArrayList<ContactDisplay>();// 用于返回
+        switch (infoType) {
             case CONTACT_TYPE_SMS: //短信查询，为手机号
-                contactDisplays2 = queryDisplayByPhone(contactInfos);
-                if(contactDisplays2.size()!=0){// 查询到了添加第一个即可
-                    contactDisplays.add(contactDisplays2.get(0));
-                }else{// 没有查询到，添加一个默认的
-                    contactDisplays.add(new ContactDisplay());
-                }
+                contactDisplays = queryDisplayByPhone(contactInfos);
                 break;
             case CONTACT_TYPE_WX: //微信查询，为openid
-                contactDisplays2 = queryDisplayByOpenId(contactInfos);
-                if(contactDisplays2.size()!=0){// 查询到了添加第一个即可
-                    contactDisplays.add(contactDisplays2.get(0));
-                }else{// 没有查询到，添加一个默认的
-                    contactDisplays.add(new ContactDisplay());
-                }
+                contactDisplays = queryDisplayByOpenId(contactInfos);
                 break;
             case CONTACT_TYPE_SUPERMAN:// 管理员查询 为ids
-                if(contactInfos.equals("superman") == false){
+                if (contactInfos.equals("superman") == false) {
                     contactDisplays = getContactByIds(contactInfos);
                 }
                 break;
@@ -354,7 +348,7 @@ public class ContactServiceImpl implements ContactService {
      * @return
      */
     public ArrayList<ContactDisplay> getContactByIds(String ids) {
-        if(ids == null){
+        if (ids == null) {
             return null;
         }
         ArrayList<ContactDisplay> contactDisplays = new ArrayList<ContactDisplay>();

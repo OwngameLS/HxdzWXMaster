@@ -1,7 +1,6 @@
 package com.owngame.service.impl;
 
 import com.owngame.dao.MYUser;
-import com.owngame.entity.ContactDisplay;
 import com.owngame.entity.ContactHigh;
 import com.owngame.menu.ManageMenu;
 import com.owngame.service.*;
@@ -56,7 +55,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
     static final String SEND_PACKAGE_URL = "sendPackage.jsp?openid=OPENID";
 
     @Autowired
-    FunctionService functionService;
+    AnswerService answerService;
     @Autowired
     ContactService contactService;
 
@@ -91,16 +90,8 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
 //        }else
         if (content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)) {// 手机号逻辑
             content = phoneNumberLogic(content);
-        } else if (content.contains("帮助")) {// 返回帮助信息
-            content = returnHelpMessage();
-        } else if (content.contains("关键字")) {// 返回功能和关键字信息
-            content = functionService.queryAllWithGrade(contactHigh, 1);
         } else { // 查询逻辑
-            if (contactHigh != null) {
-                content = functionService.getFunctionResultsByKeywords(contactHigh, 1, content);
-            } else {// 没有查询到用户绑定情况
-                content = returnAskBindPhone();
-            }
+            content = answerService.handleAsk(content, FunctionServiceImpl.QUESTIONTYPE_FUNCTION_KEYWORDS, fromUserName, ContactServiceImpl.CONTACT_TYPE_WX, AnswerServiceImpl.ASK_TYPE_WX, "");
         }
         if (rtMsgType.equals(MESSAGE_TYPE_TEXT)) {// 回复文本消息
             return initTextMessageOfJsonString(content);
@@ -108,21 +99,6 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
         return null;
     }
 
-    // 返回帮助信息
-    private String returnHelpMessage() {
-        // 读取帮助信息，从resource中读取 TODO
-        String s = "1.绑定手机号，请回复：SJA。13988888888；\n";
-        s += "2.更改绑定的手机号，请回复：SJU。13988888888；\n";
-        s += "3.更改绑定的微信号，请回复：SJO。您收到的验证码；\n";
-        s += "4.信息查询，请回复：相关的关键字，如 abc；\n";
-        s += "5.查询功能对应的关键字，请回复：关键字。\n";
-        return s;
-    }
-
-    // 提醒绑定手机号
-    private String returnAskBindPhone() {
-        return "你尚未绑定手机号，我们无法确定你的身份，所以无法提供服务。请先绑定手机号，发送“SJA。（中文句号）手机号”(例如SJA。13988888888)即可。";
-    }
 
     /**
      * 处理事件类消息的具体方法
@@ -146,7 +122,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
                 message += "我发现你以前就关注过我了，这次不要再走丢了哦！\n" +
                         "您的手机号码还是" + contactHigh.getPhone() + "吗？如果不是，请发送【SJU。13988888888】重新告诉我您的号码吧~";
             } else {
-                message += returnAskBindPhone();
+                message += answerService.unknownContact(ContactServiceImpl.CONTACT_TYPE_WX);
             }
             return initTextMessageOfJsonString(message);
         } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_CLICK.equals(eventType)) {
@@ -270,8 +246,6 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
                 break;
         }
         return result;
-
-
     }
 
 

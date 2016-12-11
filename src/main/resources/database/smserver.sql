@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2016-12-07 23:00:59
+Date: 2016-12-11 23:18:03
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -29,7 +29,7 @@ CREATE TABLE `askrecord` (
   `description` text,
   `time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=390 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=399 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of askrecord
@@ -39,6 +39,15 @@ INSERT INTO `askrecord` VALUES ('386', 'Owngame', '18107436127', '1', '1', '查�
 INSERT INTO `askrecord` VALUES ('387', 'Owngame', '18107436127', '1', '1', 'abc,def,2,33', '查询关键字[def] 没有找到对应的功能，因此没有获得查询结果。查询关键字[2] 没有找到对应的功能，因此没有获得查询结果。查询关键字[33] 没有找到对应的功能，因此没有获得查询结果。查询功能[abc] 成功。', '2016-12-07 22:50:10');
 INSERT INTO `askrecord` VALUES ('388', 'Owngame', '18107436127', '1', '1', 'abc,def,2,33', '查询关键字[def] 没有找到对应的功能，因此没有获得查询结果。查询关键字[2] 没有找到对应的功能，因此没有获得查询结果。查询关键字[33] 没有找到对应的功能，因此没有获得查询结果。查询功能[abc] 成功。', '2016-12-07 22:50:09');
 INSERT INTO `askrecord` VALUES ('389', 'Owngame', '18107436127', '1', '0', 'abc,def,2,33', '查询关键字[def] 没有找到对应的功能，因此没有获得查询结果。查询关键字[2] 没有找到对应的功能，因此没有获得查询结果。查询关键字[33] 没有找到对应的功能，因此没有获得查询结果。查询功能[abc] 成功。', '2016-12-07 22:53:10');
+INSERT INTO `askrecord` VALUES ('390', 'Owngame', '18107436127', '1', '0', 'abc', '功能[abc]的查询结果：统计类型:T;\n', '2016-12-10 12:57:39');
+INSERT INTO `askrecord` VALUES ('391', 'Owngame', '18107436127', '1', '0', 'abc,abcde,abcdee', '关键字[]所查询的功能暂时不可用;\n关键字[]所查询的功能暂时不可用;\n功能[abc]的查询结果：统计类型:T;\n', '2016-12-10 12:58:48');
+INSERT INTO `askrecord` VALUES ('392', 'Owngame', '18107436127', '1', '1', '帮助信息', '查询帮助信息。', '2016-12-10 13:00:35');
+INSERT INTO `askrecord` VALUES ('393', 'Owngame', '18107436127', '1', '1', '查询关键字信息', '查询功能对应的关键字信息。', '2016-12-10 13:00:42');
+INSERT INTO `askrecord` VALUES ('394', 'Owngame', '18107436127', '1', '0', 'ab', '关键字[]所查询的功能暂时不可用;\n', '2016-12-10 13:02:05');
+INSERT INTO `askrecord` VALUES ('395', 'Owngame', '18107436127', '1', '0', 'ad,abc,dee', '关键字[ad]对应的功能由于你的权限不足，无法查询;\n关键字[dee] 没有查询到对应的功能。您可能要查询的关键字有[null]。功能[abc]的查询结果：统计类型:T;\n', '2016-12-10 13:16:14');
+INSERT INTO `askrecord` VALUES ('396', 'Owngame', '18107436127', '1', '0', 'ad,abc,dee', '关键字[ad]对应的功能由于你的权限不足，无法查询;\n关键字[dee] 没有查询到对应的功能。功能[abc]的查询结果：统计类型:T;\n', '2016-12-10 13:17:13');
+INSERT INTO `askrecord` VALUES ('397', 'Owngame', '18107436127', '1', '0', 'ac', '关键字[ac] 没有查询到对应的功能。', '2016-12-11 22:56:55');
+INSERT INTO `askrecord` VALUES ('398', '管理员', '管理员', '2', '1', 'abc', '管理员网页查询。功能[abc]的查询结果：统计类型:T;\n', '2016-12-11 22:58:03');
 
 -- ----------------------------
 -- Table structure for contactbase

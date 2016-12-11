@@ -32,12 +32,10 @@ public class AskrecordServiceImpl implements AskrecordService {
     public ArrayList<Askrecord> handleQuery(int lasthours, int type, String askers, String functions, int issuccess) {
         ArrayList<Askrecord> askrecords = queryRecordsBeforeTime(lasthours);
         System.out.println("before size:" + askrecords.size());
-        if (askrecords == null) {
+        if (askrecords == null || askrecords.size() == 0) {
             return null;
         }
-        if (askrecords.size() == 0) {
-            return askrecords;
-        }
+
         ArrayList<Askrecord> askrecords2 = new ArrayList<Askrecord>();
         askers = askers.replaceAll("，", ",");
         String askersArray[] = askers.split(",");
@@ -47,24 +45,24 @@ public class AskrecordServiceImpl implements AskrecordService {
             Askrecord askrecord = askrecords.get(i);
             if (type != -1) {// 不是全部访问类型
                 if (askrecord.getType() != type) {
-                    break;
+                    continue;
                 }
             }
             if (askers.equals("all") == false) {// 不是查询全部人员
                 // 看是否包含
                 if (isContain(askersArray, askrecord.getName()) == false) {
-                    break;
+                    continue;
                 }
             }
             if (functions.equals("all") == false) {// 不是查询全部人员
                 // 看是否包含
                 if (isContain(functionsArray, askrecord.getFunctions()) == false) {
-                    break;
+                    continue;
                 }
             }
             if (issuccess != -1) {
                 if (askrecord.getIssuccess() != issuccess) {
-                    break;
+                    continue;
                 }
             }
             // 运行到这里，说明都满足条件了

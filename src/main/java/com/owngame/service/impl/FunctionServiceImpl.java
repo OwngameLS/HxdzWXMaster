@@ -2,7 +2,6 @@ package com.owngame.service.impl;
 
 import com.owngame.dao.FunctionDao;
 import com.owngame.entity.*;
-import com.owngame.service.AskrecordService;
 import com.owngame.service.ContactBaseService;
 import com.owngame.service.FunctionService;
 import com.owngame.utils.DBUtil;
@@ -14,19 +13,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016-9-27.
  */
 @Service
 public class FunctionServiceImpl implements FunctionService {
-    public static final int QUESTIONTYPE_FUNCTION_ID =0, QUESTIONTYPE_FUNCTION_NAME=1,QUESTIONTYPE_FUNCTION_KEYWORDS=2;
+    public static final int QUESTIONTYPE_FUNCTION_ID = 0, QUESTIONTYPE_FUNCTION_NAME = 1, QUESTIONTYPE_FUNCTION_KEYWORDS = 2;
 
     @Autowired
     FunctionDao functionDao;
-    @Autowired
-    AskrecordService askrecordService;
     @Autowired
     ContactBaseService contactBaseService;
 
@@ -61,23 +61,8 @@ public class FunctionServiceImpl implements FunctionService {
             }
             result += "\n";
         }
-        createAskrecord(contactHigh, type, "询问关键字提示", "询问关键字提示", 1);
+//        createAskrecord(contactHigh, type, "询问关键字提示", "询问关键字提示", 1);
         return result;
-    }
-
-    private boolean createAskrecord(ContactHigh contactHigh, int type, String functions, String description, int issuccess) {
-        Askrecord askrecord = new Askrecord();
-        // 查询人员名称
-        String name = contactBaseService.queryByHighId(contactHigh.getId()).get(0).getName();
-        askrecord.setName(name);
-        askrecord.setPhone(contactHigh.getPhone());
-        askrecord.setFunctions(functions);
-        askrecord.setDescription(description);
-        askrecord.setType(type);
-        askrecord.setIssuccess(issuccess);
-        askrecord.setTime(new Date(System.currentTimeMillis()));
-        askrecordService.insert(askrecord);
-        return true;
     }
 
 
@@ -96,12 +81,9 @@ public class FunctionServiceImpl implements FunctionService {
     public Function getByKeywords(String keywords) {
         // 不会在SQL语句中筛选，先将所有包含关键字的方法都找
         ArrayList<Function> functions = functionDao.queryByKeywords("%" + keywords + "%");
-        if (functions == null) {
+        if (functions == null || functions.size() == 0) {
             Function function = new Function();// id 为-1，说明不可用
-            function.setDescription(null);
-            return function;
-        } else if (functions.size() == 0) {
-            Function function = new Function();// id 为-1，说明不可用
+            function.setKeywords(keywords);
             function.setDescription(null);
             return function;
         }
@@ -121,6 +103,7 @@ public class FunctionServiceImpl implements FunctionService {
         }
         // 运行到这里都没有找到，说明只有类似的关键字，没有同样的
         Function function = new Function();// id 为-1，说明不可用
+        function.setKeywords(keywords);
         function.setDescription(similarKeys);
         return function;
     }
@@ -147,18 +130,19 @@ public class FunctionServiceImpl implements FunctionService {
 
     /**
      * 通过function的信息和其信息类型来查询function集合
+     *
      * @param functionInfos
      * @param type
      * @return
      */
-    public ArrayList<Function> getFunctionsByType(String functionInfos, int type){
+    public ArrayList<Function> getFunctionsByType(String functionInfos, int type) {
         functionInfos = functionInfos.trim().replaceAll("，", ",");
         String infos[] = functionInfos.split(",");
-        if(infos.length == 0){
+        if (infos.length == 0) {
             return null;
         }
         ArrayList<Function> functions = new ArrayList<Function>();
-        for (int i=0;i<infos.length;i++) {
+        for (int i = 0; i < infos.length; i++) {
             Function function = null;
             switch (type) {
                 case QUESTIONTYPE_FUNCTION_ID:
@@ -171,7 +155,7 @@ public class FunctionServiceImpl implements FunctionService {
                     function = getByName(infos[i]);
                     break;
             }
-            if (function != null){
+            if (function != null) {
                 functions.add(function);
             }
         }
@@ -180,6 +164,7 @@ public class FunctionServiceImpl implements FunctionService {
 
     /**
      * 通过功能的关键字集合字符串，获取他们对应的查询结果
+     * 已放弃
      *
      * @param contactHigh
      * @param type
@@ -189,8 +174,8 @@ public class FunctionServiceImpl implements FunctionService {
     public String getFunctionResultsByKeywords(ContactHigh contactHigh, int type, String keysStr) {
         System.out.println("getFunctionResultsByKeywords : " + keysStr);
         String results = "";
-        String askrecordDes = "";
-        int issuccess = 1;// 当全部查询失败才为0
+//        String askrecordDes = "";
+//        int issuccess = 1;// 当全部查询失败才为0
         int grade = Integer.parseInt(contactHigh.getGrade());
         ArrayList<Function> functions = new ArrayList<Function>();
         if (keysStr != null) {
@@ -211,13 +196,13 @@ public class FunctionServiceImpl implements FunctionService {
                             // 判断级别 是否有权限查询
                             if (grade < Integer.parseInt(function.getGrade())) {
                                 results = results + "关键字[" + keyStr[i] + "] 由于您未获得与该功能匹配的级别权限，无法进行查询，请与管理员申请后再次尝试查询。\n";
-                                askrecordDes += "查询关键字[" + keyStr[i] + "]对应的功能由于未获得与该功能匹配的级别权限，无法进行查询。";
+//                                askrecordDes += "查询关键字[" + keyStr[i] + "]对应的功能由于未获得与该功能匹配的级别权限，无法进行查询。";
                             } else {
                                 functions = addFunctionsUnique(functions, function);// 去重添加
                             }
                         } else {// 找到了类似关键字的方法
                             results = results + "关键字[" + keyStr[i] + "] 没有找到对应的功能，因此没有获得查询结果。";
-                            askrecordDes += "查询关键字[" + keyStr[i] + "] 没有找到对应的功能，因此没有获得查询结果。";
+//                            askrecordDes += "查询关键字[" + keyStr[i] + "] 没有找到对应的功能，因此没有获得查询结果。";
                             if (function.getDescription() != null) {
                                 results = results + "与它类似的关键字有("
                                         + function.getDescription() + ")，请与管理员确认后再次尝试查询。\n";
@@ -228,7 +213,7 @@ public class FunctionServiceImpl implements FunctionService {
                         }
                     } else {// 没找到这个方法
                         results = results + "关键字" + keyStr[i] + " 没有找到对应的功能，因此没有获得查询结果，请与管理员确认后再次尝试查询。\n";
-                        askrecordDes += "查询关键字[" + keyStr[i] + "] 没有找到对应的功能，因此没有获得查询结果。";
+//                        askrecordDes += "查询关键字[" + keyStr[i] + "] 没有找到对应的功能，因此没有获得查询结果。";
                     }
                 }
                 // 3.根据获得的方法查询其对应的结果
@@ -236,24 +221,24 @@ public class FunctionServiceImpl implements FunctionService {
                     // 确实查询到了方法
                     results = results + getFunctionResultsByFunctions(functions);
                     for (int i = 0; i < functions.size(); i++) {
-                        askrecordDes += "查询功能[" + functions.get(i).getName() + "] 成功。";
+//                        askrecordDes += "查询功能[" + functions.get(i).getName() + "] 成功。";
                     }
                 } else {
                     results = results + "您所查询的所有关键字均未找到对应的功能，请使用正确的关键字查询，如果你不清楚请联系系统管理员。\n";
-                    askrecordDes += "查询关键字[" + keysStr + "]全部失败。";
-                    issuccess = 0;
+//                    askrecordDes += "查询关键字[" + keysStr + "]全部失败。";
+//                    issuccess = 0;
                 }
             } else {
                 results = "请使用正确的关键字查询，如果你不清楚请联系系统管理员。\n";
-                askrecordDes += "查询关键字[" + keysStr + "]全部失败。";
-                issuccess = 0;
+//                askrecordDes += "查询关键字[" + keysStr + "]全部失败。";
+//                issuccess = 0;
             }
         } else {
             results = "请使用正确的关键字查询，如果你不清楚请联系系统管理员。\n";
-            askrecordDes += "查询关键字[" + keysStr + "]全部失败。";
-            issuccess = 0;
+//            askrecordDes += "查询关键字[" + keysStr + "]全部失败。";
+//            issuccess = 0;
         }
-        createAskrecord(contactHigh, type, keysStr, askrecordDes, issuccess);
+//        createAskrecord(contactHigh, type, keysStr, askrecordDes, issuccess);
         return results;
     }
 
@@ -381,7 +366,7 @@ public class FunctionServiceImpl implements FunctionService {
     public String getFunctionResult(Function function) {
         String usable = function.getUsable();
         if (usable.equals("no")) {
-            return "功能（" + function.getName() + "） 不可用，查询不到结果。";
+            return "功能[" + function.getName() + "] 不可用，查询不到结果。";
         }
         String usetype = function.getUsetype();// 使用规则
         String sql = "";
@@ -400,7 +385,7 @@ public class FunctionServiceImpl implements FunctionService {
         // 获得数据库链接
         Connection connection = DBUtil.createConn(function);
         // 2.查询
-        return "功能（" + function.getName() + "）的查询结果：" + doQuery(connection, sql, readFields);
+        return "功能[" + function.getName() + "]的查询结果：" + doQuery(connection, sql, readFields);
     }
 
     /**

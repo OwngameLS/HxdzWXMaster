@@ -70,6 +70,7 @@ public interface FunctionService {
 
     /**
      * 得到功能集合的结果
+     *
      * @param functions
      * @return
      */

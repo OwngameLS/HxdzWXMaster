@@ -78,6 +78,7 @@ public class TaskController {
     /**
      * 从手机端发送来询问服务器状态、是否有待处理任务，已经客户端发来的询问信息（想要获取某种信息）
      * 返回json数据格式的方法
+     *
      * @return
      */
     @RequestMapping(value = "/askServer/{actionName}", method = RequestMethod.GET)

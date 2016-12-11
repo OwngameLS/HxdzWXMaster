@@ -1,14 +1,13 @@
 package com.owngame.service;
 
 
-
-import com.owngame.entity.Function;
 import com.owngame.service.impl.AnswerServiceImpl;
 import com.owngame.service.impl.ContactServiceImpl;
 import com.owngame.service.impl.FunctionServiceImpl;
 import org.quartz.JobDataMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.io.Serializable;
 
 /**
@@ -19,6 +18,7 @@ import java.io.Serializable;
 public class QuartzJobService implements Serializable {
     @Autowired
     AnswerService answerService;
+
     /**
      * 处理定时任务的查询
      *

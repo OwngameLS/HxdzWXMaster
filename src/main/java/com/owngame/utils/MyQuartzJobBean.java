@@ -2,7 +2,6 @@ package com.owngame.utils;
 
 import com.owngame.service.QuartzJobService;
 import org.quartz.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 

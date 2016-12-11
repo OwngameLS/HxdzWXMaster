@@ -4,7 +4,10 @@ import com.owngame.entity.Askrecord;
 import com.owngame.service.AskrecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,21 +26,22 @@ public class AskrecordController {
 
     /**
      * 查询记录
+     *
      * @return
      */
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> showAskrecords(@RequestBody Map<String, String> p) {
-            int lasthours = Integer.parseInt(p.get("lasthours"));
-            int type = Integer.parseInt(p.get("type"));
-            String askers = p.get("askers");
-            String functions = p.get("functions");
-            int issuccess = Integer.parseInt(p.get("issuccess"));
-            ArrayList<Askrecord> askrecords = askrecordService.handleQuery(lasthours, type, askers, functions, issuccess);
-            System.out.println("size:" + askrecords.size());
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("askrecords", askrecords);
-            return map;
+        int lasthours = Integer.parseInt(p.get("lasthours"));
+        int type = Integer.parseInt(p.get("type"));
+        String askers = p.get("askers");
+        String functions = p.get("functions");
+        int issuccess = Integer.parseInt(p.get("issuccess"));
+        ArrayList<Askrecord> askrecords = askrecordService.handleQuery(lasthours, type, askers, functions, issuccess);
+        System.out.println("size:" + askrecords.size());
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("askrecords", askrecords);
+        return map;
     }
 
 

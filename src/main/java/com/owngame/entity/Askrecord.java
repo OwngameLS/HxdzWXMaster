@@ -7,6 +7,8 @@ import java.util.Date;
  * Created by Administrator on 2016-12-7.
  */
 public class Askrecord {
+    public static final int ASK_RESULT_FAILED = 0, ASK_RESULT_SUCCESS = 1;
+
     long id;
     String name;// 请求人姓名
     String phone;// 请求人的手机号
