@@ -27,6 +27,8 @@ public interface FunctionService {
      */
     ArrayList<Function> queryAll();
 
+    ArrayList<Function> queryAllUsable();
+
     /**
      * 根据权限查询所有的功能
      *

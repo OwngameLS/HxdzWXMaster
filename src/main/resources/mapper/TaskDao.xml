@@ -16,7 +16,7 @@
     </select>
 
     <select id="queryTasksBeforeTime" resultType="Task" parameterType="String">
-        select * from task where createTime > #{createTime} order by state asc
+        select * from task where createTime > #{createTime} order by state desc
     </select>
 
     <insert id="insert" parameterType="Task">

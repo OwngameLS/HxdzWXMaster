@@ -28,7 +28,7 @@ public class AnswerServiceImpl implements AnswerService {
      * @param askType 查询者方式 sms 0, wx 1, web 2, triggerjob 3
      * @param description 描述
      */
-    public static final int ASK_TYPE_SMS = 0, ASK_TYPE_WX = 1, ASK_TYPE_WEB = 2, ASK_TYPE_TRIGGERJOB = 3;
+    public static final int ASK_TYPE_SMS = 0, ASK_TYPE_WX = 1, ASK_TYPE_WEB = 2, ASK_TYPE_CLIENT= 3, ASK_TYPE_TRIGGERJOB = 4;
     @Autowired
     TaskService taskService;
     @Autowired
@@ -68,11 +68,36 @@ public class AnswerServiceImpl implements AnswerService {
                 }
                 map.put("tasks", json);
             }
+        } else if(strings[0].equals("usableFunctions")){// 查询可用功能
+            ArrayList<Function> functions = functionService.queryAllUsable();
+            map.put("type", "functions");
+            ObjectMapper mapper = new ObjectMapper();
+            // Convert object to JSON string
+            String json = "";
+            try {
+                json = mapper.writeValueAsString(functions);
+                System.out.println("json functions:" + json);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            map.put("functions", json);
+            ArrayList<String> groups = contactService.getGroups();
+            try {
+                json = mapper.writeValueAsString(groups);
+                System.out.println("json groups:" + json);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            map.put("groups", json);
+        } else if(strings[0].equals("qf")||strings[0].equals("群发")){// 管理员通过命令群发
+            // qf--functionIds--groupnames 功能和接收人员组名
+            handleAsk(strings[1], FunctionServiceImpl.QUESTIONTYPE_FUNCTION_ID, strings[2], ContactServiceImpl.CONTACT_TYPE_GROUPS, ASK_TYPE_CLIENT, "");
+            map.put("type", "StateOK");
         } else {
             // 有可能是主动查询的 比如 keyword1--13581695827--sms
             // keyword1代表查询关键词
             // 13581695827为手机号，用于返回
-            handleAsk(strings[0], FunctionServiceImpl.QUESTIONTYPE_FUNCTION_KEYWORDS, strings[1], ContactServiceImpl.CONTACT_TYPE_SMS, 0, "");
+            handleAsk(strings[0], FunctionServiceImpl.QUESTIONTYPE_FUNCTION_KEYWORDS, strings[1], ContactServiceImpl.CONTACT_TYPE_PHONE, ASK_TYPE_SMS, "");
             map.put("type", "StateOK");
         }
         return map;
@@ -114,14 +139,16 @@ public class AnswerServiceImpl implements AnswerService {
         try {
             // 1.获得查询所需的功能
             ArrayList<Function> functions = functionService.getFunctionsByType(question, questionType);
+            System.out.println("query function :"+functions.size());
             // 2.获取用户信息以判断其权限
             ArrayList<ContactDisplay> contactDisplays = contactService.queryDisplayByInfos(receiversInfo, receiversType);
+            System.out.println("query contacts :"+contactDisplays.size());
             String result = "";
             // 查询记录
             Askrecord askrecord = new Askrecord();
             askrecord.setType(askType);
             // 3.查询
-            if (receiversType != ContactServiceImpl.CONTACT_TYPE_SUPERMAN) {// 用户查询
+            if (askType == ASK_TYPE_SMS || askType == ASK_TYPE_WX) {// 用户查询
                 // 没有查询到用户信息，直接返回
                 if (contactDisplays == null || contactDisplays.size() == 0) {
                     return unknownContact(receiversType);
@@ -163,11 +190,11 @@ public class AnswerServiceImpl implements AnswerService {
                 ArrayList<Function> functions2 = new ArrayList<Function>();// 满足用户权限、使用要求用于查询的
                 for (int i = 0; i < functions.size(); i++) {
                     Function function = functions.get(i);
-                    if(function.getId() == -1){// 没查询到
-                        result += "关键字[" + function.getKeywords()+"] 没有查询到对应的功能。";
-                        if(function.getDescription() != null){
+                    if (function.getId() == -1) {// 没查询到
+                        result += "关键字[" + function.getKeywords() + "] 没有查询到对应的功能。";
+                        if (function.getDescription() != null) {
                             // 有类似的关键字
-                            result += "您可能要查询的关键字有["+function.getDescription()+"]。";
+                            result += "您可能要查询的关键字有[" + function.getDescription() + "]。";
                         }
                         continue;
                     }
@@ -192,10 +219,10 @@ public class AnswerServiceImpl implements AnswerService {
                 askrecord.setDescription(result);
                 createAskrecord(askrecord);
                 // 根据查询来源，返回结果的方式也有不同
-                if (receiversType == ContactServiceImpl.CONTACT_TYPE_SMS) {
+                if (receiversType == ContactServiceImpl.CONTACT_TYPE_PHONE) {
                     // 创建任务
                     taskService.createTask(name, description, result, contactDisplay.getPhone());
-                } else if (receiversType == ContactServiceImpl.CONTACT_TYPE_WX) {
+                } else if (receiversType == ContactServiceImpl.CONTACT_TYPE_OPENID) {
                     return result;
                 }
             } else {// 管理员查询
@@ -215,8 +242,8 @@ public class AnswerServiceImpl implements AnswerService {
                     askrecord.setIssuccess(Askrecord.ASK_RESULT_SUCCESS);
                     createAskrecord(askrecord);
                     return result;
-                } else if (askType == ASK_TYPE_TRIGGERJOB) {// 定时任务查询
-                    String name = "定时任务(查询功能:";
+                } else{// 需要生成短信任务的
+                    String name = "(查询功能:";
                     for (int i = 0; i < functions.size(); i++) {
                         name = name + functions.get(i).getName();
                         if (i + 1 < functions.size()) {
@@ -232,16 +259,26 @@ public class AnswerServiceImpl implements AnswerService {
                             receivers = receivers + ",";
                         }
                     }
-                    askrecord.setName("定时任务查询");
-                    askrecord.setPhone("定时任务");
-                    askrecord.setDescription("定时任务查询。" + result);
-                    askrecord.setIssuccess(Askrecord.ASK_RESULT_SUCCESS);
-                    createAskrecord(askrecord);
+                    if(askType == ASK_TYPE_CLIENT){// 客户端查询（通过手机软件、管理员微信专用网页(TODO)）
+                        askrecord.setName("管理员");
+                        askrecord.setPhone("管理员");
+                        askrecord.setDescription("管理员客户端查询。" + result);
+                        askrecord.setIssuccess(Askrecord.ASK_RESULT_SUCCESS);
+                        createAskrecord(askrecord);
+                        name = "管理员查询并发送" + name;
+                    }else if (askType == ASK_TYPE_TRIGGERJOB) {// 定时任务查询
+                        askrecord.setName("定时任务查询");
+                        askrecord.setPhone("定时任务");
+                        askrecord.setDescription("定时任务查询。" + result);
+                        askrecord.setIssuccess(Askrecord.ASK_RESULT_SUCCESS);
+                        createAskrecord(askrecord);
+                        name = "定时任务" + name;
+                    }
                     // 创建任务
                     taskService.createTask(name, description, result, receivers);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -257,10 +294,10 @@ public class AnswerServiceImpl implements AnswerService {
 
     // 未知用户查询，返回提醒
     public String unknownContact(int contactType) {
-        if (contactType == ContactServiceImpl.CONTACT_TYPE_WX) {
+        if (contactType == ContactServiceImpl.CONTACT_TYPE_OPENID) {
             // 提醒绑定手机号
             return "你尚未绑定手机号，我们无法确定你的身份，所以无法提供服务。请先绑定手机号，发送“SJA。（中文句号）手机号”(例如SJA。13988888888)即可。";
-        } else if (contactType == ContactServiceImpl.CONTACT_TYPE_SMS) {
+        } else if (contactType == ContactServiceImpl.CONTACT_TYPE_PHONE) {
             // 提醒绑定手机号
             return "我们无法确定你的身份，所以无法提供服务。请先与管理员取得联系，让他帮助你成为合法用户。";
         }
@@ -270,14 +307,14 @@ public class AnswerServiceImpl implements AnswerService {
     // 用户查询帮助信息
     private String getHelp(int contactType) {
         // 读取帮助信息，从resource中读取 TODO
-        if (contactType == ContactServiceImpl.CONTACT_TYPE_WX) {
+        if (contactType == ContactServiceImpl.CONTACT_TYPE_OPENID) {
             String s = "1.绑定手机号，请回复：SJA。13988888888；\n";
             s += "2.更改绑定的手机号，请回复：SJU。13988888888；\n";
             s += "3.更改绑定的微信号，请回复：SJO。您收到的验证码；\n";
             s += "4.信息查询，请回复：相关的关键字，如 abc；\n";
             s += "5.查询功能对应的关键字，请回复：关键字。\n";
             return s;
-        } else if (contactType == ContactServiceImpl.CONTACT_TYPE_SMS) {
+        } else if (contactType == ContactServiceImpl.CONTACT_TYPE_OPENID) {
             String s = "1.信息查询，请回复：相关的关键字，如 abc；\n";
             s += "2.查询功能对应的关键字，请回复：关键字。\n";
             return s;

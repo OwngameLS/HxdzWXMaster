@@ -20,7 +20,7 @@ import java.util.Map;
 @Service
 public class ContactServiceImpl implements ContactService {
 
-    public static final int CONTACT_TYPE_SMS = 0, CONTACT_TYPE_WX = 1, CONTACT_TYPE_SUPERMAN = 2;
+    public static final int CONTACT_TYPE_PHONE = 0, CONTACT_TYPE_OPENID = 1, CONTACT_TYPE_GROUPS = 2,CONTACT_TYPE_SUPERMAN = 3;
     @Autowired
     ContactBaseService contactBaseService;
     @Autowired
@@ -152,20 +152,24 @@ public class ContactServiceImpl implements ContactService {
 
     /**
      * 根据用户的类型信息查询用户信息
+     *
      * @param contactInfos 用户提供的信息
-     * @param infoType 用户类型
+     * @param infoType     用户类型
      * @return
      */
     public ArrayList<ContactDisplay> queryDisplayByInfos(String contactInfos, int infoType) {
         ArrayList<ContactDisplay> contactDisplays = new ArrayList<ContactDisplay>();// 用于返回
         switch (infoType) {
-            case CONTACT_TYPE_SMS: //短信查询，为手机号
+            case CONTACT_TYPE_PHONE: //短信查询，为手机号
                 contactDisplays = queryDisplayByPhone(contactInfos);
                 break;
-            case CONTACT_TYPE_WX: //微信查询，为openid
+            case CONTACT_TYPE_OPENID: //微信查询，为openid
                 contactDisplays = queryDisplayByOpenId(contactInfos);
                 break;
-            case CONTACT_TYPE_SUPERMAN:// 管理员查询 为ids
+            case CONTACT_TYPE_GROUPS: //手机端、网页端提交的组名集合字符串，为groupnames
+                contactDisplays = queryByGroups(contactInfos);
+                break;
+            case CONTACT_TYPE_SUPERMAN:// 管理员查询 为ids triggerJob时所用
                 if (contactInfos.equals("superman") == false) {
                     contactDisplays = getContactByIds(contactInfos);
                 }
@@ -173,6 +177,45 @@ public class ContactServiceImpl implements ContactService {
         }
         return contactDisplays;
     }
+
+    // 通过Group的names去查询联系人
+    private ArrayList<ContactDisplay> queryByGroups(String groupsName){
+        ArrayList<ContactDisplay> contactDisplays = new ArrayList<ContactDisplay>();
+        String[] groups = groupsName.split(",");
+        for(int i=0;i<groups.length;i++){
+            ArrayList<ContactDisplay> t = queryByGroup(groups[i]);
+            // 去重添加
+            contactDisplays = uniqueContacts(contactDisplays, t);
+        }
+        return contactDisplays;
+    }
+
+    // 将
+    private ArrayList<ContactDisplay> uniqueContacts(ArrayList<ContactDisplay> mother, ArrayList<ContactDisplay> children){
+        if(mother == null || mother.size() == 0){
+            return children;
+        }else{
+            ArrayList<Integer> needAddIndex = new ArrayList<Integer>();
+            for(int j=0;j<children.size();j++){
+                ContactDisplay contactDisplay = children.get(j);
+                boolean isFound = false;
+                for(int k=0;k<mother.size();k++){
+                    if(mother.get(k).getPhone().equals(contactDisplay.getPhone())){
+                        isFound = true;
+                        break;// 找到了就返回，不用继续查找了
+                    }
+                }
+                if(isFound == false){
+                    needAddIndex.add(j);
+                }
+            }
+            for(int j=0;j<needAddIndex.size();j++){
+                mother.add(children.get(needAddIndex.get(j)));
+            }
+            return mother;
+        }
+    }
+
 
 
     public ArrayList<ContactDisplay> queryLikeName(String name) {

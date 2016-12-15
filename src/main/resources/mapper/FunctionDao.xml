@@ -7,6 +7,10 @@
         select * from function
     </select>
 
+    <select id="queryAllUsable" resultType="Function">
+        select * from function where usable='yes'
+    </select>
+
     <select id="queryByName" resultType="Function" parameterType="String">
         select * from function where name=#{name}
     </select>

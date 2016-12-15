@@ -43,6 +43,10 @@ public class FunctionServiceImpl implements FunctionService {
         return functionDao.queryAll();
     }
 
+    public ArrayList<Function> queryAllUsable(){
+        return functionDao.queryAllUsable();
+    }
+
     public String queryAllWithGrade(ContactHigh contactHigh, int type) {
         ArrayList<Function> functions = queryAll();
         String result = "";

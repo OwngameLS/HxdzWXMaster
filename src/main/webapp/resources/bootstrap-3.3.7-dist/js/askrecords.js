@@ -88,6 +88,10 @@ function initTbodyOfAskrecords(askrecords) {
         } else if (askrecords[i].type == 1) {
             htmlStr = htmlStr + "<td>微信</td>";
         } else if (askrecords[i].type == 2) {
+            htmlStr = htmlStr + "<td>网页</td>";
+        } else if (askrecords[i].type == 3) {
+            htmlStr = htmlStr + "<td>客户端</td>";
+        } else if (askrecords[i].type == 3) {
             htmlStr = htmlStr + "<td>管理员</td>";
         }
         htmlStr = htmlStr + "<td>" + parseToAbbr(askrecords[i].functions, 5, null) + "</td>";

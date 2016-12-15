@@ -17,7 +17,7 @@
     </select>
 
     <select id="queryRecordsBeforeTime" resultType="Askrecord" parameterType="String">
-        select * from askrecord where time > #{time} order by issuccess asc
+        select * from askrecord where time > #{time} order by issuccess desc
     </select>
 
     <insert id="insert" parameterType="Askrecord">

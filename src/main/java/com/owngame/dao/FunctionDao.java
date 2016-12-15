@@ -10,6 +10,8 @@ import java.util.ArrayList;
 public interface FunctionDao {
     ArrayList<Function> queryAll();
 
+    ArrayList<Function> queryAllUsable();
+
     int insert(Function function);
 
     int update(Function function);

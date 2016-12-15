@@ -91,7 +91,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
         if (content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)) {// 手机号逻辑
             content = phoneNumberLogic(content);
         } else { // 查询逻辑
-            content = answerService.handleAsk(content, FunctionServiceImpl.QUESTIONTYPE_FUNCTION_KEYWORDS, fromUserName, ContactServiceImpl.CONTACT_TYPE_WX, AnswerServiceImpl.ASK_TYPE_WX, "");
+            content = answerService.handleAsk(content, FunctionServiceImpl.QUESTIONTYPE_FUNCTION_KEYWORDS, fromUserName, ContactServiceImpl.CONTACT_TYPE_OPENID, AnswerServiceImpl.ASK_TYPE_WX, "");
         }
         if (rtMsgType.equals(MESSAGE_TYPE_TEXT)) {// 回复文本消息
             return initTextMessageOfJsonString(content);
@@ -122,7 +122,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
                 message += "我发现你以前就关注过我了，这次不要再走丢了哦！\n" +
                         "您的手机号码还是" + contactHigh.getPhone() + "吗？如果不是，请发送【SJU。13988888888】重新告诉我您的号码吧~";
             } else {
-                message += answerService.unknownContact(ContactServiceImpl.CONTACT_TYPE_WX);
+                message += answerService.unknownContact(ContactServiceImpl.CONTACT_TYPE_OPENID);
             }
             return initTextMessageOfJsonString(message);
         } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_CLICK.equals(eventType)) {
