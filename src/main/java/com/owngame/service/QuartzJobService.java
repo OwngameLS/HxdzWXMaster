@@ -35,12 +35,14 @@ public class QuartzJobService implements Serializable {
         */
         String functions = ((String) jobDataMap.get("functions")).trim();
         String receiversIds = (String) jobDataMap.get("receivers");
+        int receiveType = Integer.parseInt(jobDataMap.get("receivetype").toString());
         String description = (String) jobDataMap.get("description");
         answerService.handleAsk(functions,
                 FunctionServiceImpl.QUESTIONTYPE_FUNCTION_NAME,
                 receiversIds,
                 ContactServiceImpl.CONTACT_TYPE_SUPERMAN,
                 AnswerServiceImpl.ASK_TYPE_TRIGGERJOB,
+                receiveType,
                 description);
 
 //        String contents = "";

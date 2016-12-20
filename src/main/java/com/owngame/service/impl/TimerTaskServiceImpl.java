@@ -34,6 +34,7 @@ public class TimerTaskServiceImpl implements TimerTaskService {
         Map<String, String> map = new HashMap<String, String>();
         map.put("functions", timerTask.getFunctions());
         map.put("receivers", timerTask.getReceivers());
+        map.put("receivetype", timerTask.getReceivetype()+"");
         map.put("description", timerTask.getDescription());
         quartzTriggerService.addTrigger(strCronExpression, map);
         // 插入之后的names

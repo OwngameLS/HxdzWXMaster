@@ -1,8 +1,14 @@
 package com.owngame.web;
 
+import com.owngame.entity.ContactDisplay;
 import com.owngame.entity.Task;
 import com.owngame.service.AnswerService;
+import com.owngame.service.ContactService;
 import com.owngame.service.TaskService;
+import com.owngame.service.impl.AnswerServiceImpl;
+import com.owngame.service.impl.ContactServiceImpl;
+import com.owngame.service.impl.FunctionServiceImpl;
+import com.owngame.service.impl.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +28,8 @@ public class TaskController {
     @Autowired
     TaskService taskService;
     @Autowired
+    ContactService contactService;
+    @Autowired
     AnswerService answerService;
 
     /**
@@ -36,8 +44,22 @@ public class TaskController {
         String name = p.get("name");
         String description = p.get("description");
         String contents = p.get("contents");
+        int sendType = Integer.parseInt(p.get("sendtype"));
         String receivers = p.get("receivers");
-        taskService.createTask(name, description, contents, receivers);
+        switch (sendType){
+            case TaskServiceImpl.SEND_TYPE_SMS:
+                taskService.createTask(name, description, contents, receivers);
+                break;
+            case TaskServiceImpl.SEND_TYPE_WX:
+                // TODO 微信任务
+//                ArrayList<ContactDisplay> contactDisplays = contactService.1
+                break;
+            case TaskServiceImpl.SEND_TYPE_SMS_AND_WX:
+                taskService.createTask(name, description, contents, receivers);
+                // TODO 微信任务
+                break;
+        }
+
         Map<String, Object> map = new HashMap<String, Object>();
         // 返回更新后的该组信息
         map.put("success", "success");
@@ -86,5 +108,33 @@ public class TaskController {
     public Map<String, Object> handleAsk(@PathVariable("actionName") String actionName) {
         System.out.println("actionName:" + actionName);
         return answerService.handleAskFromPhone(actionName);
+    }
+
+    /**
+     * 从客户端创建任务（群发消息）
+     * @param p
+     * @return
+     */
+    @RequestMapping(value = "/clientqunfa", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> clientqunfa(@RequestBody Map<String, String> p) {
+        // qf--sendType==msg==functionIds--groupnames 功能--发送方式==自定义消息内容==功能ids--接收人员组名
+        System.out.println("clientqunfa is Called.");
+        int sendtype = Integer.parseInt(p.get("sendtype"));
+        String msg = p.get("msg");
+        String functionIds = p.get("functionIds");
+        String groupnames = p.get("groupnames");
+        answerService.handleAsk(functionIds,
+                FunctionServiceImpl.QUESTIONTYPE_FUNCTION_ID,
+                groupnames,
+                ContactServiceImpl.CONTACT_TYPE_GROUPS,
+                AnswerServiceImpl.ASK_TYPE_CLIENT,
+                sendtype,
+                msg);
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 返回更新后的该组信息
+        map.put("type", "StateOK");
+        map.put("success", "success");
+        return map;
     }
 }

@@ -9,6 +9,7 @@ import com.owngame.service.FunctionService;
 import com.owngame.service.impl.AnswerServiceImpl;
 import com.owngame.service.impl.ContactServiceImpl;
 import com.owngame.service.impl.FunctionServiceImpl;
+import com.owngame.service.impl.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -42,11 +43,13 @@ public class FunctionController {
     @ResponseBody
     public Map<String, Object> getFunctionResults(@RequestBody Map<String, String> p) {
         Map<String, Object> map = new HashMap<String, Object>();
+//        (String question, int questionType, String receiversInfo, int receiversType, int askType, int sendType, String description)
         String results = answerService.handleAsk(p.get("ids"),
                 FunctionServiceImpl.QUESTIONTYPE_FUNCTION_ID,
                 "superman",
                 ContactServiceImpl.CONTACT_TYPE_SUPERMAN,
                 AnswerServiceImpl.ASK_TYPE_WEB,
+                TaskServiceImpl.NOT_NEED,
                 "");
 //      functionService.getFunctionResultByIds(p.get("ids"));
         map.put("results", results);

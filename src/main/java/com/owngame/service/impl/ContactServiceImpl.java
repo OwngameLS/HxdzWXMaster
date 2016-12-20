@@ -50,7 +50,7 @@ public class ContactServiceImpl implements ContactService {
             if (formerOpenid != null) {// 原来绑定了微信
                 if (openid.equals(formerOpenid)) {
                     // 未发生变化
-                    return WeixinMessageServiceImpl.RETURN_CODE_SUCCESS;// 告知成功
+                    return WeiXinMessageServiceImpl.RETURN_CODE_SUCCESS;// 告知成功
                 } else {// 发生了变化，用户换了一个微信来绑定已有的手机号
                     // 判断身份 发送一个验证码给已经绑定的手机
                     String randomCode = "" + System.currentTimeMillis();
@@ -59,22 +59,22 @@ public class ContactServiceImpl implements ContactService {
                     contactHigh.setBackup(phone + "@@" + randomCode);// 用@@分隔此次申请的手机号
                     contactHighService.update(contactHigh);
                     sendMsgOfRandom(randomCode, phone);
-                    return WeixinMessageServiceImpl.RETURN_CODE_CHANGE_OPENID;// 绑定的微信号发生变化
+                    return WeiXinMessageServiceImpl.RETURN_CODE_CHANGE_OPENID;// 绑定的微信号发生变化
                 }
             } else {// 第一次绑定微信号和手机号
                 contactHigh.setOpenid(openid);
                 int r = contactHighService.update(contactHigh);
                 if (r >= 0) {
-                    return WeixinMessageServiceImpl.RETURN_CODE_SUCCESS;// 告知成功
+                    return WeiXinMessageServiceImpl.RETURN_CODE_SUCCESS;// 告知成功
                 } else {
-                    return WeixinMessageServiceImpl.RETURN_CODE_DATABASE_FAILED;// 数据库操作失败
+                    return WeiXinMessageServiceImpl.RETURN_CODE_DATABASE_FAILED;// 数据库操作失败
                 }
             }
         } else {
             if (phone != null) {// 是带着手机号来查询的
                 // 该电话号码没有绑定过
                 // 告知用户 必须要先经过管理员添加权限
-                return WeixinMessageServiceImpl.RETURN_CODE_NOT_AUTHORIZE_PHONE;
+                return WeiXinMessageServiceImpl.RETURN_CODE_NOT_AUTHORIZE_PHONE;
             } else { // 没有带着手机号来 说明是改变绑定微信号的
                 // 根据identifyingCode来查询
                 contactHigh = contactHighService.queryByBackup("%" + identifyingCode + "%");
@@ -84,11 +84,11 @@ public class ContactServiceImpl implements ContactService {
                     contactHigh.setOpenid(openid);
                     contactHighService.update(contactHigh);
                 } else {// 未找到 验证码错误
-                    return WeixinMessageServiceImpl.RETURN_CODE_INVALID_AUTHORIZECODE;
+                    return WeiXinMessageServiceImpl.RETURN_CODE_INVALID_AUTHORIZECODE;
                 }
             }
         }
-        return WeixinMessageServiceImpl.RETURN_CODE_SUCCESS;// 告知成功
+        return WeiXinMessageServiceImpl.RETURN_CODE_SUCCESS;// 告知成功
     }
 
     private int sendMsgOfRandom(String randomMsg, String phone) {

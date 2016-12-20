@@ -15,11 +15,11 @@
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
-    <script src="../../resources/bootstrap-3.3.7-dist/js/sms.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/msg.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/contact.js"></script>
 </head>
 <body>
-<h3>短信群发</h3>
+<h3>信息群发</h3>
 
 <div class="danger" style="padding: 5px;"><%--通讯录操作部分--%>
     <div id="editDoneDiv" class="alert alert-success" role="alert"
@@ -147,8 +147,23 @@
         </div>
     </div>
 
-    <div class="well text-center">
-        <button type="button" class="btn btn-primary btn-sm" onclick="createTask()">发 送</button>
+    <div class="well">
+        <div class="row">
+            <div class="col-md-2">
+                发送方式：
+            </div>
+            <div class="col-md-1">
+                <input type="checkbox" id="sendTypeSms">短信
+            </div>
+            <div class="col-md-2">
+                <input type="checkbox" id="sendTypeWx"><abbr title="如果这个手机号对应的有微信号的话，就会发送">微信</abbr>
+            </div>
+            <div class="col-md-2 text-center">
+                <button type="button" class="btn btn-primary btn-sm" onclick="createTask()">发 送</button>
+            </div>
+        </div>
+
+
     </div>
 
 

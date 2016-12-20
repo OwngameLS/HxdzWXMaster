@@ -188,11 +188,24 @@ function createTask() {
         showEditFail("你必须要添加发送的对象啊。", $("#titleOfReceivers"));
         return;
     }
+    var sendTypeSms = $("#sendTypeSms").prop("checked");
+    var sendTypeWx = $("#sendTypeWx").prop("checked");
+    var sendtype = 0;
+    if(sendTypeSms){
+        if(sendTypeWx){
+            sendtype = 2;
+        }
+    }else{
+        if(sendTypeWx){
+            sendtype = 1;
+        }
+    }
     description = description + '(消息内容:' + contents + ')';
     if (confirm("确认发送吗？")) {
         var jsonStr = "{\"name\":\"" + name
             + "\",\"description\":\"" + description
             + "\",\"contents\":\"" + contents
+            + "\",\"sendtype\":\"" + sendtype
             + "\",\"receivers\":\"" + receivers + "\"}";
         $.when(myAjaxPost(bp + 'Smserver/tasks/create/', jsonStr)).done(function (data) {
             showEditDone();

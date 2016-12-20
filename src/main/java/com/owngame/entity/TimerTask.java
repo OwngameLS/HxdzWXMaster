@@ -12,6 +12,7 @@ public class TimerTask {
     String description;// 描述
     String firerules;//触发规则（cron字符串）
     String receivers;// 接收者们（id的组合）
+    int receivetype;// 接收方式（sms 0, wx 1, smsandwx 2）
     String state;// 状态 是否启用
 
     public long getId() {
@@ -62,6 +63,14 @@ public class TimerTask {
         this.receivers = receivers;
     }
 
+    public int getReceivetype() {
+        return receivetype;
+    }
+
+    public void setReceivetype(int receivetype) {
+        this.receivetype = receivetype;
+    }
+
     public String getState() {
         return state;
     }
@@ -79,6 +88,7 @@ public class TimerTask {
                 ", description='" + description + '\'' +
                 ", firerules='" + firerules + '\'' +
                 ", receivers='" + receivers + '\'' +
+                ", receivetype=" + receivetype +
                 ", state='" + state + '\'' +
                 '}';
     }

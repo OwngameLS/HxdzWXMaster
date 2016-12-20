@@ -44,6 +44,7 @@ public class TimerTaskController {
             timerTask.setReceivers(p.get("contacts"));
             timerTask.setFirerules(p.get("cron"));
             timerTask.setDescription(p.get("description"));
+            timerTask.setReceivetype(Integer.parseInt(p.get("type")));
             timerTask.setState(p.get("state"));
             if (id <= 0) {// 插入
                 timerTaskService.createTimerTask(timerTask);

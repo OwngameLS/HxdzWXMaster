@@ -20,16 +20,27 @@ function initTbodyOfTasks(timertasks) {
             + '</td><td>' + timertasks[i].functions
             + '</td><td>' + parseToAbbr(timertasks[i].description, 10, null)
             + '</td><td>' + timertasks[i].firerules
-            + '</td><td>' + parseToAbbr(timertasks[i].receivers, 15, null)
+            + '</td><td>' + parseToAbbr(timertasks[i].receivers, 15, null) + '</td>';
+        switch (timertasks[i].receivetype) {
+            case 0:
+                htmlStr = htmlStr + '<td>短信</td>';
+                break;
+            case 1:
+                htmlStr = htmlStr + '<td>微信</td>';
+                break;
+            case 2:
+                htmlStr = htmlStr + '<td>短信和微信</td>';
+                break;
+        }
         var stateDesc = '';
         if (timertasks[i].state == 'run') {
             stateDesc = '正常运行';
         } else if (timertasks[i].state == 'pause') {
             stateDesc = '暂停运行';
         }
-        htmlStr = htmlStr + '</td><td>' + stateDesc
+        htmlStr = htmlStr + '<td>' + stateDesc
             + '</td><td>' + '<button type="button" class="btn btn-primary btn-sm" onclick="initEditTimerTask(\'' + timertasks[i].id
-            + '\',\'' + timertasks[i].functions + '\',\'' + timertasks[i].description + '\',\'' + timertasks[i].firerules + '\',\'' + timertasks[i].receivers + '\',\'' + timertasks[i].state + '\')">编辑</button>'
+            + '\',\'' + timertasks[i].functions + '\',\'' + timertasks[i].description + '\',\'' + timertasks[i].firerules + '\',\'' + timertasks[i].receivers + '\',' + timertasks[i].receivetype + ',\'' + timertasks[i].state + '\')">编辑</button>'
             + '</td></tr>';
     }
 
@@ -113,7 +124,7 @@ function editContacts(action) {
     $("#selectedContactsIds").val(tempStr);
 }
 
-function initEditTimerTask(id, functions, description, firerules, receivers, state) {
+function initEditTimerTask(id, functions, description, firerules, receivers, receivetype, state) {
     // 先将编辑框展示出来
     $("#timertaskEditDiv").show(2000);
     if (id != -1) {
@@ -122,6 +133,20 @@ function initEditTimerTask(id, functions, description, firerules, receivers, sta
         $("#ttdescriptionEdit").val(description);
         $("#ttcronEdit").html(firerules);
         $("#selectedContactsIds").val(receivers);
+        console.log("type:"+receivetype);
+        switch (receivetype) {
+            case 0:
+                $("#sendTypeSmsEdit").prop("checked", true);
+                break;
+            case 1:
+                $("#sendTypeWxEdit").prop("checked", true);
+                break;
+            case 2:
+                console.log("what the fuck! "+receivetype);
+                $("#sendTypeSmsEdit").prop("checked", true);
+                $("#sendTypeWxEdit").prop("checked", true);
+                break;
+        }
         $("#ttstateEdit").val(state);
     } else {
         $("#ttIdEdit").html('新建');
@@ -129,6 +154,8 @@ function initEditTimerTask(id, functions, description, firerules, receivers, sta
         $("#ttdescriptionEdit").val('');
         $("#ttcronEdit").html('未指定');
         $("#selectedContactsIds").val('');
+        $("#sendTypeSmsEdit").prop("checked", true);
+        $("#sendTypeWxEdit").prop("checked", false);
         $("#ttstateEdit").val('run');
     }
 }
@@ -266,6 +293,18 @@ function handleTimerTask(action) {
         var description = $("#ttdescriptionEdit").val();
         var cron = $("#ttcronEdit").html();
         var contacts = $("#selectedContactsIds").val();
+        var sendTypeSms = $("#sendTypeSmsEdit").prop("checked");
+        var sendTypeWx = $("#sendTypeWxEdit").prop("checked");
+        var type = 0;
+        if(sendTypeSms){
+            if(sendTypeWx){
+                type = 2;
+            }
+        }else{
+            if(sendTypeWx){
+                type = 1;
+            }
+        }
         var state = $("#ttstateEdit  option:selected").val();
         // 判断合理值
         // 整理成JsonStr
@@ -277,6 +316,7 @@ function handleTimerTask(action) {
             + "\",\"description\":\"" + description
             + "\",\"cron\":\"" + cron
             + "\",\"contacts\":\"" + contacts
+            + "\",\"type\":\"" + type
             + "\",\"state\":\"" + state + "\"}";
         doAjaxHandleTimerTask('update', jsonStr);
     }

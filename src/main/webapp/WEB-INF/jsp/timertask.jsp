@@ -37,13 +37,14 @@
         <table class="table table-hover table-bordered text-center">
             <thead>
             <tr class="info">
-                <th width="5%" class="text-center">序号</th>
+                <th width="5%" class="text-center">ID</th>
                 <th width="10%" class="text-center">功能</th>
                 <th width="20%" class="text-center">描述</th>
                 <th width="15%" class="text-center">触发规则</th>
-                <th width="20%" class="text-center">接收者们</th>
+                <th width="15%" class="text-center">接收者们</th>
+                <th width="10%" class="text-center">接收方式</th>
                 <th width="7%" class="text-center">状态</th>
-                <th width="20%" class="text-center">操作</th>
+                <th width="15%" class="text-center">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -64,11 +65,15 @@
                         <button type="button" class="btn btn-warning btn-sm" onclick="hideCronEdit()">取消</button>
                     </div>
                 </td>
-                <td width="30%">
+                <td width="15%">
                     <textarea id="selectedContactsIds" placeholder="这里将展示选中人员的id"></textarea><br>
                     <button type="button" class="btn btn-success btn-sm" onclick="showContactsUI()">编辑人员</button>
                 </td>
-                <td width="5%">
+                <td width="15%">
+                    <input type="checkbox" id="sendTypeSmsEdit">短信<br>
+                    <input type="checkbox" id="sendTypeWxEdit">微信
+                </td>
+                <td width="7%">
                     <select id="ttstateEdit">
                         <option value="run">运行</option>
                         <option value="pause">暂停</option>
@@ -167,8 +172,9 @@
                 <th width="12%" class="text-center">功能</th>
                 <th width="12%" class="text-center">描述</th>
                 <th width="14%" class="text-center">触发规则</th>
-                <th width="27%" class="text-center">接收者们</th>
-                <th width="15%" class="text-center">状态</th>
+                <th width="20%" class="text-center">接收者们</th>
+                <th width="14%" class="text-center">接收方式</th>
+                <th width="8%" class="text-center">状态</th>
                 <th width="8%" class="text-center">操作</th>
             </tr>
             </thead>

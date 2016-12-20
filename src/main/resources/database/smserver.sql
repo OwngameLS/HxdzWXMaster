@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2016-12-11 23:18:03
+Date: 2016-12-18 22:19:08
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -429,6 +429,7 @@ CREATE TABLE `timertask` (
   `functions` text,
   `description` text,
   `firerules` varchar(120) DEFAULT NULL,
+  `receivetype` tinyint(1) DEFAULT '0',
   `receivers` text,
   `state` text,
   PRIMARY KEY (`id`)
@@ -437,4 +438,4 @@ CREATE TABLE `timertask` (
 -- ----------------------------
 -- Records of timertask
 -- ----------------------------
-INSERT INTO `timertask` VALUES ('3', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'abc', '关于ABC的故事', '0 * * * * ? *', '', 'pause');
+INSERT INTO `timertask` VALUES ('3', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'abc', '关于ABC的故事', '0 * * * * ? *', '0', '', 'pause');

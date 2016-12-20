@@ -6,6 +6,10 @@ package com.owngame.service;
  * 161121 将原来的Thread 改为Service 以适应SpringMVC
  */
 public interface WeiXinCoreService {
-    public void handleMessage(String message);
+    /**
+     * 处理消息
+     * @param message
+     */
+    void handleMessage(String message);
 }
 

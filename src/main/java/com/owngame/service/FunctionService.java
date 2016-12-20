@@ -1,9 +1,6 @@
 package com.owngame.service;
 
-import com.owngame.entity.ContactHigh;
-import com.owngame.entity.Function;
-import com.owngame.entity.FunctionKeywordsResult;
-import com.owngame.entity.FunctionSqlResult;
+import com.owngame.entity.*;
 
 import java.util.ArrayList;
 
@@ -77,6 +74,15 @@ public interface FunctionService {
      * @return
      */
     String getFunctionResultsByFunctions(ArrayList<Function> functions);
+
+    /**
+     * 通过权限 筛选出可用的功能
+     * 筛选出可用功能并告知错误原因
+     * @param functions
+     * @param grade
+     * @return
+     */
+    FunctionFilterResult filterFunctions(ArrayList<Function> functions, String grade);
 
     /**
      * 检查关键词

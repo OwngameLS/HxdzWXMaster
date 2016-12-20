@@ -4,9 +4,12 @@ import com.owngame.dao.MYUser;
 import com.owngame.entity.ContactHigh;
 import com.owngame.menu.ManageMenu;
 import com.owngame.service.*;
+import com.owngame.utils.AccessTokenUtil;
 import com.owngame.utils.PhoneUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import weixin.popular.api.MessageAPI;
+import weixin.popular.bean.BaseResult;
 import weixin.popular.bean.message.message.NewsMessage;
 import weixin.popular.bean.message.message.NewsMessage.Article;
 import weixin.popular.bean.message.message.TextMessage;
@@ -20,7 +23,7 @@ import java.util.Map;
  * Created by Administrator on 2016-8-18.
  */
 @Service
-public class WeixinMessageServiceImpl implements WeixinMessageService {
+public class WeiXinMessageServiceImpl implements WeiXinMessageService {
     // 消息类型
     public static final String MESSAGE_TYPE_TEXT = "text";
     public static final String MESSAGE_TYPE_NEWS = "news";
@@ -79,6 +82,23 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
         return null;
     }
 
+
+    /**
+     * 发送客服消息
+     * @param message
+     * @param openIds
+     */
+    public void sendTextMessage(String message, String openIds) {
+        String openId[] = openIds.split(",");
+        for (int i = 0; i< openId.length; i++){
+            String messageJson = initTextMessageOfJsonString(openId[i], message);
+            // 调用客服消息借口回复消息
+            String token = AccessTokenUtil.getSavedToken();
+            BaseResult br = MessageAPI.messageCustomSend(token, messageJson);
+            System.out.println("br:" + br.getErrcode() + "; " + br.getErrmsg());
+        }
+    }
+
     /**
      * 处理文本信息，分析文本内容，给出合理应答
      */
@@ -91,10 +111,16 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
         if (content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)) {// 手机号逻辑
             content = phoneNumberLogic(content);
         } else { // 查询逻辑
-            content = answerService.handleAsk(content, FunctionServiceImpl.QUESTIONTYPE_FUNCTION_KEYWORDS, fromUserName, ContactServiceImpl.CONTACT_TYPE_OPENID, AnswerServiceImpl.ASK_TYPE_WX, "");
+            content = answerService.handleAsk(content,
+                    FunctionServiceImpl.QUESTIONTYPE_FUNCTION_KEYWORDS,
+                    fromUserName,
+                    ContactServiceImpl.CONTACT_TYPE_OPENID,
+                    AnswerServiceImpl.ASK_TYPE_WX,
+                    TaskServiceImpl.SEND_TYPE_WX,
+                    "");
         }
         if (rtMsgType.equals(MESSAGE_TYPE_TEXT)) {// 回复文本消息
-            return initTextMessageOfJsonString(content);
+            return initTextMessageOfJsonString(fromUserName, content);
         }
         return null;
     }
@@ -110,7 +136,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
         String eventType = map.get("Event");// 获得事件类型
         String fromUserName = map.get("FromUserName");
         String message = null;
-        if (WeixinMessageServiceImpl.MESSAGE_EVENT_SUBSCRIBE.equals(eventType)) {
+        if (WeiXinMessageServiceImpl.MESSAGE_EVENT_SUBSCRIBE.equals(eventType)) {
             // 当用户关注的时候，就要先存下用户的基本信息了啊
             // 获得用户信息并存起来
             MYUser mu = UserHandler.queryUserFromWeixin(fromUserName);
@@ -124,17 +150,17 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
             } else {
                 message += answerService.unknownContact(ContactServiceImpl.CONTACT_TYPE_OPENID);
             }
-            return initTextMessageOfJsonString(message);
-        } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_CLICK.equals(eventType)) {
+            return initTextMessageOfJsonString(fromUserName, message);
+        } else if (WeiXinMessageServiceImpl.MESSAGE_EVENT_CLICK.equals(eventType)) {
             // 根据发送的事件代码返回特定的图文消息，用户通过点击图文消息走向我们的网页吧
             message = handleClickMessage(fromUserName, map);
-        } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_SCANCODE.equals(eventType)) {// 扫码事件
+        } else if (WeiXinMessageServiceImpl.MESSAGE_EVENT_SCANCODE.equals(eventType)) {// 扫码事件
             System.out.println("scan...");
 //            message = handleScanMessage(map);
-        } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_VIEW.equals(eventType)) {
+        } else if (WeiXinMessageServiceImpl.MESSAGE_EVENT_VIEW.equals(eventType)) {
             System.out.println("view !");
             message = "vvvv";
-        } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_UNSUBSCRIBE.equals(eventType)) {
+        } else if (WeiXinMessageServiceImpl.MESSAGE_EVENT_UNSUBSCRIBE.equals(eventType)) {
             // 用户取消关注，暂时不删除其信息吧
             return null;
         }
@@ -178,7 +204,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
         if (eventKey.startsWith(ManageMenu.EVENTKEY_QUERY_PREFIX)) {
             result = QueryService.handleQuery(eventKey);
         }
-        return initTextMessageOfJsonString(result);
+        return initTextMessageOfJsonString(fromUserName, result);
 
 
 //
@@ -255,10 +281,10 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
      * @param content
      * @return jsonString
      */
-    private String initTextMessageOfJsonString(String content) {
+    private String initTextMessageOfJsonString(String toUserOpenId,String content) {
         System.out.println("initTextMessageOfJsonString is called");
         content = content + "\n\n回复 “帮助”，可以查看更多文本命令提示哟！/::)";
-        TextMessage tm = new TextMessage(fromUserName, content);
+        TextMessage tm = new TextMessage(toUserOpenId, content);
         return JsonUtil.toJSONString(tm);
     }
 

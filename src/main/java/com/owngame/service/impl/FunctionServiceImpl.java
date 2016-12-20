@@ -140,6 +140,11 @@ public class FunctionServiceImpl implements FunctionService {
      * @return
      */
     public ArrayList<Function> getFunctionsByType(String functionInfos, int type) {
+        if(functionInfos != null){
+            if(functionInfos.equals("nofunctions")){
+                return null;
+            }
+        }
         functionInfos = functionInfos.trim().replaceAll("，", ",");
         String infos[] = functionInfos.split(",");
         if (infos.length == 0) {
@@ -391,6 +396,51 @@ public class FunctionServiceImpl implements FunctionService {
         // 2.查询
         return "功能[" + function.getName() + "]的查询结果：" + doQuery(connection, sql, readFields);
     }
+
+    /**
+     * 通过权限 筛选出可用的功能
+     * 筛选出可用功能并告知错误原因
+     * @param functions
+     * @param grade
+     * @return
+     */
+    public FunctionFilterResult filterFunctions(ArrayList<Function> functions, String grade){
+        if(functions == null || functions.size() == 0){
+            return null;
+        }
+        ArrayList<Function> fts = new ArrayList<Function>();
+        String result  = "";
+        String functionNames = "";
+        for (int i = 0; i < functions.size(); i++) {
+            Function function = functions.get(i);
+            if (function.getId() == -1) {// 没查询到
+                result += "关键字[" + function.getKeywords() + "] 没有查询到对应的功能。";
+                if (function.getDescription() != null) {
+                    // 有类似的关键字
+                    result += "您可能要查询的关键字有[" + function.getDescription() + "]。";
+                }
+                continue;
+            }
+            functionNames += function.getName();
+            if (i + 1 < functions.size()) {
+                functionNames += "、";
+            }
+            if (Integer.parseInt(function.getGrade()) > Integer.parseInt(grade)) {
+                result += "关键字[" + function.getKeywords() + "]对应的功能[" + function.getName() +
+                        "]由于你的权限不足，无法查询;\n";
+                continue;
+            }
+            if (function.getUsable().contains("no")) {
+                result += "关键字[" + function.getKeywords() + "]对应的的功能[" + function.getName() +
+                        "]暂时不可用;\n";
+                continue;
+            }
+            // 权限与功能均可用
+            fts.add(function);
+        }
+        return new FunctionFilterResult(result, functionNames, fts);
+    }
+
 
     /**
      * 检查Sql语句

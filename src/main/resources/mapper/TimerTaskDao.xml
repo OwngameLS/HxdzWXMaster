@@ -17,9 +17,9 @@
 
     <insert id="insert" parameterType="TimerTask">
         insert into timertask
-        (id, name, functions, description, firerules, receivers, state)
+        (id, name, functions, description, firerules, receivers, receivetype, state)
         values
-        (#{id}, #{name},#{functions},#{description},#{firerules},#{receivers}, #{state})
+        (#{id}, #{name},#{functions},#{description},#{firerules},#{receivers},#{receivetype}, #{state})
     </insert>
 
     <update id="update" parameterType="TimerTask">
@@ -29,6 +29,7 @@
         description=#{description},
         firerules=#{firerules},
         receivers=#{receivers},
+        receivetype=#{receivetype},
         state=#{state}
         where id=#{id}
     </update>
