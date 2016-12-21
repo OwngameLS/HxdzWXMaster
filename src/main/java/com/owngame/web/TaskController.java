@@ -1,10 +1,12 @@
 package com.owngame.web;
 
 import com.owngame.entity.ContactDisplay;
+import com.owngame.entity.ContactHigh;
 import com.owngame.entity.Task;
 import com.owngame.service.AnswerService;
 import com.owngame.service.ContactService;
 import com.owngame.service.TaskService;
+import com.owngame.service.WeiXinMessageService;
 import com.owngame.service.impl.AnswerServiceImpl;
 import com.owngame.service.impl.ContactServiceImpl;
 import com.owngame.service.impl.FunctionServiceImpl;
@@ -28,6 +30,8 @@ public class TaskController {
     @Autowired
     TaskService taskService;
     @Autowired
+    WeiXinMessageService weiXinMessageService;
+    @Autowired
     ContactService contactService;
     @Autowired
     AnswerService answerService;
@@ -45,18 +49,19 @@ public class TaskController {
         String description = p.get("description");
         String contents = p.get("contents");
         int sendType = Integer.parseInt(p.get("sendtype"));
-        String receivers = p.get("receivers");
+        String receivers = p.get("receivers");// 手机号
         switch (sendType){
             case TaskServiceImpl.SEND_TYPE_SMS:
                 taskService.createTask(name, description, contents, receivers);
                 break;
             case TaskServiceImpl.SEND_TYPE_WX:
-                // TODO 微信任务
-//                ArrayList<ContactDisplay> contactDisplays = contactService.1
+                // 微信任务
+                createWeixinTask(receivers, contents);
                 break;
             case TaskServiceImpl.SEND_TYPE_SMS_AND_WX:
                 taskService.createTask(name, description, contents, receivers);
-                // TODO 微信任务
+                // 微信任务
+                createWeixinTask(receivers, contents);
                 break;
         }
 
@@ -64,6 +69,29 @@ public class TaskController {
         // 返回更新后的该组信息
         map.put("success", "success");
         return map;
+    }
+
+    // 创建微信任务
+    private void createWeixinTask(String receivers, String contents){
+        String[] phones = receivers.split(",");
+        ArrayList<String> openIds = new ArrayList<String>();
+        for(int i=0;i<phones.length;i++){
+            ContactHigh contactHigh = contactService.queryHighByPhone(phones[i]);
+            if(contactHigh != null){
+                String openId = contactHigh.getOpenid();
+                if(openId != null || openId.equals("null") == false){
+                    openIds.add(openId);
+                }
+            }
+        }
+        String openIdsString = "";
+        for(int i=0;i<openIds.size();i++){
+            openIdsString += openIds.get(i);
+            if(i+1 < openIds.size()){
+                openIdsString += ",";
+            }
+        }
+        weiXinMessageService.sendTextMessage(contents, openIdsString);
     }
 
 

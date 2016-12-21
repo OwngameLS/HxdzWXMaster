@@ -190,6 +190,10 @@ function createTask() {
     }
     var sendTypeSms = $("#sendTypeSms").prop("checked");
     var sendTypeWx = $("#sendTypeWx").prop("checked");
+    if(sendTypeSms == false && sendTypeWx == false){
+        showEditFail("你必须要选择至少一种发送方式啊。", null);
+        return;
+    }
     var sendtype = 0;
     if(sendTypeSms){
         if(sendTypeWx){
@@ -280,7 +284,7 @@ function getResults() {
             if (isEmpty(contents)) {
                 contents = data['results'];
             } else {
-                contents = ";" + data['results'];
+                contents += ";" + data['results'];
             }
             contents = contents + getTimeNow();
             $("#message").val(contents);

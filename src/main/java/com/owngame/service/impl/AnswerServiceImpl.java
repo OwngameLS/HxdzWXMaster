@@ -216,6 +216,7 @@ public class AnswerServiceImpl implements AnswerService {
                 result += functionFilterResult.getResult() + functionService.getFunctionResultsByFunctions(functionFilterResult.getFunctions());
                 // 记录查询操作
                 askrecord.setDescription(result);
+                askrecord.setIssuccess(Askrecord.ASK_RESULT_SUCCESS);
                 createAskrecord(askrecord);
                 // 根据查询来源，返回结果的方式也有不同
                 if (askType == ASK_TYPE_SMS) {
@@ -284,7 +285,7 @@ public class AnswerServiceImpl implements AnswerService {
                                 functionNames = "自定义消息。";
                                 taskName = "自定义消息。";
                             }else{
-                                result = msg + result;
+                                result = msg +"\n" + result;
                                 functionNames = "自定义消息 与 功能查询结果("+functionNames+")。";
                                 taskName = "自定义消息 与 功能查询结果。";
                             }

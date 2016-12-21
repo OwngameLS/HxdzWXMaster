@@ -281,7 +281,7 @@ public class WeiXinMessageServiceImpl implements WeiXinMessageService {
      * @param content
      * @return jsonString
      */
-    private String initTextMessageOfJsonString(String toUserOpenId,String content) {
+    private String initTextMessageOfJsonString(String toUserOpenId, String content) {
         System.out.println("initTextMessageOfJsonString is called");
         content = content + "\n\n回复 “帮助”，可以查看更多文本命令提示哟！/::)";
         TextMessage tm = new TextMessage(toUserOpenId, content);

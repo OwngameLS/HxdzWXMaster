@@ -153,7 +153,7 @@
                 发送方式：
             </div>
             <div class="col-md-1">
-                <input type="checkbox" id="sendTypeSms">短信
+                <input type="checkbox" id="sendTypeSms" checked>短信
             </div>
             <div class="col-md-2">
                 <input type="checkbox" id="sendTypeWx"><abbr title="如果这个手机号对应的有微信号的话，就会发送">微信</abbr>
@@ -176,11 +176,11 @@
 <script type="application/javascript">
     var bp = '<%=basePath%>';
 
-    // 文档被加载完成时
+   /* // 文档被加载完成时
     $(document).ready(function () {
         queryTimerTasks();
     });
-
+*/
 
 </script>
 
