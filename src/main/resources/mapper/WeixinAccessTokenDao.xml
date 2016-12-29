@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 为Dao接口方法提供SQL语句配置 -->
+<mapper namespace="com.owngame.dao.WeixinAccessTokenDao">
+
+    <select id="get" resultType="WeixinAccessToken">
+        select * from weixinaccesstoken
+    </select>
+
+    <insert id="insert" parameterType="WeixinAccessToken">
+        insert ignore weixinaccesstoken
+        (id, accesstoken, expiresin)
+        values
+        (#{id},#{accesstoken}, #{expiresin})
+    </insert>
+
+    <update id="update" parameterType="WeixinAccessToken">
+        update weixinaccesstoken set
+        accesstoken=#{accesstoken},
+        expiresin=#{expiresin}
+        where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        delete from weixinaccesstoken where id=#{id}
+    </delete>
+</mapper>

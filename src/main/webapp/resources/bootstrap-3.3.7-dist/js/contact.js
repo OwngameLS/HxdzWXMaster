@@ -381,7 +381,7 @@ function doEditContact() {
         return;
     }
     // 判断手机号格式
-    if (false == (phone && /^1[3|4|5|8]\d{9}$/.test(phone))) {
+    if (false == isValidPhone(phone)) {
         //不对
         showEditFail("手机号格式不对！", $("#editContactPhone"));
         return;

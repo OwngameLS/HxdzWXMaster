@@ -18,7 +18,7 @@
     <script src="../../resources/bootstrap-3.3.7-dist/js/askrecords.js"></script>
 </head>
 <body>
-<h3>查询状态</h3>
+<h3>查询记录</h3>
 
 <div class="danger" style="padding: 5px;">
     <!-- 模态框（Modal） -->

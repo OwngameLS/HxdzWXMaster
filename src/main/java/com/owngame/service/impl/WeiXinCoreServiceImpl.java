@@ -2,6 +2,7 @@ package com.owngame.service.impl;
 
 import com.owngame.service.WeiXinCoreService;
 import com.owngame.service.WeiXinMessageService;
+import com.owngame.service.WeixinAccessTokenService;
 import com.owngame.utils.AccessTokenUtil;
 import com.owngame.utils.InfoFormatUtil;
 import org.dom4j.DocumentException;
@@ -21,6 +22,8 @@ import java.util.Map;
 public class WeiXinCoreServiceImpl implements WeiXinCoreService {
     @Autowired
     WeiXinMessageService weixinMessageService;
+    @Autowired
+    WeixinAccessTokenService weixinAccessTokenService;
 
     /**
      * 处理消息
@@ -40,7 +43,7 @@ public class WeiXinCoreServiceImpl implements WeiXinCoreService {
         String messageJson = weixinMessageService.handleMessage(map);
         if (messageJson.equals("notNeed") == false) {// 需要回复
             // 调用客服消息借口回复消息
-            String token = AccessTokenUtil.getSavedToken();
+            String token = weixinAccessTokenService.get().getAccesstoken();
             BaseResult br = MessageAPI.messageCustomSend(token, messageJson);
             System.out.println("br:" + br.getErrcode() + "; " + br.getErrmsg());
         }

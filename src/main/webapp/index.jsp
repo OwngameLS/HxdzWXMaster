@@ -11,6 +11,8 @@
     <title>Smserver</title>
     <!-- 引入 Bootstrap -->
     <link href="resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="resources/bootstrap-3.3.7-dist/js/settings.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
 </head>
 <body>
 <div class="container">
@@ -28,39 +30,39 @@
                 <a class="navbar-brand">Smserver</a>
             </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav nav-pills">
                     <li><a href="<%=basePath%>Smserver/view/taskstate" target="display">首 页</a></li>
-                    <li><a href="<%=basePath%>Smserver/view/askrecords" target="display">查询状态</a></li>
+                    <li><a href="<%=basePath%>Smserver/view/askrecords" target="display">查询记录</a></li>
                     <li><a href="<%=basePath%>Smserver/view/timertask" target="display">定时任务</a></li>
                     <li><a href="<%=basePath%>Smserver/view/contact" target="display">通讯录</a></li>
                     <li><a href="<%=basePath%>Smserver/view/function" target="display">功 能</a></li>
                     <%--target指的是name--%>
                     <li><a href="<%=basePath%>Smserver/view/msg" target="display">信息群发</a></li>
+                    <li><a href="<%=basePath%>Smserver/view/settings" target="display">系统设置</a></li>
                 </ul>
-                <%--<form class="navbar-form navbar-left" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search">
-                    </div>
-                    <button type="submit" class="btn btn-default">搜索</button>
-                </form>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">Link</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                        </ul>
-                    </li>
-                </ul>--%>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="authorizedModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">授权失败</h4>
+                </div>
+                <div class="modal-body">
+                    <h1 style="color: red">授权失败！</h1>
+                    <h3>失败原因：</h3><h3 id="invalidReason"></h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
 
 
     <!-- 16:9 aspect ratio -->
@@ -79,6 +81,15 @@
 <script src="resources/bootstrap-3.3.7-dist/js/jquery-3.1.0.min.js"></script>
 <!-- 包括所有已编译的插件 -->
 <script src="resources/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+<script type="application/javascript">
+    var bp = '<%=basePath%>';
+    // 文档被加载完成时
+    $(document).ready(function () {
+        getAuthorizedState();
+    });
+
+</script>
 
 </body>
 </html>

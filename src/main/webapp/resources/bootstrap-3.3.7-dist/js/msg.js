@@ -92,7 +92,7 @@ function removeAllContacts() {
 function addAnonymous() {
     // 先判断输入的手机号合法性
     var phone = $("#newphone").val();
-    if (false == (phone && /^1[3|4|5|8]\d{9}$/.test(phone))) {
+    if (false == isValidPhone(phone)) {
         alert("输入的手机号不合法，请检查！");
     } else {
         var t = new selectedContact();

@@ -81,7 +81,7 @@
 
     // 文档被加载完成时
     $(document).ready(function () {
-        queryAskrecords();// 默认查询一小时之内的
+        queryTasks();// 默认查询一小时之内的
     });
 
 

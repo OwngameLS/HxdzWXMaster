@@ -79,8 +79,6 @@ public class MainController {
     @RequestMapping(method = {RequestMethod.POST}, produces = "application/xml;charset=UTF-8")
     public void post(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        // 初始化token文件
-        initMyTokenFile();
         System.out.println("handle post...");
         /* 消息的接收、处理、响应 */
         // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
@@ -94,18 +92,6 @@ public class MainController {
         // 交由微信服务去处理具体逻辑
         weiXinCoreService.handleMessage(s);
     }
-
-    // 初始化token文件
-    private boolean initMyTokenFile() {
-        AccessTokenUtil.tokenFilePath = context.getRealPath("/") + "token/myToken";// 获得文件路径的方法
-        // 如果文件不存在 就创建
-        AccessTokenUtil.tokenFile = new File(AccessTokenUtil.tokenFilePath);
-        if (AccessTokenUtil.tokenFile.exists() == false) {
-            AccessTokenUtil.getSavedToken();
-        }
-        return true;
-    }
-
 
     /**
      * 处理上传通讯录文件

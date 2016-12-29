@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 为Dao接口方法提供SQL语句配置 -->
+<mapper namespace="com.owngame.dao.SettingsDao">
+
+    <select id="queryById" resultType="Settings" parameterType="long">
+        select * from settings where id=#{id}
+    </select>
+
+    <select id="queryByName" resultType="Settings" parameterType="String">
+        select * from settings where name=#{name}
+    </select>
+
+    <select id="queryByRequire" resultType="Settings" parameterType="String">
+        select * from settings where require=#{require}
+    </select>
+
+    <select id="queryAll" resultType="Settings">
+        select * from settings
+    </select>
+
+
+
+    <insert id="insert" parameterType="Settings">
+        insert ignore into settings
+        (id,description, name, value, require)
+        values
+        (#{id},#{description}, #{name}, #{value}, #{require})
+    </insert>
+
+    <update id="update" parameterType="Settings">
+        update settings set
+        description=#{description},
+        name=#{name},require
+        value=#{value},
+        require=#{require}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteByName" parameterType="String">
+        delete from settings where name=#{name}
+    </delete>
+
+</mapper>

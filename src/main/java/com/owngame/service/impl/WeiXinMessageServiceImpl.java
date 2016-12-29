@@ -15,6 +15,7 @@ import weixin.popular.bean.message.message.NewsMessage.Article;
 import weixin.popular.bean.message.message.TextMessage;
 import weixin.popular.util.JsonUtil;
 
+import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +62,11 @@ public class WeiXinMessageServiceImpl implements WeiXinMessageService {
     AnswerService answerService;
     @Autowired
     ContactService contactService;
+    @Autowired
+    WeixinAccessTokenService weixinAccessTokenService;
+    @Autowired
+    ServletContext context;// 获得环境变量的入口！
+
 
     String fromUserName; // 消息的发来者，也是返回消息的接收者
     String rtMsgType;// 返回的消息类型
@@ -93,7 +99,7 @@ public class WeiXinMessageServiceImpl implements WeiXinMessageService {
         for (int i = 0; i< openId.length; i++){
             String messageJson = initTextMessageOfJsonString(openId[i], message);
             // 调用客服消息借口回复消息
-            String token = AccessTokenUtil.getSavedToken();
+            String token = weixinAccessTokenService.get().getAccesstoken();
             BaseResult br = MessageAPI.messageCustomSend(token, messageJson);
             System.out.println("br:" + br.getErrcode() + "; " + br.getErrmsg());
         }
@@ -106,8 +112,13 @@ public class WeiXinMessageServiceImpl implements WeiXinMessageService {
         System.out.println("handleTextMessage is called.");
         rtMsgType = MESSAGE_TYPE_TEXT;
 // TODO 先排查一遍是否有微信公众号特殊定义的关键字，方便决定是否需要返回特殊消息
-//        if(content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)){
-//        }else
+        if(content.startsWith("群发")){
+            String path = context.getServletContextName();
+            path = context.getServerInfo();
+            return null;
+        }
+
+
         if (content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)) {// 手机号逻辑
             content = phoneNumberLogic(content);
         } else { // 查询逻辑

@@ -81,6 +81,11 @@ function isEmpty(value) {
     }
 }
 
+function isValidPhone(phone){
+    // 非空 且 符合手机号规则
+    return ((isEmpty(phone) == false) && /^1[3|4|5|8]\d{9}$/.test(phone));
+}
+
 function getTimeNow() {
     var mydate = new Date();
     // mydate.getYear(); //获取当前年份(2位)
