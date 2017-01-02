@@ -32,8 +32,8 @@ public class SettingsServiceImpl implements SettingsService {
     }
 
     @Override
-    public ArrayList<Settings> queryByRequire(String require) {
-        return settingsDao.queryByRequire(require);
+    public ArrayList<Settings> queryByReferto(String referto) {
+        return settingsDao.queryByReferto(referto);
     }
 
     @Override

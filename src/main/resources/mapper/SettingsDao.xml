@@ -12,29 +12,27 @@
         select * from settings where name=#{name}
     </select>
 
-    <select id="queryByRequire" resultType="Settings" parameterType="String">
-        select * from settings where require=#{require}
+    <select id="queryByReferto" resultType="Settings" parameterType="String">
+        select * from settings where referto=#{referto}
     </select>
 
     <select id="queryAll" resultType="Settings">
         select * from settings
     </select>
 
-
-
     <insert id="insert" parameterType="Settings">
         insert ignore into settings
-        (id,description, name, value, require)
+        (id,description, name, value, referto)
         values
-        (#{id},#{description}, #{name}, #{value}, #{require})
+        (#{id},#{description}, #{name}, #{value}, #{referto})
     </insert>
 
     <update id="update" parameterType="Settings">
         update settings set
         description=#{description},
-        name=#{name},require
+        name=#{name},
         value=#{value},
-        require=#{require}
+        referto=#{referto}
         where id=#{id}
     </update>
 

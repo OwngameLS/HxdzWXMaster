@@ -9,7 +9,7 @@ public class Settings {
     String description;// 描述名
     String name;// 设置名称
     String value = "no";// 设置值
-    String require = "no";// 依赖的Settings
+    String referto = "no";// 依赖的Settings
 
     public long getId() {
         return id;
@@ -43,11 +43,11 @@ public class Settings {
         this.value = value;
     }
 
-    public String getRequire() {
-        return require;
+    public String getReferto() {
+        return referto;
     }
 
-    public void setRequire(String require) {
-        this.require = require;
+    public void setReferto(String referto) {
+        this.referto = referto;
     }
 }

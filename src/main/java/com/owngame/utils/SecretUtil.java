@@ -23,7 +23,8 @@ public class SecretUtil {
     }
 
     public static void main(String[] args){
-        String ts = System.currentTimeMillis() + 1000*60*60*24*365 + "";
+        long time = System.currentTimeMillis();
+        String ts = (time + 1000*60*60*24*30l) + "";
         System.out.println("ts:" + ts);
         System.out.println(SecretUtil.encodeWithMD5(ts));
     }

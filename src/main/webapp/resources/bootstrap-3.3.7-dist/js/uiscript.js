@@ -103,3 +103,83 @@ function getTimeNow() {
     return mytime;
     // mydate.toLocaleString( ); //获取日期与时间
 }
+
+function parseMillsToDate(timeinMills){
+    var time = getFormatDateByLong(timeinMills,"yyyy-MM-dd HH:mm:ss");
+    return time;
+}
+
+// 时间转换
+Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+        "M+": this.getMonth() + 1,                 //月份
+        "d+": this.getDate(),                    //日
+        "H+": this.getHours(),                   //小时
+        "m+": this.getMinutes(),                 //分
+        "s+": this.getSeconds(),                 //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds()             //毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+
+
+/**
+ *转换long值为日期字符串
+ * @param l long值
+ * @param isFull 是否为完整的日期数据,
+ * 为true时, 格式如"2000-03-05 01:05:04"
+ * 为false时, 格式如 "2000-03-05"
+ * @return 符合要求的日期字符串
+ */
+function getSmpFormatDateByLong(l, isFull) {
+    return getSmpFormatDate(new Date(l), isFull);
+}
+/**
+ *转换long值为日期字符串
+ * @param l long值
+ * @param pattern 格式字符串,例如：yyyy-MM-dd hh:mm:ss
+ * @return 符合要求的日期字符串
+ */
+function getFormatDateByLong(l, pattern) {
+    return getFormatDate(new Date(l), pattern);
+}
+
+/**
+ *转换日期对象为日期字符串
+ * @param date 日期对象
+ * @param isFull 是否为完整的日期数据,
+ * 为true时, 格式如"2000-03-05 01:05:04"
+ * 为false时, 格式如 "2000-03-05"
+ * @return 符合要求的日期字符串
+ */
+function getSmpFormatDate(date, isFull) {
+    var pattern = "";
+    if (isFull == true || isFull == undefined) {
+        pattern = "yyyy-MM-dd hh:mm:ss";
+    } else {
+        pattern = "yyyy-MM-dd";
+    }
+    return getFormatDate(date, pattern);
+}
+
+/**
+ *转换日期对象为日期字符串
+ * @param l long值
+ * @param pattern 格式字符串,例如：yyyy-MM-dd hh:mm:ss
+ * @return 符合要求的日期字符串
+ */
+function getFormatDate(date, pattern) {
+    if (date == undefined) {
+        date = new Date();
+    }
+    if (pattern == undefined) {
+        pattern = "yyyy-MM-dd hh:mm:ss";
+    }
+    return date.Format(pattern);
+}

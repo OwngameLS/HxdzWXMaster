@@ -49,7 +49,7 @@ function initTbodyOfTasks(tasks) {
         }
 
         // 转换时间
-        var time = new Date(tasks[i].createTime).Format("yyyy-MM-dd HH:mm:ss");
+        var time = parseMillsToDate(tasks[i].createTime,"yyyy-MM-dd HH:mm:ss");//new Date(tasks[i].createTime).Format("yyyy-MM-dd HH:mm:ss");
         htmlStr = htmlStr + '<td>' + tasks[i].name;
         if (tasks[i].state == 0 || tasks[i].state == 1) {// 尚未发送成功，可以停止
             htmlStr = htmlStr + parseToAbbr('<img src="../../resources/bootstrap-3.3.7-dist/img/stop.png" onclick="changeState(' + tasks[i].id + ', -1)"/>', null, "取消发送");
@@ -72,25 +72,6 @@ function hideModal() {
     $("#myModal").modal("hide");
 }
 
-
-// 时间转换
-Date.prototype.Format = function (fmt) { //author: meizz
-    var o = {
-        "M+": this.getMonth() + 1,                 //月份
-        "d+": this.getDate(),                    //日
-        "H+": this.getHours(),                   //小时
-        "m+": this.getMinutes(),                 //分
-        "s+": this.getSeconds(),                 //秒
-        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
-        "S": this.getMilliseconds()             //毫秒
-    };
-    if (/(y+)/.test(fmt))
-        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    for (var k in o)
-        if (new RegExp("(" + k + ")").test(fmt))
-            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-    return fmt;
-}
 
 // 取消发送，修改状态即可
 function changeState(id, state) {

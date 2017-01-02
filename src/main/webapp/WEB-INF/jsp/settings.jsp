@@ -30,8 +30,8 @@
     <div class="well">
         <div class="row text-center">
             <div class="col-md-3 text-center">
-                <img src="../../resources/bootstrap-3.3.7-dist/img/cry.png">
-                <h3 id="authorizestate" style="color: red"> 您尚未获得授权 </h3>
+                <img id="authorizestateimg" src="../../resources/bootstrap-3.3.7-dist/img/smiley.png">
+                <h3 id="authorizestatedes"> 您已获得授权。 </h3>
             </div>
             <div class="col-md-5 text-left">
                 <div class="row">
@@ -66,7 +66,7 @@
     </div>
     <div class="well">
         <div id="dbSettings">
-            <div class="row bg-primary">
+            <div id ="db" class="row bg-primary">
                 <div class="col-md-4 text-left">
                     <img src="../../resources/bootstrap-3.3.7-dist/img/database.png">数据库配置
                 </div>
@@ -74,31 +74,6 @@
 
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4 text-right">
-                    用户名
-                </div>
-                <div class="col-md-6 text-left">
-                    <input class="form-control">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 text-right">
-                    密码
-                </div>
-                <div class="col-md-6 text-left">
-                    <input class="form-control">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 text-right">
-                    端口号
-                </div>
-                <div class="col-md-6 text-left">
-                    <input class="form-control">
-                </div>
-            </div>
-
         </div>
     </div>
     <div class="well">
@@ -168,7 +143,7 @@
 
     // 文档被加载完成时
     $(document).ready(function () {
-//        queryAskrecords();// 默认查询一小时之内的
+        getSettings();// 获得所有设置信息
     });
 
 

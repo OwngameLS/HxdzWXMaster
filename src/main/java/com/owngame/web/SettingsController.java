@@ -61,6 +61,7 @@ public class SettingsController {
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> getSettings() {
+        System.out.println("getSettings is Called.");
         Map<String, Object> map = new HashMap<String, Object>();
         ArrayList<Settings> settingses = settingsService.queryAll();
         map.put("settingses", settingses);
@@ -117,6 +118,13 @@ public class SettingsController {
     }
 
 
+    /**
+     * 从已获取的Settingses中按照name读取指定Settings
+     * 这样做主要是减轻数据库压力，用内存换磁盘
+     * @param name
+     * @param settingses
+     * @return
+     */
     private Settings getSettingsByName(String name, ArrayList<Settings> settingses){
         if(settingses == null || settingses.size()==0){
             return null;

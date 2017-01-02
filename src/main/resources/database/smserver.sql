@@ -2,21 +2,21 @@
 Navicat MySQL Data Transfer
 
 Source Server         : mysql
-Source Server Version : 50711
+Source Server Version : 50709
 Source Host           : localhost:3306
 Source Database       : smserver
 
 Target Server Type    : MYSQL
-Target Server Version : 50711
+Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2016-12-29 17:19:21
+Date: 2017-01-02 13:14:19
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for `askrecord`
+-- Table structure for askrecord
 -- ----------------------------
 DROP TABLE IF EXISTS `askrecord`;
 CREATE TABLE `askrecord` (
@@ -67,7 +67,7 @@ INSERT INTO `askrecord` VALUES ('414', '管理员', '管理员', '3', '1', '自�
 INSERT INTO `askrecord` VALUES ('415', 'Owngame', '18107436127', '1', '1', 'B股', '关键字[B股] 没有查询到对应的功能。', '2016-12-24 12:56:25');
 
 -- ----------------------------
--- Table structure for `contactbase`
+-- Table structure for contactbase
 -- ----------------------------
 DROP TABLE IF EXISTS `contactbase`;
 CREATE TABLE `contactbase` (
@@ -102,7 +102,7 @@ INSERT INTO `contactbase` VALUES ('16', 'C', '张三', '123.0', '34', 'waerfa');
 INSERT INTO `contactbase` VALUES ('17', 'D', '龙生', '阿哥', '20', null);
 
 -- ----------------------------
--- Table structure for `contacthigh`
+-- Table structure for contacthigh
 -- ----------------------------
 DROP TABLE IF EXISTS `contacthigh`;
 CREATE TABLE `contacthigh` (
@@ -135,7 +135,7 @@ INSERT INTO `contacthigh` VALUES ('34', '18107436112', '0', null, null);
 INSERT INTO `contacthigh` VALUES ('35', 'superman', '7', null, 'superman');
 
 -- ----------------------------
--- Table structure for `function`
+-- Table structure for function
 -- ----------------------------
 DROP TABLE IF EXISTS `function`;
 CREATE TABLE `function` (
@@ -174,7 +174,7 @@ INSERT INTO `function` VALUES ('6', '23234', '23442', '3', 'localhost', '3306', 
 INSERT INTO `function` VALUES ('7', '23234', '23442', '32', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'rules', '', '', '', 'anyway', '', '', '0', 'no');
 
 -- ----------------------------
--- Table structure for `qrtz_blob_triggers`
+-- Table structure for qrtz_blob_triggers
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_blob_triggers`;
 CREATE TABLE `qrtz_blob_triggers` (
@@ -192,7 +192,7 @@ CREATE TABLE `qrtz_blob_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `qrtz_calendars`
+-- Table structure for qrtz_calendars
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_calendars`;
 CREATE TABLE `qrtz_calendars` (
@@ -207,7 +207,7 @@ CREATE TABLE `qrtz_calendars` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `qrtz_cron_triggers`
+-- Table structure for qrtz_cron_triggers
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_cron_triggers`;
 CREATE TABLE `qrtz_cron_triggers` (
@@ -226,7 +226,7 @@ CREATE TABLE `qrtz_cron_triggers` (
 INSERT INTO `qrtz_cron_triggers` VALUES ('quartzScheduler', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'DEFAULT', '0 * * * * ? *', 'GMT+08:00');
 
 -- ----------------------------
--- Table structure for `qrtz_fired_triggers`
+-- Table structure for qrtz_fired_triggers
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_fired_triggers`;
 CREATE TABLE `qrtz_fired_triggers` (
@@ -257,7 +257,7 @@ CREATE TABLE `qrtz_fired_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `qrtz_job_details`
+-- Table structure for qrtz_job_details
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_job_details`;
 CREATE TABLE `qrtz_job_details` (
@@ -282,7 +282,7 @@ CREATE TABLE `qrtz_job_details` (
 INSERT INTO `qrtz_job_details` VALUES ('quartzScheduler', 'jobDetail', 'DEFAULT', null, 'com.owngame.utils.MyQuartzJobBean', '1', '1', '1', '0', 0xACED0005737200156F72672E71756172747A2E4A6F62446174614D61709FB083E8BFA9B0CB020000787200266F72672E71756172747A2E7574696C732E537472696E674B65794469727479466C61674D61708208E8C3FBC55D280200015A0013616C6C6F77735472616E7369656E74446174617872001D6F72672E71756172747A2E7574696C732E4469727479466C61674D617013E62EAD28760ACE0200025A000564697274794C00036D617074000F4C6A6176612F7574696C2F4D61703B787000737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F40000000000010770800000010000000007800);
 
 -- ----------------------------
--- Table structure for `qrtz_locks`
+-- Table structure for qrtz_locks
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_locks`;
 CREATE TABLE `qrtz_locks` (
@@ -297,7 +297,7 @@ CREATE TABLE `qrtz_locks` (
 INSERT INTO `qrtz_locks` VALUES ('quartzScheduler', 'TRIGGER_ACCESS');
 
 -- ----------------------------
--- Table structure for `qrtz_paused_trigger_grps`
+-- Table structure for qrtz_paused_trigger_grps
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_paused_trigger_grps`;
 CREATE TABLE `qrtz_paused_trigger_grps` (
@@ -311,7 +311,7 @@ CREATE TABLE `qrtz_paused_trigger_grps` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `qrtz_scheduler_state`
+-- Table structure for qrtz_scheduler_state
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_scheduler_state`;
 CREATE TABLE `qrtz_scheduler_state` (
@@ -327,7 +327,7 @@ CREATE TABLE `qrtz_scheduler_state` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `qrtz_simple_triggers`
+-- Table structure for qrtz_simple_triggers
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_simple_triggers`;
 CREATE TABLE `qrtz_simple_triggers` (
@@ -346,7 +346,7 @@ CREATE TABLE `qrtz_simple_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `qrtz_simprop_triggers`
+-- Table structure for qrtz_simprop_triggers
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_simprop_triggers`;
 CREATE TABLE `qrtz_simprop_triggers` (
@@ -373,7 +373,7 @@ CREATE TABLE `qrtz_simprop_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `qrtz_triggers`
+-- Table structure for qrtz_triggers
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_triggers`;
 CREATE TABLE `qrtz_triggers` (
@@ -415,7 +415,7 @@ CREATE TABLE `qrtz_triggers` (
 INSERT INTO `qrtz_triggers` VALUES ('quartzScheduler', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'DEFAULT', 'jobDetail', 'DEFAULT', null, '1476928680000', '1476928648239', '5', 'PAUSED', 'CRON', '1476928060000', '0', null, '0', 0xACED0005737200156F72672E71756172747A2E4A6F62446174614D61709FB083E8BFA9B0CB020000787200266F72672E71756172747A2E7574696C732E537472696E674B65794469727479466C61674D61708208E8C3FBC55D280200015A0013616C6C6F77735472616E7369656E74446174617872001D6F72672E71756172747A2E7574696C732E4469727479466C61674D617013E62EAD28760ACE0200025A000564697274794C00036D617074000F4C6A6176612F7574696C2F4D61703B787001737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F4000000000000C7708000000100000000274000966756E6374696F6E73740003616263740009726563656976657273740007312C332C342C357800);
 
 -- ----------------------------
--- Table structure for `settings`
+-- Table structure for settings
 -- ----------------------------
 DROP TABLE IF EXISTS `settings`;
 CREATE TABLE `settings` (
@@ -423,20 +423,24 @@ CREATE TABLE `settings` (
   `description` text,
   `name` text,
   `value` text,
-  `require` text,
+  `referto` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of settings
 -- ----------------------------
 INSERT INTO `settings` VALUES ('1', '授权状态', 'authorizedState', 'valid', 'no');
-INSERT INTO `settings` VALUES ('2', '到期时间', 'validTime', '1484473195610', 'no');
-INSERT INTO `settings` VALUES ('3', 'nodes', '5891675fd9c7128fb390426a184f9f29', '1d7907b478c0ad33d115e065827edff3', 'no');
+INSERT INTO `settings` VALUES ('2', '到期时间', 'validTime', '1485921489790', 'no');
+INSERT INTO `settings` VALUES ('3', 'nodes', '5891675fd9c7128fb390426a184f9f29', 'c6b88ca9a09faefc3092b7bf4c5b63df', 'no');
 INSERT INTO `settings` VALUES ('4', '授权中心手机号', 'phone', '18107436127', 'no');
+INSERT INTO `settings` VALUES ('5', '用户名', 'username', 'Owngame', 'no');
+INSERT INTO `settings` VALUES ('6', '数据库用户名', 'db_username', 'root', 'no');
+INSERT INTO `settings` VALUES ('7', '数据库密码', 'db_password', 'root', 'no');
+INSERT INTO `settings` VALUES ('8', '数据库端口', 'db_port', '3306', 'no');
 
 -- ----------------------------
--- Table structure for `task`
+-- Table structure for task
 -- ----------------------------
 DROP TABLE IF EXISTS `task`;
 CREATE TABLE `task` (
@@ -448,7 +452,7 @@ CREATE TABLE `task` (
   `receivers` text,
   `createTime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=386 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=387 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of task
@@ -458,9 +462,10 @@ INSERT INTO `task` VALUES ('380', '群发消息', '主动发送消息给一部�
 INSERT INTO `task` VALUES ('381', '群发消息', '主动发送消息给一部分人...(消息内容:test contents...)', '2', 'test contents...', '13945671987,13945677891,18107436127', '2016-11-24 11:31:48');
 INSERT INTO `task` VALUES ('384', '变更绑定微信号', '手机号18107436127变更绑定其微信号，用户验证信息发送。', '-1', '288594', '18107436127', '2016-12-07 10:46:34');
 INSERT INTO `task` VALUES ('385', '群发消息', '群发消息...(消息内容:1231234321)', '-1', '1231234321', '18107436127', '2016-12-24 13:02:35');
+INSERT INTO `task` VALUES ('386', '群发消息', '群发消息...(消息内容:adsfas)', '-1', 'adsfas', '18107436127', '2017-01-02 12:32:37');
 
 -- ----------------------------
--- Table structure for `timertask`
+-- Table structure for timertask
 -- ----------------------------
 DROP TABLE IF EXISTS `timertask`;
 CREATE TABLE `timertask` (
@@ -481,7 +486,7 @@ CREATE TABLE `timertask` (
 INSERT INTO `timertask` VALUES ('3', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'abc', '关于ABC的故事', '0 * * * * ? *', '0', '', 'pause');
 
 -- ----------------------------
--- Table structure for `weixinaccesstoken`
+-- Table structure for weixinaccesstoken
 -- ----------------------------
 DROP TABLE IF EXISTS `weixinaccesstoken`;
 CREATE TABLE `weixinaccesstoken` (

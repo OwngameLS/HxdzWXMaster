@@ -1,4 +1,4 @@
-微信公众号项目 161229 17:20
+微信公众号项目 170102 13:13
 1.使用ngrok笔记
     由于ngrok被墙，采用国内代理实现。
     去http://www.ngrok.cc/login  登录 10039**@qq.com 851**74
@@ -9,6 +9,8 @@
 
     // 另外一个ngrok服务的启动
     C:\Users\Administrator\Desktop\windows_amd64>ngrok -config=ngrok.cfg -subdomain vgogoing 8080
+    // 让mysql用于密码不过期的设置
+    ALTER USER 'testuser'@'localhost' PASSWORD EXPIRE DEFAULT;
 
 
 2.微信popular项目使用
@@ -122,6 +124,7 @@ TODO 下一步需要进行微信事件消息推送网页结果的功能。同时
 TODO 需要新创建一个设置页面，将相关特殊化设置进行展示，用于编辑。
 正在实施上述计划。161226
 正在实现授权方面的逻辑判断。161229
+授权判断已经实现。正在做Settings的展示。170102
 
 
 
