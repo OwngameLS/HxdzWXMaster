@@ -68,6 +68,21 @@ public class SettingsController {
         return map;
     }
 
+    /**
+     * 通过name查询设置信息
+     * @return
+     */
+    @RequestMapping(value = "/settingslikename", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> getSettingsLikeName(@RequestBody Map<String, String> p) {
+        System.out.println("getSettingsLikeName is Called.");
+        String name = p.get("name");
+        Map<String, Object> map = new HashMap<String, Object>();
+        ArrayList<Settings> settingses = settingsService.queryLikeName(name + "%");
+        map.put("settingses", settingses);
+        return map;
+    }
+
 
     /**
      * 返回授权状态信息
@@ -139,7 +154,7 @@ public class SettingsController {
 
 
     /**
-     * 获得授权
+     * 更新设置
      * @param p
      * @return
      */
@@ -156,6 +171,37 @@ public class SettingsController {
         Map<String, Object> map = new HashMap<String, Object>();
         // 返回更新后的该组信息
         map.put("success", "success");
+        return map;
+    }
+
+    /**
+     * 更新设置
+     * @param p
+     * @return
+     */
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> addSettings(@RequestBody Map<String, String> p) {
+        System.out.println("addSettings is Called.");
+        String description = p.get("description");
+        String name = p.get("name");
+        String value = p.get("value");
+        String referto = p.get("referto");
+        String berefered = p.get("berefered");
+        Settings settings = new Settings();
+        settings.setDescription(description);
+        settings.setName(name);
+        settings.setValue(value);
+        settings.setReferto(referto);
+        int result = settingsService.insert(settings);
+        Map<String, Object> map = new HashMap<String, Object>();
+        if(result > 0){
+            Settings settings1 = settingsService.queryByName(name);
+            map.put("success", "success");
+            map.put("settings", settings1);
+        }else{
+            map.put("success", "failed");
+        }
         return map;
     }
 

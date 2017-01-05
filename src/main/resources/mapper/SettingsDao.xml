@@ -20,6 +20,10 @@
         select * from settings
     </select>
 
+    <select id="queryLikeName" resultType="Settings">
+        select * from settings where name like #{name}
+    </select>
+
     <insert id="insert" parameterType="Settings">
         insert ignore into settings
         (id,description, name, value, referto)

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2017-01-02 13:14:19
+Date: 2017-01-05 22:41:12
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -425,7 +425,7 @@ CREATE TABLE `settings` (
   `value` text,
   `referto` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of settings
@@ -438,6 +438,27 @@ INSERT INTO `settings` VALUES ('5', '用户名', 'username', 'Owngame', 'no');
 INSERT INTO `settings` VALUES ('6', '数据库用户名', 'db_username', 'root', 'no');
 INSERT INTO `settings` VALUES ('7', '数据库密码', 'db_password', 'root', 'no');
 INSERT INTO `settings` VALUES ('8', '数据库端口', 'db_port', '3306', 'no');
+INSERT INTO `settings` VALUES ('9', '是否有微信公众号', 'wx_hasmp', 'true', 'self');
+INSERT INTO `settings` VALUES ('10', 'AppID(应用ID)', 'wx_appid', null, 'wx_hasmp');
+INSERT INTO `settings` VALUES ('11', 'AppSecret(应用密钥)', 'wx_appsecret', null, 'wx_hasmp');
+INSERT INTO `settings` VALUES ('12', 'URL(服务器地址)', 'wx_url', null, 'wx_hasmp');
+INSERT INTO `settings` VALUES ('13', 'Token(令牌)', 'wx_token', null, 'wx_hasmp');
+INSERT INTO `settings` VALUES ('14', 'EncodingAESKey(消息加解密密钥)', 'wx_encodingAESkey', null, 'wx_hasmp');
+INSERT INTO `settings` VALUES ('15', '测试微信', 'wx_test', '123', 'wx_hasmp');
+INSERT INTO `settings` VALUES ('16', '测试依赖', 'yl_1', 'true', 'self');
+INSERT INTO `settings` VALUES ('17', '依赖1', 'yl_aa', 'aa', 'yl_1');
+INSERT INTO `settings` VALUES ('18', '依赖2', 'yl_bb', 'bb', 'yl_1');
+INSERT INTO `settings` VALUES ('19', '测试新增', 'newsettings', 'aaaaa', 'no');
+INSERT INTO `settings` VALUES ('20', '新增测试', 'newadd2', 'false', 'self');
+INSERT INTO `settings` VALUES ('21', '1233241', 'asdaf', 'false', 'self');
+INSERT INTO `settings` VALUES ('22', 'wodem', 'wodema', '789123', 'yl_1');
+INSERT INTO `settings` VALUES ('23', 'nidema', 'nidema', '8888', 'yl_1');
+INSERT INTO `settings` VALUES ('24', 'sdaf', '3242', '0000', 'asdaf');
+INSERT INTO `settings` VALUES ('25', '14321', '143', '1342', 'newadd2');
+INSERT INTO `settings` VALUES ('44', 'ls', 'ls', 'ls', 'newadd2');
+INSERT INTO `settings` VALUES ('45', '依赖测试ls', 'ces', 'false', 'self');
+INSERT INTO `settings` VALUES ('46', '依赖测试ls2', 'ls2', 'false', 'self');
+INSERT INTO `settings` VALUES ('47', '测试依赖可用', 'yilaikeyong', 'shishi', 'ls2');
 
 -- ----------------------------
 -- Table structure for task

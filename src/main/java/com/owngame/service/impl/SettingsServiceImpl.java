@@ -42,7 +42,17 @@ public class SettingsServiceImpl implements SettingsService {
     }
 
     @Override
+    public int insert(Settings settings) {
+        return settingsDao.insert(settings);
+    }
+
+    @Override
     public ArrayList<Settings> queryAll() {
         return settingsDao.queryAll();
+    }
+
+    @Override
+    public ArrayList<Settings> queryLikeName(String name) {
+        return settingsDao.queryLikeName(name);
     }
 }

@@ -13,5 +13,7 @@ public interface SettingsDao {
     Settings queryByName(String name);
     ArrayList<Settings> queryByReferto(String referto);
     int update(Settings settings);
+    int insert(Settings settings);
     ArrayList<Settings> queryAll();
+    ArrayList<Settings> queryLikeName(String name);
 }

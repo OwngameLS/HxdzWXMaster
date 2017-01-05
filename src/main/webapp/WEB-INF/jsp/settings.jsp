@@ -66,22 +66,21 @@
     </div>
     <div class="well">
         <div id="dbSettings">
-            <div id ="db" class="row bg-primary">
+            <div id="db" class="row bg-primary">
                 <div class="col-md-4 text-left">
                     <img src="../../resources/bootstrap-3.3.7-dist/img/database.png">数据库配置
                 </div>
                 <div class="col-md-6 text-center">
-
                 </div>
             </div>
         </div>
     </div>
     <div class="well">
         <div>
-            <input type="checkbox" id="isuseWx">是否有微信公众号
+            <input type="checkbox" id="isUseWXMP" onclick="usingWXMP()">是否使用微信服务号
         </div>
         <div id="wxSettings">
-            <div class="row bg-success">
+            <div id="wx" class="row bg-success">
                 <div class="col-md-4 text-left">
                     <img src="../../resources/bootstrap-3.3.7-dist/img/wechat.png">服务器配置
                 </div>
@@ -89,44 +88,47 @@
 
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4 text-right">
-                    AppID(应用ID)
+        </div>
+    </div>
+
+    <div class="well">
+        <div id="otherSettings">
+            <div id="other" class="row bg-info">
+                <div class="col-md-4 text-left">
+                    <img src="../../resources/bootstrap-3.3.7-dist/img/other_settings.png">其他配置
                 </div>
                 <div class="col-md-6 text-left">
-                    <input class="form-control">
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4 text-right">
-                    AppSecret(应用密钥)
+        </div>
+    </div>
+
+    <div class="well">
+        <div id="addSettings">
+            <div id="add" class="row bg-warning">
+                <div class="col-md-4 text-left">
+                    <img src="../../resources/bootstrap-3.3.7-dist/img/add.png">新增配置
                 </div>
                 <div class="col-md-6 text-left">
-                    <input class="form-control">
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4 text-right">
-                    URL(服务器地址)
+            <div class="row" id="addSettingEditDiv">
+                <div class="row">
+                    <div class="col-md-1 text-right"></div>
+                    <div class="col-md-1 text-right">描述</div>
+                    <div class="col-md-2 text-left"><input id="addDescription" class="form-control"></div>
+                    <div class="col-md-1 text-right"><abbr title="在数据库中的英文名">name</abbr></div>
+                    <div class="col-md-2 text-left"><input id="addName" class="form-control"></div>
+                    <div class="col-md-1 text-right">值</div>
+                    <div class="col-md-2 text-left"><input id="addValue" class="form-control"></div>
                 </div>
-                <div class="col-md-6 text-left">
-                    <input class="form-control">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 text-right">
-                    Token(令牌)
-                </div>
-                <div class="col-md-6 text-left">
-                    <input class="form-control">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 text-right">
-                    EncodingAESKey(消息加解密密钥)
-                </div>
-                <div class="col-md-6 text-left">
-                    <input class="form-control">
+                <div class="row">
+                    <div class="col-md-1 text-right"></div>
+                    <div class="col-md-1 text-right">依赖于</div>
+                    <div class="col-md-2 text-left"><select class="form-control" id="addReferto"></select></div>
+                    <div class="col-md-2 text-right">是否作为被依赖的属性</div>
+                    <div class="col-md-2 text-left"><input type="checkbox" id="addBerefered">（勾选）</div>
+                    <div class="col-md-2 text-left"><button class="btn btn-success btn-sm" id="addStBtn" onclick="addSettings()"> 确定添加</button></div>
                 </div>
             </div>
         </div>
@@ -145,7 +147,6 @@
     $(document).ready(function () {
         getSettings();// 获得所有设置信息
     });
-
 
 </script>
 </body>
