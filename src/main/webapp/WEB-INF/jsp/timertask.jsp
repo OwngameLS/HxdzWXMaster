@@ -27,8 +27,10 @@
         操作完成！
     </div>
 
-    <div id="editFailDiv" class="alert alert-danger" role="alert"
-         style="padding:5px;display: none;width: 30%;margin:0 auto;text-align:center"><%--操作失败--%>
+    <div id="editFailDiv" class="alert alert-danger alert-dismissible" style="display:none" role="alert"><%--操作失败--%>
+        <div style="width: 100%;" class="text-right">
+            <a href="javascript:void(0)" onclick="hideEditFail();return false;" title="关闭"><img src="../../resources/bootstrap-3.3.7-dist/img/cross-red.png"></a>
+        </div>
         <h5>操作失败！</h5>
         <p class="text-danger" id="failCause"></p>
     </div>

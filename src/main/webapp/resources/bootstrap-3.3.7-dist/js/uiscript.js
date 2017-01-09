@@ -64,13 +64,26 @@ function showEditFail(msg, el) {
     console.log("showEditFail " + el);
     if (el != null) {
         myAnimate(el, 8, el.attr("style"));
+        showNear(el);
     }
     $("#failCause").html(msg);
-    $("#editFailDiv").show(2000);
 
 }
 function hideEditFail() {
     $("#editFailDiv").hide(2000);
+}
+
+function showNear(sObj) {
+    var sourceObj = $(sObj);
+    var offset = sourceObj.offset();
+    var ofLeft = offset.left;
+    var ofTop = offset.top;
+    var targetObj = $("#editFailDiv");
+    var cssStr = "padding:5px;display: none;width: 30%;margin:0 auto;text-align:center;z-index:5;position:absolute;left:"
+        + (ofLeft + 80) + 'px;top:' + ofTop + 'px;';
+    console.log("cssStr:" + cssStr);
+    targetObj.attr("style", cssStr);
+    targetObj.show(2000);
 }
 
 function isEmpty(value) {
@@ -81,7 +94,7 @@ function isEmpty(value) {
     }
 }
 
-function isValidPhone(phone){
+function isValidPhone(phone) {
     // 非空 且 符合手机号规则
     return ((isEmpty(phone) == false) && /^1[3|4|5|8]\d{9}$/.test(phone));
 }
@@ -104,8 +117,8 @@ function getTimeNow() {
     // mydate.toLocaleString( ); //获取日期与时间
 }
 
-function parseMillsToDate(timeinMills){
-    var time = getFormatDateByLong(timeinMills,"yyyy-MM-dd HH:mm:ss");
+function parseMillsToDate(timeinMills) {
+    var time = getFormatDateByLong(timeinMills, "yyyy-MM-dd HH:mm:ss");
     return time;
 }
 

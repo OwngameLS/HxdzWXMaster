@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2017-01-05 22:41:12
+Date: 2017-01-09 22:05:40
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -425,12 +425,12 @@ CREATE TABLE `settings` (
   `value` text,
   `referto` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of settings
 -- ----------------------------
-INSERT INTO `settings` VALUES ('1', '授权状态', 'authorizedState', 'valid', 'no');
+INSERT INTO `settings` VALUES ('1', '授权状态', 'authorizedState', 'invalid', 'no');
 INSERT INTO `settings` VALUES ('2', '到期时间', 'validTime', '1485921489790', 'no');
 INSERT INTO `settings` VALUES ('3', 'nodes', '5891675fd9c7128fb390426a184f9f29', 'c6b88ca9a09faefc3092b7bf4c5b63df', 'no');
 INSERT INTO `settings` VALUES ('4', '授权中心手机号', 'phone', '18107436127', 'no');
@@ -448,7 +448,6 @@ INSERT INTO `settings` VALUES ('15', '测试微信', 'wx_test', '123', 'wx_hasmp
 INSERT INTO `settings` VALUES ('16', '测试依赖', 'yl_1', 'true', 'self');
 INSERT INTO `settings` VALUES ('17', '依赖1', 'yl_aa', 'aa', 'yl_1');
 INSERT INTO `settings` VALUES ('18', '依赖2', 'yl_bb', 'bb', 'yl_1');
-INSERT INTO `settings` VALUES ('19', '测试新增', 'newsettings', 'aaaaa', 'no');
 INSERT INTO `settings` VALUES ('20', '新增测试', 'newadd2', 'false', 'self');
 INSERT INTO `settings` VALUES ('21', '1233241', 'asdaf', 'false', 'self');
 INSERT INTO `settings` VALUES ('22', 'wodem', 'wodema', '789123', 'yl_1');
@@ -457,8 +456,7 @@ INSERT INTO `settings` VALUES ('24', 'sdaf', '3242', '0000', 'asdaf');
 INSERT INTO `settings` VALUES ('25', '14321', '143', '1342', 'newadd2');
 INSERT INTO `settings` VALUES ('44', 'ls', 'ls', 'ls', 'newadd2');
 INSERT INTO `settings` VALUES ('45', '依赖测试ls', 'ces', 'false', 'self');
-INSERT INTO `settings` VALUES ('46', '依赖测试ls2', 'ls2', 'false', 'self');
-INSERT INTO `settings` VALUES ('47', '测试依赖可用', 'yilaikeyong', 'shishi', 'ls2');
+INSERT INTO `settings` VALUES ('49', '授权失败原因', 'invalidReason', '授权申请已发出，请等待处理。你也可以直接联系技术支持。', 'no');
 
 -- ----------------------------
 -- Table structure for task
@@ -473,7 +471,7 @@ CREATE TABLE `task` (
   `receivers` text,
   `createTime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=387 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=389 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of task
@@ -484,6 +482,8 @@ INSERT INTO `task` VALUES ('381', '群发消息', '主动发送消息给一部�
 INSERT INTO `task` VALUES ('384', '变更绑定微信号', '手机号18107436127变更绑定其微信号，用户验证信息发送。', '-1', '288594', '18107436127', '2016-12-07 10:46:34');
 INSERT INTO `task` VALUES ('385', '群发消息', '群发消息...(消息内容:1231234321)', '-1', '1231234321', '18107436127', '2016-12-24 13:02:35');
 INSERT INTO `task` VALUES ('386', '群发消息', '群发消息...(消息内容:adsfas)', '-1', 'adsfas', '18107436127', '2017-01-02 12:32:37');
+INSERT INTO `task` VALUES ('387', 'authorize request', '授权申请', '-1', 'AR=Owngame=60-A4-4C-D0-21-A2', '18107436127', '2017-01-09 22:03:24');
+INSERT INTO `task` VALUES ('388', 'authorize request', '授权申请', '-1', 'AR=Owngame=60-A4-4C-D0-21-A2', '18107436127', '2017-01-09 22:03:27');
 
 -- ----------------------------
 -- Table structure for timertask

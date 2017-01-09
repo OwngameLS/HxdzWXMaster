@@ -66,7 +66,6 @@
         </div><!-- /.modal -->
     </div>
 
-
     <!-- 16:9 aspect ratio -->
     <div class="embed-responsive embed-responsive-16by9">
         <iframe class="embed-responsive-item" name="display" src="<%=basePath%>Smserver/view/taskstate"></iframe>

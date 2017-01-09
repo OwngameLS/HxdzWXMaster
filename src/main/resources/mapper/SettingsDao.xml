@@ -44,4 +44,8 @@
         delete from settings where name=#{name}
     </delete>
 
+    <delete id="deleteByReferto" parameterType="String">
+        delete from settings where referto=#{referto}
+    </delete>
+
 </mapper>

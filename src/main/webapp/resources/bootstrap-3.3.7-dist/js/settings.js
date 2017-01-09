@@ -4,30 +4,44 @@
 
 var settingses = null;// 从服务器读取到的配置信息
 var otherSettingsUIHtmlStr = ''; // 其他设置的HTMLStr
-var beReferedSettings = null;// 被依赖的设置
+var beReferedSettingses = null;// 被依赖的设置
 
 // 获得验证
 function authorizationRequest() {
     // 获得验证手机号码
     var phone = $("#authorizerphone").val();
-    if(isValidPhone(phone) == false){
+    if (isValidPhone(phone) == false) {
         showEditFail("你必须输入正确的手机号码！", $("#authorizerphone"));
         return;
     }
-
+    var username = $("#username").val();
+    if (isEmpty(username)) {
+        showEditFail("你必须输入你的用户名！", $("#username"));
+        return;
+    }
+    var jsonStr = "{\"phone\":\"" + phone
+        + "\",\"username\":\"" + username + "\"}";
     // 创建后台任务
-
+    $.when(myAjaxPost(bp + 'Smserver/settings/requestAuthorization', jsonStr)).done(function (data) {
+        if (data != null) {
+            var success = data['success'];
+            if (success == 'success') {
+                var invalidReason = data['invalidReason'];
+                $("#invalidReason").html(invalidReason);
+            }
+        }
+    });
     // 如果创建后台任务成功了，就定时刷新，展示授权结果
 }
 
-function getAuthorizedState(){
+function getAuthorizedState() {
     // console.log("getAuthorizedState...");
     // 先获得状态
     $.when(myAjaxGet(bp + 'Smserver/settings/authorizedState')).done(function (data) {
         var htmlStr = '';
         if (data != null) {
             var authorizedState = data['authorizedState'];
-            if(authorizedState.value == 'invalid'){
+            if (authorizedState.value == 'invalid') {
                 var invalidReason = data['invalidReason'];
                 $("#invalidReason").html(invalidReason + "<br>");
                 $("#authorizedModal").modal("show");
@@ -39,26 +53,25 @@ function getAuthorizedState(){
 
 
 function countDown(counts) {
-    if(counts == 0){
+    if (counts == 0) {
         gotoAuthorizePage();
         return;
     }
     var htmlStr = counts + " 秒后将跳转到设置页面...";
     $("#countdowndesc").html(htmlStr);
     counts = counts - 1;
-    setTimeout("countDown("+counts+")", 1000);
+    setTimeout("countDown(" + counts + ")", 1000);
 }
 
 
 // 跳转到设置页面
-function gotoAuthorizePage(){
+function gotoAuthorizePage() {
     // console.log("gotoAuthorizePage..");
     $('#authorize>p').trigger('click');
     $("#authorizedModal").modal("hide");
     // 添加未授权标识
     $("#unauth").show();
 }
-
 
 
 // 获得所有设置并按照规则展示出来
@@ -68,7 +81,7 @@ function getSettings() {
         if (data != null) {
             settingses = data['settingses'];
             // console.log("settingses:" + settingses);
-            if(settingses != null || settingses != undefined){
+            if (settingses != null || settingses != undefined) {
                 initUIs();
             }
         }
@@ -76,8 +89,8 @@ function getSettings() {
 }
 
 // 初始化所有的设置
-function initUIs(){
-    initAuthorizationUI(findSettingsesByName("authorizedState"));
+function initUIs() {
+    initAuthorizationUI();
     initUserInfoUI();
     initDatabaseUI();
     initWxMPUI();
@@ -87,29 +100,32 @@ function initUIs(){
 
 
 // 初始化验证状态UI
-function initAuthorizationUI(settings) {
-    if(settings.value == 'invalid'){
-        $("#authorizestateimg").attr("src","../../resources/bootstrap-3.3.7-dist/img/cry.png");
-        $("#authorizestatedes").html(" 您尚未获得授权 ");
-        $("#authorizestatedes").attr("style","color: red");
-        $("#getAuthorized").attr("style","");
-    }else{
-        $("#authorizestateimg").attr("src","../../resources/bootstrap-3.3.7-dist/img/smiley.png");
+function initAuthorizationUI() {
+    var authorizedState = findInSettingsesByName("authorizedState");
+    if (authorizedState.value == 'valid') {
+        $("#authorizestateimg").attr("src", "../../resources/bootstrap-3.3.7-dist/img/smiley.png");
         $("#authorizestatedes").html(" 您已经获得授权 ");
-        $("#authorizestatedes").attr("style","color: green");
-        var validTime = findSettingsesByName("validTime");
+        $("#authorizestatedes").attr("style", "color: green");
+        var validTime = findInSettingsesByName("validTime");
         var time = parseMillsToDate(Number(validTime.value));
-        var htmlStr = '<h5>到期时间为:<br>'+time+'</h5>';
+        var htmlStr = '<h5>到期时间为:<br>' + time + '</h5>';
         $("#authorizestatedes").after(htmlStr);
-        $("#getAuthorized").attr("style","display:none");
+        $("#getAuthorized").attr("style", "display:none");
+    } else {
+        $("#authorizestateimg").attr("src", "../../resources/bootstrap-3.3.7-dist/img/cry.png");
+        $("#authorizestatedes").html(" 您尚未获得授权 ");
+        $("#authorizestatedes").attr("style", "color: red");
+        var invalidReason = findInSettingsesByName("invalidReason");
+        $("#invalidReason").html(invalidReason.value);
+        $("#getAuthorized").attr("style", "");
     }
 }
 
 // 初始化用户基本信息UI
 function initUserInfoUI() {
-    var username = findSettingsesByName("username");
+    var username = findInSettingsesByName("username");
     $("#username").val(username.value);
-    var phone = findSettingsesByName("phone");
+    var phone = findInSettingsesByName("phone");
     $("#authorizerphone").val(phone.value);
 }
 
@@ -120,31 +136,25 @@ function initDatabaseUI() {
 
 // 初始化微信公众号信息UI
 function initWxMPUI() {
-    var settings = findSettingsesByName("wx_hasmp");
-    if(settings != null || settings != undefined){
-        if(settings.value == true || settings.value == 'true'){
+    var settings = findInSettingsesByName("wx_hasmp");
+    if (settings != null || settings != undefined) {
+        if (settings.value == true || settings.value == 'true') {
             $("#isUseWXMP").prop("checked", true);
             initHtmlStrOfSettings("wx", "wx_");
         }
-        // else{
-        //     $("#isUseWXMP").prop("checked", false);
-        //     $("[id^='wx_']").each(function () {
-        //         $(this).attr("disabled", true);
-        //     })
-        // }
     }
 }
 
 // 初始化用来展示Settings的控件 htmlstr
-function initHtmlStrOfSettings(startElementId, name_prefix){
-    for(var i=0;i<settingses.length;){
-        var settings = findSettingsesByName(name_prefix);
-        if(settings != null || settings != undefined){
-            var htmlStr = initSettingsHtmlStr(settings, true, true);
-            $("#"+startElementId).after(htmlStr);
+function initHtmlStrOfSettings(startElementId, name_prefix) {
+    for (var i = 0; i < settingses.length;) {
+        var settings = findInSettingsesByName(name_prefix);
+        if (settings != null || settings != undefined) {
+            var htmlStr = initSettingsHtmlStr(settings, false, true);
+            $("#" + startElementId).after(htmlStr);
             startElementId = 'outterDiv_' + settings.name;
-            i=0;// 找到了从头再次寻找
-        }else {
+            i = 0;// 找到了从头再次寻找
+        } else {
             i++;
         }
     }
@@ -152,30 +162,40 @@ function initHtmlStrOfSettings(startElementId, name_prefix){
 
 
 // 通过settings的name在settingses中查找
-function findSettingsesByName(name) {
-    var mapper = new RegExp("^("+name+")","gim");// 构造正则表达式
-    for(var i=0;i<settingses.length;i++){
-        if(mapper.test(settingses[i].name)){
+function findInSettingsesByName(name) {
+    var mapper = new RegExp("^(" + name + ")", "gim");// 构造正则表达式
+    for (var i = 0; i < settingses.length; i++) {
+        if (mapper.test(settingses[i].name)) {
             var settings = settingses[i];
-            settingses.splice(i,1);
+            settingses.splice(i, 1);// 从队列中删除
             return settings;
         }
     }
 }
 
+// 通过settings的name在beReferedSettingses中查找
+function findInReferedSettingsesByName(name) {
+    for (var i = 0; i < beReferedSettingses.length; i++) {
+        if ((beReferedSettingses[i].name) == name) {
+            return beReferedSettingses[i];
+        }
+    }
+}
+
+
 // 根据是否勾选使用微信公众号功能来初始化相关控件
 function usingWXMP() {
     var isUseWXMP = $("#isUseWXMP").prop("checked");
     // console.log("usingWXMP:" + isUseWXMP);
-    if(isUseWXMP == false){
+    if (isUseWXMP == false) {
         $("[id^='wx_']").each(function () {
-            $(this).attr("disabled",true);
+            $(this).attr("disabled", true);
         });
-    }else{
+    } else {
         // 重新获取相关属性
         // 先清除原来的
         var htmlStr = '<div id="wx" class="row bg-success"><div class="col-md-4 text-left"><img src="../../resources/bootstrap-3.3.7-dist/img/wechat.png">服务器配置</div>'
-            +'<div class="col-md-6 text-left"></div></div>';
+            + '<div class="col-md-6 text-left"></div></div>';
         $("#wxSettings").html(htmlStr);
         var jsonStr = "{\"name\":\"wx_\"}";
         $.when(myAjaxPost(bp + 'Smserver/settings/settingslikename', jsonStr)).done(function (data) {
@@ -189,22 +209,22 @@ function usingWXMP() {
 
 
 // 设置其他Settings的UI
-function initOtherSettingsUI(){
+function initOtherSettingsUI() {
     // console.log("initOtherSettingsUI...");
     otherSettingsUIHtmlStr = '';
     // 先找出被依赖的设置
-    beReferedSettings = new Array();
-    for(var i=0;i<settingses.length;){
-        if(settingses[i].referto == 'self'){// 被别人依赖
+    beReferedSettingses = new Array();
+    for (var i = 0; i < settingses.length;) {
+        if (settingses[i].referto == 'self') {// 被别人依赖
             // console.log("find referto..."+ settingses[i].name);
             initRefertoSettings(settingses[i], i);
-        }else{
+        } else {
             i++;
         }
     }
     // 剩下的都是没有依赖别人的了
-    for(var i=0;i<settingses.length;i++){
-        if(settingses[i].description == 'nodes'){// 不参加展示的设置
+    for (var i = 0; i < settingses.length; i++) {
+        if (settingses[i].description == 'nodes') {// 不参加展示的设置
             continue;
         }
         var htmlStr = initSettingsHtmlStr(settingses[i], true, null);
@@ -215,23 +235,22 @@ function initOtherSettingsUI(){
 }
 
 // 初始化一组有依赖关系的设置UI
-function initRefertoSettings(refered, index){
+function initRefertoSettings(refered, index) {
     // console.log("initRefertoSettings...");
     // 先添加到beReferedSettings队列中，在从原来的队列中删除
-    beReferedSettings.push(refered);
-    settingses.splice(index,1);
-    var isUsed = refered.value;
-    var htmlStr = initBeReferdSettingsUIHtmlStr(refered);
+    beReferedSettingses.push(refered);
+    settingses.splice(index, 1);
+    // var isUsed = refered.value;
+    var htmlStr = initSettingsHtmlStr(refered, true, null);//initBeReferdSettingsUIHtmlStr(refered);
     var referedName = refered.name;
-    
-    for(var i=0;i<settingses.length;){
-        if(settingses[i].referto == referedName){
-            var htmlStr1 = initSettingsHtmlStr(settingses[i], false, isUsed);
+    for (var i = 0; i < settingses.length;) {
+        if (settingses[i].referto == referedName) {
+            var htmlStr1 = initSettingsHtmlStr(settingses[i], true, refered);
             htmlStr += htmlStr1;
             // console.log("htmlStr1..."+ htmlStr1);
             // 删除这个位置的元素,避免多次循环
-            settingses.splice(i,1);
-        }else{
+            settingses.splice(i, 1);
+        } else {
             i++;
         }
     }
@@ -239,7 +258,7 @@ function initRefertoSettings(refered, index){
     otherSettingsUIHtmlStr += htmlStr;
 }
 
-function initAddSettingsUI(){
+function initAddSettingsUI() {
     console.log("initAddSettingsUI...");
     // 先清除原来的
     var addDescription = $("#addDescription").val("");
@@ -249,30 +268,30 @@ function initAddSettingsUI(){
     $("#addReferto").html("");
     // 构造新的
     var htmlStr = '<option value="no">无依赖</option>';
-    for(var i=0;i<beReferedSettings.length;i++){
-        htmlStr += '<option value="'+ beReferedSettings[i].name+'">'+beReferedSettings[i].description+'</option>';
+    for (var i = 0; i < beReferedSettingses.length; i++) {
+        htmlStr += '<option value="' + beReferedSettingses[i].name + '">' + beReferedSettingses[i].description + '</option>';
     }
     $("#addReferto").html(htmlStr);
 }
 
 // 显示一个新增的settings
-function addOtherSettingsUI(settings){
+function addOtherSettingsUI(settings) {
     console.log("addOtherSettingsUI : " + settings);
     var htmlStr = '';
-    if(settings.referto == 'self'){// 被别人依赖
-        beReferedSettings.push(settings);// 增加到可被依赖列表中
-        htmlStr = initBeReferdSettingsUIHtmlStr(settings);
-    }else if(settings.referto == 'no'){// 独立
+    if (settings.referto == 'self') {// 被别人依赖
+        beReferedSettingses.push(settings);// 增加到可被依赖列表中
+        htmlStr = initSettingsHtmlStr(settings, true, null);// initBeReferdSettingsUIHtmlStr(settings);
+    } else if (settings.referto == 'no') {// 独立
         htmlStr = initSettingsHtmlStr(settings, true, null);
-    }else{
+    } else {
         // 找到其依赖的属性的可用性
-        var isUsed = $("#"+ settings.referto).prop("checked");
-        htmlStr = initSettingsHtmlStr(settings, false, isUsed);
+        var beReferedSettings = findInReferedSettingsesByName(settings.referto);
+        htmlStr = initSettingsHtmlStr(settings, true, beReferedSettings);
     }
     initAddSettingsUI();
-    if(settings.referto != 'self' && settings.referto != 'no'){// 依赖于别人 就添加在别人下面
-        $("#outterDiv_"+ settings.referto).after(htmlStr);
-    }else{// 添加在父空间中的最后一个子节点位置之后
+    if (settings.referto != 'self' && settings.referto != 'no') {// 依赖于别人 就添加在别人下面
+        $("#outterDiv_" + settings.referto).after(htmlStr);
+    } else {// 添加在父空间中的最后一个子节点位置之后
         $("#otherSettings").append(htmlStr);
     }
 
@@ -287,27 +306,34 @@ function addSettings() {
     var addReferto = $("#addReferto option:selected").val();
     var addBerefered = $("#addBerefered").prop("checked");
 
-    if(isEmpty(addDescription)){// 必须要添加描述
+    if (isEmpty(addDescription)) {// 必须要添加描述
         showEditFail("必须要填写描述内容！", $("#addDescription"));
-        return ;
+        return;
     }
-    if(isEmpty(addName)){// 必须要添加name
+    if (isEmpty(addName)) {// 必须要添加name
         showEditFail("必须要填写nanme内容！", $("#addName"));
-        return ;
+        return;
     }
-    if(isEmpty(addValue) && addBerefered == false){// 必须要添加name
+    // 检查不要有冲突的命名
+    var e = $("#" + addName);
+    if (e != undefined) {
+        showEditFail("填写的name与已有的配置属性冲突！", e);
+        return;
+    }
+
+    if (isEmpty(addValue) && addBerefered == false) {// 必须要添加name
         showEditFail("必须要填写字段的值内容！", $("#addValue"));
-        return ;
+        return;
     }
-    if(addReferto != 'no'){
+    if (addReferto != 'no') {
 
     }
-    if(addBerefered == true){// 选择了作为其他设置的依赖
+    if (addBerefered == true) {// 选择了作为其他设置的依赖
         addValue = 'false';
         addReferto = 'self';
     }
     // 提交
-    var jsonStr =  "{\"description\":\"" + addDescription
+    var jsonStr = "{\"description\":\"" + addDescription
         + "\",\"name\":\"" + addName
         + "\",\"value\":\"" + addValue
         + "\",\"referto\":\"" + addReferto
@@ -315,43 +341,137 @@ function addSettings() {
     $.when(myAjaxPost(bp + 'Smserver/settings/add', jsonStr)).done(function (data) {
         if (data != null) {
             var success = data['success'];
-            if(success == 'success'){
+            if (success == 'success') {
                 addOtherSettingsUI(data['settings']);
             }
         }
     });
 }
 
-// 初始化被依赖的Settings htmlStr
-function initBeReferdSettingsUIHtmlStr(beReferedSettings){
-    var isUsed = beReferedSettings.value;
-    var htmlStr = '<div class="row" id="outterDiv_'+ beReferedSettings.name +'">' +
-        '<div class="col-md-4 text-right">'+beReferedSettings.description + '</div>' +
-        '<div class="col-md-6 text-left"><input id="' + beReferedSettings.name+'" type="checkbox"';
-    if(isUsed == true || isUsed == 'true'){
-        htmlStr += ' checked';
-    }
-    htmlStr += '>是否启用</div>' + '</div>';
-    return htmlStr;
-}
 
-// 初始化依赖与其他Settings 的Settings htmlStr
+// 初始化Settings 的Settings htmlStr
 /**
  *
  * @param settings
- * @param isIndependent 是否独立
- * @param refertoValue 不独立，被依赖的设置是否启用
+ * @param deletable 是否可以删除
+ * @param beReferedSettings 被依赖的Settings
  * @returns {string}
  */
-function initSettingsHtmlStr(settings, isIndependent, refertoValue) {
-    var htmlStr = '<div class="row" id="outterDiv_'+ settings.name +'">' +
-        '<div class="col-md-4 text-right">'+settings.description + '</div>' +
-        '<div class="col-md-6 text-left"><input id="' + settings.name+'" class="form-control" value="' + settings.value +'"';
-    if(isIndependent == false){// 不独立
-        if(refertoValue == false || refertoValue == 'false'){
+function initSettingsHtmlStr(settings, deletable, beReferedSettings) {
+    var refertoValue = settings.referto;
+    var htmlStr = '<div class="row" id="outterDiv_' + settings.name + '">' +
+        '<div class="col-md-4 text-right">' + settings.description + '</div>' +
+        '<div class="col-md-3 text-left"><input id="' + settings.name + '"';
+
+    if (refertoValue == 'self') {// 被别人依赖
+        htmlStr += ' type="checkbox" onchange="changeEnable(\'' + settings.name + '\')"';
+        var isUsed = settings.value;
+        if (isUsed == true || isUsed == 'true') {
+            htmlStr += ' checked> 是否启用';
+        } else {
+            htmlStr += ' > 是否启用';
+        }
+    } else if (refertoValue == 'no') {// 不依赖别人
+        htmlStr += ' class="form-control" value="' + settings.value + '" >';
+    } else {// 依赖别人
+        htmlStr += ' class="form-control" value="' + settings.value + '" name="' + refertoValue + '"';// name属性控制其与绑定settings的联系
+        // 先找到被依赖的settings是否可用
+        if (beReferedSettings.value == 'false' || beReferedSettings.value == false) {// 不可用
             htmlStr += ' disabled';
         }
+        htmlStr += ' >';
     }
-    htmlStr +='></div></div>';
+    htmlStr += '</div>';
+    // 添加删除和更新按钮
+    htmlStr += '<div class="col-md-3 text-left">';
+    htmlStr += '<a href="javascript:void(0)" onclick="editSettings(\'' + settings.name + '\',\'update\');return false;" title="更新"><img src="' + bp + 'resources/bootstrap-3.3.7-dist/img/settings_done.png" ></a> ';
+    if (deletable == true) {// 可以删除
+        htmlStr += '<a href="javascript:void(0)" onclick="editSettings(\'' + settings.name + '\',\'delete\');return false;" title="删除"><img src="' + bp + 'resources/bootstrap-3.3.7-dist/img/settings_delete.png"></a>';
+    } else {
+        htmlStr += '<a><img src="' + bp + 'resources/bootstrap-3.3.7-dist/img/settings_transparent.png" ></a>';
+    }
+    htmlStr += '</div></div>';
     return htmlStr;
+}
+
+function editSettings(name, action) {
+    console.log("updateSettings:" + name);
+    // 先根据name找到其自身相关属性
+    var settingsElm = $("#" + name);
+    var type = settingsElm.prop("type");
+    var value = null;
+    var isEnabled = false;
+    if (type == 'checkbox') {// 是被依赖的属性
+        value = settingsElm.prop("checked");
+        if (action == 'delete') {// 删除元素
+            if (confirm("确认删除？依赖它的所有设置项也将会被删除！")) {
+                var jsonStr = "{\"action\":\"" + action
+                    + "\",\"name\":\"" + name
+                    + "\",\"value\":\"" + value + "\"}";
+                doUpdateSettings(jsonStr, name, action, type);
+            } else {
+                return;
+            }
+        } else if (action == 'update') {
+            var jsonStr = "{\"action\":\"" + action
+                + "\",\"name\":\"" + name
+                + "\",\"value\":\"" + value + "\"}";
+            doUpdateSettings(jsonStr, name, action, type);
+        }
+    } else {// 是普通设置
+        value = settingsElm.val();
+        if (action == 'delete') {// 删除元素
+            if (confirm("确认删除？")) {
+                var jsonStr = "{\"action\":\"" + action
+                    + "\",\"name\":\"" + name
+                    + "\",\"value\":\"" + value + "\"}";
+                doUpdateSettings(jsonStr, name, action, type);
+            } else {
+                return;
+            }
+        } else if (action == 'update') {
+            var jsonStr = "{\"action\":\"" + action
+                + "\",\"name\":\"" + name
+                + "\",\"value\":\"" + value + "\"}";
+            doUpdateSettings(jsonStr, name, action, type);
+        }
+    }
+}
+
+// 向服务器提交更新 并刷新页面
+function doUpdateSettings(jsonStr, name, action, type) {
+    $.when(myAjaxPost(bp + 'Smserver/settings/update', jsonStr)).done(function (data) {
+        if (data != null) {
+            var success = data['success'];
+            if (success == 'success') {
+                if (action == 'delete') {
+                    if (type == 'checkbox') {// 删除与之关联的
+                        var aaa = $("input[name=" + name + "]");
+                        aaa.each(function () {
+                            $(this).parent().parent().remove();
+                        });
+                    }
+                    // 需要删除自身
+                    $("#" + name).parent().parent().remove();
+                }
+            } else {
+                showEditFail("删除失败！", $("#" + name));
+            }
+        }
+    });
+}
+
+// 修改被依赖属性的选择状态后对应的控件状态随之改变
+function changeEnable(name) {
+    // 先根据name找到其自身相关属性
+    var isChecked = $("#" + name).prop("checked");
+    // 查找所有关联元素
+    var aaa = $("input[name=" + name + "]");
+    aaa.each(function () {
+        if (isChecked) {
+            $(this).removeAttr("disabled");
+        } else {
+            $(this).attr("disabled", "disabled");
+        }
+    });
 }
