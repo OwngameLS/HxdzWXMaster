@@ -1,6 +1,5 @@
 package com.owngame.web;
 
-import com.owngame.entity.ContactDisplay;
 import com.owngame.entity.ContactHigh;
 import com.owngame.entity.Task;
 import com.owngame.service.AnswerService;
@@ -50,7 +49,7 @@ public class TaskController {
         String contents = p.get("contents");
         int sendType = Integer.parseInt(p.get("sendtype"));
         String receivers = p.get("receivers");// 手机号
-        switch (sendType){
+        switch (sendType) {
             case TaskServiceImpl.SEND_TYPE_SMS:
                 taskService.createTask(name, description, contents, receivers);
                 break;
@@ -72,22 +71,22 @@ public class TaskController {
     }
 
     // 创建微信任务
-    private void createWeixinTask(String receivers, String contents){
+    private void createWeixinTask(String receivers, String contents) {
         String[] phones = receivers.split(",");
         ArrayList<String> openIds = new ArrayList<String>();
-        for(int i=0;i<phones.length;i++){
+        for (int i = 0; i < phones.length; i++) {
             ContactHigh contactHigh = contactService.queryHighByPhone(phones[i]);
-            if(contactHigh != null){
+            if (contactHigh != null) {
                 String openId = contactHigh.getOpenid();
-                if(openId != null || openId.equals("null") == false){
+                if (openId != null || openId.equals("null") == false) {
                     openIds.add(openId);
                 }
             }
         }
         String openIdsString = "";
-        for(int i=0;i<openIds.size();i++){
+        for (int i = 0; i < openIds.size(); i++) {
             openIdsString += openIds.get(i);
-            if(i+1 < openIds.size()){
+            if (i + 1 < openIds.size()) {
                 openIdsString += ",";
             }
         }
@@ -140,6 +139,7 @@ public class TaskController {
 
     /**
      * 从客户端创建任务（群发消息）
+     *
      * @param p
      * @return
      */

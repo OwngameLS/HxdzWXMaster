@@ -3,7 +3,6 @@ package com.owngame.service.impl;
 import com.owngame.service.WeiXinCoreService;
 import com.owngame.service.WeiXinMessageService;
 import com.owngame.service.WeixinAccessTokenService;
-import com.owngame.utils.AccessTokenUtil;
 import com.owngame.utils.InfoFormatUtil;
 import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +26,7 @@ public class WeiXinCoreServiceImpl implements WeiXinCoreService {
 
     /**
      * 处理消息
+     *
      * @param message
      */
     public void handleMessage(String message) {

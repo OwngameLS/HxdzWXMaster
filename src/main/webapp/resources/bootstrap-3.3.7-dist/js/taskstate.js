@@ -49,7 +49,7 @@ function initTbodyOfTasks(tasks) {
         }
 
         // 转换时间
-        var time = parseMillsToDate(tasks[i].createTime,"yyyy-MM-dd HH:mm:ss");//new Date(tasks[i].createTime).Format("yyyy-MM-dd HH:mm:ss");
+        var time = parseMillsToDate(tasks[i].createTime, "yyyy-MM-dd HH:mm:ss");//new Date(tasks[i].createTime).Format("yyyy-MM-dd HH:mm:ss");
         htmlStr = htmlStr + '<td>' + tasks[i].name;
         if (tasks[i].state == 0 || tasks[i].state == 1) {// 尚未发送成功，可以停止
             htmlStr = htmlStr + parseToAbbr('<img src="../../resources/bootstrap-3.3.7-dist/img/stop.png" onclick="changeState(' + tasks[i].id + ', -1)"/>', null, "取消发送");

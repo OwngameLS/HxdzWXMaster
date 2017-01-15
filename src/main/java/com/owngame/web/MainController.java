@@ -2,7 +2,6 @@ package com.owngame.web;
 
 import com.owngame.service.ContactService;
 import com.owngame.service.WeiXinCoreService;
-import com.owngame.utils.AccessTokenUtil;
 import com.owngame.utils.CheckUtil;
 import com.owngame.utils.ExcelUtil;
 import com.owngame.utils.InfoFormatUtil;

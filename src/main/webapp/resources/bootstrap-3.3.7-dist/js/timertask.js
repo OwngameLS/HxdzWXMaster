@@ -133,7 +133,7 @@ function initEditTimerTask(id, functions, description, firerules, receivers, rec
         $("#ttdescriptionEdit").val(description);
         $("#ttcronEdit").html(firerules);
         $("#selectedContactsIds").val(receivers);
-        console.log("type:"+receivetype);
+        console.log("type:" + receivetype);
         switch (receivetype) {
             case 0:
                 $("#sendTypeSmsEdit").prop("checked", true);
@@ -142,7 +142,7 @@ function initEditTimerTask(id, functions, description, firerules, receivers, rec
                 $("#sendTypeWxEdit").prop("checked", true);
                 break;
             case 2:
-                console.log("what the fuck! "+receivetype);
+                console.log("what the fuck! " + receivetype);
                 $("#sendTypeSmsEdit").prop("checked", true);
                 $("#sendTypeWxEdit").prop("checked", true);
                 break;
@@ -296,12 +296,12 @@ function handleTimerTask(action) {
         var sendTypeSms = $("#sendTypeSmsEdit").prop("checked");
         var sendTypeWx = $("#sendTypeWxEdit").prop("checked");
         var type = 0;
-        if(sendTypeSms){
-            if(sendTypeWx){
+        if (sendTypeSms) {
+            if (sendTypeWx) {
                 type = 2;
             }
-        }else{
-            if(sendTypeWx){
+        } else {
+            if (sendTypeWx) {
                 type = 1;
             }
         }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 为Dao接口方法提供SQL语句配置 -->
+<mapper namespace="com.owngame.dao.AuthorizationDao">
+
+    <select id="queryById" resultType="Authorization" parameterType="long">
+        select * from authorization where id=#{id}
+    </select>
+    <select id="queryByMac" resultType="Authorization" parameterType="String">
+        select * from authorization where mac=#{mac}
+    </select>
+    <select id="queryByUsername" resultType="Authorization" parameterType="String">
+        select * from authorization where username=#{username}
+    </select>
+    <!--<select id="queryUnique" resultType="Authorization" parameterType="String"> 由于是多参数那么就不能使用parameterType， 改用#｛index｝是第几个就用第几个的索引，索引从0开始
+        select * from settings where username=#{username} and phone=#{phone} and mac=#{mac}
+    </select>-->
+
+    <select id="queryUnique" resultType="Authorization">
+        select * from authorization where username=#{0} and phone=#{1} and mac=#{2}
+    </select>
+
+    <delete id="deleteUnique">
+        delete from authorization where username=#{0} and phone=#{1} and mac=#{mac}
+    </delete>
+
+    <delete id="deleteById" parameterType="long">
+        delete from authorization where id=#{id}
+    </delete>
+
+    <update id="update" parameterType="Authorization">
+        update authorization set
+        username=#{username},
+        mac=#{mac},
+        phone=#{phone},
+        expiration=#{expiration}
+        where id=#{id}
+    </update>
+
+    <select id="queryAll" resultType="Authorization">
+        select * from authorization
+    </select>
+
+    <select id="queryLikeName" resultType="Authorization">
+        select * from authorization where username like #{name}
+    </select>
+
+    <insert id="insert" parameterType="Settings">
+        insert ignore into authorization
+        (id,username, mac, phone, expiration)
+        values
+        (#{id},#{username}, #{mac}, #{phone},#{expiration})
+    </insert>
+
+</mapper>

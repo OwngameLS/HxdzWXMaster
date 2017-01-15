@@ -12,7 +12,8 @@
     <!-- 引入 Bootstrap -->
     <link href="resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="resources/bootstrap-3.3.7-dist/js/settings.js"></script>
-    <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
+    <script src="resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
+    <script src="resources/bootstrap-3.3.7-dist/js/authorization.js"></script>
 </head>
 <body>
 <div class="container">
@@ -39,15 +40,18 @@
                     <li><a href="<%=basePath%>Smserver/view/function" target="display">功 能</a></li>
                     <%--target指的是name--%>
                     <li><a href="<%=basePath%>Smserver/view/msg" target="display">信息群发</a></li>
-                    <li><a id="authorize" href="<%=basePath%>Smserver/view/settings" target="display"><p>系统设置</p></a></li>
-                    <li id="unauth" style="display: none"><a><img src="resources/bootstrap-3.3.7-dist/img/cross-red.png">未授权</a></li>
+                    <li><a id="authorize" href="<%=basePath%>Smserver/view/settings" target="display"><p>系统设置</p></a>
+                    </li>
+                    <li id="unauth" style="display: none"><a><img
+                            src="resources/bootstrap-3.3.7-dist/img/cross-red.png">未授权</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
 
     <!-- 模态框（Modal） -->
-    <div class="modal fade" id="authorizedModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="authorizedModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -56,7 +60,8 @@
                 </div>
                 <div class="modal-body">
                     <h1 style="color: red">授权失败！</h1>
-                    <h3>失败原因：</h3><h3 id="invalidReason"></h3>
+                    <h3>失败原因：</h3>
+                    <h3 id="invalidReason"></h3>
                     <h5 id="countdowndesc"></h5>
                 </div>
                 <div class="modal-footer">

@@ -7,8 +7,11 @@ import com.owngame.entity.WeixinAccessToken;
  */
 public interface WeixinAccessTokenService {
     WeixinAccessToken get();
+
     int insert(WeixinAccessToken weixinAccessToken);
+
     int update(WeixinAccessToken weixinAccessToken);
+
     int delete(long id);
 
 }

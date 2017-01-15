@@ -12,7 +12,7 @@ public class TimeUtil {
 
     /**
      * 判断是否过期
-      */
+     */
     public static boolean isExpired(String expiredTime) {
         long currentTime = System.currentTimeMillis();
         long expiredTimeLong = Long.valueOf(expiredTime);
@@ -25,7 +25,8 @@ public class TimeUtil {
 
     /**
      * 设置过期时间
-     * @param expiresIn 过期秒数
+     *
+     * @param expiresIn     过期秒数
      * @param beforeIntTime 提前过期秒数
      * @return
      */
@@ -37,21 +38,21 @@ public class TimeUtil {
 
     /**
      * 将毫秒类型的时间转换成DateString
+     *
      * @param timeMills
      * @return
      */
-    public static String parseTimeMillisToDateString(long timeMills){
+    public static String parseTimeMillisToDateString(long timeMills) {
         Date d = new Date(timeMills);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(d);
     }
 
 
-    public static void main(String[] agrs){
-        long t = System.currentTimeMillis()+60*1000*60*24*365 ;
+    public static void main(String[] agrs) {
+        long t = System.currentTimeMillis() + 60 * 1000 * 60 * 24 * 365;
         System.out.println(parseTimeMillisToDateString(t));
     }
-
 
 
 }

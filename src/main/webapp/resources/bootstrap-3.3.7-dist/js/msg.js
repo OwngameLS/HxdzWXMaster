@@ -190,17 +190,17 @@ function createTask() {
     }
     var sendTypeSms = $("#sendTypeSms").prop("checked");
     var sendTypeWx = $("#sendTypeWx").prop("checked");
-    if(sendTypeSms == false && sendTypeWx == false){
+    if (sendTypeSms == false && sendTypeWx == false) {
         showEditFail("你必须要选择至少一种发送方式啊。", null);
         return;
     }
     var sendtype = 0;
-    if(sendTypeSms){
-        if(sendTypeWx){
+    if (sendTypeSms) {
+        if (sendTypeWx) {
             sendtype = 2;
         }
-    }else{
-        if(sendTypeWx){
+    } else {
+        if (sendTypeWx) {
             sendtype = 1;
         }
     }

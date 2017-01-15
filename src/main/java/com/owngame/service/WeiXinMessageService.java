@@ -8,5 +8,6 @@ import java.util.Map;
  */
 public interface WeiXinMessageService {
     String handleMessage(Map<String, String> mapMessage);
+
     void sendTextMessage(String message, String openIds);
 }

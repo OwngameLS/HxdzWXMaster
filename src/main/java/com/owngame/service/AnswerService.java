@@ -27,6 +27,7 @@ public interface AnswerService {
 
     /**
      * 处理询问的逻辑 中心逻辑！！
+     *
      * @param question      询问信息，关键字或者方法名，方法id等
      * @param questionType  查询信息（功能 function）的类型 ids 0, names 1, keywords 2
      * @param receiversInfo 查询者信息

@@ -6,81 +6,11 @@ var settingses = null;// 从服务器读取到的配置信息
 var otherSettingsUIHtmlStr = ''; // 其他设置的HTMLStr
 var beReferedSettingses = null;// 被依赖的设置
 
-// 获得验证
-function authorizationRequest() {
-    // 获得验证手机号码
-    var phone = $("#authorizerphone").val();
-    if (isValidPhone(phone) == false) {
-        showEditFail("你必须输入正确的手机号码！", $("#authorizerphone"));
-        return;
-    }
-    var username = $("#username").val();
-    if (isEmpty(username)) {
-        showEditFail("你必须输入你的用户名！", $("#username"));
-        return;
-    }
-    var jsonStr = "{\"phone\":\"" + phone
-        + "\",\"username\":\"" + username + "\"}";
-    // 创建后台任务
-    $.when(myAjaxPost(bp + 'Smserver/settings/requestAuthorization', jsonStr)).done(function (data) {
-        if (data != null) {
-            var success = data['success'];
-            if (success == 'success') {
-                var invalidReason = data['invalidReason'];
-                $("#invalidReason").html(invalidReason);
-            }
-        }
-    });
-    // 如果创建后台任务成功了，就定时刷新，展示授权结果
-}
-
-function getAuthorizedState() {
-    // console.log("getAuthorizedState...");
-    // 先获得状态
-    $.when(myAjaxGet(bp + 'Smserver/settings/authorizedState')).done(function (data) {
-        var htmlStr = '';
-        if (data != null) {
-            var authorizedState = data['authorizedState'];
-            if (authorizedState.value == 'invalid') {
-                var invalidReason = data['invalidReason'];
-                $("#invalidReason").html(invalidReason + "<br>");
-                $("#authorizedModal").modal("show");
-                countDown(5);
-            }
-        }
-    });
-}
-
-
-function countDown(counts) {
-    if (counts == 0) {
-        gotoAuthorizePage();
-        return;
-    }
-    var htmlStr = counts + " 秒后将跳转到设置页面...";
-    $("#countdowndesc").html(htmlStr);
-    counts = counts - 1;
-    setTimeout("countDown(" + counts + ")", 1000);
-}
-
-
-// 跳转到设置页面
-function gotoAuthorizePage() {
-    // console.log("gotoAuthorizePage..");
-    $('#authorize>p').trigger('click');
-    $("#authorizedModal").modal("hide");
-    // 添加未授权标识
-    $("#unauth").show();
-}
-
-
 // 获得所有设置并按照规则展示出来
 function getSettings() {
     $.when(myAjaxGet(bp + 'Smserver/settings/settings')).done(function (data) {
-        var htmlStr = '';
         if (data != null) {
             settingses = data['settingses'];
-            // console.log("settingses:" + settingses);
             if (settingses != null || settingses != undefined) {
                 initUIs();
             }
@@ -125,6 +55,8 @@ function initAuthorizationUI() {
 function initUserInfoUI() {
     var username = findInSettingsesByName("username");
     $("#username").val(username.value);
+    var userphone = findInSettingsesByName("userphone");
+    $("#userphone").val(userphone.value);
     var phone = findInSettingsesByName("phone");
     $("#authorizerphone").val(phone.value);
 }
@@ -194,7 +126,7 @@ function usingWXMP() {
     } else {
         // 重新获取相关属性
         // 先清除原来的
-        var htmlStr = '<div id="wx" class="row bg-success"><div class="col-md-4 text-left"><img src="../../resources/bootstrap-3.3.7-dist/img/wechat.png">服务器配置</div>'
+        var htmlStr = '<div id="wx" class="row bg-success"><div class="col-md-4 text-left"><img src="../img/wechat.png">服务器配置</div>'
             + '<div class="col-md-6 text-left"></div></div>';
         $("#wxSettings").html(htmlStr);
         var jsonStr = "{\"name\":\"wx_\"}";
@@ -236,18 +168,15 @@ function initOtherSettingsUI() {
 
 // 初始化一组有依赖关系的设置UI
 function initRefertoSettings(refered, index) {
-    // console.log("initRefertoSettings...");
     // 先添加到beReferedSettings队列中，在从原来的队列中删除
     beReferedSettingses.push(refered);
     settingses.splice(index, 1);
-    // var isUsed = refered.value;
-    var htmlStr = initSettingsHtmlStr(refered, true, null);//initBeReferdSettingsUIHtmlStr(refered);
+    var htmlStr = initSettingsHtmlStr(refered, true, null);
     var referedName = refered.name;
     for (var i = 0; i < settingses.length;) {
         if (settingses[i].referto == referedName) {
             var htmlStr1 = initSettingsHtmlStr(settingses[i], true, refered);
             htmlStr += htmlStr1;
-            // console.log("htmlStr1..."+ htmlStr1);
             // 删除这个位置的元素,避免多次循环
             settingses.splice(i, 1);
         } else {
@@ -280,7 +209,7 @@ function addOtherSettingsUI(settings) {
     var htmlStr = '';
     if (settings.referto == 'self') {// 被别人依赖
         beReferedSettingses.push(settings);// 增加到可被依赖列表中
-        htmlStr = initSettingsHtmlStr(settings, true, null);// initBeReferdSettingsUIHtmlStr(settings);
+        htmlStr = initSettingsHtmlStr(settings, true, null);
     } else if (settings.referto == 'no') {// 独立
         htmlStr = initSettingsHtmlStr(settings, true, null);
     } else {
@@ -349,9 +278,8 @@ function addSettings() {
 }
 
 
-// 初始化Settings 的Settings htmlStr
 /**
- *
+ * 初始化Settings 的Settings htmlStr
  * @param settings
  * @param deletable 是否可以删除
  * @param beReferedSettings 被依赖的Settings
@@ -395,7 +323,6 @@ function initSettingsHtmlStr(settings, deletable, beReferedSettings) {
 }
 
 function editSettings(name, action) {
-    console.log("updateSettings:" + name);
     // 先根据name找到其自身相关属性
     var settingsElm = $("#" + name);
     var type = settingsElm.prop("type");

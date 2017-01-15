@@ -29,7 +29,8 @@
 
     <div id="editFailDiv" class="alert alert-danger alert-dismissible" style="display:none" role="alert"><%--操作失败--%>
         <div style="width: 100%;" class="text-right">
-            <a href="javascript:void(0)" onclick="hideEditFail();return false;" title="关闭"><img src="../../resources/bootstrap-3.3.7-dist/img/cross-red.png"></a>
+            <a href="javascript:void(0)" onclick="hideEditFail();return false;" title="关闭"><img
+                    src="../../resources/bootstrap-3.3.7-dist/img/cross-red.png"></a>
         </div>
         <h5>操作失败！</h5>
         <p class="text-danger" id="failCause"></p>
@@ -177,12 +178,12 @@
 
 <script type="application/javascript">
     var bp = '<%=basePath%>';
-
-   /* // 文档被加载完成时
-    $(document).ready(function () {
-        queryTimerTasks();
-    });
-*/
+    checkAuthorizationStateByUI();
+    /* // 文档被加载完成时
+     $(document).ready(function () {
+     queryTimerTasks();
+     });
+     */
 
 </script>
 

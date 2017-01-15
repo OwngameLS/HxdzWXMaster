@@ -78,6 +78,7 @@ public interface FunctionService {
     /**
      * 通过权限 筛选出可用的功能
      * 筛选出可用功能并告知错误原因
+     *
      * @param functions
      * @param grade
      * @return

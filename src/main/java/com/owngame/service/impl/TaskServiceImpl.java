@@ -17,7 +17,7 @@ import java.util.Date;
 @Service
 public class TaskServiceImpl implements TaskService {
 
-    public static final int NOT_NEED=-1, SEND_TYPE_SMS = 0, SEND_TYPE_WX = 1, SEND_TYPE_SMS_AND_WX = 2;
+    public static final int NOT_NEED = -1, SEND_TYPE_SMS = 0, SEND_TYPE_WX = 1, SEND_TYPE_SMS_AND_WX = 2;
 
     @Autowired
     TaskDao taskDao;

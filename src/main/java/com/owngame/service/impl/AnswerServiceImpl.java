@@ -39,6 +39,9 @@ public class AnswerServiceImpl implements AnswerService {
     ContactService contactService;
     @Autowired
     AskrecordService askrecordService;
+    @Autowired
+    AuthorizationService authorizationService;
+
 
     /**
      * 处理从手机发来的主动询问
@@ -91,6 +94,27 @@ public class AnswerServiceImpl implements AnswerService {
                 e.printStackTrace();
             }
             map.put("groups", json);
+        } else if (strings[0].equals("AR")) {
+            // AR--Owngame--手机号--60-A4-4C-D0-21-A2
+            // 授权管理
+            if (strings[1].equals("SUCCESS") || strings[1].equals("FAILED")) {// 是授权结果
+                // 更新到数据库中 "AR--FAILED--您尚未缴费，请充值后再获取授权吧。";
+//                "AR--SUCCESS--"+expiration+"--"+ SecretUtil.encodeWithMD5(expiration);
+                authorizationService.setAuthorizationUser(actionName);
+            } else if (strings[1].equals("ARADMIN")) {// 是开发者设置授权
+                // AR--ARADMIN--username==phone==expiredMonths
+                authorizationService.setAuthorizationAdmin(strings[3]);
+            } else {// 是授权申请（是开发者运行的方法）
+                try {
+                    String result = authorizationService.requestAuthorization(strings[1], strings[2], strings[3]);
+                    // 创建任务以发送
+                    // (String name, String description, String contents, String receivers);
+                    taskService.createTask("authorize repost", "授权应答", result, strings[2]);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            map.put("type", "StateOK");
         } else {
             // 有可能是主动查询的 比如 keyword1--13581695827--sms
             // keyword1代表查询关键词
@@ -98,20 +122,6 @@ public class AnswerServiceImpl implements AnswerService {
             handleAsk(strings[0], FunctionServiceImpl.QUESTIONTYPE_FUNCTION_KEYWORDS, strings[1], ContactServiceImpl.CONTACT_TYPE_PHONE, ASK_TYPE_SMS, TaskServiceImpl.SEND_TYPE_SMS, "");
             map.put("type", "StateOK");
         }
-        /*
-        * else if (strings[0].equals("qf") || strings[0].equals("群发")) {// 管理员通过命令群发
-            // qf--sendType==msg==functionIds--groupnames 功能--发送方式==自定义消息内容==功能ids--接收人员组名
-            // 将strings[1]中的信息分开
-            String[] ts = strings[1].split("==");
-             ts[0] 消息发送方式
-             ts[1] 自定义消息内容
-             ts[2] 功能ids
-
-        handleAsk(ts[2], FunctionServiceImpl.QUESTIONTYPE_FUNCTION_ID, strings[2], ContactServiceImpl.CONTACT_TYPE_GROUPS, ASK_TYPE_CLIENT, Integer.parseInt(ts[0]), ts[1]);
-        map.put("type", "StateOK");
-    }
-        * */
-
         return map;
     }
 
@@ -160,6 +170,11 @@ public class AnswerServiceImpl implements AnswerService {
      * @return
      */
     public String handleAsk(String question, int questionType, String receiversInfo, int receiversType, int askType, int sendType, String description) {
+        // 20170115添加授权允许的判断，当授权不允许时就进行告知
+        AuthorizationState authorizationState = authorizationService.getAuthorizationState();
+        if(authorizationState.getValid().equals("invalid")) {
+            return "由于系统未获得使用授权，暂停服务，请联系管理员进行解决。";
+        }
         try {
             // 1.获得查询所需的功能
             ArrayList<Function> functions = functionService.getFunctionsByType(question, questionType);
@@ -237,7 +252,7 @@ public class AnswerServiceImpl implements AnswerService {
                     functionNames = "没有查询到对应的功能。";
                     askrecord.setIssuccess(Askrecord.ASK_RESULT_FAILED);
                 } else {
-                    FunctionFilterResult functionFilterResult = functionService.filterFunctions(functions, 7+"");
+                    FunctionFilterResult functionFilterResult = functionService.filterFunctions(functions, 7 + "");
                     functions = functionFilterResult.getFunctions();
                     functionNames = functionFilterResult.getFunctionNames();
                     result = functionService.getFunctionResultsByFunctions(functions);
@@ -247,9 +262,9 @@ public class AnswerServiceImpl implements AnswerService {
                 // 将接收者的手机号、微信openid提取出来
                 String receiverPhones = "";
                 String receiverOpenIds = "";
-                if(contactDisplays == null || contactDisplays.size() == 0){
+                if (contactDisplays == null || contactDisplays.size() == 0) {
 
-                }else {
+                } else {
                     for (int i = 0; i < contactDisplays.size(); i++) {
                         receiverPhones = receiverPhones + contactDisplays.get(i).getPhone();
                         String openid = contactDisplays.get(i).getOpenid();
@@ -267,7 +282,7 @@ public class AnswerServiceImpl implements AnswerService {
                     }
                 }
                 String taskName = "";
-                switch (askType){// 根据提问的来源区分
+                switch (askType) {// 根据提问的来源区分
                     case ASK_TYPE_WEB:// 网页查询（网页群发信息）
                         askrecord.setName("管理员");
                         askrecord.setPhone("管理员");
@@ -276,17 +291,17 @@ public class AnswerServiceImpl implements AnswerService {
                         createAskrecord(askrecord);
                         return result;
                     case ASK_TYPE_CLIENT:// client端查询，可能会有自定义消息
-                        if(msg == null || msg.equals("") || msg.equals("nomsg")){//没有自定义消息
+                        if (msg == null || msg.equals("") || msg.equals("nomsg")) {//没有自定义消息
                             taskName = "功能查询结果。";
-                        }else {
-                            if(askrecord.getIssuccess() == Askrecord.ASK_RESULT_FAILED){
+                        } else {
+                            if (askrecord.getIssuccess() == Askrecord.ASK_RESULT_FAILED) {
                                 result = msg;// 有自定义消息且没有查询结果
                                 askrecord.setIssuccess(Askrecord.ASK_RESULT_SUCCESS);
                                 functionNames = "自定义消息。";
                                 taskName = "自定义消息。";
-                            }else{
-                                result = msg +"\n" + result;
-                                functionNames = "自定义消息 与 功能查询结果("+functionNames+")。";
+                            } else {
+                                result = msg + "\n" + result;
+                                functionNames = "自定义消息 与 功能查询结果(" + functionNames + ")。";
                                 taskName = "自定义消息 与 功能查询结果。";
                             }
                         }
@@ -309,11 +324,11 @@ public class AnswerServiceImpl implements AnswerService {
                 if (sendType == TaskServiceImpl.SEND_TYPE_SMS) {
                     taskService.createTask(taskName, description, result, receiverPhones);
                 } else if (sendType == TaskServiceImpl.SEND_TYPE_WX) {
-                    // TODO 微信发送
+                    // 微信发送
                     weiXinMessageService.sendTextMessage(result, receiverOpenIds);
                 } else if (sendType == TaskServiceImpl.SEND_TYPE_SMS_AND_WX) {
                     taskService.createTask(taskName, description, result, receiverPhones);
-                    // TODO 微信发送
+                    // 微信发送
                     weiXinMessageService.sendTextMessage(result, receiverOpenIds);
                 }
             }

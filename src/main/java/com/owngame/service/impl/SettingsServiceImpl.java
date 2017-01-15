@@ -53,16 +53,16 @@ public class SettingsServiceImpl implements SettingsService {
         String name = p.get("name");
         String value = p.get("value");
         Settings settings = queryByName(name);
-        if(action.equals("delete")){
+        if (action.equals("delete")) {
             int r = 0;
-            if(settings.getReferto().equals("self")){// 删除与自己关联的其他设置
+            if (settings.getReferto().equals("self")) {// 删除与自己关联的其他设置
                 r = settingsDao.deleteByReferto(name);
             }
-            if(r >= 0) {
+            if (r >= 0) {
                 // 删除自己
-             return settingsDao.deleteByName(name);
+                return settingsDao.deleteByName(name);
             }
-        }else if(action.equals("update")){
+        } else if (action.equals("update")) {
             settings.setValue(value);
             return settingsDao.update(settings);
         }

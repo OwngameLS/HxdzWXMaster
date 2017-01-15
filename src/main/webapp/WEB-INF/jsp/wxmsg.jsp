@@ -27,7 +27,8 @@
 
     <div id="editFailDiv" class="alert alert-danger alert-dismissible" style="display:none" role="alert"><%--操作失败--%>
         <div style="width: 100%;" class="text-right">
-            <a href="javascript:void(0)" onclick="hideEditFail();return false;" title="关闭"><img src="../../resources/bootstrap-3.3.7-dist/img/cross-red.png"></a>
+            <a href="javascript:void(0)" onclick="hideEditFail();return false;" title="关闭"><img
+                    src="../../resources/bootstrap-3.3.7-dist/img/cross-red.png"></a>
         </div>
         <h5>操作失败！</h5>
         <p class="text-danger" id="failCause"></p>
@@ -52,12 +53,13 @@
 
 
     <div class="well">
-            <div>
-                发送内容：<button type="button" class="btn btn-danger btn-sm" onclick="emptyContents()">清空内容</button>
-            </div>
-            <div>
-                <textarea id="message" style="width: 100%" placeholder="自行输入内容或者使用“功能”得到其结果。"></textarea>
-            </div>
+        <div>
+            发送内容：
+            <button type="button" class="btn btn-danger btn-sm" onclick="emptyContents()">清空内容</button>
+        </div>
+        <div>
+            <textarea id="message" style="width: 100%" placeholder="自行输入内容或者使用“功能”得到其结果。"></textarea>
+        </div>
     </div>
     <div class="well">
         <div>
@@ -65,7 +67,7 @@
         </div>
         <div id="functions">
             <table class="table table-striped text-center table-bordered">
-                <tbody id="functionsBody" >
+                <tbody id="functionsBody">
                 </tbody>
             </table>
         </div>
@@ -74,7 +76,7 @@
         </div>
         <div id="groups">
             <table class="table table-hover table-bordered text-center">
-                <tbody id="groupsBody" >
+                <tbody id="groupsBody">
                 </tbody>
             </table>
         </div>
@@ -106,8 +108,10 @@
 
     // 文档被加载完成时
     $(document).ready(function () {
-        // 得到可用功能和群组信息
-        getUsableFunctionsAndGroups();
+        if(checkAuthorizationStateByUI()) {
+            // 得到可用功能和群组信息
+            getUsableFunctionsAndGroups();
+        }
     });
 
 </script>

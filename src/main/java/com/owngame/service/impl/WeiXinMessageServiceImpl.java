@@ -4,7 +4,6 @@ import com.owngame.dao.MYUser;
 import com.owngame.entity.ContactHigh;
 import com.owngame.menu.ManageMenu;
 import com.owngame.service.*;
-import com.owngame.utils.AccessTokenUtil;
 import com.owngame.utils.PhoneUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -91,12 +90,13 @@ public class WeiXinMessageServiceImpl implements WeiXinMessageService {
 
     /**
      * 发送客服消息
+     *
      * @param message
      * @param openIds
      */
     public void sendTextMessage(String message, String openIds) {
         String openId[] = openIds.split(",");
-        for (int i = 0; i< openId.length; i++){
+        for (int i = 0; i < openId.length; i++) {
             String messageJson = initTextMessageOfJsonString(openId[i], message);
             // 调用客服消息借口回复消息
             String token = weixinAccessTokenService.get().getAccesstoken();
@@ -112,7 +112,7 @@ public class WeiXinMessageServiceImpl implements WeiXinMessageService {
         System.out.println("handleTextMessage is called.");
         rtMsgType = MESSAGE_TYPE_TEXT;
 // TODO 先排查一遍是否有微信公众号特殊定义的关键字，方便决定是否需要返回特殊消息
-        if(content.startsWith("群发")){
+        if (content.startsWith("群发")) {
             String path = context.getServletContextName();
             path = context.getServerInfo();
             return null;

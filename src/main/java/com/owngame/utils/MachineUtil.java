@@ -2,8 +2,6 @@ package com.owngame.utils;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Properties;
 
 /**
  * 用于读取项目部署服务器的信息

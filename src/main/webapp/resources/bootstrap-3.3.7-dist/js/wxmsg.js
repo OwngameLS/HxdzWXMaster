@@ -2,7 +2,7 @@
  * Created by Administrator on 2016-12-21.
  */
 
-function getUsableFunctionsAndGroups(){
+function getUsableFunctionsAndGroups() {
     $.when(myAjaxGet(bp + 'Smserver/tasks/askServer/usableFunctions')).done(function (data) {
         var functions = eval(data['functions']);
         var groups = eval(data['groups']);
@@ -15,28 +15,28 @@ function getUsableFunctionsAndGroups(){
     });
 }
 
-function initFunctions(functions){
+function initFunctions(functions) {
     var htmlStr = "";
-    for(var i=0;i<functions.length;i++){// 三个一行
-        if(i==0 || i%3 == 0){
+    for (var i = 0; i < functions.length; i++) {// 三个一行
+        if (i == 0 || i % 3 == 0) {
             htmlStr += '<tr>';
         }
-        htmlStr += '<td> <input type="checkbox" name="functions" value="'+functions[i].id+'">'+functions[i].name+'</td>';
-        if(i != 0 && i%2 == 0){
+        htmlStr += '<td> <input type="checkbox" name="functions" value="' + functions[i].id + '">' + functions[i].name + '</td>';
+        if (i != 0 && i % 2 == 0) {
             htmlStr += '</tr>';
         }
     }
     $("#functionsBody").html(htmlStr);
 }
 
-function initGroups(groups){
+function initGroups(groups) {
     var htmlStr = "";
-    for(var i=0;i<groups.length;i++){// 三个一行
-        if(i==0 || i%3 == 0){
+    for (var i = 0; i < groups.length; i++) {// 三个一行
+        if (i == 0 || i % 3 == 0) {
             htmlStr += '<tr>';
         }
-        htmlStr += '<td> <input type="checkbox" name="groups" value="'+groups[i]+'">'+groups[i]+'</td>';
-        if(i != 0 && i%2 == 0){
+        htmlStr += '<td> <input type="checkbox" name="groups" value="' + groups[i] + '">' + groups[i] + '</td>';
+        if (i != 0 && i % 2 == 0) {
             htmlStr += '</tr>';
         }
     }
@@ -45,7 +45,7 @@ function initGroups(groups){
 
 var currentSelectFunctionsIds;
 
-function getSelectedFunctions(){
+function getSelectedFunctions() {
     currentSelectFunctionsIds = new Array();
     var aaa = $("input[name='functions']");
     aaa.each(function () {
@@ -57,7 +57,7 @@ function getSelectedFunctions(){
 
 var currentSelectGroupNames;
 
-function getSelectedGroups(){
+function getSelectedGroups() {
     currentSelectGroupNames = new Array();
     var aaa = $("input[name='groups']");
     aaa.each(function () {
@@ -69,9 +69,9 @@ function getSelectedGroups(){
 
 function arrayToString(myArray) {
     var str = "";
-    for(var i=0;i<myArray.length;i++){
+    for (var i = 0; i < myArray.length; i++) {
         str += myArray[i];
-        if(i+i < myArray.length){
+        if (i + i < myArray.length) {
             str += ",";
         }
     }
@@ -93,35 +93,35 @@ function createTask() {
     getSelectedGroups();
     var msg = $("#message").val();// 自定义消息
     var hasMsg = !isEmpty(msg);
-    if(hasMsg == false && currentSelectFunctionsIds.length == 0){
+    if (hasMsg == false && currentSelectFunctionsIds.length == 0) {
         alert("你必须选择查询\'功能\'或 添加\'自定义消息\'。");
         return;
     }
 
-    if(currentSelectGroupNames.length == 0){
+    if (currentSelectGroupNames.length == 0) {
         alert("你必须选择需要发送的\'群组\'。");
         return;
     }
 
     var sendTypeSms = $("#sendTypeSms").prop("checked");
     var sendTypeWx = $("#sendTypeWx").prop("checked");
-    if(sendTypeSms == false && sendTypeWx == false){
+    if (sendTypeSms == false && sendTypeWx == false) {
         alert("你必须选择至少一种发送方式：微信、短信");
         return;
     }
     var sendtype = 0;
-    if(sendTypeSms){
-        if(sendTypeWx){
+    if (sendTypeSms) {
+        if (sendTypeWx) {
             sendtype = 2;
         }
-    }else{
-        if(sendTypeWx){
+    } else {
+        if (sendTypeWx) {
             sendtype = 1;
         }
     }
 
     var strFunctionids = arrayToString(currentSelectFunctionsIds);
-    if(isEmpty(strFunctionids)){
+    if (isEmpty(strFunctionids)) {
         strFunctionids = "nofunctions";
     }
 

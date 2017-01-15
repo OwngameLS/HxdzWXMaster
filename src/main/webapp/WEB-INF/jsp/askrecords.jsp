@@ -118,7 +118,9 @@
     var bp = '<%=basePath%>';
     // 文档被加载完成时
     $(document).ready(function () {
-        queryAskrecords();// 默认查询一小时之内的
+        if(checkAuthorizationStateByUI()) {
+            queryAskrecords();// 默认查询一小时之内的
+        }
     });
 
 </script>

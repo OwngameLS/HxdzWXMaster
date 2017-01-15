@@ -20,7 +20,7 @@ import java.util.Map;
 @Service
 public class ContactServiceImpl implements ContactService {
 
-    public static final int CONTACT_TYPE_PHONE = 0, CONTACT_TYPE_OPENID = 1, CONTACT_TYPE_GROUPS = 2,CONTACT_TYPE_SUPERMAN = 3;
+    public static final int CONTACT_TYPE_PHONE = 0, CONTACT_TYPE_OPENID = 1, CONTACT_TYPE_GROUPS = 2, CONTACT_TYPE_SUPERMAN = 3;
     @Autowired
     ContactBaseService contactBaseService;
     @Autowired
@@ -179,10 +179,10 @@ public class ContactServiceImpl implements ContactService {
     }
 
     // 通过Group的names去查询联系人
-    private ArrayList<ContactDisplay> queryByGroups(String groupsName){
+    private ArrayList<ContactDisplay> queryByGroups(String groupsName) {
         ArrayList<ContactDisplay> contactDisplays = new ArrayList<ContactDisplay>();
         String[] groups = groupsName.split(",");
-        for(int i=0;i<groups.length;i++){
+        for (int i = 0; i < groups.length; i++) {
             ArrayList<ContactDisplay> t = queryByGroup(groups[i]);
             // 去重添加
             contactDisplays = uniqueContacts(contactDisplays, t);
@@ -191,31 +191,30 @@ public class ContactServiceImpl implements ContactService {
     }
 
     // 将
-    private ArrayList<ContactDisplay> uniqueContacts(ArrayList<ContactDisplay> mother, ArrayList<ContactDisplay> children){
-        if(mother == null || mother.size() == 0){
+    private ArrayList<ContactDisplay> uniqueContacts(ArrayList<ContactDisplay> mother, ArrayList<ContactDisplay> children) {
+        if (mother == null || mother.size() == 0) {
             return children;
-        }else{
+        } else {
             ArrayList<Integer> needAddIndex = new ArrayList<Integer>();
-            for(int j=0;j<children.size();j++){
+            for (int j = 0; j < children.size(); j++) {
                 ContactDisplay contactDisplay = children.get(j);
                 boolean isFound = false;
-                for(int k=0;k<mother.size();k++){
-                    if(mother.get(k).getPhone().equals(contactDisplay.getPhone())){
+                for (int k = 0; k < mother.size(); k++) {
+                    if (mother.get(k).getPhone().equals(contactDisplay.getPhone())) {
                         isFound = true;
                         break;// 找到了就返回，不用继续查找了
                     }
                 }
-                if(isFound == false){
+                if (isFound == false) {
                     needAddIndex.add(j);
                 }
             }
-            for(int j=0;j<needAddIndex.size();j++){
+            for (int j = 0; j < needAddIndex.size(); j++) {
                 mother.add(children.get(needAddIndex.get(j)));
             }
             return mother;
         }
     }
-
 
 
     public ArrayList<ContactDisplay> queryLikeName(String name) {

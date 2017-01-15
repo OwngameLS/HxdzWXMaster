@@ -43,7 +43,7 @@ public class FunctionServiceImpl implements FunctionService {
         return functionDao.queryAll();
     }
 
-    public ArrayList<Function> queryAllUsable(){
+    public ArrayList<Function> queryAllUsable() {
         return functionDao.queryAllUsable();
     }
 
@@ -140,8 +140,8 @@ public class FunctionServiceImpl implements FunctionService {
      * @return
      */
     public ArrayList<Function> getFunctionsByType(String functionInfos, int type) {
-        if(functionInfos != null){
-            if(functionInfos.equals("nofunctions")){
+        if (functionInfos != null) {
+            if (functionInfos.equals("nofunctions")) {
                 return null;
             }
         }
@@ -400,16 +400,17 @@ public class FunctionServiceImpl implements FunctionService {
     /**
      * 通过权限 筛选出可用的功能
      * 筛选出可用功能并告知错误原因
+     *
      * @param functions
      * @param grade
      * @return
      */
-    public FunctionFilterResult filterFunctions(ArrayList<Function> functions, String grade){
-        if(functions == null || functions.size() == 0){
+    public FunctionFilterResult filterFunctions(ArrayList<Function> functions, String grade) {
+        if (functions == null || functions.size() == 0) {
             return null;
         }
         ArrayList<Function> fts = new ArrayList<Function>();
-        String result  = "";
+        String result = "";
         String functionNames = "";
         for (int i = 0; i < functions.size(); i++) {
             Function function = functions.get(i);

@@ -16,6 +16,7 @@
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/settings.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/authorization.js"></script>
 </head>
 <body>
 <h3>系统设置</h3>
@@ -23,7 +24,8 @@
 <div class="danger" style="padding: 5px;">
     <div id="editFailDiv" class="alert alert-danger alert-dismissible" style="display:none" role="alert"><%--操作失败--%>
         <div style="width: 100%;" class="text-right">
-            <a href="javascript:void(0)" onclick="hideEditFail();return false;" title="关闭"><img src="../../resources/bootstrap-3.3.7-dist/img/cross-red.png"></a>
+            <a href="javascript:void(0)" onclick="hideEditFail();return false;" title="关闭"><img
+                    src="../../resources/bootstrap-3.3.7-dist/img/cross-red.png"></a>
         </div>
         <h5>操作失败！</h5>
         <p class="text-danger" id="failCause"></p>
@@ -47,7 +49,15 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 text-right">
-                        授权手机号码(<a href="http://www.baidu.com">哪里找？</a>)
+                        你的手机号
+                    </div>
+                    <div class="col-md-6 text-left">
+                        <input id="userphone" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-right">
+                        授权中心的手机号码(<a href="http://www.baidu.com">哪里找？</a>)
                     </div>
                     <div class="col-md-6 text-left">
                         <input id="authorizerphone" class="form-control">
@@ -131,7 +141,9 @@
                     <div class="col-md-2 text-left"><select class="form-control" id="addReferto"></select></div>
                     <div class="col-md-2 text-right">是否作为被依赖的属性</div>
                     <div class="col-md-2 text-left"><input type="checkbox" id="addBerefered">（勾选）</div>
-                    <div class="col-md-2 text-left"><button class="btn btn-success btn-sm" id="addStBtn" onclick="addSettings()"> 确定添加</button></div>
+                    <div class="col-md-2 text-left">
+                        <button class="btn btn-success btn-sm" id="addStBtn" onclick="addSettings()"> 确定添加</button>
+                    </div>
                 </div>
             </div>
         </div>

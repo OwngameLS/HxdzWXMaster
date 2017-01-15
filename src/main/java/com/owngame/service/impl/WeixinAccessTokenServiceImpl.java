@@ -5,18 +5,15 @@ import com.owngame.entity.WeixinAccessToken;
 import com.owngame.service.WeixinAccessTokenService;
 import com.owngame.utils.TimeUtil;
 import com.owngame.utils.WeixinUtil;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import weixin.popular.bean.token.Token;
-
-import java.io.IOException;
 
 /**
  * Created by Administrator on 2016/12/24.
  */
 @Service
-public class WeixinAccessTokenServiceImpl implements WeixinAccessTokenService{
+public class WeixinAccessTokenServiceImpl implements WeixinAccessTokenService {
 
     @Autowired
     WeixinAccessTokenDao weixinAccessTokenDao;
@@ -26,13 +23,13 @@ public class WeixinAccessTokenServiceImpl implements WeixinAccessTokenService{
     public WeixinAccessToken get() {
         WeixinAccessToken weixinAccessToken = weixinAccessTokenDao.get();
         // 判断
-        if(weixinAccessToken == null){// 数据库中不存在
+        if (weixinAccessToken == null) {// 数据库中不存在
             isTokenExist = false;
             weixinAccessToken = getTokenFromWeixin();
-        }else{
+        } else {
             isTokenExist = true;
             boolean isExpired = TimeUtil.isExpired(weixinAccessToken.getExpiresin());
-            if(isExpired){// 存在且过期了，重新获取
+            if (isExpired) {// 存在且过期了，重新获取
                 weixinAccessToken = getTokenFromWeixin();
             }
         }
@@ -65,15 +62,15 @@ public class WeixinAccessTokenServiceImpl implements WeixinAccessTokenService{
             weixinAccessToken.setAccesstoken(token);
             weixinAccessToken.setExpiresin(expireTime);
             int r = 0;
-            if(isTokenExist == false){
+            if (isTokenExist == false) {
                 r = insert(weixinAccessToken);
-            }else{
+            } else {
                 r = update(weixinAccessToken);
             }
-            if(r > 0){
+            if (r > 0) {
                 return weixinAccessToken;
             }
-        }else {
+        } else {
             return null;// 获取失败
         }
         return null;

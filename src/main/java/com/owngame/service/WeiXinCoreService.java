@@ -8,6 +8,7 @@ package com.owngame.service;
 public interface WeiXinCoreService {
     /**
      * 处理消息
+     *
      * @param message
      */
     void handleMessage(String message);
