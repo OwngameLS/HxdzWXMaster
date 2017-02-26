@@ -22,15 +22,17 @@ public class ContactController {
 
     /**
      * 根据组名返回该组的联系人信息
-     *
-     * @param groupname
+     * @param p
      * @return
      */
-    @RequestMapping(value = "/{groupname}", method = RequestMethod.GET)
+    @RequestMapping(value = "/getbygroup", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> getContactByGroup(@PathVariable("groupname") String groupname) {
+    public Map<String, Object> getContactByGroup(@RequestBody Map<String, String> p) {
+        int pageSize = Integer.parseInt(p.get("pageSize"));
+        int targetPage = Integer.parseInt(p.get("targetPage"));
+        String groupname = p.get("groupname");
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("contacts", contactService.queryByGroup(groupname));
+        map.put("contacts", contactService.queryByGroupLimit(pageSize, targetPage, groupname));
         return map;
     }
 

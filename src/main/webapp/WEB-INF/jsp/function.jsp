@@ -15,6 +15,7 @@
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/pager.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/function.js"></script>
 </head>
 <body>
@@ -201,7 +202,7 @@
         </div>
     </div>
 
-    <button type="button" class="btn btn-warning btn-sm" onclick="edit(-1)">新建任务</button>
+    <button type="button" class="btn btn-warning btn-sm" onclick="edit(-1)">新建功能</button>
     <div id="functionsDIV" style="width:100%;float:left;overflow:scroll; height:400px;" class="well">
         <table class="table table-hover table-bordered text-center">
             <thead>
@@ -218,6 +219,8 @@
             </tbody>
         </table>
     </div>
+    <div id="pageSelectDiv" style="text-align:center;width:100%;" >
+    </div>
 
 </div>
 <!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
@@ -229,7 +232,7 @@
     var bp = '<%=basePath%>';
     // 文档被加载完成时
     $(document).ready(function () {
-        if(checkAuthorizationStateByUI()) {
+        if (checkAuthorizationStateByUI()) {
             getFunctions();
         }
     });

@@ -1,5 +1,7 @@
 package com.owngame.web;
 
+import com.owngame.entity.Function;
+import com.owngame.entity.Pager;
 import com.owngame.entity.TimerTask;
 import com.owngame.service.TimerTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +59,10 @@ public class TimerTaskController {
             timerTaskService.deleteById(id);
         }
         // 返回所有 用于刷新页面
-        return queryTimerTasks();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("pageSize", "20");
+        map.put("targetPage", "1");
+        return queryTimerTasks(map);
     }
 
     /**
@@ -65,13 +70,15 @@ public class TimerTaskController {
      *
      * @return
      */
-    @RequestMapping(value = "/getall", method = RequestMethod.GET)
+    @RequestMapping(value = "/getall", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> queryTimerTasks() {
+    public Map<String, Object> queryTimerTasks(@RequestBody Map<String, String> p) {
         System.out.println("queryTimerTasks...");
-        ArrayList<TimerTask> timerTasks = timerTaskService.queryAll();
+        int pageSize = Integer.parseInt(p.get("pageSize"));
+        int targetPage = Integer.parseInt(p.get("targetPage"));
+        Pager<TimerTask> pager = timerTaskService.queryWithLimit(pageSize, targetPage);
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("timerTasks", timerTasks);
+        map.put("timerTasks", pager);
         return map;
     }
 }

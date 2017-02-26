@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2017-01-12 17:22:07
+Date: 2017-01-16 17:21:48
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -29,7 +29,7 @@ CREATE TABLE `askrecord` (
   `description` text,
   `time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=416 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=417 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of askrecord
@@ -65,6 +65,7 @@ INSERT INTO `askrecord` VALUES ('412', 'Owngame', '18107436127', '1', '0', 'abc'
 INSERT INTO `askrecord` VALUES ('413', '管理员', '管理员', '3', '1', '自定义消息。', '管理员客户端操作。景美滴好嗯可以的没有', '2016-12-20 22:07:08');
 INSERT INTO `askrecord` VALUES ('414', '管理员', '管理员', '3', '1', '自定义消息 与 功能查询结果(abc)。', '管理员客户端操作。你真的是我群发的消息吗？功能[abc]的查询结果：统计类型:T;\n', '2016-12-20 22:07:42');
 INSERT INTO `askrecord` VALUES ('415', 'Owngame', '18107436127', '1', '1', 'B股', '关键字[B股] 没有查询到对应的功能。', '2016-12-24 12:56:25');
+INSERT INTO `askrecord` VALUES ('416', 'Owngame', '18107436127', '1', '1', 'abc', '功能[abc]的查询结果：统计类型:T;\n', '2017-01-16 12:17:10');
 
 -- ----------------------------
 -- Table structure for `authorization`
@@ -77,14 +78,19 @@ CREATE TABLE `authorization` (
   `phone` text,
   `expiration` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of authorization
 -- ----------------------------
-INSERT INTO `authorization` VALUES ('1', 'owngame', null, null, null);
-INSERT INTO `authorization` VALUES ('2', 'owngamee', null, null, null);
+INSERT INTO `authorization` VALUES ('1', 'Owngame', '44-37-E6-CC-7A-4D', '18107436127', '1515396574956');
+INSERT INTO `authorization` VALUES ('2', 'owngamee', null, '18107436128', '1515396654224');
 INSERT INTO `authorization` VALUES ('3', 'oowngamee', null, null, null);
+INSERT INTO `authorization` VALUES ('4', 'ls', null, '18107436129', '1515396794957');
+INSERT INTO `authorization` VALUES ('5', 'eeee', null, '18107436120', '1515401583888');
+INSERT INTO `authorization` VALUES ('6', 'owngamea', null, '18107436127', '0');
+INSERT INTO `authorization` VALUES ('7', 'zhiyun', null, '18107436666', '0');
+INSERT INTO `authorization` VALUES ('8', 'zhiyuna', null, '18107463333', '0');
 
 -- ----------------------------
 -- Table structure for `contactbase`
@@ -137,7 +143,7 @@ CREATE TABLE `contacthigh` (
 -- ----------------------------
 -- Records of contacthigh
 -- ----------------------------
-INSERT INTO `contacthigh` VALUES ('20', '18107436127', '5', 'oZDbcsmRjwkLHJd-gGEq83cuIjXk', null);
+INSERT INTO `contacthigh` VALUES ('20', '18107436127', '7', 'oZDbcsmRjwkLHJd-gGEq83cuIjXk', null);
 INSERT INTO `contacthigh` VALUES ('21', '18107436126', '0', null, null);
 INSERT INTO `contacthigh` VALUES ('22', '18107436125', '0', null, null);
 INSERT INTO `contacthigh` VALUES ('23', '18107436124', '4', null, null);
@@ -450,19 +456,19 @@ CREATE TABLE `settings` (
 -- ----------------------------
 -- Records of settings
 -- ----------------------------
-INSERT INTO `settings` VALUES ('1', '授权状态', 'authorizedState', 'invalid', 'no');
-INSERT INTO `settings` VALUES ('2', '到期时间', 'validTime', '0', 'no');
-INSERT INTO `settings` VALUES ('3', 'nodes', '5891675fd9c7128fb390426a184f9f29', '0', 'no');
+INSERT INTO `settings` VALUES ('1', '授权状态', 'authorizedState', 'valid', 'no');
+INSERT INTO `settings` VALUES ('2', '到期时间', 'validTime', '1515396574956', 'no');
+INSERT INTO `settings` VALUES ('3', 'nodes', '5891675fd9c7128fb390426a184f9f29', '62c4ece6fa44df42618188dcee0c187d', 'no');
 INSERT INTO `settings` VALUES ('4', '授权中心手机号', 'phone', '18107436127', 'no');
 INSERT INTO `settings` VALUES ('5', '用户名', 'username', 'Owngame', 'no');
 INSERT INTO `settings` VALUES ('6', '数据库用户名', 'db_username', 'root', 'no');
 INSERT INTO `settings` VALUES ('7', '数据库密码', 'db_password', 'root', 'no');
 INSERT INTO `settings` VALUES ('8', '数据库端口', 'db_port', '3306', 'no');
 INSERT INTO `settings` VALUES ('9', '是否有微信公众号', 'wx_hasmp', 'true', 'self');
-INSERT INTO `settings` VALUES ('10', 'AppID(应用ID)', 'wx_appid', null, 'wx_hasmp');
-INSERT INTO `settings` VALUES ('11', 'AppSecret(应用密钥)', 'wx_appsecret', null, 'wx_hasmp');
-INSERT INTO `settings` VALUES ('12', 'URL(服务器地址)', 'wx_url', null, 'wx_hasmp');
-INSERT INTO `settings` VALUES ('13', 'Token(令牌)', 'wx_token', null, 'wx_hasmp');
+INSERT INTO `settings` VALUES ('10', 'AppID(应用ID)', 'wx_appid', 'wxac0bb909a8c87ebc', 'wx_hasmp');
+INSERT INTO `settings` VALUES ('11', 'AppSecret(应用密钥)', 'wx_appsecret', 'd4624c36b6795d1d99dcf0547af5443d', 'wx_hasmp');
+INSERT INTO `settings` VALUES ('12', 'URL(服务器地址)', 'wx_url', 'http://vgogoing.tunnel.2bdata.com/Smserver/', 'wx_hasmp');
+INSERT INTO `settings` VALUES ('13', 'Token(令牌)', 'wx_token', 'Owngame', 'wx_hasmp');
 INSERT INTO `settings` VALUES ('14', 'EncodingAESKey(消息加解密密钥)', 'wx_encodingAESkey', null, 'wx_hasmp');
 INSERT INTO `settings` VALUES ('15', '测试微信', 'wx_test', '123', 'wx_hasmp');
 INSERT INTO `settings` VALUES ('16', '测试依赖', 'yl_1', 'true', 'self');
@@ -476,7 +482,7 @@ INSERT INTO `settings` VALUES ('24', 'sdaf', '3242', '0000', 'asdaf');
 INSERT INTO `settings` VALUES ('25', '14321', '143', '1342', 'newadd2');
 INSERT INTO `settings` VALUES ('44', 'ls', 'ls', 'ls', 'newadd2');
 INSERT INTO `settings` VALUES ('45', '依赖测试ls', 'ces', 'false', 'self');
-INSERT INTO `settings` VALUES ('49', '授权失败原因', 'invalidReason', '您尚未缴费，请充值后再获取授权吧。', 'no');
+INSERT INTO `settings` VALUES ('49', '授权失败原因', 'invalidReason', 'no', 'no');
 INSERT INTO `settings` VALUES ('50', '用户手机号', 'userphone', '18107436127', 'no');
 INSERT INTO `settings` VALUES ('51', 'nodes', 'password', 'bbc100ce57af46bbed25d29222087bda', 'no');
 
@@ -493,7 +499,7 @@ CREATE TABLE `task` (
   `receivers` text,
   `createTime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=401 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=403 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of task
@@ -516,6 +522,8 @@ INSERT INTO `task` VALUES ('397', 'authorize request', '授权申请', '2', 'AR-
 INSERT INTO `task` VALUES ('398', 'authorize repost', '授权应答', '2', 'AR--FAILED--您尚未缴费，请充值后再获取授权吧。', '18107436127', '2017-01-11 11:19:20');
 INSERT INTO `task` VALUES ('399', 'authorize request', '授权申请', '2', 'AR--Owngame--18107436127--44-37-E6-CC-7A-4D', '18107436127', '2017-01-11 11:21:30');
 INSERT INTO `task` VALUES ('400', 'authorize repost', '授权应答', '2', 'AR--FAILED--nofee', '18107436127', '2017-01-11 11:21:40');
+INSERT INTO `task` VALUES ('401', 'authorize request', '授权申请', '2', 'AR--Owngame--18107436127--44-37-E6-CC-7A-4D', '18107436127', '2017-01-16 12:16:01');
+INSERT INTO `task` VALUES ('402', 'authorize repost', '授权应答', '2', 'AR--SUCCESS--1515396574956--62c4ece6fa44df42618188dcee0c187d', '18107436127', '2017-01-16 12:16:13');
 
 -- ----------------------------
 -- Table structure for `timertask`
@@ -552,4 +560,4 @@ CREATE TABLE `weixinaccesstoken` (
 -- ----------------------------
 -- Records of weixinaccesstoken
 -- ----------------------------
-INSERT INTO `weixinaccesstoken` VALUES ('1', 'vDg-kOs-b5Z3p47eKjWss-jxIWmXQJjj_yLuUogdzplm0VxG5nRls1ueh6BUt8ilXLpCBlUFLscqcK_s4qnhJfQQotL_8rL8JhOByI8T9UmFqdIvwRIY9Agpmg-Sl6ppKSWfABANVZ', '1482562200823');
+INSERT INTO `weixinaccesstoken` VALUES ('1', 'QKeAfuEn_ExklruLy5Y_t83hjxvWZyGu9_IfoxHwI6JggiNszT6sYgDJoUlBQaAyGkZOqKWEPpSA3NheGyVL_cceuakz9p8jaGthj06VVEd6vspYFVuLfsB1IhQaDJzNXGLeAAAIRW', '1484558840086');

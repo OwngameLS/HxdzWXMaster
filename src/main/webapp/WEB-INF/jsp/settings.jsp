@@ -71,8 +71,8 @@
                 <a href="<%=basePath%>Smserver/download/app"><img
                         src="../../resources/bootstrap-3.3.7-dist/img/app.png">下载App(仅限Android手机) </a>
                 <br>
-                <a href="<%=basePath%>Smserver/download/guidebook"><img
-                        src="../../resources/bootstrap-3.3.7-dist/img/help.png">帮助 </a>
+                <a href="guidebook.htm"><img
+                        src="../../resources/bootstrap-3.3.7-dist/img/help.png">帮助文档 </a>
             </div>
         </div>
 
@@ -90,16 +90,15 @@
     </div>
     <div class="well">
         <div>
-            <input type="checkbox" id="isUseWXMP" onclick="usingWXMP()">是否使用微信服务号
+            <input type="checkbox" id="wx_hasmp" onclick="changeEnable('wx_hasmp')">是否使用微信服务号
+            <a href="javascript:void(0)" onclick="editSettings('wx_hasmp','update');return false;" title="更新"><img
+                    src="../../resources/bootstrap-3.3.7-dist/img/settings_done.png"></a>
         </div>
-        <div id="wxSettings">
-            <div id="wx" class="row bg-success">
-                <div class="col-md-4 text-left">
-                    <img src="../../resources/bootstrap-3.3.7-dist/img/wechat.png">服务器配置
-                </div>
-                <div class="col-md-6 text-left">
-
-                </div>
+        <div id="wx" class="row bg-success">
+            <div class="col-md-4 text-left">
+                <img src="../../resources/bootstrap-3.3.7-dist/img/wechat.png">服务器配置
+            </div>
+            <div class="col-md-6 text-left">
             </div>
         </div>
     </div>

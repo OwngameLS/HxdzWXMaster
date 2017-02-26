@@ -2,12 +2,18 @@
  * Created by Administrator on 2016-10-27.
  * timertask.jsp 页面的 js支持
  */
+var pager = new Pager(null, null, null);
+
 function queryTimerTasks() {
-    $.when(myAjaxGet(bp + 'Smserver/timertask/getall')).done(function (data) {
-        var htmlStr = '';
+    var jsonStr = "{\"pageSize\":\"" + pager.pageSize
+        + "\",\"targetPage\":\"" + pager.targetPage
+        + "\"}";
+    $.when(myAjaxPost(bp + 'Smserver/timertask/getall', jsonStr)).done(function (data) {
         if (data != null) {
+            pager = new Pager(data['timerTasks'], queryTimerTasks, initTbodyOfTasks);
+            pager.uiDisplay();
             // 初始化timertasks相关的控件
-            initTbodyOfTasks(data['timerTasks']);// 选择控件
+            // initTbodyOfTasks(data['timerTasks']);// 选择控件
         }
     });
 }
@@ -335,4 +341,11 @@ function doAjaxHandleTimerTask(action, jsonStr) {
             hideEditFail();
         }
     });
+}
+function gotoPage(page){
+    pager.gotoPage(page);
+}
+
+function changePageSize() {
+    pager.changePageSize();
 }

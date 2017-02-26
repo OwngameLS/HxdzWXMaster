@@ -15,6 +15,14 @@
         select * from timertask
     </select>
 
+    <select id="queryWithLimit" resultType="TimerTask">
+        select * from timertask limit #{offset},#{limit}
+    </select>
+
+    <select id="countAll" resultType="int" >
+        select count(*) from timertask
+    </select>
+
     <insert id="insert" parameterType="TimerTask">
         insert into timertask
         (id, name, functions, description, firerules, receivers, receivetype, state)

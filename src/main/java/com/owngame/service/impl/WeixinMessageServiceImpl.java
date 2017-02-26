@@ -1,7 +1,9 @@
 package com.owngame.service.impl;
 
-import com.owngame.dao.MYUser;
+import com.owngame.entity.ContactDisplay;
 import com.owngame.entity.ContactHigh;
+import com.owngame.entity.MYUser;
+import com.owngame.entity.Settings;
 import com.owngame.menu.ManageMenu;
 import com.owngame.service.*;
 import com.owngame.utils.PhoneUtil;
@@ -20,10 +22,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 专门处理微信消息的功能
  * Created by Administrator on 2016-8-18.
  */
 @Service
-public class WeiXinMessageServiceImpl implements WeiXinMessageService {
+public class WeixinMessageServiceImpl implements WeixinMessageService {
     // 消息类型
     public static final String MESSAGE_TYPE_TEXT = "text";
     public static final String MESSAGE_TYPE_NEWS = "news";
@@ -62,9 +65,11 @@ public class WeiXinMessageServiceImpl implements WeiXinMessageService {
     @Autowired
     ContactService contactService;
     @Autowired
-    WeixinAccessTokenService weixinAccessTokenService;
+    WeixinService weixinService;
     @Autowired
     ServletContext context;// 获得环境变量的入口！
+    @Autowired
+    SettingsService settingsService;
 
 
     String fromUserName; // 消息的发来者，也是返回消息的接收者
@@ -99,7 +104,7 @@ public class WeiXinMessageServiceImpl implements WeiXinMessageService {
         for (int i = 0; i < openId.length; i++) {
             String messageJson = initTextMessageOfJsonString(openId[i], message);
             // 调用客服消息借口回复消息
-            String token = weixinAccessTokenService.get().getAccesstoken();
+            String token = weixinService.getAccessToken().getAccesstoken();
             BaseResult br = MessageAPI.messageCustomSend(token, messageJson);
             System.out.println("br:" + br.getErrcode() + "; " + br.getErrmsg());
         }
@@ -113,11 +118,12 @@ public class WeiXinMessageServiceImpl implements WeiXinMessageService {
         rtMsgType = MESSAGE_TYPE_TEXT;
 // TODO 先排查一遍是否有微信公众号特殊定义的关键字，方便决定是否需要返回特殊消息
         if (content.startsWith("群发")) {
-            String path = context.getServletContextName();
-            path = context.getServerInfo();
-            return null;
+            Settings settings = settingsService.queryByName("wx_url");
+            String url = settings.getValue() + "view/wxmsg";
+            content = "点我群发:"+url;
+            return initTextMessageOfJsonString(fromUserName, content);
+//            return handleXXFS(fromUserName);
         }
-
 
         if (content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)) {// 手机号逻辑
             content = phoneNumberLogic(content);
@@ -144,13 +150,14 @@ public class WeiXinMessageServiceImpl implements WeiXinMessageService {
      * @return
      */
     private String handleEventMessage(Map<String, String> map) {
+        System.out.println("handleEventMessage...");
         String eventType = map.get("Event");// 获得事件类型
         String fromUserName = map.get("FromUserName");
         String message = null;
-        if (WeiXinMessageServiceImpl.MESSAGE_EVENT_SUBSCRIBE.equals(eventType)) {
+        if (WeixinMessageServiceImpl.MESSAGE_EVENT_SUBSCRIBE.equals(eventType)) {
             // 当用户关注的时候，就要先存下用户的基本信息了啊
             // 获得用户信息并存起来
-            MYUser mu = UserHandler.queryUserFromWeixin(fromUserName);
+            MYUser mu = weixinService.getUserInfos(fromUserName);
 //            UserController.saveUser(mu);
             message = mu.getNickname()
                     + "！\n终于等到你，还好我没放弃~\n ";
@@ -162,27 +169,27 @@ public class WeiXinMessageServiceImpl implements WeiXinMessageService {
                 message += answerService.unknownContact(ContactServiceImpl.CONTACT_TYPE_OPENID);
             }
             return initTextMessageOfJsonString(fromUserName, message);
-        } else if (WeiXinMessageServiceImpl.MESSAGE_EVENT_CLICK.equals(eventType)) {
+        } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_CLICK.equals(eventType)) {
             // 根据发送的事件代码返回特定的图文消息，用户通过点击图文消息走向我们的网页吧
             message = handleClickMessage(fromUserName, map);
-        } else if (WeiXinMessageServiceImpl.MESSAGE_EVENT_SCANCODE.equals(eventType)) {// 扫码事件
+        } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_SCANCODE.equals(eventType)) {// 扫码事件
             System.out.println("scan...");
 //            message = handleScanMessage(map);
-        } else if (WeiXinMessageServiceImpl.MESSAGE_EVENT_VIEW.equals(eventType)) {
+        } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_VIEW.equals(eventType)) {
             System.out.println("view !");
             message = "vvvv";
-        } else if (WeiXinMessageServiceImpl.MESSAGE_EVENT_UNSUBSCRIBE.equals(eventType)) {
+        } else if (WeixinMessageServiceImpl.MESSAGE_EVENT_UNSUBSCRIBE.equals(eventType)) {
             // 用户取消关注，暂时不删除其信息吧
             return null;
         }
         return message;
     }
 
-   /* *//**
+   /*
      * 处理扫描二维码事件
      * 只需将事件存入待处理的队列中即可啦
      * @param map
-     *//*
+
     private static String handleScanMessage(Map<String, String> map) {
         String message = null;
         String scanresult = map.get("ScanResult");
@@ -212,21 +219,12 @@ public class WeiXinMessageServiceImpl implements WeiXinMessageService {
         String eventKey = map.get("EventKey");
         System.out.println("eventKey:" + eventKey);
         String result = null;
-        if (eventKey.startsWith(ManageMenu.EVENTKEY_QUERY_PREFIX)) {
-            result = QueryService.handleQuery(eventKey);
+        if (eventKey.equals(ManageMenu.EVENTKEY_XXFS)) {
+            return handleXXFS(fromUserName);
+        } else {
+
         }
         return initTextMessageOfJsonString(fromUserName, result);
-
-
-//
-//        if (MessageHandler.EVENTKEY_SEND_PACKAGE.equals(eventKey)) {
-//            String url = BATHURL + SEND_PACKAGE_URL;
-//            url = url.replace("OPENID", fromUserName);
-//            return initNewsOfJsonString(fromUserName, url);
-//        }else if(MessageHandler.EVENTKEY_PACKAGE_ONTHEWAY.equals(eventKey)){
-//            return initTextOfJsonString(fromUserName,"查询中！请稍后...");
-//        }
-//        return null;
     }
 
     /**
@@ -292,7 +290,7 @@ public class WeiXinMessageServiceImpl implements WeiXinMessageService {
      * @param content
      * @return jsonString
      */
-    private String initTextMessageOfJsonString(String toUserOpenId, String content) {
+    public String initTextMessageOfJsonString(String toUserOpenId, String content) {
         System.out.println("initTextMessageOfJsonString is called");
         content = content + "\n\n回复 “帮助”，可以查看更多文本命令提示哟！/::)";
         TextMessage tm = new TextMessage(toUserOpenId, content);
@@ -313,6 +311,29 @@ public class WeiXinMessageServiceImpl implements WeiXinMessageService {
         String description = "点我发货";
         String url = urlInfo;
         String picurl = "http://mmbiz.qpic.cn/mmbiz/qwbuqiced74EWqlCdJlUSustTh9Ec8jZbmEe3SgAns6PojicXdwv44Mq3EWibelHbXpTjnRouOr4A1IoicUtjbxItQ/0";
+        Article a = new Article(title, description, url, picurl);
+        List<Article> articles = new ArrayList<Article>();
+        articles.add(a);
+        NewsMessage nm = new NewsMessage(fromUserName, articles);
+        return JsonUtil.toJSONString(nm);
+    }
+
+    // 生成群发消息的链接
+    private String handleXXFS(String fromUserName) {
+        // 检查user是否为管理员
+        ArrayList<ContactDisplay> contactDisplays = contactService.queryDisplayByOpenId(fromUserName);
+        if (contactDisplays == null || contactDisplays.get(0).getGrade().equals("7") == false) {
+            // 不是管理员
+            return "由于您不是管理员，没有该权限使用这个功能。";
+        }
+
+        // 生成article
+        String title = "群发信息！";
+        String description = "点我去群发信息吧。";
+        String url = null;
+        String picurl = "http://mmbiz.qpic.cn/mmbiz_jpg/qwbuqiced74GnJCGKAuKsQJwCxY7qalO8B6H1w1APcY1UDibbUjMUIJ6bsNol87FDFxjjm8TSRxBjb5fuw24ZUSA/0";
+        Settings settings = settingsService.queryByName("wx_url");
+        url = settings.getValue() + "view/wxmsg";
         Article a = new Article(title, description, url, picurl);
         List<Article> articles = new ArrayList<Article>();
         articles.add(a);

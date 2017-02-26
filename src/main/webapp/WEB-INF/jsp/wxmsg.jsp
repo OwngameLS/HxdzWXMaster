@@ -108,7 +108,7 @@
 
     // 文档被加载完成时
     $(document).ready(function () {
-        if(checkAuthorizationStateByUI()) {
+        if (checkAuthorizationStateByUI()) {
             // 得到可用功能和群组信息
             getUsableFunctionsAndGroups();
         }

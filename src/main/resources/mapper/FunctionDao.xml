@@ -7,6 +7,14 @@
         select * from function
     </select>
 
+    <select id="countAll" resultType="int" >
+        select count(*) from function
+    </select>
+
+    <select id="queryWithLimit" resultType="Function">
+        select * from function limit #{offset},#{limit}
+    </select>
+
     <select id="queryAllUsable" resultType="Function">
         select * from function where usable='yes'
     </select>

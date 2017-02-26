@@ -11,14 +11,16 @@ import java.util.ArrayList;
 public interface AskrecordDao {
     ArrayList<Askrecord> queryAll();
 
+    int countRecordsBeforeTime(@Param("time") String time);
+
+    int countAll();
+
     /**
      * 查询所有任务
      * TODO 需要分页
-     * 根据偏移量查询秒杀商品列表
-     *
      * @return
      */
-    ArrayList<Askrecord> queryAllLimit(@Param("offset") int offet, @Param("limit") int limit);
+    ArrayList<Askrecord> queryAllLimit(@Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 查询所有待处理的任务
@@ -26,8 +28,7 @@ public interface AskrecordDao {
      *
      * @return
      */
-    ArrayList<Askrecord> queryBySuccess(int issuccess);
-
+    ArrayList<Askrecord> queryBySuccess(@Param("issuccess") int issuccess);
 
     /**
      * 查询时间点以前的任务
@@ -35,7 +36,7 @@ public interface AskrecordDao {
      * @param time
      * @return
      */
-    ArrayList<Askrecord> queryRecordsBeforeTime(String time);
+    ArrayList<Askrecord> queryRecordsBeforeTime(@Param("time") String time);
 
     int insert(Askrecord askrecord);
 

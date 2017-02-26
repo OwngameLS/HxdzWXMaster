@@ -19,6 +19,10 @@ public interface ContactBaseService {
 
     ArrayList<ContactBase> queryByGroup(String groupname);
 
+    ArrayList<ContactBase> queryByGroupLimit(int pageSize, int targetPage, String groupname);
+
+    int countAllByGroup(String groupname);
+
     ArrayList<ContactBase> queryAll();
 
     ArrayList<String> getGroups();

@@ -2,6 +2,7 @@ package com.owngame.service.impl;
 
 import com.owngame.dao.AskrecordDao;
 import com.owngame.entity.Askrecord;
+import com.owngame.entity.Pager;
 import com.owngame.service.AskrecordService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by Administrator on 2016-12-7.
@@ -29,47 +31,71 @@ public class AskrecordServiceImpl implements AskrecordService {
      * @param issuccess
      * @return
      */
-    public ArrayList<Askrecord> handleQuery(int lasthours, int type, String askers, String functions, int issuccess) {
-        ArrayList<Askrecord> askrecords = queryRecordsBeforeTime(lasthours);
-        System.out.println("before size:" + askrecords.size());
-        if (askrecords == null || askrecords.size() == 0) {
-            return null;
+    public Pager<Askrecord> handleQuery(int lasthours, int type, String askers, String functions, int issuccess, int pageSize, int targetPage) {
+        try {
+            ArrayList<Askrecord> askrecords = queryRecordsBeforeTime(lasthours);
+            if (askrecords == null) {
+                return null;
+            }else if(askrecords.size() == 0){
+                return null;
+            }
+            // 筛选
+            ArrayList<Askrecord> askrecords2 = new ArrayList<Askrecord>();
+            askers = askers.replaceAll("，", ",");
+            String askersArray[] = askers.split(",");
+            functions = functions.replaceAll("，", ",");
+            String functionsArray[] = functions.split(",");
+            for (int i = 0; i < askrecords.size(); i++) {
+                Askrecord askrecord = askrecords.get(i);
+                if (type != -1) {// 不是全部访问类型
+                    if (askrecord.getType() != type) {
+                        continue;
+                    }
+                }
+                if (askers.equals("all") == false) {// 不是查询全部人员
+                    // 看是否包含
+                    if (isContain(askersArray, askrecord.getName()) == false) {
+                        continue;
+                    }
+                }
+                if (functions.equals("all") == false) {// 不是查询全部人员
+                    // 看是否包含
+                    if (isContain(functionsArray, askrecord.getFunctions()) == false) {
+                        continue;
+                    }
+                }
+                if (issuccess != -1) {
+                    if (askrecord.getIssuccess() != issuccess) {
+                        continue;
+                    }
+                }
+                // 运行到这里，说明都满足条件了
+                askrecords2.add(askrecord);
+            }
+            int totalRecords = askrecords2.size();// 筛选的结果总数
+            int totalPages = totalRecords / pageSize;// 总页数
+            if (totalRecords % pageSize != 0) {
+                totalPages++;
+            }
+            if (targetPage > totalPages) {
+                targetPage = totalPages;
+            }
+            int startIndex = (targetPage - 1) * pageSize;
+            int endIndex = startIndex + pageSize;
+            if (endIndex > totalRecords) {
+                endIndex = totalRecords;
+            }
+            askrecords = null;
+            askrecords = new ArrayList<Askrecord>();
+            for (int i = startIndex; i < endIndex; i++) {
+                askrecords.add(askrecords2.get(i));
+            }
+            Pager<Askrecord> pager = new Pager<Askrecord>(targetPage, pageSize, totalRecords, askrecords);
+            return pager;
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
-        ArrayList<Askrecord> askrecords2 = new ArrayList<Askrecord>();
-        askers = askers.replaceAll("，", ",");
-        String askersArray[] = askers.split(",");
-        functions = functions.replaceAll("，", ",");
-        String functionsArray[] = functions.split(",");
-        for (int i = 0; i < askrecords.size(); i++) {
-            Askrecord askrecord = askrecords.get(i);
-            if (type != -1) {// 不是全部访问类型
-                if (askrecord.getType() != type) {
-                    continue;
-                }
-            }
-            if (askers.equals("all") == false) {// 不是查询全部人员
-                // 看是否包含
-                if (isContain(askersArray, askrecord.getName()) == false) {
-                    continue;
-                }
-            }
-            if (functions.equals("all") == false) {// 不是查询全部人员
-                // 看是否包含
-                if (isContain(functionsArray, askrecord.getFunctions()) == false) {
-                    continue;
-                }
-            }
-            if (issuccess != -1) {
-                if (askrecord.getIssuccess() != issuccess) {
-                    continue;
-                }
-            }
-            // 运行到这里，说明都满足条件了
-            askrecords2.add(askrecord);
-        }
-        System.out.println("end size:" + askrecords2.size());
-        return askrecords2;
+        return null;
     }
 
     // 查看数组中的元素是否被包含在某个字符串中
@@ -85,6 +111,10 @@ public class AskrecordServiceImpl implements AskrecordService {
 
     public ArrayList<Askrecord> queryAll() {
         return askrecordDao.queryAll();
+    }
+
+    public int countAll() {
+        return askrecordDao.countAll();
     }
 
     public ArrayList<Askrecord> queryAllLimit(@Param("offset") int offet, @Param("limit") int limit) {
@@ -105,6 +135,18 @@ public class AskrecordServiceImpl implements AskrecordService {
         java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = format.format(cal.getTime());
         return askrecordDao.queryRecordsBeforeTime(time);
+    }
+
+    public int countRecordsBeforeTime(int lasthours){
+        if (lasthours == -1) {
+            return countAll();
+        }
+        Calendar cal = Calendar.getInstance();//使用默认时区和语言环境获得一个日历。
+        cal.add(Calendar.HOUR_OF_DAY, -lasthours);//取当前时间之前的hours
+        //通过格式化输出日期
+        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = format.format(cal.getTime());
+        return askrecordDao.countRecordsBeforeTime(time);
     }
 
     public int insert(Askrecord askrecord) {

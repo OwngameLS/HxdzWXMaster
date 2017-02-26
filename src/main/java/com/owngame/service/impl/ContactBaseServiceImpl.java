@@ -2,6 +2,7 @@ package com.owngame.service.impl;
 
 import com.owngame.dao.ContactBaseDao;
 import com.owngame.entity.ContactBase;
+import com.owngame.entity.Function;
 import com.owngame.entity.GroupName;
 import com.owngame.service.ContactBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,18 @@ public class ContactBaseServiceImpl implements ContactBaseService {
 
     public ArrayList<ContactBase> queryByGroup(String groupname) {
         return contactBaseDao.queryByGroup(groupname);
+    }
+
+    public ArrayList<ContactBase> queryByGroupLimit(int pageSize, int targetPage, String groupname) {
+
+        // 根据pageSize和targetPage整理得到 offset 和 limit
+        int offset = (targetPage - 1) * pageSize;
+        int limit = pageSize;
+        return contactBaseDao.queryByGroupLimit(offset, limit, groupname);
+    }
+
+    public int countAllByGroup(String groupname){
+        return contactBaseDao.countAllByGroup(groupname);
     }
 
     public ArrayList<ContactBase> queryAll() {

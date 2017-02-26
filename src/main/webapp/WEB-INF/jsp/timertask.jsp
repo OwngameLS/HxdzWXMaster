@@ -13,6 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../../resources/bootstrap-3.3.7-dist/js/pager.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/timertask.js"></script>
@@ -185,6 +186,8 @@
             </tbody>
         </table>
     </div>
+    <div id="pageSelectDiv" style="text-align:center;width:100%;" >
+    </div>
 
 </div>
 <!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
@@ -197,7 +200,7 @@
 
     // 文档被加载完成时
     $(document).ready(function () {
-        if(checkAuthorizationStateByUI()) {
+        if (checkAuthorizationStateByUI()) {
             queryTimerTasks();
         }
     });

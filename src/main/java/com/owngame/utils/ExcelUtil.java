@@ -31,7 +31,7 @@ public class ExcelUtil {
             HSSFWorkbook workbook = new HSSFWorkbook(fileStream);
             HSSFSheet sheet = workbook.getSheetAt(0);
             // 拿到行数
-            int rowNumbers = sheet.getLastRowNum();
+            int rowNumbers = sheet.getLastRowNum() + 1;// 计数从0开始的
             contactDisplays = new ArrayList<ContactDisplay>();
             for (int i = 1; i < rowNumbers; i++) {
                 boolean isSomethingWrong = false;
@@ -44,6 +44,7 @@ public class ExcelUtil {
                     somethingWrong = true;
                     errorInfo += "<br>" + wrongInfo + "这一行为空；";
                 }
+                System.out.println("aaa:"+ row.getCell(0).toString());
                 if (null != row.getCell(0)) {// id
                     int cellType = row.getCell(0).getCellType();
                     if (cellType == Cell.CELL_TYPE_NUMERIC) {
@@ -54,6 +55,7 @@ public class ExcelUtil {
                     } else { // 不填写或者填写错误 都给它弄成0
                         tempS = "0";
                     }
+
                     contactDisplay.setBase_id(Long.parseLong(tempS));
                 }
 

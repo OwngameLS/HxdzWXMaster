@@ -94,6 +94,20 @@ function isEmpty(value) {
     }
 }
 
+// 判断是不是大于0的整数
+function isInteger(obj) {
+    var o = Math.floor(obj);
+    if (o == obj) { // ==== 就不行
+        if (o >= 0) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
 function isValidPhone(phone) {
     // 非空 且 符合手机号规则
     return ((isEmpty(phone) == false) && /^1[3|4|5|8]\d{9}$/.test(phone));
@@ -231,10 +245,10 @@ function UrlDecode(zipStr) {
 function checkAuthorizationStateByUI() {
     var a = $("#unauth", window.parent.document);
     console.log("a:" + a);
-    if(!a.is(':visible')){//如果node是隐藏的则显示node元素，否则隐藏
+    if (!a.is(':visible')) {//如果node是隐藏的则显示node元素，否则隐藏
         return true;
-    }else{
-        $('#authorize>p',window.parent.document).trigger('click');
+    } else {
+        $('#authorize>p', window.parent.document).trigger('click');
         return false;
     }
 }

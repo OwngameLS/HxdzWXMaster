@@ -1,7 +1,7 @@
 package com.owngame.web;
 
 import com.owngame.service.ContactService;
-import com.owngame.service.WeiXinCoreService;
+import com.owngame.service.WeixinService;
 import com.owngame.utils.CheckUtil;
 import com.owngame.utils.ExcelUtil;
 import com.owngame.utils.InfoFormatUtil;
@@ -33,13 +33,10 @@ import java.io.Writer;
 public class MainController {
     @Autowired
     ServletContext context;// 获得环境变量的入口！
-
     @Autowired
     ContactService contactService;
-
     @Autowired
-    WeiXinCoreService weiXinCoreService;
-
+    WeixinService weixinService;
 
     /**
      * 处理来自微信服务器的验证
@@ -78,6 +75,7 @@ public class MainController {
     @RequestMapping(method = {RequestMethod.POST}, produces = "application/xml;charset=UTF-8")
     public void post(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+
         System.out.println("handle post...");
         /* 消息的接收、处理、响应 */
         // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
@@ -89,7 +87,7 @@ public class MainController {
         out.print("");// 先回应空消息 然后再用客服消息接口回复具体内容，避免等待
         out.close();
         // 交由微信服务去处理具体逻辑
-        weiXinCoreService.handleMessage(s);
+        weixinService.handleRawMessage(s);
     }
 
     /**
@@ -113,7 +111,7 @@ public class MainController {
             e.printStackTrace();
         }
         String ss = o.toString();
-        System.out.println("ss:" + ss);
+//        System.out.println("ss:" + ss);
         if (ss.startsWith("ERR")) {
             //上传失败，返回到前台，调用uploadFailed()这个方法
             return "<script>window.parent.uploadFailed('" + ss + "');</script>";
@@ -130,24 +128,29 @@ public class MainController {
 
 
     /**
-     * 下载文件
+     * 下载文件通讯录文件
      *
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/download", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> download() throws IOException {
-        String dfileName = context.getRealPath("/") + "contacts/contacts.xls";// 获得文件路径的方法
-        if (contactService.initContactsFile(dfileName)) {
+    @RequestMapping(value = "/download/{resourcename}", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> download(@PathVariable("resourcename") String resourcename) throws IOException {
+        String dfileName = context.getRealPath("/");
+        if (resourcename.equals("contacts")) {
+            dfileName += "contacts/contacts.xls";// 获得文件路径的方法
             // 调用联系人方法，获得返回的联系人文件
-            File file = new File(dfileName);
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", dfileName);
-            return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
-        } else {
-            return null;
+            contactService.initContactsFile(dfileName);
+        } else if (resourcename.equals("app")) {
+            dfileName += "download/app-release.apk";// 获得文件路径的方法
+        } else if (resourcename.equals("guidebook")) {
+            dfileName += "download/guide.pdf";// 获得文件路径的方法
         }
+        File file = new File(dfileName);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", dfileName);
+        return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
+
     }
 
     /**

@@ -14,8 +14,11 @@
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/pager.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/askrecords.js"></script>
+
+
 </head>
 <body>
 <h3>查询记录</h3>
@@ -52,6 +55,7 @@
                     <option value="5">5分钟</option>
                     <option value="10">10分钟</option>
                     <option value="30">30分钟</option>
+                    <option value="-1">不刷新</option>
                 </select>
             </div>
             <div class="col-md-1 text-center">
@@ -107,6 +111,8 @@
             </tbody>
         </table>
     </div>
+    <div id="pageSelectDiv" style="text-align:center;width:100%;" >
+    </div>
 
 </div>
 <!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
@@ -118,7 +124,7 @@
     var bp = '<%=basePath%>';
     // 文档被加载完成时
     $(document).ready(function () {
-        if(checkAuthorizationStateByUI()) {
+        if (checkAuthorizationStateByUI()) {
             queryAskrecords();// 默认查询一小时之内的
         }
     });

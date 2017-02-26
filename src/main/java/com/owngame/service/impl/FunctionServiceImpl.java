@@ -286,6 +286,16 @@ public class FunctionServiceImpl implements FunctionService {
         return functionDao.checkKeywords(keywords);
     }
 
+    public Pager<Function> queryWithLimit(int pageSize, int targetPage) {
+        int totalRecords = functionDao.countAll();
+        // 根据pageSize和targetPage整理得到 offset 和 limit
+        int offset = (targetPage - 1) * pageSize;
+        int limit = pageSize;
+        ArrayList<Function> functions = functionDao.queryWithLimit(offset, limit);
+        Pager<Function> pager = new Pager<Function>(targetPage, pageSize, totalRecords, functions);
+        return pager;
+    }
+
     // 保证每次添加的方法都是唯一的
     private ArrayList<String> addIdsUnique(ArrayList<String> ids, String id) {
         if (ids.size() == 0) {

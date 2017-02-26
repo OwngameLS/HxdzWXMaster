@@ -32,7 +32,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Autowired
     TaskService taskService;
     @Autowired
-    WeiXinMessageService weiXinMessageService;
+    WeixinMessageService weixinMessageService;
     @Autowired
     FunctionService functionService;
     @Autowired
@@ -41,6 +41,8 @@ public class AnswerServiceImpl implements AnswerService {
     AskrecordService askrecordService;
     @Autowired
     AuthorizationService authorizationService;
+    @Autowired
+    SettingsService settingsService;
 
 
     /**
@@ -172,7 +174,7 @@ public class AnswerServiceImpl implements AnswerService {
     public String handleAsk(String question, int questionType, String receiversInfo, int receiversType, int askType, int sendType, String description) {
         // 20170115添加授权允许的判断，当授权不允许时就进行告知
         AuthorizationState authorizationState = authorizationService.getAuthorizationState();
-        if(authorizationState.getValid().equals("invalid")) {
+        if (authorizationState.getValid().equals("invalid")) {
             return "由于系统未获得使用授权，暂停服务，请联系管理员进行解决。";
         }
         try {
@@ -324,12 +326,18 @@ public class AnswerServiceImpl implements AnswerService {
                 if (sendType == TaskServiceImpl.SEND_TYPE_SMS) {
                     taskService.createTask(taskName, description, result, receiverPhones);
                 } else if (sendType == TaskServiceImpl.SEND_TYPE_WX) {
-                    // 微信发送
-                    weiXinMessageService.sendTextMessage(result, receiverOpenIds);
+                    Settings settings = settingsService.queryByName("wx_hasmp");
+                    if (settings.getValue().equals("true")) {
+                        // 微信发送
+                        weixinMessageService.sendTextMessage(result, receiverOpenIds);
+                    }
                 } else if (sendType == TaskServiceImpl.SEND_TYPE_SMS_AND_WX) {
                     taskService.createTask(taskName, description, result, receiverPhones);
-                    // 微信发送
-                    weiXinMessageService.sendTextMessage(result, receiverOpenIds);
+                    Settings settings = settingsService.queryByName("wx_hasmp");
+                    if (settings.getValue().equals("true")) {
+                        // 微信发送
+                        weixinMessageService.sendTextMessage(result, receiverOpenIds);
+                    }
                 }
             }
         } catch (Exception e) {

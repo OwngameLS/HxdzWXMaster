@@ -35,11 +35,20 @@ var ruleFieldsArray = null;// 用来展示rule字段设置部分的数组
 
 var isSavingSql = false;//当前是否在保存Sql规则
 
+var pager = new Pager(null, null, null);
+// var pageSize;
+// var targetPage;
+
 // 向服务器请求所有方法的信息
 function getFunctions() {
-    $.when(myAjaxGet(bp + 'Smserver/functions/getall')).done(function (data) {
+    var jsonStr = "{\"pageSize\":\"" + pager.pageSize
+        + "\",\"targetPage\":\"" + pager.targetPage
+        + "\"}";
+    $.when(myAjaxPost(bp + 'Smserver/functions/getall', jsonStr)).done(function (data) {
         if (data != null) {
-            initTbodyOfFunctions(data['functions']);
+            pager = new Pager(data['functions'], getFunctions, initTbodyOfFunctions);
+            pager.uiDisplay();
+            // initTbodyOfFunctions(data['functions']);
         }
     });
 }
@@ -719,22 +728,26 @@ function testRules() {
 // 使用功能json数据组合成功能表格内容
 function initTbodyOfFunctions(functions) {
     var htmlStr = '';
-    for (var i = 0; i < functions.length; i++) {
-        htmlStr = htmlStr + '<tr><td>';
-        if (functions[i].usable == 'no') {
-            htmlStr = htmlStr + '<span class="label label-danger">' + parseToAbbr(functions[i].id, 0, '此功能尚不可用') + '</span>';
-        } else {
-            htmlStr = htmlStr + functions[i].id;
+    if(functions == null){
+        htmlStr = '查询到0条记录';
+    }else{
+        for (var i = 0; i < functions.length; i++) {
+            htmlStr = htmlStr + '<tr><td>';
+            if (functions[i].usable == 'no') {
+                htmlStr = htmlStr + '<span class="label label-danger">' + parseToAbbr(functions[i].id, 0, '此功能尚不可用') + '</span>';
+            } else {
+                htmlStr = htmlStr + functions[i].id;
+            }
+            htmlStr = htmlStr + '</td><td>' + parseToAbbr(functions[i].name, 5, null)
+                + '</td><td>' + parseToAbbr(functions[i].keywords, 10, null)
+                + '</td><td>' + parseToAbbr(functions[i].description, 30, null)
+                + '</td><td>' + functions[i].grade
+                + '</td><td>'
+                + '<button type="button" class="btn btn-warning btn-sm" onclick="detail(\'' + functions[i].id + '\')">详情</button> '
+                + '<button type="button" class="btn btn-primary btn-sm" onclick="edit(\'' + functions[i].id + '\')">编辑</button> '
+                + '<button type="button" class="btn btn-danger btn-sm" onclick="deleteFunction(\'' + functions[i].id + '\')">删除</button> '
+                + '</td></tr>';
         }
-        htmlStr = htmlStr + '</td><td>' + parseToAbbr(functions[i].name, 5, null)
-            + '</td><td>' + parseToAbbr(functions[i].keywords, 10, null)
-            + '</td><td>' + parseToAbbr(functions[i].description, 30, null)
-            + '</td><td>' + functions[i].grade
-            + '</td><td>'
-            + '<button type="button" class="btn btn-warning btn-sm" onclick="detail(\'' + functions[i].id + '\')">详情</button> '
-            + '<button type="button" class="btn btn-primary btn-sm" onclick="edit(\'' + functions[i].id + '\')">编辑</button> '
-            + '<button type="button" class="btn btn-danger btn-sm" onclick="deleteFunction(\'' + functions[i].id + '\')">删除</button> '
-            + '</td></tr>';
     }
     $("#functionsBody").html(htmlStr);
 
@@ -1060,19 +1073,7 @@ function deleteFunction(id) {
     }
 }
 
-// 判断是不是大于0的整数
-function isInteger(obj) {
-    var o = Math.floor(obj);
-    if (o == obj) { // ==== 就不行
-        if (o >= 0) {
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-}
+
 
 // 检查ip地址填写的是主机名
 function checkIpisHost(value) {
@@ -1114,4 +1115,13 @@ function saveFunctionAnyway() {
     $("#myModalLabel").html('<h1 style="color: #FF0000">仅保存？</h1>');
     $("#mbody").html(htmlStr);
     $("#myModal").modal("show");
+}
+
+
+function gotoPage(page){
+    pager.gotoPage(page);
+}
+
+function changePageSize() {
+    pager.changePageSize();
 }

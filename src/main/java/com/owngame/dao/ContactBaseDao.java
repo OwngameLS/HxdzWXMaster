@@ -2,6 +2,7 @@ package com.owngame.dao;
 
 import com.owngame.entity.ContactBase;
 import com.owngame.entity.GroupName;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
 
@@ -18,6 +19,10 @@ public interface ContactBaseDao {
     ArrayList<ContactBase> queryLikeName(String name);
 
     ArrayList<ContactBase> queryByGroup(String groupname);
+
+    ArrayList<ContactBase> queryByGroupLimit(@Param("offset") int offset, @Param("limit") int limit, @Param("groupname")  String groupname);
+
+    int countAllByGroup(String groupname);
 
     ArrayList<ContactBase> queryAll();
 

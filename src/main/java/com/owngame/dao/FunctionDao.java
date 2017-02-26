@@ -1,6 +1,7 @@
 package com.owngame.dao;
 
 import com.owngame.entity.Function;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
 
@@ -9,6 +10,10 @@ import java.util.ArrayList;
  */
 public interface FunctionDao {
     ArrayList<Function> queryAll();
+
+    int countAll();
+
+    ArrayList<Function> queryWithLimit(@Param("offset") int offset, @Param("limit") int limit);
 
     ArrayList<Function> queryAllUsable();
 

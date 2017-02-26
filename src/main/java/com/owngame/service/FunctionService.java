@@ -131,4 +131,5 @@ public interface FunctionService {
 
     ArrayList<Function> checkKeywords(String keywords);
 
+    Pager<Function> queryWithLimit(int pageSize, int targetPage);
 }

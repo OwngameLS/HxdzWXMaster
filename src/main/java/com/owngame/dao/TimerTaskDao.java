@@ -1,6 +1,7 @@
 package com.owngame.dao;
 
 import com.owngame.entity.TimerTask;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
 
@@ -19,5 +20,9 @@ public interface TimerTaskDao {
     ArrayList<String> queryAllNames();
 
     ArrayList<TimerTask> queryAll();
+
+    int countAll();
+
+    ArrayList<TimerTask> queryWithLimit(@Param("offset") int offset, @Param("limit") int limit);
 
 }

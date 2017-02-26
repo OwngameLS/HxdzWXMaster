@@ -4,6 +4,14 @@
 <!-- 为Dao接口方法提供SQL语句配置 -->
 <mapper namespace="com.owngame.dao.AskrecordDao">
 
+    <select id="countRecordsBeforeTime" resultType="int" parameterType="String">
+        select count(*) from askrecord where time > #{time}
+    </select>
+
+    <select id="countAll" resultType="int" >
+        select count(*) from askrecord
+    </select>
+
     <select id="queryAll" resultType="Askrecord">
         select * from askrecord order by time desc
     </select>
@@ -13,7 +21,7 @@
     </select>
 
     <select id="queryBySuccess" resultType="Askrecord" parameterType="int">
-        select * from askrecord where issuccess=#{issuccess} order by time asc
+        select * from askrecord where issuccess=#{issuccess} order by time asc limit #{offset},#{limit}
     </select>
 
     <select id="queryRecordsBeforeTime" resultType="Askrecord" parameterType="String">

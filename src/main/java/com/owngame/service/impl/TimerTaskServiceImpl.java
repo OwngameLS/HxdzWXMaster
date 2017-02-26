@@ -2,6 +2,8 @@ package com.owngame.service.impl;
 
 import com.owngame.dao.Qrtz_triggersDao;
 import com.owngame.dao.TimerTaskDao;
+import com.owngame.entity.Function;
+import com.owngame.entity.Pager;
 import com.owngame.entity.TimerTask;
 import com.owngame.service.QuartzTriggerService;
 import com.owngame.service.TimerTaskService;
@@ -91,6 +93,16 @@ public class TimerTaskServiceImpl implements TimerTaskService {
 
     public TimerTask queryById(long id) {
         return timerTaskDao.queryById(id);
+    }
+
+    public Pager<TimerTask> queryWithLimit(int pageSize, int targetPage) {
+        int totalRecords = timerTaskDao.countAll();
+        // 根据pageSize和targetPage整理得到 offset 和 limit
+        int offset = (targetPage - 1) * pageSize;
+        int limit = pageSize;
+        ArrayList<TimerTask> timerTasks = timerTaskDao.queryWithLimit(offset, limit);
+        Pager<TimerTask> pager = new Pager<TimerTask>(targetPage, pageSize, totalRecords, timerTasks);
+        return pager;
     }
 
     // 更新状态

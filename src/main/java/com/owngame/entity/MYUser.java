@@ -1,4 +1,4 @@
-package com.owngame.dao;
+package com.owngame.entity;
 
 import weixin.popular.bean.user.User;
 

@@ -1,6 +1,7 @@
 package com.owngame.web;
 
 import com.owngame.entity.Askrecord;
+import com.owngame.entity.Pager;
 import com.owngame.service.AskrecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,10 +38,12 @@ public class AskrecordController {
         String askers = p.get("askers");
         String functions = p.get("functions");
         int issuccess = Integer.parseInt(p.get("issuccess"));
-        ArrayList<Askrecord> askrecords = askrecordService.handleQuery(lasthours, type, askers, functions, issuccess);
-        System.out.println("size:" + askrecords.size());
+        int pageSize = Integer.parseInt(p.get("pageSize"));
+        int targetPage = Integer.parseInt(p.get("targetPage"));
+        Pager<Askrecord> pager = askrecordService.handleQuery(lasthours, type, askers, functions, issuccess, pageSize, targetPage);
+//        System.out.println(pager.toString());
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("askrecords", askrecords);
+        map.put("askrecords", pager);
         return map;
     }
 

@@ -1,8 +1,6 @@
 package com.owngame.web;
 
-import com.owngame.entity.Function;
-import com.owngame.entity.FunctionKeywordsResult;
-import com.owngame.entity.FunctionSqlResult;
+import com.owngame.entity.*;
 import com.owngame.service.AnswerService;
 import com.owngame.service.ContactService;
 import com.owngame.service.FunctionService;
@@ -76,12 +74,14 @@ public class FunctionController {
      *
      * @return
      */
-    @RequestMapping(value = "/getall", method = RequestMethod.GET)
+    @RequestMapping(value = "/getall", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> queryFunctions() {
-        ArrayList<Function> functions = functionService.queryAll();
+    public Map<String, Object> queryFunctions(@RequestBody Map<String, String> p) {
+        int pageSize = Integer.parseInt(p.get("pageSize"));
+        int targetPage = Integer.parseInt(p.get("targetPage"));
+        Pager<Function> pager = functionService.queryWithLimit(pageSize, targetPage);
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("functions", functions);
+        map.put("functions", pager);
         return map;
     }
 
@@ -210,7 +210,10 @@ public class FunctionController {
             functionService.deleteById(id);
         }
         // 查询所有功能
-        return queryFunctions();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("pageSize", "20");
+        map.put("targetPage", "1");
+        return queryFunctions(map);
     }
 
 

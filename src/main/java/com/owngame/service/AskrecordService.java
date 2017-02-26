@@ -1,6 +1,7 @@
 package com.owngame.service;
 
 import com.owngame.entity.Askrecord;
+import com.owngame.entity.Pager;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
  */
 public interface AskrecordService {
 
-    ArrayList<Askrecord> handleQuery(int lasthours, int type, String askers, String functions, int issuccess);
+    Pager<Askrecord> handleQuery(int lasthours, int type, String askers, String functions, int issuccess, int pageSize, int targetPage);
 
     ArrayList<Askrecord> queryAll();
 
@@ -21,7 +22,7 @@ public interface AskrecordService {
      *
      * @return
      */
-    ArrayList<Askrecord> queryAllLimit(@Param("offset") int offet, @Param("limit") int limit);
+    ArrayList<Askrecord> queryAllLimit(int offset, int limit);
 
     /**
      * 查询所有待处理的任务

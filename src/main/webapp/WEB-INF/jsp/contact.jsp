@@ -13,6 +13,7 @@
 
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../../resources/bootstrap-3.3.7-dist/js/pager.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/contact.js"></script>
@@ -28,7 +29,7 @@
                 1.每次上传的文件将会覆盖原有数据，请仔细操作。
                 <br> ------如果你只编辑文件中的某一部分，其他需要的信息也一定要保留。即，如果原内容包含A、B、C，你仅需要编辑更新A，请将B、C保留，更新后为a、B、C。
                 <br>2.如果你不知道上传什么文件，请下载模板文件进行修改后再上传。
-                <a href="<%=basePath%>Smserver/download">点击下载《通讯录模板文件》</a>
+                <a href="<%=basePath%>Smserver/download/contacts">点击下载《通讯录模板文件》</a>
             </p>
         </dd>
     </dl>
@@ -159,9 +160,7 @@
                     <button type="button" class="btn btn-primary btn-sm" onclick="createGroup()">确定</button>
                     <button type="button" class="btn btn-warning btn-sm" onclick="cancleCreateGroup()">取消</button>
                 </td>
-                <td>分组名如果为已有分组名，则会将选中的联系人分组进行操作；<br>
-                    如果为新分组，则根据“选项”来确定如何操作联系人
-                </td>
+                <td>请仔细操作，操作结果无法撤销。联系人信息的变化会依据选项决定。</td>
             </tr>
             </tbody>
         </table>
@@ -210,6 +209,8 @@
                 </tbody>
             </table>
         </div>
+        <div style="width: 20%;float:left;">.</div>
+        <div id="pageSelectDiv" style="text-align:center;width:80%;float: left;"></div>
     </div>
 </div>
 
@@ -224,7 +225,7 @@
     var bp = '<%=basePath%>';
     // 文档被加载完成时
     $(document).ready(function () {
-        if(checkAuthorizationStateByUI()){
+        if (checkAuthorizationStateByUI()) {
             initContactsUIs(null, null, true);
         }
     });

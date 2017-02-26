@@ -31,12 +31,12 @@ function initUIs() {
 
 // 初始化验证状态UI
 function initAuthorizationUI() {
-    var authorizedState = findInSettingsesByName("authorizedState");
+    var authorizedState = findInSettingsesByName("authorizedState", true);
     if (authorizedState.value == 'valid') {
         $("#authorizestateimg").attr("src", "../../resources/bootstrap-3.3.7-dist/img/smiley.png");
         $("#authorizestatedes").html(" 您已经获得授权 ");
         $("#authorizestatedes").attr("style", "color: green");
-        var validTime = findInSettingsesByName("validTime");
+        var validTime = findInSettingsesByName("validTime", true);
         var time = parseMillsToDate(Number(validTime.value));
         var htmlStr = '<h5>到期时间为:<br>' + time + '</h5>';
         $("#authorizestatedes").after(htmlStr);
@@ -45,7 +45,7 @@ function initAuthorizationUI() {
         $("#authorizestateimg").attr("src", "../../resources/bootstrap-3.3.7-dist/img/cry.png");
         $("#authorizestatedes").html(" 您尚未获得授权 ");
         $("#authorizestatedes").attr("style", "color: red");
-        var invalidReason = findInSettingsesByName("invalidReason");
+        var invalidReason = findInSettingsesByName("invalidReason", true);
         $("#invalidReason").html(invalidReason.value);
         $("#getAuthorized").attr("style", "");
     }
@@ -53,36 +53,36 @@ function initAuthorizationUI() {
 
 // 初始化用户基本信息UI
 function initUserInfoUI() {
-    var username = findInSettingsesByName("username");
+    var username = findInSettingsesByName("username", true);
     $("#username").val(username.value);
-    var userphone = findInSettingsesByName("userphone");
+    var userphone = findInSettingsesByName("userphone", true);
     $("#userphone").val(userphone.value);
-    var phone = findInSettingsesByName("phone");
+    var phone = findInSettingsesByName("phone", true);
     $("#authorizerphone").val(phone.value);
 }
 
 // 初始化数据库信息UI
 function initDatabaseUI() {
-    initHtmlStrOfSettings("db", "db_");
+    initHtmlStrOfSettings("db", "db_", null);
 }
 
 // 初始化微信公众号信息UI
 function initWxMPUI() {
-    var settings = findInSettingsesByName("wx_hasmp");
+    var settings = findInSettingsesByName("wx_hasmp", true);
     if (settings != null || settings != undefined) {
+        initHtmlStrOfSettings("wx", "wx_", settings);
         if (settings.value == true || settings.value == 'true') {
-            $("#isUseWXMP").prop("checked", true);
-            initHtmlStrOfSettings("wx", "wx_");
+            $("#wx_hasmp").prop("checked", true);
         }
     }
 }
 
 // 初始化用来展示Settings的控件 htmlstr
-function initHtmlStrOfSettings(startElementId, name_prefix) {
+function initHtmlStrOfSettings(startElementId, name_prefix, referedSettings) {
     for (var i = 0; i < settingses.length;) {
-        var settings = findInSettingsesByName(name_prefix);
+        var settings = findInSettingsesByName(name_prefix, true);
         if (settings != null || settings != undefined) {
-            var htmlStr = initSettingsHtmlStr(settings, false, true);
+            var htmlStr = initSettingsHtmlStr(settings, false, referedSettings);
             $("#" + startElementId).after(htmlStr);
             startElementId = 'outterDiv_' + settings.name;
             i = 0;// 找到了从头再次寻找
@@ -93,13 +93,20 @@ function initHtmlStrOfSettings(startElementId, name_prefix) {
 }
 
 
-// 通过settings的name在settingses中查找
-function findInSettingsesByName(name) {
+/**
+ * 通过settings的name在settingses中查找
+ * @param name
+ * @param needRemove 是否找到了就从队列中去除
+ * @returns {*}
+ */
+function findInSettingsesByName(name, needRemove) {
     var mapper = new RegExp("^(" + name + ")", "gim");// 构造正则表达式
     for (var i = 0; i < settingses.length; i++) {
         if (mapper.test(settingses[i].name)) {
             var settings = settingses[i];
-            settingses.splice(i, 1);// 从队列中删除
+            if (needRemove) {
+                settingses.splice(i, 1);// 从队列中删除
+            }
             return settings;
         }
     }
@@ -117,18 +124,20 @@ function findInReferedSettingsesByName(name) {
 
 // 根据是否勾选使用微信公众号功能来初始化相关控件
 function usingWXMP() {
-    var isUseWXMP = $("#isUseWXMP").prop("checked");
-    // console.log("usingWXMP:" + isUseWXMP);
+    var isUseWXMP = $("#wx_hasmp").prop("checked");
+    console.log("usingWXMP:" + isUseWXMP);
     if (isUseWXMP == false) {
         $("[id^='wx_']").each(function () {
-            $(this).attr("disabled", true);
+            if ($(this).prop("id") != "wx_hasmp") {
+                $(this).attr("disabled", true);
+            }
         });
     } else {
         // 重新获取相关属性
         // 先清除原来的
-        var htmlStr = '<div id="wx" class="row bg-success"><div class="col-md-4 text-left"><img src="../img/wechat.png">服务器配置</div>'
-            + '<div class="col-md-6 text-left"></div></div>';
-        $("#wxSettings").html(htmlStr);
+        $("[id^='outterDiv_wx_']").each(function () {
+            $(this).remove();
+        });
         var jsonStr = "{\"name\":\"wx_\"}";
         $.when(myAjaxPost(bp + 'Smserver/settings/settingslikename', jsonStr)).done(function (data) {
             if (data != null) {
@@ -371,6 +380,8 @@ function doUpdateSettings(jsonStr, name, action, type) {
         if (data != null) {
             var success = data['success'];
             if (success == 'success') {
+                // 提示已经完成
+                showEditDone();
                 if (action == 'delete') {
                     if (type == 'checkbox') {// 删除与之关联的
                         var aaa = $("input[name=" + name + "]");
@@ -387,6 +398,18 @@ function doUpdateSettings(jsonStr, name, action, type) {
         }
     });
 }
+
+function showEditDone() {
+    var a = $("#editDone", window.parent.document);
+    a.show();
+    setTimeout("hideEditDone()", 2000);
+}
+
+function hideEditDone() {
+    var a = $("#editDone", window.parent.document);
+    a.hide();
+}
+
 
 // 修改被依赖属性的选择状态后对应的控件状态随之改变
 function changeEnable(name) {

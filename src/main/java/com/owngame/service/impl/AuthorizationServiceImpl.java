@@ -10,6 +10,7 @@ import com.owngame.utils.SecretUtil;
 import com.owngame.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 
 
@@ -93,18 +94,18 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             return "AR--FAILED--nofee";
         } else {
             // 查看是否为同一个用户
-            if(authorization.getPhone() == null || authorization.getPhone().equals("null")){
+            if (authorization.getPhone() == null || authorization.getPhone().equals("null")) {
                 authorization.setPhone(phone);
-            }else{
-                if(authorization.getPhone().equals(phone) == false){
+            } else {
+                if (authorization.getPhone().equals(phone) == false) {
                     return "AR--FAILED--duplicate";// 用户申请过了
                 }
             }
 
-            if(authorization.getMac() == null || authorization.getMac().equals("null")){
+            if (authorization.getMac() == null || authorization.getMac().equals("null")) {
                 authorization.setMac(mac);
-            }else{
-                if(authorization.getMac().equals(mac) == false){
+            } else {
+                if (authorization.getMac().equals(mac) == false) {
                     return "AR--FAILED--duplicate";// 用户申请过了
                 }
             }
@@ -187,7 +188,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
                 ss[2] = "您尚未缴费，请充值后再获取授权吧。";
             } else if (ss[2].equals("expiration")) {
                 ss[2] = "您的授权已经到期，请再次充值后获取授权吧。";
-            } else if(ss[2].equals("duplicate")){
+            } else if (ss[2].equals("duplicate")) {
                 ss[2] = "检测到您重新配置了使用系统的服务器，为了保护版权，我们拒绝这样做，如果实在有需要，请联系技术支持解决。";
             }
             settings.setValue(ss[2]);
@@ -246,7 +247,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
                         updateInvalidReason(invalidR);
                         authorizationState.setValid("invalid");
                         authorizationState.setInvalidReason(invalidR);//http://www.huajiao.com/l/69320530
-                    }else {
+                    } else {
                         authorizationState.setValid("valid");
                     }
                 } else { // 授权到期时间被人为更改了

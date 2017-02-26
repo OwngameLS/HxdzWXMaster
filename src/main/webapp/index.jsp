@@ -35,9 +35,9 @@
                 <ul class="nav navbar-nav nav-pills">
                     <li><a href="<%=basePath%>Smserver/view/taskstate" target="display">首 页</a></li>
                     <li><a href="<%=basePath%>Smserver/view/askrecords" target="display">查询记录</a></li>
+                    <li><a href="<%=basePath%>Smserver/view/function" target="display">功 能</a></li>
                     <li><a href="<%=basePath%>Smserver/view/timertask" target="display">定时任务</a></li>
                     <li><a href="<%=basePath%>Smserver/view/contact" target="display">通讯录</a></li>
-                    <li><a href="<%=basePath%>Smserver/view/function" target="display">功 能</a></li>
                     <%--target指的是name--%>
                     <li><a href="<%=basePath%>Smserver/view/msg" target="display">信息群发</a></li>
                     <li><a id="authorize" href="<%=basePath%>Smserver/view/settings" target="display"><p>系统设置</p></a>
@@ -69,6 +69,12 @@
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
+    </div>
+
+    <div id="editDone" class="alert alert-success alert-dismissible"
+         style="display:none; width:auto; height:auto;text-align:center; position:fixed; left:50%; margin-left:-125px; top:50%; margin-top:-69px; z-index:9999;"
+         role="alert">
+        <h5><img src="resources/bootstrap-3.3.7-dist/img/settings_done.png">完成！</h5>
     </div>
 
     <!-- 16:9 aspect ratio -->

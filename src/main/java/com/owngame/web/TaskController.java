@@ -5,7 +5,7 @@ import com.owngame.entity.Task;
 import com.owngame.service.AnswerService;
 import com.owngame.service.ContactService;
 import com.owngame.service.TaskService;
-import com.owngame.service.WeiXinMessageService;
+import com.owngame.service.WeixinMessageService;
 import com.owngame.service.impl.AnswerServiceImpl;
 import com.owngame.service.impl.ContactServiceImpl;
 import com.owngame.service.impl.FunctionServiceImpl;
@@ -29,7 +29,7 @@ public class TaskController {
     @Autowired
     TaskService taskService;
     @Autowired
-    WeiXinMessageService weiXinMessageService;
+    WeixinMessageService weiXinMessageService;
     @Autowired
     ContactService contactService;
     @Autowired

@@ -19,6 +19,14 @@
         select * from contactbase where groupname=#{groupname}
     </select>
 
+    <select id="queryByGroupLimit" resultType="ContactBase">
+        select * from contactbase where groupname=#{groupname} limit #{offset},#{limit}
+    </select>
+
+    <select id="countAllByGroup" resultType="int" >
+        select count(*) from contactbase where groupname=#{groupname}
+    </select>
+
     <select id="getGroups" resultType="String">
         select groupname from contactbase group by groupname
     </select>
@@ -40,7 +48,7 @@
         name=#{name},
         title=#{title},
         highid=#{highid},
-        description=#{description},
+        description=#{description}
         where id=#{id}
     </update>
 

@@ -3,6 +3,7 @@ package com.owngame.service;
 import com.owngame.entity.ContactDisplay;
 import com.owngame.entity.ContactHigh;
 import com.owngame.entity.GroupName;
+import com.owngame.entity.Pager;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -40,6 +41,8 @@ public interface ContactService {
     ArrayList<ContactDisplay> queryLikeName(String name);
 
     ArrayList<ContactDisplay> queryByGroup(String groupname);
+
+    Pager<ContactDisplay> queryByGroupLimit(int pageSize, int targetPage, String groupname);
 
     ArrayList<ContactDisplay> getContactByIds(String ids);
 

@@ -4,7 +4,7 @@
 
 var updateContactId;
 var originalGroupName;//被编辑的原来的组名
-
+var pager = new Pager(null, null, null);
 // ---START---展示通讯录信息的逻辑
 
 /**
@@ -70,7 +70,11 @@ function initGroupsBody(groups, selectedIds, isEdit) {
 function showGroupContacts(groupname, isEdit) {
     $.when(getContactsByGroupname(groupname)).done(function (data) {
         if (data != null) {
-            initTbodyOfContacts(data['contacts'], isEdit);
+            pager = new Pager(data['contacts'], showGroupContacts, initTbodyOfContacts);
+            pager.queryCallbackParam = [groupname, isEdit];
+            pager.dataDisplayParam = [isEdit];
+            pager.uiDisplay();
+            // initTbodyOfContacts(, isEdit);
         }
     }).fail(function (error) {
         showEditFail("获取" + groupname + "这一组的联系人信息失败。");
@@ -104,6 +108,7 @@ function showSelectedContacts(isEdit) {
  * @param isEdit 是否可以编辑
  */
 function initTbodyOfContacts(contacts, isEdit) {
+    console.log("initTbodyOfContacts..");
     var htmlStr = '';
     for (var i = 0; i < contacts.length; i++) {
         htmlStr = htmlStr + '<tr><td>' + '<input type="checkbox" name="contactsCheckbox" value="' + contacts[i].base_id + '"> ' + contacts[i].base_id
@@ -124,6 +129,7 @@ function initTbodyOfContacts(contacts, isEdit) {
     $("#contactsBody").html(htmlStr);
     // 取消全选的勾选
     $("#selectAllContacts").prop("checked", false);
+    console.log("initTbodyOfContacts end..");
 }
 
 /**
@@ -133,7 +139,11 @@ function initTbodyOfContacts(contacts, isEdit) {
  */
 function getContactsByGroupname(groupname) {
     var defer = $.Deferred();
-    $.when(myAjaxGet(bp + 'Smserver/contacts/' + groupname)).done(function (data) {
+    var jsonStr = "{\"pageSize\":\"" + pager.pageSize
+        + "\",\"targetPage\":\"" + pager.targetPage
+        + "\",\"groupname\":\"" + groupname
+        + "\"}";
+    $.when(myAjaxPost(bp + 'Smserver/contacts/getbygroup', jsonStr)).done(function (data) {
         if (data != null) {
             defer.resolve(data);
         }
@@ -481,4 +491,12 @@ function showContactsDiv() {
 
 function hideContactsDiv() {
     $("#contactsDiv").hide(2000);
+}
+
+function gotoPage(page){
+    pager.gotoPage(page);
+}
+
+function changePageSize() {
+    pager.changePageSize();
 }

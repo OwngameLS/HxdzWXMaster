@@ -1,9 +1,10 @@
 package com.owngame.service;
 
 import com.owngame.entity.Authorization;
+import com.owngame.entity.AuthorizationState;
 
 import java.util.ArrayList;
-import com.owngame.entity.AuthorizationState;
+
 /**
  * Created by Administrator on 2017-1-10.
  */
