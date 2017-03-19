@@ -7,7 +7,7 @@
         select * from function
     </select>
 
-    <select id="countAll" resultType="int" >
+    <select id="countAll" resultType="int">
         select count(*) from function
     </select>
 
@@ -17,6 +17,10 @@
 
     <select id="queryAllUsable" resultType="Function">
         select * from function where usable='yes'
+    </select>
+
+    <select id="queryAllKeywords" resultType="Keyword">
+        select id, keywords, description, (id-id) as type from function
     </select>
 
     <select id="queryByName" resultType="Function" parameterType="String">

@@ -2,16 +2,17 @@
  * Created by Administrator on 2016-10-27.
  * timertask.jsp 页面的 js支持
  */
-var pager = new Pager(null, null, null);
+// var pagerTimeTask = new Pager(null, null, null, "pageSelectDivTimerTask");
+// var pagerContacts = new Pager(null, null, null, "pageSelectDivContacts");
 
 function queryTimerTasks() {
-    var jsonStr = "{\"pageSize\":\"" + pager.pageSize
-        + "\",\"targetPage\":\"" + pager.targetPage
+    var jsonStr = "{\"pageSize\":\"" + pagerTimeTasks.pageSize
+        + "\",\"targetPage\":\"" + pagerTimeTasks.targetPage
         + "\"}";
     $.when(myAjaxPost(bp + 'Smserver/timertask/getall', jsonStr)).done(function (data) {
         if (data != null) {
-            pager = new Pager(data['timerTasks'], queryTimerTasks, initTbodyOfTasks);
-            pager.uiDisplay();
+            pagerTimeTasks = new Pager(data['timerTasks'], queryTimerTasks, initTbodyOfTasks, "pageSelectDivTimerTask");
+            pagerTimeTasks.uiDisplay();
             // 初始化timertasks相关的控件
             // initTbodyOfTasks(data['timerTasks']);// 选择控件
         }
@@ -342,10 +343,10 @@ function doAjaxHandleTimerTask(action, jsonStr) {
         }
     });
 }
-function gotoPage(page){
-    pager.gotoPage(page);
-}
-
-function changePageSize() {
-    pager.changePageSize();
-}
+// function gotoPage(page){
+//     pagerContacts.gotoPage(page);
+// }
+//
+// function changePageSize() {
+//     pagerContacts.changePageSize();
+// }

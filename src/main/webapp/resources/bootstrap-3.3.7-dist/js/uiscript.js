@@ -56,10 +56,23 @@ function parseToAbbr(source, limit, description) {
 
 }
 
+
 function showEditDone() {
-    $("#editDoneDiv").show(2000);
-    $("#editDoneDiv").hide(2000);
+    var a = $("#editDone", window.parent.document);
+    a.show();
+    setTimeout("hideEditDone()", 2000);
 }
+
+function hideEditDone() {
+    var a = $("#editDone", window.parent.document);
+    a.hide();
+}
+
+
+// function showEditDone() {
+//     $("#editDoneDiv").show(2000);
+//     $("#editDoneDiv").hide(2000);
+// }
 function showEditFail(msg, el) {
     console.log("showEditFail " + el);
     if (el != null) {
@@ -252,3 +265,4 @@ function checkAuthorizationStateByUI() {
         return false;
     }
 }
+

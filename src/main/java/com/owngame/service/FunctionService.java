@@ -27,6 +27,13 @@ public interface FunctionService {
     ArrayList<Function> queryAllUsable();
 
     /**
+     * 查询所有关键字
+     *
+     * @return
+     */
+    ArrayList<Keyword> queryAllKeywords();
+
+    /**
      * 根据权限查询所有的功能
      *
      * @param contactHigh
@@ -91,7 +98,7 @@ public interface FunctionService {
      * @param keywords
      * @return
      */
-    FunctionKeywordsResult checkKeywords(long id, String keywords);
+    KeywordsResult checkKeywords(long id, String keywords);
 
     /**
      * 检查SQL语句

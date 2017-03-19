@@ -111,7 +111,7 @@
             </tbody>
         </table>
     </div>
-    <div id="pageSelectDiv" style="text-align:center;width:100%;" >
+    <div id="pageSelectDivAskRecords" style="text-align:center;width:100%;">
     </div>
 
 </div>

@@ -398,17 +398,17 @@ function doUpdateSettings(jsonStr, name, action, type) {
         }
     });
 }
-
-function showEditDone() {
-    var a = $("#editDone", window.parent.document);
-    a.show();
-    setTimeout("hideEditDone()", 2000);
-}
-
-function hideEditDone() {
-    var a = $("#editDone", window.parent.document);
-    a.hide();
-}
+//
+// function showEditDone() {
+//     var a = $("#editDone", window.parent.document);
+//     a.show();
+//     setTimeout("hideEditDone()", 2000);
+// }
+//
+// function hideEditDone() {
+//     var a = $("#editDone", window.parent.document);
+//     a.hide();
+// }
 
 
 // 修改被依赖属性的选择状态后对应的控件状态随之改变

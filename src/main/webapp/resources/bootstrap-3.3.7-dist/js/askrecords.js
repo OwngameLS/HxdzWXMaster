@@ -8,11 +8,7 @@ var type = -1; // 全部
 var functions = "all";// 全部
 var issuccess = -1;// 全部
 var intervalId;
-// var pageSize = 20;// 分页大小
-// var totalPage = 0;
-// var targetPage = 1;// 目标页码
-// var currentPage = 1;// 当前页码
-var pager = new Pager(null, null, null);
+// var pagerAskRecords = new Pager(null, null, null, "pageSelectDivAskRecords");
 
 function queryAskrecords() {
     var jsonStr = "{\"lasthours\":" + lasthours
@@ -20,16 +16,13 @@ function queryAskrecords() {
         + "\",\"askers\":\"" + askers
         + "\",\"functions\":\"" + functions
         + "\",\"issuccess\":\"" + issuccess
-        + "\",\"pageSize\":\"" + pager.pageSize
-        + "\",\"targetPage\":\"" + pager.targetPage
+        + "\",\"pageSize\":\"" + pagerAskRecords.pageSize
+        + "\",\"targetPage\":\"" + pagerAskRecords.targetPage
         + "\"}";
-    // console.log("jsonStr:" + jsonStr);
     $.when(myAjaxPost(bp + 'Smserver/askrecords/query', jsonStr)).done(function (data) {
         if (data != null) {
-            pager = new Pager(data['askrecords'], queryAskrecords, initTbodyOfAskrecords);
-            pager.uiDisplay();
-            // initTbodyOfAskrecords(pager.dataList);// 选择控件
-            // pager.initPageDiv();
+            pagerAskRecords = new Pager(data['askrecords'], queryAskrecords, initTbodyOfAskrecords, "pageSelectDivAskRecords");
+            pagerAskRecords.uiDisplay();
         }
     });
 }
@@ -60,9 +53,9 @@ function changeQueryHours() {
 function changeRefreshTime() {
     // 得到查询时间段
     refreshTime = $("#refreshtime option:selected").val() * 60 * 1000;
-    if(refreshTime > 0){
+    if (refreshTime > 0) {
         queryAskrecords();
-    }else{
+    } else {
         clearInterval(intervalId);
     }
 
@@ -85,7 +78,7 @@ function changeQueryType() {
 function initTbodyOfAskrecords(askrecords) {
     var htmlStr = '';
     var stateDesc = '';
-    if(askrecords != null || askrecords != undefined){
+    if (askrecords != null || askrecords != undefined) {
         for (var i = 0; i < askrecords.length; i++) {
             if (askrecords[i].issuccess == 0) {
                 htmlStr = htmlStr + '<tr class="danger">';
@@ -121,7 +114,7 @@ function initTbodyOfAskrecords(askrecords) {
     $("#askrecordsBody").html(htmlStr);
     $("#myModal").modal("show");
     clearInterval(intervalId);
-    if(refreshTime > 0){
+    if (refreshTime > 0) {
         intervalId = setInterval(queryAskrecords, refreshTime);// 自动刷新
     }
     setTimeout(hideModal, 2000);
@@ -152,12 +145,12 @@ Date.prototype.Format = function (fmt) { //author: meizz
             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
 }
-
-function gotoPage(page){
-    pager.gotoPage(page);
-
-}
-
-function changePageSize() {
-    pager.changePageSize();
-}
+//
+// function gotoPage(page){
+//     pagerAskRecords.gotoPage(page);
+//
+// }
+//
+// function changePageSize() {
+//     pagerAskRecords.changePageSize();
+// }

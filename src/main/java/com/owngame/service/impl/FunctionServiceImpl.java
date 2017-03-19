@@ -4,6 +4,7 @@ import com.owngame.dao.FunctionDao;
 import com.owngame.entity.*;
 import com.owngame.service.ContactBaseService;
 import com.owngame.service.FunctionService;
+import com.owngame.service.KeywordService;
 import com.owngame.utils.DBUtil;
 import com.owngame.utils.FunctionFieldUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2016-9-27.
@@ -29,6 +28,8 @@ public class FunctionServiceImpl implements FunctionService {
     FunctionDao functionDao;
     @Autowired
     ContactBaseService contactBaseService;
+    @Autowired
+    KeywordService keywordService;
 
     // 判断字符串是不是数字
     public static boolean isNum(String str) {
@@ -47,6 +48,10 @@ public class FunctionServiceImpl implements FunctionService {
         return functionDao.queryAllUsable();
     }
 
+    public ArrayList<Keyword> queryAllKeywords() {
+        return functionDao.queryAllKeywords();
+    }
+
     public String queryAllWithGrade(ContactHigh contactHigh, int type) {
         ArrayList<Function> functions = queryAll();
         String result = "";
@@ -54,10 +59,8 @@ public class FunctionServiceImpl implements FunctionService {
         for (int i = 0; i < functions.size(); i++) {
             Function tfunction = functions.get(i);
             int tg = Integer.parseInt(tfunction.getGrade());
-            result += "功能名称：" + tfunction.getName()
-                    + "，关键字：" + tfunction.getKeywords()
-                    + "，描述：" + tfunction.getDescription()
-                    + "，备注：";
+            result +=  "["+ tfunction.getKeywords() + "] 可查询功能[" + tfunction.getName()+ "],用于“"
+                    + tfunction.getDescription() + "”，备注：";
             if (tg > g) {
                 result += "您的权限级别不能使用此功能。";
             } else {
@@ -140,10 +143,11 @@ public class FunctionServiceImpl implements FunctionService {
      * @return
      */
     public ArrayList<Function> getFunctionsByType(String functionInfos, int type) {
-        if (functionInfos != null) {
-            if (functionInfos.equals("nofunctions")) {
-                return null;
-            }
+        if(functionInfos == null){
+            return null;
+        }
+        if (functionInfos.equals("nofunctions")) {
+            return null;
         }
         functionInfos = functionInfos.trim().replaceAll("，", ",");
         String infos[] = functionInfos.split(",");
@@ -416,7 +420,10 @@ public class FunctionServiceImpl implements FunctionService {
      * @return
      */
     public FunctionFilterResult filterFunctions(ArrayList<Function> functions, String grade) {
-        if (functions == null || functions.size() == 0) {
+        if (functions == null){
+            return null;
+        }
+        if(functions.size() == 0){
             return null;
         }
         ArrayList<Function> fts = new ArrayList<Function>();
@@ -505,60 +512,60 @@ public class FunctionServiceImpl implements FunctionService {
      * @param keywords
      * @return
      */
-    public FunctionKeywordsResult checkKeywords(long id, String keywords) {
-        FunctionKeywordsResult functionKeywordsResult = new FunctionKeywordsResult();
-        if (id > 0) {// 是更新原来的功能，检测其关键字是否更改了
-            // 通过id查询原来的关键字
-            Function function = functionDao.queryById(id);
-            if (keywords.equals(function.getKeywords())) {// 与原来的一样，没有改变
-                functionKeywordsResult.setIsSuccess(1);
-                return functionKeywordsResult;
-            }
-        }
-        String keys[] = keywords.split(",");// 分割关键字组合
-        HashMap<String, String> similarKeys = new HashMap<String, String>();
-        for (int i = 0; i < keys.length; i++) {
-            ArrayList<Function> rr = functionDao.checkKeywords("%" + keys[i] + "%");// 模糊查询
-            if (rr != null) {
-                for (int j = 0; j < rr.size(); j++) {
-                    String formerKeys[] = rr.get(j).getKeywords().split(",");
-                    if (id < 0) {//新建
-                        for (String fk : formerKeys) {
-                            if (fk.equals(keys[i])) {// 关键字重复
-                                functionKeywordsResult.setIsSuccess(-1);//有重复的了
-                                similarKeys = putKeyswords(similarKeys, keys[i], fk, true);
-                            } else if (fk.contains(keys[i])) {// 关键字有类似的
-                                similarKeys = putKeyswords(similarKeys, keys[i], fk, false);
-                            }
-                        }
-                    } else {// 更新
-                        long formerId = rr.get(j).getId();
-                        for (String fk : formerKeys) {
-                            if (fk.equals(keys[i])) {// 关键字重复
-                                if (formerId != id) {// 不是原来的关键字
-                                    functionKeywordsResult.setIsSuccess(-1);//有重复的了
-                                    similarKeys = putKeyswords(similarKeys, keys[i], fk, true);
-                                }
-                            } else if (fk.contains(keys[i])) {// 关键字有类似的
-                                // 更新时发现类似的关键字，不用管
-                            }
-                        }
-
-                    }
-                }
-            }
-        }
-
-        if (functionKeywordsResult.getIsSuccess() < 0) {// 需要返回错误信息
-            ArrayList<String> keysInfo = new ArrayList<String>();
-            Iterator iter = similarKeys.entrySet().iterator();
-            while (iter.hasNext()) {
-                Map.Entry entry = (Map.Entry) iter.next();
-                keysInfo.add((String) entry.getValue());
-            }
-            functionKeywordsResult.setSimilarKeys(keysInfo);
-        }
-        return functionKeywordsResult;
+    public KeywordsResult checkKeywords(long id, String keywords) {
+        KeywordsResult keywordsResult = keywordService.checkDuplicateKeywords(id, keywords, Keyword.TYPE_FUNCTION);
+//        if (id > 0) {// 是更新原来的功能，检测其关键字是否更改了
+//            // 通过id查询原来的关键字
+//            Function function = functionDao.queryById(id);
+//            if (keywords.equals(function.getKeywords())) {// 与原来的一样，没有改变
+//                keywordsResult.setIsSuccess(1);
+//                return keywordsResult;
+//            }
+//        }
+//        String keys[] = keywords.split(",");// 分割关键字组合
+//        HashMap<String, String> similarKeys = new HashMap<String, String>();
+//        for (int i = 0; i < keys.length; i++) {
+//            ArrayList<Function> rr = functionDao.checkKeywords("%" + keys[i] + "%");// 模糊查询
+//            if (rr != null) {
+//                for (int j = 0; j < rr.size(); j++) {
+//                    String formerKeys[] = rr.get(j).getKeywords().split(",");
+//                    if (id < 0) {//新建
+//                        for (String fk : formerKeys) {
+//                            if (fk.equals(keys[i])) {// 关键字重复
+//                                keywordsResult.setIsSuccess(-1);//有重复的了
+//                                similarKeys = putKeyswords(similarKeys, keys[i], fk, true);
+//                            } else if (fk.contains(keys[i])) {// 关键字有类似的
+//                                similarKeys = putKeyswords(similarKeys, keys[i], fk, false);
+//                            }
+//                        }
+//                    } else {// 更新
+//                        long formerId = rr.get(j).getId();
+//                        for (String fk : formerKeys) {
+//                            if (fk.equals(keys[i])) {// 关键字重复
+//                                if (formerId != id) {// 不是原来的关键字
+//                                    keywordsResult.setIsSuccess(-1);//有重复的了
+//                                    similarKeys = putKeyswords(similarKeys, keys[i], fk, true);
+//                                }
+//                            } else if (fk.contains(keys[i])) {// 关键字有类似的
+//                                // 更新时发现类似的关键字，不用管
+//                            }
+//                        }
+//
+//                    }
+//                }
+//            }
+//        }
+//
+//        if (keywordsResult.getIsSuccess() < 0) {// 需要返回错误信息
+//            ArrayList<String> keysInfo = new ArrayList<String>();
+//            Iterator iter = similarKeys.entrySet().iterator();
+//            while (iter.hasNext()) {
+//                Map.Entry entry = (Map.Entry) iter.next();
+//                keysInfo.add((String) entry.getValue());
+//            }
+//            keywordsResult.setSimilarKeys(keysInfo);
+//        }
+        return keywordsResult;
     }
 
     // 将关键字重复信息进行整理

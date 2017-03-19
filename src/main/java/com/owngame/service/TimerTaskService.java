@@ -1,6 +1,5 @@
 package com.owngame.service;
 
-import com.owngame.entity.Function;
 import com.owngame.entity.Pager;
 import com.owngame.entity.TimerTask;
 

@@ -20,7 +20,7 @@ public interface ContactBaseDao {
 
     ArrayList<ContactBase> queryByGroup(String groupname);
 
-    ArrayList<ContactBase> queryByGroupLimit(@Param("offset") int offset, @Param("limit") int limit, @Param("groupname")  String groupname);
+    ArrayList<ContactBase> queryByGroupLimit(@Param("offset") int offset, @Param("limit") int limit, @Param("groupname") String groupname);
 
     int countAllByGroup(String groupname);
 

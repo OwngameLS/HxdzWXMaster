@@ -5,6 +5,7 @@
 var selectedIContacts = new Array();// 已经确认选中的人员
 var newSelectIContacts = null;// 新操作时选中的人员
 var anonymousId = -1;// 匿名者的id
+// var pager = new Pager(null, null, null);
 
 // 联系人类
 function selectedContact() {
@@ -45,14 +46,11 @@ function deleteSelectedContacts(id) {
 }
 
 function updateSelectedContacts(action) {
-    console.log("updateSelectedContacts");
     // 在之前选中的Contact上操作
     for (var i = 0; i < newSelectIContacts.length; i++) {
-        console.log("newSelectIContacts " + i);
         // 在原来的ids中查找
         var index = contactsFind(selectedIContacts, newSelectIContacts[i]);
         if (index != -1) {// 找到了
-            console.log("we found one!");
             if (action == 'add') {
                 // 不用处理
             } else if (action == 'remove') {
@@ -107,7 +105,6 @@ function addAnonymous() {
     }
 }
 
-
 // 展示选中的人员
 function showSelectedContactsHtml() {
     var htmlStr = '';
@@ -160,9 +157,7 @@ function uniqueContactPhone() {
     for (var i = 0; i < selectedIContacts.length; i++) {
         phoneNumbers.push(selectedIContacts[i].phonenumber);
     }
-    console.log("length before:" + phoneNumbers.length);
     phoneNumbers = $.unique(phoneNumbers);
-    console.log("length after:" + phoneNumbers.length);
     // 整理成字符串
     var phoneStr = "";
     for (var i = 0; i < phoneNumbers.length; i++) {
@@ -221,8 +216,6 @@ function createTask() {
     } else {
         return;
     }
-
-
 }
 // 获取所有方法
 function useFunction() {

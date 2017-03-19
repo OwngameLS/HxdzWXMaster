@@ -13,8 +13,8 @@
 
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="../../resources/bootstrap-3.3.7-dist/js/pager.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/pager.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/contact.js"></script>
 </head>
@@ -209,8 +209,8 @@
                 </tbody>
             </table>
         </div>
-        <div style="width: 20%;float:left;">.</div>
-        <div id="pageSelectDiv" style="text-align:center;width:80%;float: left;"></div>
+        <div onselectstart="return false;" style="width: 20%;float:left;">.</div>
+        <div id="pageSelectDivContacts" style="text-align:center;width:80%;float: left;"></div>
     </div>
 </div>
 

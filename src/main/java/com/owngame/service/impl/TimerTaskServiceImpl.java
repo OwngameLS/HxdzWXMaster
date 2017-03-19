@@ -2,7 +2,6 @@ package com.owngame.service.impl;
 
 import com.owngame.dao.Qrtz_triggersDao;
 import com.owngame.dao.TimerTaskDao;
-import com.owngame.entity.Function;
 import com.owngame.entity.Pager;
 import com.owngame.entity.TimerTask;
 import com.owngame.service.QuartzTriggerService;

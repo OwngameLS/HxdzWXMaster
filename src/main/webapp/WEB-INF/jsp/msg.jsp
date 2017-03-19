@@ -14,6 +14,7 @@
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/pager.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/msg.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/contact.js"></script>
@@ -53,7 +54,7 @@
         </div><!-- /.modal -->
     </div>
 
-    <div id="contactsDiv" class="bg-success" style="display: none;text-align:center">
+    <div id="contactsDiv" class="bg-success well" style="display: none;text-align:center;height: 520px;">
         <div style="width: 20%;float:left;">
             <button type="button" class="btn btn-warning btn-sm" onclick="hideContactsDiv()">收起</button>
         </div>
@@ -100,8 +101,10 @@
                 </tbody>
             </table>
         </div>
+        <div onselectstart="return false;" style="width: 20%;float:left;">.</div>
+        <div id="pageSelectDivContacts" style="text-align:center;width:80%;float: left;"></div>
     </div>
-
+    <br>
 
     <div class="well">
         <div class="row">
@@ -159,7 +162,7 @@
                 <input type="checkbox" id="sendTypeSms" checked>短信
             </div>
             <div class="col-md-2">
-                <input type="checkbox" id="sendTypeWx"><abbr title="如果这个手机号对应的有微信号的话，就会发送">微信</abbr>
+                <input type="checkbox" id="sendTypeWx"><abbr title="如果这个手机号绑定了微信号，就会发送">微信</abbr>
             </div>
             <div class="col-md-2 text-center">
                 <button type="button" class="btn btn-primary btn-sm" onclick="createTask()">发 送</button>

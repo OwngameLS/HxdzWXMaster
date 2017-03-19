@@ -1,6 +1,7 @@
 package com.owngame.dao;
 
 import com.owngame.entity.Function;
+import com.owngame.entity.Keyword;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ public interface FunctionDao {
     Function queryByName(String name);
 
     ArrayList<Function> queryByKeywords(String keywords);
+
+    ArrayList<Keyword> queryAllKeywords();
 
     Function queryById(long id);
 

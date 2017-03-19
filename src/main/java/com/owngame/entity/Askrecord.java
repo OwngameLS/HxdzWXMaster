@@ -12,7 +12,7 @@ public class Askrecord {
     long id;
     String name;// 请求人姓名
     String phone;// 请求人的手机号
-    int type;//0:手机查询,1: 微信查询
+    int type;//sms 0, wx 1, web 2, client 3，triggerjob 4
     Date time;// 查询时间
     String functions;// 查询的功能
     String description;// 描述

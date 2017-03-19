@@ -2,7 +2,6 @@ package com.owngame.service.impl;
 
 import com.owngame.dao.ContactBaseDao;
 import com.owngame.entity.ContactBase;
-import com.owngame.entity.Function;
 import com.owngame.entity.GroupName;
 import com.owngame.service.ContactBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,7 @@ public class ContactBaseServiceImpl implements ContactBaseService {
         return contactBaseDao.queryByGroupLimit(offset, limit, groupname);
     }
 
-    public int countAllByGroup(String groupname){
+    public int countAllByGroup(String groupname) {
         return contactBaseDao.countAllByGroup(groupname);
     }
 

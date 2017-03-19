@@ -69,11 +69,11 @@ public class WeixinServiceImpl implements WeixinService {
             // 判断内容不为空
             System.out.println("token:" + weixinAccessToken.getAccesstoken());
             boolean isExpired = false;
-            if(null == weixinAccessToken.getAccesstoken() || "".equals(weixinAccessToken.getAccesstoken())){
+            if (null == weixinAccessToken.getAccesstoken() || "".equals(weixinAccessToken.getAccesstoken())) {
                 isExpired = true;
-            }else if(null == weixinAccessToken.getExpiresin() || "".equals(weixinAccessToken.getExpiresin())){
+            } else if (null == weixinAccessToken.getExpiresin() || "".equals(weixinAccessToken.getExpiresin())) {
                 isExpired = true;
-            }else{
+            } else {
                 isExpired = TimeUtil.isExpired(weixinAccessToken.getExpiresin());
             }
             if (isExpired) {// 存在且过期了，重新获取

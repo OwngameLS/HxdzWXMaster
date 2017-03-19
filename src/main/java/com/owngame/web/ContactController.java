@@ -22,6 +22,7 @@ public class ContactController {
 
     /**
      * 根据组名返回该组的联系人信息
+     *
      * @param p
      * @return
      */

@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * 筛选之后的功能结果
  */
 public class FunctionFilterResult {
-    String result;
+    String result = "";
     String functionNames;
     ArrayList<Function> functions;
 

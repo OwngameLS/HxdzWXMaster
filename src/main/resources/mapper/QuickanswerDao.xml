@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 为Dao接口方法提供SQL语句配置 -->
+<mapper namespace="com.owngame.dao.QuickanswerDao">
+
+    <select id="countAll" resultType="int">
+        select count(*) from quickanswers
+    </select>
+
+    <select id="queryAll" resultType="Quickanswer">
+        select * from quickanswers order by enable asc
+    </select>
+
+    <select id="queryAllLimit" resultType="Quickanswer">
+        select * from quickanswers order by id asc limit #{offset},#{limit}
+    </select>
+
+    <select id="queryLikeName" resultType="Quickanswer" parameterType="String">
+        select * from quickanswers where keyname like #{keyname} order by id asc
+    </select>
+
+    <select id="queryById" resultType="Quickanswer" parameterType="long">
+        select * from quickanswers where id=#{id}
+    </select>
+
+    <select id="getResult" resultType="Quickanswer" parameterType="String">
+        select * from quickanswers where keyname=#{keyname}
+    </select>
+
+    <select id="queryAllKeywords" resultType="Keyword">
+        select id, keyname as keywords, description, (id+1-id) as type from quickanswers
+    </select>
+
+    <insert id="insert" parameterType="Quickanswer">
+        insert ignore quickanswers
+        (id, keyname, result, description, enable)
+        values
+        (#{id},#{keyname}, #{result},#{description}, #{enable})
+    </insert>
+
+    <update id="update" parameterType="Quickanswer">
+        update quickanswers set
+        keyname=#{keyname},
+        result=#{result},
+        description = #{description},
+        enable=#{enable}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        delete from quickanswers where id=#{id}
+    </delete>
+</mapper>

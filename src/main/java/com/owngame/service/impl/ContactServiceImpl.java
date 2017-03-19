@@ -230,6 +230,12 @@ public class ContactServiceImpl implements ContactService {
 
     public Pager<ContactDisplay> queryByGroupLimit(int pageSize, int targetPage, String groupname) {
         int totalRecords = contactBaseService.countAllByGroup(groupname);
+        int totalPages = totalRecords / pageSize;
+        if (totalRecords % pageSize != 0) {
+            totalPages++;
+        }
+        // 当前第几页数据
+        targetPage = totalPages < targetPage ? totalPages : targetPage;
         ArrayList<ContactBase> contactBases = contactBaseService.queryByGroupLimit(pageSize, targetPage, groupname);
         ArrayList<ContactDisplay> contactDisplays = getDisplaysByBases(contactBases);
         Pager<ContactDisplay> pager = new Pager<ContactDisplay>(targetPage, pageSize, totalRecords, contactDisplays);
@@ -362,9 +368,9 @@ public class ContactServiceImpl implements ContactService {
                 String[] ids = idsString.split(",");
                 for (String id : ids) {
                     String addContactsType = p.get("addContactsType");
-                    if(addContactsType.equals("move")){// 修改分组名称
+                    if (addContactsType.equals("move")) {// 修改分组名称
                         contactBaseService.updateGroupWithId(new GroupName(Long.parseLong(id), null, groupname));
-                    }else if(addContactsType.equals("copy")){
+                    } else if (addContactsType.equals("copy")) {
                         ContactDisplay contactDisplay = queryById(Long.parseLong(id));
                         contactDisplay.setBase_id(0);
                         contactDisplay.setGroupname(groupname);

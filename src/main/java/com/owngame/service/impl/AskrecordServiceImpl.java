@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * Created by Administrator on 2016-12-7.
@@ -36,7 +35,7 @@ public class AskrecordServiceImpl implements AskrecordService {
             ArrayList<Askrecord> askrecords = queryRecordsBeforeTime(lasthours);
             if (askrecords == null) {
                 return null;
-            }else if(askrecords.size() == 0){
+            } else if (askrecords.size() == 0) {
                 return null;
             }
             // 筛选
@@ -92,7 +91,7 @@ public class AskrecordServiceImpl implements AskrecordService {
             }
             Pager<Askrecord> pager = new Pager<Askrecord>(targetPage, pageSize, totalRecords, askrecords);
             return pager;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -137,7 +136,7 @@ public class AskrecordServiceImpl implements AskrecordService {
         return askrecordDao.queryRecordsBeforeTime(time);
     }
 
-    public int countRecordsBeforeTime(int lasthours){
+    public int countRecordsBeforeTime(int lasthours) {
         if (lasthours == -1) {
             return countAll();
         }

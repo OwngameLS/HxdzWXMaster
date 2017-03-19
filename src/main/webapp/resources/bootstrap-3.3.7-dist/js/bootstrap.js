@@ -877,9 +877,9 @@ if (typeof jQuery === 'undefined') {
 
         var index = $items.index(e.target)
 
-        if (e.which == 38 && index > 0)                 index--         // up
+        if (e.which == 38 && index > 0) index--         // up
         if (e.which == 40 && index < $items.length - 1) index++         // down
-        if (!~index)                                    index = 0
+        if (!~index) index = 0
 
         $items.eq(index).trigger('focus')
     }
@@ -1524,7 +1524,7 @@ if (typeof jQuery === 'undefined') {
         var marginLeft = parseInt($tip.css('margin-left'), 10)
 
         // we must check for NaN for ie 8/9
-        if (isNaN(marginTop))  marginTop = 0
+        if (isNaN(marginTop)) marginTop = 0
         if (isNaN(marginLeft)) marginLeft = 0
 
         offset.top += marginTop
@@ -1647,9 +1647,9 @@ if (typeof jQuery === 'undefined') {
             placement == 'top' ? {top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2} :
                 placement == 'left' ? {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth} :
                     /* placement == 'right' */ {
-                    top: pos.top + pos.height / 2 - actualHeight / 2,
-                    left: pos.left + pos.width
-                }
+                        top: pos.top + pos.height / 2 - actualHeight / 2,
+                        left: pos.left + pos.width
+                    }
 
     }
 
@@ -2312,8 +2312,8 @@ if (typeof jQuery === 'undefined') {
         var offsetBottom = offset.bottom
         var scrollHeight = Math.max($(document).height(), $(document.body).height())
 
-        if (typeof offset != 'object')         offsetBottom = offsetTop = offset
-        if (typeof offsetTop == 'function')    offsetTop = offset.top(this.$element)
+        if (typeof offset != 'object') offsetBottom = offsetTop = offset
+        if (typeof offsetTop == 'function') offsetTop = offset.top(this.$element)
         if (typeof offsetBottom == 'function') offsetBottom = offset.bottom(this.$element)
 
         var affix = this.getState(scrollHeight, height, offsetTop, offsetBottom)

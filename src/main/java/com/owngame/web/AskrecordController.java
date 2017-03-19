@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,18 +32,23 @@ public class AskrecordController {
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> showAskrecords(@RequestBody Map<String, String> p) {
-        int lasthours = Integer.parseInt(p.get("lasthours"));
-        int type = Integer.parseInt(p.get("type"));
-        String askers = p.get("askers");
-        String functions = p.get("functions");
-        int issuccess = Integer.parseInt(p.get("issuccess"));
-        int pageSize = Integer.parseInt(p.get("pageSize"));
-        int targetPage = Integer.parseInt(p.get("targetPage"));
-        Pager<Askrecord> pager = askrecordService.handleQuery(lasthours, type, askers, functions, issuccess, pageSize, targetPage);
-//        System.out.println(pager.toString());
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("askrecords", pager);
-        return map;
+        try {
+            int lasthours = Integer.parseInt(p.get("lasthours"));
+            int type = Integer.parseInt(p.get("type"));
+            String askers = p.get("askers");
+            String functions = p.get("functions");
+            int issuccess = Integer.parseInt(p.get("issuccess"));
+            int pageSize = Integer.parseInt(p.get("pageSize"));
+            int targetPage = Integer.parseInt(p.get("targetPage"));
+            Pager<Askrecord> pager = askrecordService.handleQuery(lasthours, type, askers, functions, issuccess, pageSize, targetPage);
+//        System.out.println(pagerContacts.toString());
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("askrecords", pager);
+            return map;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

@@ -2,7 +2,6 @@ package com.owngame.service;
 
 import com.owngame.entity.Askrecord;
 import com.owngame.entity.Pager;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
 

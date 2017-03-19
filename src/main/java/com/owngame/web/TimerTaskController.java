@@ -1,6 +1,5 @@
 package com.owngame.web;
 
-import com.owngame.entity.Function;
 import com.owngame.entity.Pager;
 import com.owngame.entity.TimerTask;
 import com.owngame.service.TimerTaskService;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

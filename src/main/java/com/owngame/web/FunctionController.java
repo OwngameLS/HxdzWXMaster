@@ -1,6 +1,9 @@
 package com.owngame.web;
 
-import com.owngame.entity.*;
+import com.owngame.entity.Function;
+import com.owngame.entity.FunctionSqlResult;
+import com.owngame.entity.KeywordsResult;
+import com.owngame.entity.Pager;
 import com.owngame.service.AnswerService;
 import com.owngame.service.ContactService;
 import com.owngame.service.FunctionService;
@@ -74,6 +77,21 @@ public class FunctionController {
      *
      * @return
      */
+    @RequestMapping(value = "/getall", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> queryFunctions() {
+        ArrayList<Function> functions = functionService.queryAll();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("functions", functions);
+        return map;
+    }
+
+
+    /**
+     * 查询所有功能
+     *
+     * @return
+     */
     @RequestMapping(value = "/getall", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> queryFunctions(@RequestBody Map<String, String> p) {
@@ -139,7 +157,7 @@ public class FunctionController {
         String keywords = p.get("keywords");
         long id = Long.parseLong(idString);
         // 检查关键字
-        FunctionKeywordsResult keywordResult = functionService.checkKeywords(id, keywords);
+        KeywordsResult keywordResult = functionService.checkKeywords(id, keywords);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("keywordResult", keywordResult);
         return map;

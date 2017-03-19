@@ -40,6 +40,7 @@
                     <li><a href="<%=basePath%>Smserver/view/contact" target="display">通讯录</a></li>
                     <%--target指的是name--%>
                     <li><a href="<%=basePath%>Smserver/view/msg" target="display">信息群发</a></li>
+                    <li><a href="<%=basePath%>Smserver/view/quickanswers" target="display">快捷回复</a></li>
                     <li><a id="authorize" href="<%=basePath%>Smserver/view/settings" target="display"><p>系统设置</p></a>
                     </li>
                     <li id="unauth" style="display: none"><a><img

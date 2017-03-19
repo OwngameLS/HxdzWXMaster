@@ -120,7 +120,7 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
         if (content.startsWith("群发")) {
             Settings settings = settingsService.queryByName("wx_url");
             String url = settings.getValue() + "view/wxmsg";
-            content = "点我群发:"+url;
+            content = "点我群发:" + url;
             return initTextMessageOfJsonString(fromUserName, content);
 //            return handleXXFS(fromUserName);
         }
@@ -128,7 +128,8 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
         if (content.startsWith(TEXTMSG_PREFIX_PHONENUMBER)) {// 手机号逻辑
             content = phoneNumberLogic(content);
         } else { // 查询逻辑
-            content = answerService.handleAsk(content,
+            // 在调用的方法里就会有发送消息的功能了，不在这里发了
+            answerService.handleAsk(content,
                     FunctionServiceImpl.QUESTIONTYPE_FUNCTION_KEYWORDS,
                     fromUserName,
                     ContactServiceImpl.CONTACT_TYPE_OPENID,
@@ -136,9 +137,9 @@ public class WeixinMessageServiceImpl implements WeixinMessageService {
                     TaskServiceImpl.SEND_TYPE_WX,
                     "");
         }
-        if (rtMsgType.equals(MESSAGE_TYPE_TEXT)) {// 回复文本消息
-            return initTextMessageOfJsonString(fromUserName, content);
-        }
+//        if (rtMsgType.equals(MESSAGE_TYPE_TEXT)) {// 回复文本消息
+//            return initTextMessageOfJsonString(fromUserName, content);
+//        }
         return null;
     }
 

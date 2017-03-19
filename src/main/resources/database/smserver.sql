@@ -2,21 +2,21 @@
 Navicat MySQL Data Transfer
 
 Source Server         : mysql
-Source Server Version : 50711
+Source Server Version : 50709
 Source Host           : localhost:3306
 Source Database       : smserver
 
 Target Server Type    : MYSQL
-Target Server Version : 50711
+Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2017-01-16 17:21:48
+Date: 2017-03-16 23:14:31
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for `askrecord`
+-- Table structure for askrecord
 -- ----------------------------
 DROP TABLE IF EXISTS `askrecord`;
 CREATE TABLE `askrecord` (
@@ -29,7 +29,7 @@ CREATE TABLE `askrecord` (
   `description` text,
   `time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=417 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=426 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of askrecord
@@ -66,9 +66,18 @@ INSERT INTO `askrecord` VALUES ('413', '管理员', '管理员', '3', '1', '自�
 INSERT INTO `askrecord` VALUES ('414', '管理员', '管理员', '3', '1', '自定义消息 与 功能查询结果(abc)。', '管理员客户端操作。你真的是我群发的消息吗？功能[abc]的查询结果：统计类型:T;\n', '2016-12-20 22:07:42');
 INSERT INTO `askrecord` VALUES ('415', 'Owngame', '18107436127', '1', '1', 'B股', '关键字[B股] 没有查询到对应的功能。', '2016-12-24 12:56:25');
 INSERT INTO `askrecord` VALUES ('416', 'Owngame', '18107436127', '1', '1', 'abc', '功能[abc]的查询结果：统计类型:T;\n', '2017-01-16 12:17:10');
+INSERT INTO `askrecord` VALUES ('417', 'Owngame', '18107436127', '1', '1', 'abc', '功能[abc]的查询结果：统计类型:T;\n', '2017-01-16 21:55:24');
+INSERT INTO `askrecord` VALUES ('418', 'Owngame', '18107436127', '1', '1', 'abc', '功能[abc]的查询结果：统计类型:T;\n', '2017-01-16 21:55:50');
+INSERT INTO `askrecord` VALUES ('419', 'Owngame', '18107436127', '1', '1', 'abc', '功能[abc]的查询结果：统计类型:T;\n', '2017-01-16 22:09:23');
+INSERT INTO `askrecord` VALUES ('420', 'Owngame', '18107436127', '1', '1', '', '快捷回复了关键字[龙生];龙生最棒！关键字[] 没有查询到对应的功能。您可能要查询的关键字有[abc,cde,tt,ad,222,3,32]。', '2017-03-15 21:44:35');
+INSERT INTO `askrecord` VALUES ('421', 'Owngame', '18107436127', '1', '1', '', '快捷回复了关键字[龙生];龙生最棒！关键字[] 没有查询到对应的功能。您可能要查询的关键字有[abc,cde,tt,ad,222,3,32]。', '2017-03-15 21:44:35');
+INSERT INTO `askrecord` VALUES ('422', 'Owngame', '18107436127', '1', '1', 'nofunctions', '快捷回复了关键字[龙生];', '2017-03-15 21:53:25');
+INSERT INTO `askrecord` VALUES ('423', 'Owngame', '18107436127', '1', '1', 'nofunctions', '快捷回复了关键字[龙生];', '2017-03-15 21:53:25');
+INSERT INTO `askrecord` VALUES ('424', 'Owngame', '18107436127', '1', '1', 'nofunctions', '快捷回复了关键字[龙生];', '2017-03-15 21:53:36');
+INSERT INTO `askrecord` VALUES ('425', 'Owngame', '18107436127', '1', '1', 'nofunctions', '快捷回复了关键字[龙生];', '2017-03-15 22:03:11');
 
 -- ----------------------------
--- Table structure for `authorization`
+-- Table structure for authorization
 -- ----------------------------
 DROP TABLE IF EXISTS `authorization`;
 CREATE TABLE `authorization` (
@@ -93,7 +102,7 @@ INSERT INTO `authorization` VALUES ('7', 'zhiyun', null, '18107436666', '0');
 INSERT INTO `authorization` VALUES ('8', 'zhiyuna', null, '18107463333', '0');
 
 -- ----------------------------
--- Table structure for `contactbase`
+-- Table structure for contactbase
 -- ----------------------------
 DROP TABLE IF EXISTS `contactbase`;
 CREATE TABLE `contactbase` (
@@ -104,13 +113,13 @@ CREATE TABLE `contactbase` (
   `highid` int(11) DEFAULT NULL,
   `description` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of contactbase
 -- ----------------------------
 INSERT INTO `contactbase` VALUES ('1', 'A', 'Owngame', '123.0', '20', 'waerfa');
-INSERT INTO `contactbase` VALUES ('2', 'A', '张三', '123.0', '21', 'waerfa');
+INSERT INTO `contactbase` VALUES ('2', 'A', '张三', '123.0', '26', 'waerfa');
 INSERT INTO `contactbase` VALUES ('3', 'A', '李四', '123.0', '22', 'waerfa');
 INSERT INTO `contactbase` VALUES ('4', 'A', '王五', '123.0', '23', 'waerfa');
 INSERT INTO `contactbase` VALUES ('5', 'A', '赵六', '123.0', '24', 'waerfa');
@@ -125,10 +134,16 @@ INSERT INTO `contactbase` VALUES ('13', 'B', '孙七', '123.0', '31', 'waerfa');
 INSERT INTO `contactbase` VALUES ('14', 'C', '龙八', '123.0', '32', 'waerfa');
 INSERT INTO `contactbase` VALUES ('15', 'C', 'Owngame', '123.0', '33', 'waerfa');
 INSERT INTO `contactbase` VALUES ('16', 'C', '张三', '123.0', '34', 'waerfa');
-INSERT INTO `contactbase` VALUES ('17', 'D', '龙生', '阿哥', '20', null);
+INSERT INTO `contactbase` VALUES ('17', 'C', '龙生', '阿哥', '20', '备注');
+INSERT INTO `contactbase` VALUES ('18', 'C', '龙生22', '阿哥', '20', '备注');
+INSERT INTO `contactbase` VALUES ('19', 'D', '龙生', '阿哥', '20', '备注');
+INSERT INTO `contactbase` VALUES ('20', 'D', '龙生22', '阿哥', '20', '备注');
+INSERT INTO `contactbase` VALUES ('21', 'D', '龙八', '123.0', '32', 'waerfa');
+INSERT INTO `contactbase` VALUES ('22', 'D', 'Owngame', '123.0', '33', 'waerfa');
+INSERT INTO `contactbase` VALUES ('23', 'D', '张三', '123.0', '34', 'waerfa');
 
 -- ----------------------------
--- Table structure for `contacthigh`
+-- Table structure for contacthigh
 -- ----------------------------
 DROP TABLE IF EXISTS `contacthigh`;
 CREATE TABLE `contacthigh` (
@@ -161,7 +176,7 @@ INSERT INTO `contacthigh` VALUES ('34', '18107436112', '0', null, null);
 INSERT INTO `contacthigh` VALUES ('35', 'superman', '7', null, 'superman');
 
 -- ----------------------------
--- Table structure for `function`
+-- Table structure for function
 -- ----------------------------
 DROP TABLE IF EXISTS `function`;
 CREATE TABLE `function` (
@@ -200,7 +215,7 @@ INSERT INTO `function` VALUES ('6', '23234', '23442', '3', 'localhost', '3306', 
 INSERT INTO `function` VALUES ('7', '23234', '23442', '32', 'localhost', '3306', 'MySQL', 'bzdb', 'owngame', 'root', 'gameinfos', 'rules', '', '', '', 'anyway', '', '', '0', 'no');
 
 -- ----------------------------
--- Table structure for `qrtz_blob_triggers`
+-- Table structure for qrtz_blob_triggers
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_blob_triggers`;
 CREATE TABLE `qrtz_blob_triggers` (
@@ -218,7 +233,7 @@ CREATE TABLE `qrtz_blob_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `qrtz_calendars`
+-- Table structure for qrtz_calendars
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_calendars`;
 CREATE TABLE `qrtz_calendars` (
@@ -233,7 +248,7 @@ CREATE TABLE `qrtz_calendars` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `qrtz_cron_triggers`
+-- Table structure for qrtz_cron_triggers
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_cron_triggers`;
 CREATE TABLE `qrtz_cron_triggers` (
@@ -252,7 +267,7 @@ CREATE TABLE `qrtz_cron_triggers` (
 INSERT INTO `qrtz_cron_triggers` VALUES ('quartzScheduler', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'DEFAULT', '0 * * * * ? *', 'GMT+08:00');
 
 -- ----------------------------
--- Table structure for `qrtz_fired_triggers`
+-- Table structure for qrtz_fired_triggers
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_fired_triggers`;
 CREATE TABLE `qrtz_fired_triggers` (
@@ -283,7 +298,7 @@ CREATE TABLE `qrtz_fired_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `qrtz_job_details`
+-- Table structure for qrtz_job_details
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_job_details`;
 CREATE TABLE `qrtz_job_details` (
@@ -308,7 +323,7 @@ CREATE TABLE `qrtz_job_details` (
 INSERT INTO `qrtz_job_details` VALUES ('quartzScheduler', 'jobDetail', 'DEFAULT', null, 'com.owngame.utils.MyQuartzJobBean', '1', '1', '1', '0', 0xACED0005737200156F72672E71756172747A2E4A6F62446174614D61709FB083E8BFA9B0CB020000787200266F72672E71756172747A2E7574696C732E537472696E674B65794469727479466C61674D61708208E8C3FBC55D280200015A0013616C6C6F77735472616E7369656E74446174617872001D6F72672E71756172747A2E7574696C732E4469727479466C61674D617013E62EAD28760ACE0200025A000564697274794C00036D617074000F4C6A6176612F7574696C2F4D61703B787000737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F40000000000010770800000010000000007800);
 
 -- ----------------------------
--- Table structure for `qrtz_locks`
+-- Table structure for qrtz_locks
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_locks`;
 CREATE TABLE `qrtz_locks` (
@@ -323,7 +338,7 @@ CREATE TABLE `qrtz_locks` (
 INSERT INTO `qrtz_locks` VALUES ('quartzScheduler', 'TRIGGER_ACCESS');
 
 -- ----------------------------
--- Table structure for `qrtz_paused_trigger_grps`
+-- Table structure for qrtz_paused_trigger_grps
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_paused_trigger_grps`;
 CREATE TABLE `qrtz_paused_trigger_grps` (
@@ -337,7 +352,7 @@ CREATE TABLE `qrtz_paused_trigger_grps` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `qrtz_scheduler_state`
+-- Table structure for qrtz_scheduler_state
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_scheduler_state`;
 CREATE TABLE `qrtz_scheduler_state` (
@@ -353,7 +368,7 @@ CREATE TABLE `qrtz_scheduler_state` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `qrtz_simple_triggers`
+-- Table structure for qrtz_simple_triggers
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_simple_triggers`;
 CREATE TABLE `qrtz_simple_triggers` (
@@ -372,7 +387,7 @@ CREATE TABLE `qrtz_simple_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `qrtz_simprop_triggers`
+-- Table structure for qrtz_simprop_triggers
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_simprop_triggers`;
 CREATE TABLE `qrtz_simprop_triggers` (
@@ -399,7 +414,7 @@ CREATE TABLE `qrtz_simprop_triggers` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `qrtz_triggers`
+-- Table structure for qrtz_triggers
 -- ----------------------------
 DROP TABLE IF EXISTS `qrtz_triggers`;
 CREATE TABLE `qrtz_triggers` (
@@ -441,7 +456,30 @@ CREATE TABLE `qrtz_triggers` (
 INSERT INTO `qrtz_triggers` VALUES ('quartzScheduler', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'DEFAULT', 'jobDetail', 'DEFAULT', null, '1476928680000', '1476928648239', '5', 'PAUSED', 'CRON', '1476928060000', '0', null, '0', 0xACED0005737200156F72672E71756172747A2E4A6F62446174614D61709FB083E8BFA9B0CB020000787200266F72672E71756172747A2E7574696C732E537472696E674B65794469727479466C61674D61708208E8C3FBC55D280200015A0013616C6C6F77735472616E7369656E74446174617872001D6F72672E71756172747A2E7574696C732E4469727479466C61674D617013E62EAD28760ACE0200025A000564697274794C00036D617074000F4C6A6176612F7574696C2F4D61703B787001737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F4000000000000C7708000000100000000274000966756E6374696F6E73740003616263740009726563656976657273740007312C332C342C357800);
 
 -- ----------------------------
--- Table structure for `settings`
+-- Table structure for quickanswers
+-- ----------------------------
+DROP TABLE IF EXISTS `quickanswers`;
+CREATE TABLE `quickanswers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `keyname` text CHARACTER SET utf8,
+  `result` text CHARACTER SET utf8,
+  `description` text,
+  `enable` tinyint(4) DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of quickanswers
+-- ----------------------------
+INSERT INTO `quickanswers` VALUES ('1', '龙生', '龙生最棒！', null, '1');
+INSERT INTO `quickanswers` VALUES ('2', '龙生2', '哈哈哈', null, '1');
+INSERT INTO `quickanswers` VALUES ('3', '龙生4', '你你你啊啊', null, '1');
+INSERT INTO `quickanswers` VALUES ('4', 'aaa', 'nimade', null, '0');
+INSERT INTO `quickanswers` VALUES ('5', 'aa', '3e', null, '1');
+INSERT INTO `quickanswers` VALUES ('7', '322', 'aaaa', null, '1');
+
+-- ----------------------------
+-- Table structure for settings
 -- ----------------------------
 DROP TABLE IF EXISTS `settings`;
 CREATE TABLE `settings` (
@@ -487,7 +525,7 @@ INSERT INTO `settings` VALUES ('50', '用户手机号', 'userphone', '1810743612
 INSERT INTO `settings` VALUES ('51', 'nodes', 'password', 'bbc100ce57af46bbed25d29222087bda', 'no');
 
 -- ----------------------------
--- Table structure for `task`
+-- Table structure for task
 -- ----------------------------
 DROP TABLE IF EXISTS `task`;
 CREATE TABLE `task` (
@@ -526,7 +564,7 @@ INSERT INTO `task` VALUES ('401', 'authorize request', '授权申请', '2', 'AR-
 INSERT INTO `task` VALUES ('402', 'authorize repost', '授权应答', '2', 'AR--SUCCESS--1515396574956--62c4ece6fa44df42618188dcee0c187d', '18107436127', '2017-01-16 12:16:13');
 
 -- ----------------------------
--- Table structure for `timertask`
+-- Table structure for timertask
 -- ----------------------------
 DROP TABLE IF EXISTS `timertask`;
 CREATE TABLE `timertask` (
@@ -547,7 +585,7 @@ CREATE TABLE `timertask` (
 INSERT INTO `timertask` VALUES ('3', '2fb7e32b-de19-44e0-acfc-97af9f8ad477', 'abc', '关于ABC的故事', '0 * * * * ? *', '0', '', 'pause');
 
 -- ----------------------------
--- Table structure for `weixinaccesstoken`
+-- Table structure for weixinaccesstoken
 -- ----------------------------
 DROP TABLE IF EXISTS `weixinaccesstoken`;
 CREATE TABLE `weixinaccesstoken` (
@@ -560,4 +598,4 @@ CREATE TABLE `weixinaccesstoken` (
 -- ----------------------------
 -- Records of weixinaccesstoken
 -- ----------------------------
-INSERT INTO `weixinaccesstoken` VALUES ('1', 'QKeAfuEn_ExklruLy5Y_t83hjxvWZyGu9_IfoxHwI6JggiNszT6sYgDJoUlBQaAyGkZOqKWEPpSA3NheGyVL_cceuakz9p8jaGthj06VVEd6vspYFVuLfsB1IhQaDJzNXGLeAAAIRW', '1484558840086');
+INSERT INTO `weixinaccesstoken` VALUES ('1', 'aD67rwMk4wO5GX9QS8diGWta1_Q5vwsRTTwS0UuUH1JuU_SzwrCc_izAoh3bzf23gEXnGAAt8KWjwAfCDQ7f41icewdAWqYSnGCd8GwR4UeYwHUTA68Qd4FqNCA_iRqUGMMhAGASYY', '1489592556300');

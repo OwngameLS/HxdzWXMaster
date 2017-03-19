@@ -35,6 +35,7 @@ public interface AnswerService {
      * @param askType       查询者方式 sms 0, wx 1, web 2, client 3 triggerjob 4
      * @param sendType      接收方式 sms 0, wx 1, sms_and_wx 3
      * @param description   描述 （可能还含有其他信息）
+     * @return
      */
     String handleAsk(String question, int questionType, String receiversInfo, int receiversType, int askType, int sendType, String description);
 

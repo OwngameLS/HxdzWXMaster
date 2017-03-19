@@ -19,7 +19,7 @@
         select * from timertask limit #{offset},#{limit}
     </select>
 
-    <select id="countAll" resultType="int" >
+    <select id="countAll" resultType="int">
         select count(*) from timertask
     </select>
 

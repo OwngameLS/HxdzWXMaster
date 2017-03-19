@@ -339,7 +339,7 @@
 
             // Support: Android <=2.3 only (functionish RegExp)
             return typeof obj === "object" || typeof obj === "function" ?
-            class2type[toString.call(obj)] || "object" :
+                class2type[toString.call(obj)] || "object" :
                 typeof obj;
         },
 
@@ -1347,7 +1347,7 @@
                         return a === bup || !!( bup && bup.nodeType === 1 && (
                                 adown.contains ?
                                     adown.contains(bup) :
-                                a.compareDocumentPosition && a.compareDocumentPosition(bup) & 16
+                                    a.compareDocumentPosition && a.compareDocumentPosition(bup) & 16
                             ));
                     } :
                     function (a, b) {
@@ -1773,8 +1773,8 @@
                                             node = elem;
                                             while ((node = node[dir])) {
                                                 if (ofType ?
-                                                    node.nodeName.toLowerCase() === name :
-                                                    node.nodeType === 1) {
+                                                        node.nodeName.toLowerCase() === name :
+                                                        node.nodeType === 1) {
 
                                                     return false;
                                                 }
@@ -1843,8 +1843,8 @@
                                                 (diff = nodeIndex = 0) || start.pop())) {
 
                                                 if (( ofType ?
-                                                    node.nodeName.toLowerCase() === name :
-                                                    node.nodeType === 1 ) && ++diff) {
+                                                        node.nodeName.toLowerCase() === name :
+                                                        node.nodeType === 1 ) && ++diff) {
 
                                                     // Cache the index of each encountered element
                                                     if (useCache) {
@@ -1974,7 +1974,7 @@
                             do {
                                 if ((elemLang = documentIsHTML ?
                                         elem.lang :
-                                    elem.getAttribute("xml:lang") || elem.getAttribute("lang"))) {
+                                        elem.getAttribute("xml:lang") || elem.getAttribute("lang"))) {
 
                                     elemLang = elemLang.toLowerCase();
                                     return elemLang === lang || elemLang.indexOf(lang + "-") === 0;
@@ -2877,7 +2877,7 @@
                 // so $("p:first").is("p:last") won't return true for a doc with two "p".
                 typeof selector === "string" && rneedsContext.test(selector) ?
                     jQuery(selector) :
-                selector || [],
+                    selector || [],
                 false
             ).length;
         }
@@ -3041,11 +3041,11 @@
 
                         // Always skip document fragments
                         if (cur.nodeType < 11 && ( targets ?
-                            targets.index(cur) > -1 :
+                                targets.index(cur) > -1 :
 
                                 // Don't pass non-elements to Sizzle
-                            cur.nodeType === 1 &&
-                            jQuery.find.matchesSelector(cur, selectors) )) {
+                                cur.nodeType === 1 &&
+                                jQuery.find.matchesSelector(cur, selectors) )) {
 
                             matched.push(cur);
                             break;
@@ -3327,8 +3327,8 @@
                 // If no argument is given, return whether or not list has callbacks attached.
                 has: function (fn) {
                     return fn ?
-                    jQuery.inArray(fn, list) > -1 :
-                    list.length > 0;
+                        jQuery.inArray(fn, list) > -1 :
+                        list.length > 0;
                 },
 
                 // Remove all callbacks from the list
@@ -4017,7 +4017,7 @@
                 this.cache(owner) :
 
                 // Always use camelCase key (gh-2257)
-            owner[this.expando] && owner[this.expando][jQuery.camelCase(key)];
+                owner[this.expando] && owner[this.expando][jQuery.camelCase(key)];
         },
         access: function (owner, key, value) {
 
@@ -4490,7 +4490,7 @@
 
             // Apply relative offset (+=/-=) if specified
             adjusted = valueParts[1] ?
-            initialInUnit + ( valueParts[1] + 1 ) * valueParts[2] :
+                initialInUnit + ( valueParts[1] + 1 ) * valueParts[2] :
                 +valueParts[2];
             if (tween) {
                 tween.unit = unit;
@@ -5148,7 +5148,7 @@
 
                             if (matches[sel] === undefined) {
                                 matches[sel] = handleObj.needsContext ?
-                                jQuery(sel, this).index(cur) > -1 :
+                                    jQuery(sel, this).index(cur) > -1 :
                                     jQuery.find(sel, this, null, [cur]).length;
                             }
                             if (matches[sel]) {
@@ -5457,7 +5457,7 @@
                 handleObj = types.handleObj;
                 jQuery(types.delegateTarget).off(
                     handleObj.namespace ?
-                    handleObj.origType + "." + handleObj.namespace :
+                        handleObj.origType + "." + handleObj.namespace :
                         handleObj.origType,
                     handleObj.selector,
                     handleObj.handler
@@ -6078,7 +6078,7 @@
 
             // Support: IE <=9 - 11 only
             // IE returns zIndex value as an integer.
-        ret + "" :
+            ret + "" :
             ret;
     }
 
@@ -6146,7 +6146,7 @@
         return matches ?
 
             // Guard against undefined "subtract", e.g., when used as in cssHooks
-        Math.max(0, matches[2] - ( subtract || 0 )) + ( matches[3] || "px" ) :
+            Math.max(0, matches[2] - ( subtract || 0 )) + ( matches[3] || "px" ) :
             value;
     }
 
@@ -7039,11 +7039,11 @@
 
     jQuery.speed = function (speed, easing, fn) {
         var opt = speed && typeof speed === "object" ? jQuery.extend({}, speed) : {
-            complete: fn || !fn && easing ||
-            jQuery.isFunction(speed) && speed,
-            duration: speed,
-            easing: fn && easing || easing && !jQuery.isFunction(easing) && easing
-        };
+                complete: fn || !fn && easing ||
+                jQuery.isFunction(speed) && speed,
+                duration: speed,
+                easing: fn && easing || easing && !jQuery.isFunction(easing) && easing
+            };
 
         // Go to the end state if fx are off or if document is hidden
         if (jQuery.fx.off || document.hidden) {
@@ -7052,7 +7052,7 @@
         } else {
             opt.duration = typeof opt.duration === "number" ?
                 opt.duration : opt.duration in jQuery.fx.speeds ?
-                jQuery.fx.speeds[opt.duration] : jQuery.fx.speeds._default;
+                    jQuery.fx.speeds[opt.duration] : jQuery.fx.speeds._default;
         }
 
         // Normalize opt.queue - true/undefined/null -> "fx"
@@ -7711,7 +7711,7 @@
                         this.setAttribute("class",
                             className || value === false ?
                                 "" :
-                            dataPriv.get(this, "__className__") || ""
+                                dataPriv.get(this, "__className__") || ""
                         );
                     }
                 }
@@ -8001,7 +8001,7 @@
 
                 event.type = i > 1 ?
                     bubbleType :
-                special.bindType || type;
+                    special.bindType || type;
 
                 // jQuery handler
                 handle = ( dataPriv.get(cur, "events") || {} )[event.type] &&
@@ -8289,7 +8289,7 @@
                             jQuery.map(val, function (val) {
                                 return {name: elem.name, value: val.replace(rCRLF, "\r\n")};
                             }) :
-                        {name: elem.name, value: val.replace(rCRLF, "\r\n")};
+                            {name: elem.name, value: val.replace(rCRLF, "\r\n")};
                 }).get();
         }
     });
@@ -8917,8 +8917,8 @@
             jqXHR.setRequestHeader(
                 "Accept",
                 s.dataTypes[0] && s.accepts[s.dataTypes[0]] ?
-                s.accepts[s.dataTypes[0]] +
-                ( s.dataTypes[0] !== "*" ? ", " + allTypes + "; q=0.01" : "" ) :
+                    s.accepts[s.dataTypes[0]] +
+                    ( s.dataTypes[0] !== "*" ? ", " + allTypes + "; q=0.01" : "" ) :
                     s.accepts["*"]
             );
 
@@ -9319,8 +9319,8 @@
                                         // For XHR2 non-text, let the caller handle it (gh-2498)
                                         ( xhr.responseType || "text" ) !== "text" ||
                                         typeof xhr.responseText !== "string" ?
-                                        {binary: xhr.response} :
-                                        {text: xhr.responseText},
+                                            {binary: xhr.response} :
+                                            {text: xhr.responseText},
                                         xhr.getAllResponseHeaders()
                                     );
                                 }
@@ -9470,10 +9470,10 @@
         var callbackName, overwritten, responseContainer,
             jsonProp = s.jsonp !== false && ( rjsonp.test(s.url) ?
                         "url" :
-                    typeof s.data === "string" &&
-                    ( s.contentType || "" )
-                        .indexOf("application/x-www-form-urlencoded") === 0 &&
-                    rjsonp.test(s.data) && "data"
+                        typeof s.data === "string" &&
+                        ( s.contentType || "" )
+                            .indexOf("application/x-www-form-urlencoded") === 0 &&
+                        rjsonp.test(s.data) && "data"
                 );
 
         // Handle iff the expected data type is "jsonp" or we have a parameter to set
@@ -9899,7 +9899,7 @@
 
                     // If curCSS returns percentage, fallback to offset
                     return rnumnonpx.test(computed) ?
-                    jQuery(elem).position()[prop] + "px" :
+                        jQuery(elem).position()[prop] + "px" :
                         computed;
                 }
             }

@@ -8,7 +8,6 @@ function getAuthorizedState() {
     $.when(myAjaxGet(bp + 'Smserver/authorization/authorizedState')).done(function (data) {
         if (data != null) {
             var authorizedState = data['authorizedState'];
-            console.log("authorizedState.value:" + authorizedState);
             if (authorizedState == 'invalid') {
                 var invalidReason = data['invalidReason'];
                 $("#invalidReason").html(invalidReason + "<br>");
@@ -38,7 +37,6 @@ function countDown(counts) {
 
 // 跳转到设置页面
 function gotoAuthorizePage() {
-    // console.log("gotoAuthorizePage..");
     $('#authorize>p').trigger('click');
     $("#authorizedModal").modal("hide");
 }
@@ -79,7 +77,6 @@ function checkUsername() {
 }
 
 function changeInputUsername() {
-    console.log("changeInputUsername");
     $("#usernameCheckResult").html('');
 }
 
@@ -126,7 +123,6 @@ function loginAdmin() {
         if (data != null) {
             var success = data['success'];
             if (success == 'success') {
-                console.log("admin login success.");
                 var htmlStr = data['htmlStr'];
                 htmlStr = UrlDecode(htmlStr);
                 $("#admin").html(htmlStr);
@@ -189,7 +185,6 @@ function authorizeAdmin() {
         if (data != null) {
             var success = data['success'];
             if (success == 'success') {
-                console.log("success!");
                 $("#grantresult").html("授权已成功！");
             } else {
                 var failedObject = data['failedObject'];

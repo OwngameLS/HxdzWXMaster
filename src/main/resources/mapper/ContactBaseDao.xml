@@ -23,7 +23,7 @@
         select * from contactbase where groupname=#{groupname} limit #{offset},#{limit}
     </select>
 
-    <select id="countAllByGroup" resultType="int" >
+    <select id="countAllByGroup" resultType="int">
         select count(*) from contactbase where groupname=#{groupname}
     </select>
 

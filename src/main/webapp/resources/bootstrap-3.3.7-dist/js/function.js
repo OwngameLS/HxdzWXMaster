@@ -35,20 +35,19 @@ var ruleFieldsArray = null;// 用来展示rule字段设置部分的数组
 
 var isSavingSql = false;//当前是否在保存Sql规则
 
-var pager = new Pager(null, null, null);
+// var pagerFunctions = new Pager(null, null, null, "pageSelectDivFunctions");
 // var pageSize;
 // var targetPage;
 
 // 向服务器请求所有方法的信息
 function getFunctions() {
-    var jsonStr = "{\"pageSize\":\"" + pager.pageSize
-        + "\",\"targetPage\":\"" + pager.targetPage
+    var jsonStr = "{\"pageSize\":\"" + pagerFunctions.pageSize
+        + "\",\"targetPage\":\"" + pagerFunctions.targetPage
         + "\"}";
     $.when(myAjaxPost(bp + 'Smserver/functions/getall', jsonStr)).done(function (data) {
         if (data != null) {
-            pager = new Pager(data['functions'], getFunctions, initTbodyOfFunctions);
-            pager.uiDisplay();
-            // initTbodyOfFunctions(data['functions']);
+            pagerFunctions = new Pager(data['functions'], getFunctions, initTbodyOfFunctions, "pageSelectDivFunctions");
+            pagerFunctions.uiDisplay();
         }
     });
 }
@@ -96,7 +95,7 @@ function saveFunction(action) {
         // 依次读取相关控件的值
         usable = 'no';
         name = $("#editName").val();
-        keywords = $("#editKeywords").val();
+        keywords = $("#editQuickanswers").val();
         grade = $("#editGrade option:selected").val();
         description = $("#editDescription").val();
         ip = $("#editIP").val();
@@ -347,10 +346,10 @@ function testFunctionDescPart() {
         showEditFail(errorinfo, $("#editName"));
     }
     // 关键字
-    keywords = $("#editKeywords").val();
+    keywords = $("#editQuickanswers").val();
     if (isEmpty(keywords)) {
         errorinfo = errorinfo + "必须输入关键字；<br>";
-        showEditFail(errorinfo, $("#editKeywords"));
+        showEditFail(errorinfo, $("#editQuickanswers"));
     }
     // 检查描述
     description = $("#editDescription").val();
@@ -377,17 +376,17 @@ function testFunctionDescPart() {
                         errorMsg = errorMsg + "<br>";
                     }
                 }
-                showEditFail(errorMsg, $("#editKeywords"));
+                showEditFail(errorMsg, $("#editQuickanswers"));
                 defer.reject(errorMsg);
             } else {
                 defer.resolve(true);
             }
         } else {
-            showEditFail("读取服务器信息失败，请稍后再试...", $("#editKeywords"));
+            showEditFail("读取服务器信息失败，请稍后再试...", $("#editQuickanswers"));
             defer.reject("读取服务器信息失败，请稍后再试...");
         }
     }).fail(function () {
-        showEditFail("与服务器通讯失败，请稍后再试...", $("#editKeywords"));
+        showEditFail("与服务器通讯失败，请稍后再试...", $("#editQuickanswers"));
         defer.reject("与服务器通讯失败，请稍后再试...");
     });
     return defer.promise();
@@ -728,9 +727,9 @@ function testRules() {
 // 使用功能json数据组合成功能表格内容
 function initTbodyOfFunctions(functions) {
     var htmlStr = '';
-    if(functions == null){
+    if (functions == null) {
         htmlStr = '查询到0条记录';
-    }else{
+    } else {
         for (var i = 0; i < functions.length; i++) {
             htmlStr = htmlStr + '<tr><td>';
             if (functions[i].usable == 'no') {
@@ -806,7 +805,7 @@ function edit(tempId) {
                 $("#isUsable").html('<span class="label label-primary">可 用</span>');
             }
             $("#editName").val(func.name);
-            $("#editKeywords").val(func.keywords);
+            $("#editQuickanswers").val(func.keywords);
             $("#editGrade").val(func.grade);
             $("#editDescription").val(func.description);
             $("#editIP").val(func.ip);
@@ -1074,7 +1073,6 @@ function deleteFunction(id) {
 }
 
 
-
 // 检查ip地址填写的是主机名
 function checkIpisHost(value) {
     var exp = /^[a-zA-Z]/;
@@ -1115,13 +1113,4 @@ function saveFunctionAnyway() {
     $("#myModalLabel").html('<h1 style="color: #FF0000">仅保存？</h1>');
     $("#mbody").html(htmlStr);
     $("#myModal").modal("show");
-}
-
-
-function gotoPage(page){
-    pager.gotoPage(page);
-}
-
-function changePageSize() {
-    pager.changePageSize();
 }

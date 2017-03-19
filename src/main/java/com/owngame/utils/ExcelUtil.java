@@ -44,7 +44,7 @@ public class ExcelUtil {
                     somethingWrong = true;
                     errorInfo += "<br>" + wrongInfo + "这一行为空；";
                 }
-                System.out.println("aaa:"+ row.getCell(0).toString());
+                System.out.println("aaa:" + row.getCell(0).toString());
                 if (null != row.getCell(0)) {// id
                     int cellType = row.getCell(0).getCellType();
                     if (cellType == Cell.CELL_TYPE_NUMERIC) {

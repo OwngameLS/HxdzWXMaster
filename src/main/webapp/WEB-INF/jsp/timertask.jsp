@@ -13,8 +13,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="../../resources/bootstrap-3.3.7-dist/js/pager.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/pager.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/timertask.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/contact.js"></script>
@@ -122,7 +122,7 @@
         </table>
     </div>
 
-    <div id="contactsDiv" class="well" style="display: none;text-align:center">
+    <div id="contactsDiv" class="well" style="display: none;text-align:center;height: 520px;">
         <div style="width: 20%;float:left;">
             <button type="button" class="btn btn-warning btn-sm" onclick="hideContactsDiv()">取消编辑</button>
         </div>
@@ -144,7 +144,6 @@
             </table>
         </div>
         <div id="persons" style="width:80%;float:left;overflow:scroll; height:400px;">
-
             <table class="table table-hover table-bordered text-center">
                 <thead>
                 <tr class="info">
@@ -163,6 +162,8 @@
                 </tbody>
             </table>
         </div>
+        <div onselectstart="return false;" style="width: 20%;float:left;">.</div>
+        <div id="pageSelectDivContacts" style="text-align:center;width:80%;float: left;"></div>
     </div>
 
     <button type="button" class="btn btn-warning btn-sm" onclick="initEditTimerTask(-1)">新建任务</button>
@@ -186,7 +187,7 @@
             </tbody>
         </table>
     </div>
-    <div id="pageSelectDiv" style="text-align:center;width:100%;" >
+    <div id="pageSelectDivTimerTasks" style="text-align:center;width:100%;">
     </div>
 
 </div>

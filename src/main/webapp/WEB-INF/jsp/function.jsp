@@ -14,8 +14,8 @@
     <!-- 引入 Bootstrap -->
     <link href="../../resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../../resources/bootstrap-3.3.7-dist/js/uiscript.js"></script>
-    <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/pager.js"></script>
+    <script src="../../resources/bootstrap-3.3.7-dist/js/askserver.js"></script>
     <script src="../../resources/bootstrap-3.3.7-dist/js/function.js"></script>
 </head>
 <body>
@@ -219,7 +219,7 @@
             </tbody>
         </table>
     </div>
-    <div id="pageSelectDiv" style="text-align:center;width:100%;" >
+    <div id="pageSelectDivFunctions" style="text-align:center;width:100%;">
     </div>
 
 </div>
